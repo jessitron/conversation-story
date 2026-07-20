@@ -208,9 +208,7 @@ renderer handles them with the same code.
 ```
 .ruby-version                 # for rbenv/asdf
 Gemfile                       # minimal; minitest only to start
-bin/parse                     # logs dir/file  -> intermediate YAML  (stdout or -o)
-bin/render                    # intermediate YAML -> static HTML dir
-bin/serve                     # serve the HTML dir (ruby -run -e httpd or tiny Rack)
+Rakefile                      # phase tasks: parse / render / serve / test
 lib/
   conversation_story/
     parser.rb                 # jsonl -> document (Ruby hash), with fallbacks
@@ -218,14 +216,29 @@ lib/
     renderer.rb               # document -> HTML via ERB
     templates/                # ERB: page + event-card partial
 out/                          # generated site — COMMITTED (Jess's choice)
+  <name>/
+    story.yaml                # intermediate YAML (parse output; hand-editable)
+    index.html                # rendered page (render output)
 test/
   parser_test.rb              # golden-fixture tests against examples/
   fixtures/
 ```
 
+- **Phases are rake tasks**, not shell scripts. `rake -T` lists them; the logic
+  lives in `lib/` classes (tasks stay thin wrappers). Rake ships with Ruby, so
+  no new dep, and the everyday commands (`rake parse`, `rake render`,
+  `rake serve`) are simple enough to allowlist without bash-approval friction.
+  - `rake parse`  — every `examples/*.jsonl` -> `out/<name>/story.yaml`
+  - `rake render` — every `out/*/story.yaml` -> `out/<name>/index.html`
+  - `rake serve`  — serve `out/` (`ruby -run -e httpd out -p 8080`)
+  - `rake test`   — minitest golden fixtures
+- **Default is all examples; env vars override for one-offs.** e.g.
+  `LOG=examples/episode-8-before.jsonl rake parse`,
+  `NAME=episode-8-before rake render`.
 - **Stdlib-first**: `json`, `yaml`, `erb` are built in. Only dev dep is
   `minitest`. No Rails.
-- `bin/serve` uses `ruby -run -e httpd out -p 8080` — zero deps.
+- Intermediate YAML lives in `out/<name>/story.yaml` alongside its page, so the
+  "hand-edit the intermediate" constraint just works and gh-pages ignores it.
 - `out/` is **committed** (not gitignored), so examples ship with the repo and
   can be pushed to `gh-pages` when Jess chooses.
 
@@ -248,18 +261,18 @@ test/
    exactly one event; no data lost.
 2. **Renderer skeleton**: ERB page that lists every event as an *identical* card
    showing `summary`. This is Mountain 1 done.
-3. **Serve**: `bin/serve` over `out/`.
+3. **Serve**: `rake serve` over `out/`.
 4. Only then climb Mountain 2 (interactivity: step-through + drill-in) — the
    `detail` payload and the click-to-expand JS.
 
 ## Verification
 
-- `bin/parse examples/episode-8-before.jsonl` produces valid YAML; round-trip
-  loads under `YAML.safe_load`.
+- `LOG=examples/episode-8-before.jsonl rake parse` produces valid YAML;
+  round-trip loads under `YAML.safe_load`.
 - `test/parser_test.rb`: assert event count == log line count for both examples;
   assert no event has `kind: unknown` unexpectedly (track known coverage %).
-- `bin/render` on that YAML yields an `out/` with one card per event; open via
-  `bin/serve` and eyeball.
+- `rake render` on that YAML yields an `out/<name>/index.html` with one card per
+  event; open via `rake serve` and eyeball.
 - Run against BOTH `episode-8-before` and `-after` to confirm the fallback path
   and the range-of-timeframes constraint.
 - Assert every event has non-null `source.file`/`source.line` (provenance) and a

@@ -16,7 +16,33 @@ The output HTML is a static site. There is minimal JS to support interactivity.
 
 The intermediate description is YAML to describe what will be on the page. It includes all the information needed to generate the output, and not more.
 
-We're building this app in Ruby. There are separate programs for Input Logs -> Intermediate Description, Intermediate -> Output HTML, and serving the HTML.
+We're building this app in Ruby. Each phase of the pipeline is a **rake task**:
+parse (Input Logs -> Intermediate), render (Intermediate -> Output HTML), and serve.
+
+## Running it
+
+Ruby only (see `.ruby-version`); the pipeline uses stdlib (`json`, `yaml`, `erb`)
+and rake, which ships with Ruby. The one dev dependency is `minitest`.
+
+```sh
+rake -T        # list all tasks
+rake parse     # examples/*.jsonl  -> out/<name>/story.yaml   (intermediate YAML)
+rake render    # out/*/story.yaml  -> out/<name>/index.html   (the page)
+rake build     # parse then render
+rake serve     # serve out/ at http://localhost:8080
+rake test      # golden-fixture tests
+```
+
+**Default is all examples.** Override for a single one with env vars:
+
+```sh
+LOG=examples/episode-8-before.jsonl rake parse   # parse just this log
+NAME=episode-8-before rake render                # render just this story
+PORT=9000 rake serve                             # serve on a different port
+```
+
+The intermediate `out/<name>/story.yaml` is meant to be hand-editable — tweak it
+and re-run `rake render` to see the change.
 
 ## North Star
 

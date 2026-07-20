@@ -26,9 +26,14 @@ reproduce that design.
 
 ## Status
 
-Schema designed and **page design prototyped** (`design-prototype.html`). No app
-code yet. Next step per `notes/plan.md`: the parser skeleton + golden-fixture test,
-building Mountain 1 (every event as an identical card) end-to-end first.
+Schema designed, **page design prototyped** (`design-prototype.html`), and the
+**pipeline is scaffolded**: phases are rake tasks (`rake -T`) over stub `lib/`
+classes. Next step per `notes/plan.md`: fill in the parser skeleton +
+golden-fixture test, building Mountain 1 (every event as an identical card)
+end-to-end first.
+
+Run things with `rake parse` / `render` / `serve` / `test` (all examples by
+default; `LOG=`/`NAME=`/`PORT=` env vars for one-offs). See README.md.
 
 When building the renderer, reproduce `design-prototype.html` and **self-host the
 fonts** (Tenor Sans / Sen / Cascadia Code — the prototype uses a CDN).
