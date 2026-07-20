@@ -219,6 +219,11 @@
     font-size: 17px; line-height: 1.5; color: var(--ink);
     -webkit-line-clamp: 4;
   }
+  /* keep the kind-colored active shadow (its own resting shadow would otherwise
+     win on specificity/order), layered over its soft elevation */
+  .card.k-assistant.active {
+    box-shadow: -3px 4px 0 var(--kind), 0 5px 18px rgba(13,25,64,0.09);
+  }
 
   /* Background machinery: present, but quieter than the conversation. */
   .card.k-thinking,
