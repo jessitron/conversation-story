@@ -137,10 +137,12 @@
   /* ============================================================
      Event cards — shared anatomy
      ------------------------------------------------------------
-     One <article class="card k-KIND"> per event. In the ERB build this whole
-     block is the event-card partial, and the <template class="detail"> it
-     carries is the drill-in partial. Per-kind color lives in the kind→color
-     table below; per-kind treatment (layout, elevation) follows that.
+     One <a class="card k-KIND" id="event-N" href="#event-N"> per event: an
+     anchor, so each event is deep-linkable AND keyboard-focusable for free.
+     In the ERB build this whole block is the event-card partial, and the
+     <template class="detail"> it carries is the drill-in partial. Per-kind
+     color lives in the kind→color table below; per-kind treatment (layout,
+     elevation) follows that.
      ============================================================ */
   .card {
     position: relative;
@@ -153,12 +155,17 @@
     border-radius: var(--card-radius);
     padding: 13px 18px 13px 16px;
     margin: 0 0 10px;
+    color: inherit; text-decoration: none;   /* cards are <a> anchors */
     cursor: pointer;
     transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
   }
   .card.active {
     border-color: var(--kind, var(--gold));
     box-shadow: -3px 4px 0 var(--kind, var(--gold));
+  }
+  .card:focus-visible {
+    outline: 2px solid var(--kind, var(--gold));
+    outline-offset: 3px;
   }
 
   /* Leader line to the detail pane: an in-flow pseudo-element anchored to the
@@ -401,17 +408,18 @@
     <p class="rail-label deco">claude code</p>
 
     <!-- ============================================================
-         Event cards — static HTML, one <article> per event.
+         Event cards — static HTML, one <a> anchor per event.
          Sample events (one per kind) shaped like the intermediate schema
-         (see notes/plan.md). Each card carries its drill-in markup in a
-         <template class="detail">; JS clones it into the sidebar on click.
-         Detail rendering is deliberately generic here; per-kind detail
-         views come later. Provenance values are placeholder.
+         (see notes/plan.md). Each card is deep-linkable (id + href="#event-N")
+         and carries its drill-in markup in a <template class="detail">; JS
+         clones it into the sidebar on select. Detail rendering is deliberately
+         generic here; per-kind detail views come later. Provenance values are
+         placeholder.
          ============================================================ -->
     <div id="cards">
 
       <!-- user -->
-      <article class="card k-user" data-time="02:27:16">
+      <a class="card k-user" id="event-1" href="#event-1" data-time="02:27:16">
         <div class="gutter">
           <span class="kind deco">User</span>
           <span class="who">Jess</span>
@@ -435,10 +443,10 @@ I want to get the shape right so the renderer only ever reads the schema, never 
             </dl>
           </div>
         </template>
-      </article>
+      </a>
 
       <!-- thinking -->
-      <article class="card k-thinking" data-time="02:27:18">
+      <a class="card k-thinking" id="event-2" href="#event-2" data-time="02:27:18">
         <div class="gutter">
           <span class="kind deco">Thinking</span>
           <span class="who">assistant</span>
@@ -460,10 +468,10 @@ I want to get the shape right so the renderer only ever reads the schema, never 
             </dl>
           </div>
         </template>
-      </article>
+      </a>
 
       <!-- assistant -->
-      <article class="card k-assistant" data-time="02:27:24">
+      <a class="card k-assistant" id="event-3" href="#event-3" data-time="02:27:24">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -498,10 +506,10 @@ I want to get the shape right so the renderer only ever reads the schema, never 
             </dl>
           </div>
         </template>
-      </article>
+      </a>
 
       <!-- tool_call — Read -->
-      <article class="card k-tool_call" data-time="02:28:02">
+      <a class="card k-tool_call" id="event-4" href="#event-4" data-time="02:28:02">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -537,10 +545,10 @@ I want to get the shape right so the renderer only ever reads the schema, never 
             </dl>
           </div>
         </template>
-      </article>
+      </a>
 
       <!-- tool_result -->
-      <article class="card k-tool_result" data-time="02:28:02">
+      <a class="card k-tool_result" id="event-5" href="#event-5" data-time="02:28:02">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -570,10 +578,10 @@ I want to get the shape right so the renderer only ever reads the schema, never 
             </dl>
           </div>
         </template>
-      </article>
+      </a>
 
       <!-- tool_call — Bash (failed) -->
-      <article class="card k-tool_call" data-time="02:29:11">
+      <a class="card k-tool_call" id="event-6" href="#event-6" data-time="02:29:11">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -608,10 +616,10 @@ I want to get the shape right so the renderer only ever reads the schema, never 
             </dl>
           </div>
         </template>
-      </article>
+      </a>
 
       <!-- tool_call — Write -->
-      <article class="card k-tool_call" data-time="02:30:15">
+      <a class="card k-tool_call" id="event-7" href="#event-7" data-time="02:30:15">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -651,10 +659,10 @@ end</pre>
             </dl>
           </div>
         </template>
-      </article>
+      </a>
 
       <!-- subagent -->
-      <article class="card k-subagent" data-time="02:31:40">
+      <a class="card k-subagent" id="event-8" href="#event-8" data-time="02:31:40">
         <div class="gutter">
           <span class="kind deco">Subagent</span>
           <span class="who">Explore</span>
@@ -689,10 +697,10 @@ end</pre>
             </dl>
           </div>
         </template>
-      </article>
+      </a>
 
       <!-- system -->
-      <article class="card k-system" data-time="02:35:02">
+      <a class="card k-system" id="event-9" href="#event-9" data-time="02:35:02">
         <div class="gutter">
           <span class="kind deco">System</span>
           <span class="who">system</span>
@@ -723,7 +731,7 @@ end</pre>
             </dl>
           </div>
         </template>
-      </article>
+      </a>
 
     </div>
   </main>
@@ -751,7 +759,11 @@ end</pre>
 /* ------------------------------------------------------------------
    Interactivity ONLY. The cards and their detail payloads are static
    HTML above (each card owns a <template class="detail">); this script
-   just wires up selection, collapse/reopen, and drag-to-resize. It reads
+   just wires up selection, collapse/reopen, and drag-to-resize.
+
+   Selection is driven by the URL fragment (#event-N), so every event is
+   deep-linkable and shareable. Cards are <a href="#event-N"> anchors, which
+   also makes them keyboard-focusable and Enter-activatable for free. It reads
    everything it shows from the DOM — no event data lives here.
 ------------------------------------------------------------------ */
 const body    = document.body;
@@ -760,10 +772,19 @@ const dKind   = document.getElementById('d-kind');
 const dTime   = document.getElementById('d-time');
 const dBody   = document.getElementById('d-body');
 const cards   = document.querySelectorAll('.card');
+const DEFAULT_CARD = document.querySelector('.card.k-assistant');  // so the page is never empty
 
 /* the empty-state markup that ships in the sidebar; restored on clear */
 const EMPTY_HTML = dBody.innerHTML;
 
+/* update the URL fragment without scrolling or firing hashchange.
+   Wrapped because some browsers block history writes on file:// URLs —
+   selection must still work even when the URL can't be updated. */
+function setFragment(frag) {
+  try { history.replaceState(null, '', frag); } catch (_) { /* file:// */ }
+}
+
+/* show a card's detail in the sidebar (pure UI — does not touch the URL) */
 function selectCard(card) {
   cards.forEach(c => c.classList.remove('active'));
   card.classList.add('active');
@@ -787,18 +808,40 @@ function clearSelection() {
   dBody.innerHTML = EMPTY_HTML;
 }
 
-/* one delegated listener on the container, instead of one per card: a click
-   anywhere inside a card toggles its detail; clicks in the gaps are ignored. */
+/* URL fragment -> selection. Unknown/empty fragment falls back to the default
+   card so the page is never empty. Used on load and on hashchange; scrolls the
+   target into view only when arriving via a real fragment (deep link). */
+function syncFromHash() {
+  const id = decodeURIComponent(location.hash.slice(1));
+  const card = id ? document.getElementById(id) : null;
+  const target = (card && card.classList.contains('card')) ? card : DEFAULT_CARD;
+  selectCard(target);
+  if (location.hash) target.scrollIntoView({ block: 'center' });
+}
+
+/* one delegated listener on the container: a click anywhere in a card selects
+   it and writes its id to the URL (shareable), WITHOUT the native jump-to-anchor
+   scroll — the detail shows in the sticky sidebar. Modified clicks (⌘/ctrl/…)
+   fall through so "open link in new tab" still works. */
 document.getElementById('cards').addEventListener('click', e => {
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
   const card = e.target.closest('.card');
   if (!card) return;
-  if (card.classList.contains('active')) clearSelection();
-  else selectCard(card);
+  e.preventDefault();
+  if (card.classList.contains('active')) return;   // already showing; nothing to do
+  setFragment('#' + card.id);
+  selectCard(card);
 });
+
+/* deep links, back/forward, and hand-edited fragments */
+window.addEventListener('hashchange', syncFromHash);
 
 /* ---- collapse / reopen / clear ---- */
 document.getElementById('d-close').addEventListener('click', () => body.classList.add('sidebar-collapsed'));
-document.getElementById('d-clear').addEventListener('click', clearSelection);
+document.getElementById('d-clear').addEventListener('click', () => {
+  setFragment(location.pathname + location.search);   // drop the #event-N
+  clearSelection();
+});
 document.getElementById('reopen').addEventListener('click', () => body.classList.remove('sidebar-collapsed'));
 
 /* ---- drag to resize ---- */
@@ -812,8 +855,8 @@ window.addEventListener('mousemove', e => {
 });
 window.addEventListener('mouseup', () => { dragging = false; body.classList.remove('resizing'); });
 
-/* open the first assistant message by default so the page is never empty */
-selectCard(document.querySelector('.card.k-assistant'));
+/* initial paint: honor a deep link if present, else open the default card */
+syncFromHash();
 </script>
 </body>
 </html>
