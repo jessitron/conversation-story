@@ -7,9 +7,15 @@ Read `README.md` for the architecture and vision (the four "Mountains", constrai
 and `notes/plan.md` for the current design — especially the settled **Decisions**.
 The **intermediate schema** (the `story.yaml` contract) has its own file,
 `notes/intermediate-schema.md`. For the **page look & feel**, see
-`design-prototype.html` (a static art-deco mockup with sample cards) and
-`notes/2026-07-20-session-2-design-prototype.md`; the ERB renderer should
-reproduce that design.
+`design-prototype.html` (a static art-deco mockup with sample cards) plus
+`notes/2026-07-20-session-2-design-prototype.md` and
+`notes/2026-07-20-session-5-prototype-cleanup.md`.
+
+The prototype's CSS/JS now live in **`assets/story.css` + `assets/story.js`** (the
+prototype links them, so it can't drift from what ships). So "reproduce the design"
+is mostly: **reuse `assets/` as-is and generate only the per-event card HTML** —
+each card is `<a class="card k-KIND" id="event-…" href="#event-…">` carrying a
+`<template class="detail">`; the URL fragment drives selection (deep-linkable).
 
 ## Conventions
 
@@ -37,5 +43,7 @@ Mountain 1 (every event as an identical card) end-to-end first.
 Run things with `rake parse` / `render` / `build` / `serve` / `test` (all
 examples by default; `LOG=`/`PORT=` env vars to scope). See README.md.
 
-When building the renderer, reproduce `design-prototype.html` and **self-host the
-fonts** (Tenor Sans / Sen / Cascadia Code — the prototype uses a CDN).
+Still TODO before/with the renderer: **self-host the fonts** (Tenor Sans / Sen /
+Cascadia Code) into `assets/fonts/` with `@font-face` in `story.css`, replacing the
+CDN `<link>` the prototype still uses; and `bin/render` must **copy `assets/` →
+`out/assets/`** each build. See the session-5 note for the full open-threads list.
