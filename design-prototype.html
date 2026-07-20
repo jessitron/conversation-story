@@ -152,6 +152,8 @@
     opacity: 0; pointer-events: none;
   }
   .card.active::after { opacity: 1; }
+  /* when the detail pane is collapsed, its card's line has nothing to point to */
+  body.sidebar-collapsed .card.active::after { opacity: 0; }
 
   .card .gutter {
     font-size: 11px; letter-spacing: 0.06em; color: var(--ink-faint);
