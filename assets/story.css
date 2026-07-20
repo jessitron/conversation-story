@@ -363,6 +363,29 @@ pre.code {
 }
 .token-grid .cell .v { font-family: var(--font-head); font-size: 18px; }
 
+/* Click-to-copy event-id chip (in the detail pane). Reads var(--kind) so its
+   hover accent matches the selected card's color. */
+.copy-ref {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--surface-raised);
+  border: 1px solid var(--line-strong); border-radius: 3px;
+  padding: 7px 11px; cursor: pointer; color: inherit;
+  transition: border-color .12s ease, background .12s ease;
+}
+.copy-ref:hover  { border-color: var(--kind, var(--gold)); background: var(--paper); }
+.copy-ref:active { transform: translateY(1px); }
+.copy-ref:focus-visible { outline: 2px solid var(--kind, var(--gold)); outline-offset: 2px; }
+.copy-ref code {
+  font-family: var(--font-mono); font-size: 13px; color: var(--red);
+}
+.copy-ref .copy-hint {
+  font-size: 10px; letter-spacing: 0.14em; color: var(--ink-faint);
+}
+/* confirmation flash toggled by story.js */
+.copy-ref.copied { border-color: var(--olive); background: var(--paper); }
+.copy-ref.copied code { color: var(--olive); }
+.copy-ref.copied .copy-hint { color: var(--olive); }
+
 .empty-detail {
   margin: auto; text-align: center; color: var(--ink-faint);
   padding: 40px 30px;

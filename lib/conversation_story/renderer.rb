@@ -105,6 +105,8 @@ module ConversationStory
 
     def detail_html(event)
       sections = []
+      sections << event_id_section(event) if event["ref"]
+
       heading = DETAIL_HEADING[event["kind"]]
       text = event.dig("detail", "text") || event["summary"]
       sections << section(heading, %(<div class="d-text">#{h text}</div>))
@@ -116,6 +118,17 @@ module ConversationStory
 
       sections << section("Provenance", provenance_dl(event))
       sections.join("\n")
+    end
+
+    # A click-to-copy chip for the event's human-referable id. The button
+    # carries the text in data-copy; assets/story.js copies it to the clipboard
+    # on click (with a file:// fallback) and flashes confirmation.
+    def event_id_section(event)
+      ref = event["ref"]
+      button = %(<button type="button" class="copy-ref" data-copy="#{h ref}" ) +
+               %(title="Copy event id to clipboard">) +
+               %(<code>#{h ref}</code><span class="copy-hint deco">copy</span></button>)
+      section("Event ID", button)
     end
 
     def provenance_dl(event)

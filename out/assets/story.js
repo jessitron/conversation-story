@@ -84,6 +84,45 @@ document.getElementById('cards').addEventListener('click', e => {
 /* deep links, back/forward, and hand-edited fragments */
 window.addEventListener('hashchange', syncFromHash);
 
+/* ---- click-to-copy the event id ----
+   The copy chips live inside each card's <template> and are cloned into #d-body
+   on select, so we delegate one listener on the stable #d-body container.
+   navigator.clipboard needs a secure context (works on localhost/https); the
+   textarea + execCommand path is the file:// fallback. */
+function copyText(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text);
+  }
+  return new Promise((resolve, reject) => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy') ? resolve() : reject(); }
+    catch (e) { reject(e); }
+    finally { document.body.removeChild(ta); }
+  });
+}
+
+function flashCopied(btn) {
+  const hint = btn.querySelector('.copy-hint');
+  const original = hint ? hint.textContent : null;
+  btn.classList.add('copied');
+  if (hint) hint.textContent = 'copied!';
+  clearTimeout(btn._copyTimer);
+  btn._copyTimer = setTimeout(() => {
+    btn.classList.remove('copied');
+    if (hint && original !== null) hint.textContent = original;
+  }, 1200);
+}
+
+dBody.addEventListener('click', e => {
+  const btn = e.target.closest('.copy-ref');
+  if (!btn) return;
+  copyText(btn.dataset.copy).then(() => flashCopied(btn)).catch(() => {});
+});
+
 /* ---- collapse / reopen / clear ---- */
 document.getElementById('d-close').addEventListener('click', () => body.classList.add('sidebar-collapsed'));
 document.getElementById('d-clear').addEventListener('click', () => {

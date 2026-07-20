@@ -44,6 +44,25 @@ class ParserTest < Minitest::Test
       end
     end
 
+    define_method("test_#{name}_every_event_has_a_ref_handle") do
+      doc = ConversationStory::Parser.new(log).to_document
+      doc["events"].each do |e|
+        assert_equal "#{name}:#{e.dig("source", "line")}", e["ref"],
+                     "event #{e["id"]} ref should be <name>:<line>"
+      end
+      # refs are unique (one event per line), so they're safe to cite
+      refs = doc["events"].map { |e| e["ref"] }
+      assert_equal refs.uniq.size, refs.size, "event refs must be unique"
+    end
+
+    define_method("test_#{name}_renders_copyable_event_id") do
+      doc  = ConversationStory::Parser.new(log).to_document
+      html = ConversationStory::Renderer.new(doc).to_html
+      assert_equal doc["events"].size, html.scan(/class="copy-ref"/).size,
+                   "expected one copy-ref chip per event"
+      assert_includes html, %(data-copy="#{name}:1")
+    end
+
     define_method("test_#{name}_assistant_turns_carry_named_tokens") do
       doc = ConversationStory::Parser.new(log).to_document
       assistants = doc["events"].select { |e| e["kind"] == "assistant_message" }

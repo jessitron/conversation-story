@@ -35,7 +35,8 @@ module ConversationStory
     # @param log_path [String] path to the top-level conversation .jsonl.
     def initialize(log_path)
       @log_path = log_path
-      @log_file = File.basename(log_path) # goes into every event's source.file
+      @log_file = File.basename(log_path)            # source.file (with .jsonl)
+      @log_name = File.basename(log_path, ".jsonl")  # the `ref` prefix (no ext)
     end
 
     # @return [Hash] the intermediate document (YAML-serializable with string
@@ -66,6 +67,9 @@ module ConversationStory
       kind = kind_for(rec)
       event = {
         "id"      => rec["uuid"] || "line-#{lineno}",
+        # a short, human-referable handle built from provenance: "<name>:<line>"
+        # (e.g. episode-8-before:9). Stable to cite when discussing an event.
+        "ref"     => "#{@log_name}:#{lineno}",
         "agent"   => agent_for(rec),
         "parent"  => rec["parentUuid"],
         "kind"    => kind,
