@@ -182,9 +182,9 @@
     border: 1px solid var(--line-strong); color: var(--ink-soft);
     background: #fff;
   }
-  .badge.tok { border-color: var(--blue); color: var(--blue); }
-  .badge.err { border-color: var(--red); color: var(--red); background: #FBEBEE; }
-  .badge.model { border-color: var(--line-strong); color: var(--ink-faint); }
+  .badge.tool  { border-color: var(--navy); color: var(--navy); }
+  .badge.tok   { border-color: var(--blue); color: var(--blue); }
+  .badge.err   { border-color: var(--red); color: #fff; background: var(--red); }
   .badge.agent { border-color: var(--red); color: var(--red); }
 
   /* per-kind accent colors */
@@ -410,14 +410,14 @@ const EVENTS = [
   {
     kind: "thinking", who: "assistant", time: "02:27:18",
     summary: "The user wants a paper-first schema. I should enumerate the observed event types and fold in the required fields…",
-    badges: [{t:"model", c:"model"}],
+    badges: [],
     detail: { section: "Reasoning", text:
       "The user wants a paper-first schema. Let me enumerate the observed top-level types (user, assistant, system, attachment…) and make sure every required field is folded in: tokens, provenance, queued status, linking data, per-event agent identity, wall-clock time." }
   },
   {
     kind: "assistant", who: "Claude", time: "02:27:24", model: "opus-4-6",
     summary: "Here's a proposed schema: one ordered list of events, each with a tiny summary and a detail payload. Unknown records fall back to a generic event so nothing is dropped.",
-    badges: [{t:"opus-4-6", c:"model"}, {t:"↑ 3 · ↓ 322", c:"tok"}],
+    badges: [],
     detail: { section: "Message", text:
       "Here's a proposed schema: one ordered list of events, each with a tiny `summary` (default view) and a `detail` payload (drill-in). Everything in the log is representable; unknown records fall back to a generic event so nothing is dropped.",
       tokens: {input:3, output:322, cache_creation:10619, cache_read:13834},
@@ -426,7 +426,7 @@ const EVENTS = [
   {
     kind: "tool_call", who: "Claude", time: "02:28:02",
     summary: "<b>Read</b> <code>notes/plan.md</code>",
-    badges: [{t:"Read", c:""}],
+    badges: [{t:"Read", c:"tool"}],
     detail: { section: "Tool call — Read", kv: {
       "Tool": "Read", "use_id": "toolu_01X8…f3", "file_path": "notes/plan.md" },
       code: '{\n  "file_path": "notes/plan.md"\n}' }
@@ -434,7 +434,7 @@ const EVENTS = [
   {
     kind: "tool_result", who: "system", time: "02:28:02",
     summary: "Read 296 lines from <code>notes/plan.md</code> (12.4 KB).",
-    badges: [{t:"307 ms", c:""}],
+    badges: [],
     detail: { section: "Tool result", kv: {
       "For": "toolu_01X8…f3", "Duration": "307 ms", "Error": "false", "Lines": "296" },
       text: "  1  # Conversation Story — Getting Started Plan\n  2\n  3  ## Context\n  4  …" }
@@ -442,15 +442,23 @@ const EVENTS = [
   {
     kind: "tool_call", who: "Claude", time: "02:29:11",
     summary: "<b>Bash</b> <code>ruby -v && bundle exec rake test</code>",
-    badges: [{t:"Bash", c:""}, {t:"error", c:"err"}],
+    badges: [{t:"Exec", c:"tool"}, {t:"Error", c:"err"}],
     detail: { section: "Tool call — Bash", kv: {
       "Tool": "Bash", "use_id": "toolu_02Kd…9a", "Error": "true", "Exit": "1" },
       code: 'ruby -v && bundle exec rake test' }
   },
   {
+    kind: "tool_call", who: "Claude", time: "02:30:15",
+    summary: "<b>Write</b> <code>lib/conversation_story/parser.rb</code>",
+    badges: [{t:"Write", c:"tool"}],
+    detail: { section: "Tool call — Write", kv: {
+      "Tool": "Write", "use_id": "toolu_04Rm…c7", "file_path": "lib/conversation_story/parser.rb" },
+      code: 'require "json"\n\nmodule ConversationStory\n  class Parser\n    # …\n  end\nend' }
+  },
+  {
     kind: "subagent", who: "Explore", time: "02:31:40",
     summary: "<b>Agent</b> spawned <code>Explore</code> — “find every top-level event type in the example logs.”",
-    badges: [{t:"subagent", c:"agent"}, {t:"45,231 tok", c:"tok"}, {t:"12 tools", c:""}],
+    badges: [{t:"Subagent", c:"agent"}, {t:"45,231 tok", c:"tok"}, {t:"12 tools", c:"tok"}],
     detail: { section: "Subagent — Explore", kv: {
       "agent_id": "agent-ae2065…95e", "agent_type": "Explore",
       "spawned_by": "toolu_07Qz…b1",
@@ -460,7 +468,7 @@ const EVENTS = [
   {
     kind: "system", who: "system", time: "02:35:02",
     summary: "Stop hook summary — turn complete in 12.3s across 41 messages.",
-    badges: [{t:"hook", c:""}],
+    badges: [],
     detail: { section: "System event", kv: {
       "level": "info", "turn_duration": "12,340 ms", "message_count": "41",
       "prevented_continuation": "false" },
