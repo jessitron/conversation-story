@@ -4,8 +4,9 @@ Turn a Claude agent conversation log into an explorable, pretty static web page,
 so Jess can narrate "how a conversation went" while the page shows it accurately.
 
 Read `README.md` for the architecture and vision (the four "Mountains", constraints, limitations)
-and `notes/plan.md` for the current design — especially the **intermediate schema**
-and the settled **Decisions**. For the **page look & feel**, see
+and `notes/plan.md` for the current design — especially the settled **Decisions**.
+The **intermediate schema** (the `story.yaml` contract) has its own file,
+`notes/intermediate-schema.md`. For the **page look & feel**, see
 `design-prototype.html` (a static art-deco mockup with sample cards) and
 `notes/2026-07-20-session-2-design-prototype.md`; the ERB renderer should
 reproduce that design.
