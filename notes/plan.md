@@ -136,6 +136,13 @@ test/
   non-null `agent`; assert assistant messages carry named token fields
   (`tokens.input`/`tokens.output`); assert subagent events are present and tagged
   with their `agent:` id.
+- [ ] **TODO — deterministic HTML well-formedness check.** A missing or
+  mismatched closing tag in one card silently breaks the layout of the whole rest
+  of the page, and this is checkable deterministically. Add a check that fails on
+  unbalanced/missing tags, run over both `design-prototype.html` and every
+  generated page in `out/`. Options: pipe through `tidy -qe`, the Nu HTML Checker
+  (`vnu`), or parse the page as XHTML with stdlib `REXML` in a test. Prefer
+  something runnable in `rake test` without a heavy dependency.
 
 ## Decisions (settled with Jess)
 
