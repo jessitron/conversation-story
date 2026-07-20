@@ -1,0 +1,13 @@
+# fonts
+
+Headings: Tenor Sans
+Text: Sen
+Fixed: Cascadia Code
+
+# colors
+
+#A6142F graceful-red
+#0D1940 graceful-navy
+#3772A6 graceful-blue
+#F2CE1B graceful-yellow
+#F28444 graceful-orange
