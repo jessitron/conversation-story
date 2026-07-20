@@ -363,28 +363,32 @@ pre.code {
 }
 .token-grid .cell .v { font-family: var(--font-head); font-size: 18px; }
 
-/* Click-to-copy event-id chip (in the detail pane). Reads var(--kind) so its
-   hover accent matches the selected card's color. */
-.copy-ref {
-  display: inline-flex; align-items: center; gap: 10px;
-  background: var(--surface-raised);
-  border: 1px solid var(--line-strong); border-radius: 3px;
-  padding: 7px 11px; cursor: pointer; color: inherit;
-  transition: border-color .12s ease, background .12s ease;
+/* Event id — a quiet debugging handle in a footer at the very bottom of the
+   detail pane. Click to copy (assets/story.js). Understated by design: faint
+   mono text, no border; the "copy" hint and a subtle underline surface only on
+   hover/focus. */
+.d-footer {
+  margin-top: 4px; padding-top: 12px;
+  border-top: 1px solid var(--line);
 }
-.copy-ref:hover  { border-color: var(--kind, var(--gold)); background: var(--paper); }
-.copy-ref:active { transform: translateY(1px); }
-.copy-ref:focus-visible { outline: 2px solid var(--kind, var(--gold)); outline-offset: 2px; }
-.copy-ref code {
-  font-family: var(--font-mono); font-size: 13px; color: var(--red);
+.copy-ref {
+  display: inline-flex; align-items: baseline; gap: 7px;
+  background: none; border: 0; padding: 2px 0; cursor: pointer;
+  color: var(--ink-faint); font: inherit;
+}
+.copy-ref code { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); }
+.copy-ref:hover code, .copy-ref:focus-visible code {
+  color: var(--ink-soft); text-decoration: underline;
 }
 .copy-ref .copy-hint {
-  font-size: 10px; letter-spacing: 0.14em; color: var(--ink-faint);
+  font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-faint); opacity: 0; transition: opacity .12s ease;
 }
+.copy-ref:hover .copy-hint, .copy-ref:focus-visible .copy-hint { opacity: .75; }
+.copy-ref:focus-visible { outline: 1px dotted var(--ink-faint); outline-offset: 2px; }
 /* confirmation flash toggled by story.js */
-.copy-ref.copied { border-color: var(--olive); background: var(--paper); }
-.copy-ref.copied code { color: var(--olive); }
-.copy-ref.copied .copy-hint { color: var(--olive); }
+.copy-ref.copied code { color: var(--olive); text-decoration: none; }
+.copy-ref.copied .copy-hint { opacity: 1; color: var(--olive); }
 
 .empty-detail {
   margin: auto; text-align: center; color: var(--ink-faint);
