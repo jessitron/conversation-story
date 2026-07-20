@@ -6,7 +6,7 @@
 <title>Conversation Story — Design Prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Sen:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cascadia+Code:wght@400;600&family=Tenor+Sans&family=Sen:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   /* ============================================================
      Palette (from notes/fonts-and-colors.txt)
@@ -33,6 +33,7 @@
 
     --font-head: "Tenor Sans", "Sen", system-ui, sans-serif;
     --font-body: "Sen", system-ui, sans-serif;
+    --font-mono: "Cascadia Code", ui-monospace, "SF Mono", Menlo, monospace;
   }
 
   * { box-sizing: border-box; }
@@ -115,7 +116,7 @@
   .card {
     position: relative;
     display: grid;
-    grid-template-columns: 118px 1fr auto;
+    grid-template-columns: 118px 1fr;
     gap: 16px; align-items: baseline;
     background: var(--paper-2);
     border: 1px solid var(--line);
@@ -155,7 +156,7 @@
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
   }
   .card .body .summary code {
-    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-family: var(--font-mono);
     font-size: 0.86em; background: #EFE9DA; padding: 1px 5px; border-radius: 3px;
     color: var(--red);
   }
@@ -170,13 +171,6 @@
   .badge.err { border-color: var(--red); color: var(--red); background: #FBEBEE; }
   .badge.model { border-color: var(--line-strong); color: var(--ink-faint); }
   .badge.agent { border-color: var(--red); color: var(--red); }
-
-  .card .aside { text-align: right; white-space: nowrap; display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
-  .card .aside .time {
-    font-family: ui-monospace, "SF Mono", Menlo, monospace;
-    font-size: 12.5px; color: var(--ink-soft); font-variant-numeric: tabular-nums;
-  }
-  .card .aside .tz { font-size: 9px; letter-spacing: 0.14em; color: var(--ink-faint); }
 
   /* per-kind accent colors */
   .card.k-user       { --kind: var(--blue); }
@@ -222,7 +216,7 @@
     letter-spacing: 0.14em; font-size: 13px; color: var(--kind, var(--ink));
   }
   aside.detail .d-head .d-time {
-    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-family: var(--font-mono);
     font-size: 12px; color: var(--ink-faint);
   }
   aside.detail .d-head .close:first-of-type { margin-left: auto; }
@@ -250,12 +244,12 @@
   .kv dt { color: var(--ink-faint); }
   .kv dd { margin: 0; color: var(--ink); font-variant-numeric: tabular-nums; }
   .kv dd code, .mono {
-    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px;
+    font-family: var(--font-mono); font-size: 12px;
   }
   pre.code {
     margin: 0; background: var(--navy); color: #E9ECF5;
     border-radius: 3px; padding: 12px 14px; overflow-x: auto;
-    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px;
+    font-family: var(--font-mono); font-size: 12px;
     line-height: 1.55;
   }
   .token-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
@@ -423,8 +417,7 @@ EVENTS.forEach((ev, i) => {
     <div class="body">
       <div class="summary">${ev.summary}</div>
       ${ev.badges.length ? `<div class="badges">${ev.badges.map(b=>`<span class="badge ${b.c}">${b.t}</span>`).join('')}</div>` : ''}
-    </div>
-    <div class="aside"><span class="time">🕑 ${ev.time}</span><span class="tz">UTC</span></div>`;
+    </div>`;
   card.addEventListener('click', () => {
     if (card.classList.contains('active')) { clearSelection(); }
     else { selectCard(i); }
