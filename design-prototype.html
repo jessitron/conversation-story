@@ -4,32 +4,48 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Conversation Story — Design Prototype</title>
+<!-- Fonts via CDN for the prototype only; the real static build SELF-HOSTS these
+     (Tenor Sans / Sen / Cascadia Code). See notes/plan.md. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cascadia+Code:wght@400;600&family=Tenor+Sans&family=Sen:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   /* ============================================================
-     Palette (from notes/fonts-and-colors.txt)
+     Design tokens
+     ------------------------------------------------------------
+     Change the *shared concepts* here (palette, surfaces, the deco
+     label voice, the kind→color table below). One-off tuning numbers
+     (individual font sizes, letter-spacings) are left as literals at
+     their site on purpose — so a nudge in one place never leaks to five.
      ============================================================ */
   :root {
+    /* Brand palette (from notes/fonts-and-colors.txt) */
     --red:    #A6142F;   /* graceful-red    */
     --navy:   #0D1940;   /* graceful-navy   */
     --blue:   #3772A6;   /* graceful-blue   */
     --yellow: #F2CE1B;   /* graceful-yellow */
     --orange: #F28444;   /* graceful-orange */
+    --olive:  #7A8B3D;   /* derived accent — used for tool_result kind */
+
+    /* Navy as raw RGB components, so shadows can vary the alpha */
+    --navy-rgb: 13, 25, 64;
 
     /* Derived neutrals — warm "paper" deco feel */
-    --paper:      #F7F3EA;
-    --paper-2:    #FBF8F1;
+    --paper:      #F7F3EA;   /* page background            */
+    --paper-2:    #FBF8F1;   /* resting card surface       */
+    --surface-raised: #fff;  /* elevated / white surface   */
     --ink:        var(--navy);
     --ink-soft:   #47506E;
     --ink-faint:  #8A90A6;
     --line:       #E3DCCB;
     --line-strong:#C9BF9F;
     --gold:       #C9A227;
+    --code-bg:    #EFE9DA;   /* inline code chip in a summary */
+    --code-ink:   #E9ECF5;   /* code text on the navy pre block */
 
     --card-radius: 3px;
     --sidebar-w: 420px;
+    --gutter-w: 118px;       /* the card's fixed meta column */
 
     --font-head: "Tenor Sans", "Sen", system-ui, sans-serif;
     --font-body: "Sen", system-ui, sans-serif;
@@ -52,6 +68,12 @@
     line-height: 1.5;
   }
 
+  /* The deco label voice: Tenor Sans, small-caps-y uppercase. Shared by every
+     heading-flavored label. Each site still sets its own size / color /
+     letter-spacing (local tuning); this only centralizes the font + casing,
+     so restyling "the deco voice" is one edit. */
+  .deco { font-family: var(--font-head); text-transform: uppercase; }
+
   /* ============================================================
      Header
      ============================================================ */
@@ -61,7 +83,7 @@
     background: var(--navy);
     color: var(--paper);
     border-bottom: 3px solid var(--gold);
-    box-shadow: 0 2px 0 rgba(13,25,64,0.25), 0 6px 18px rgba(13,25,64,0.18);
+    box-shadow: 0 2px 0 rgba(var(--navy-rgb), .25), 0 6px 18px rgba(var(--navy-rgb), .18);
   }
   header.site .logo {
     width: 52px; height: 52px; flex: 0 0 auto;
@@ -70,9 +92,8 @@
   }
   header.site .titles { display: flex; flex-direction: column; gap: 2px; }
   header.site h1 {
-    font-family: var(--font-head);
     font-weight: 400; font-size: 22px; margin: 0;
-    letter-spacing: 0.14em; text-transform: uppercase;
+    letter-spacing: 0.14em;
   }
   header.site .subtitle {
     font-size: 12.5px; letter-spacing: 0.18em; text-transform: uppercase;
@@ -103,8 +124,7 @@
     transition: margin-right .18s ease;
   }
   .timeline .rail-label {
-    font-family: var(--font-head);
-    text-transform: uppercase; letter-spacing: 0.22em;
+    letter-spacing: 0.22em;
     font-size: 12px; color: var(--ink-faint);
     margin: 0 0 18px 2px;
     display: flex; align-items: center; gap: 12px;
@@ -115,12 +135,17 @@
   }
 
   /* ============================================================
-     Event cards
+     Event cards — shared anatomy
+     ------------------------------------------------------------
+     One <article class="card k-KIND"> per event. In the ERB build this whole
+     block is the event-card partial, and the <template class="detail"> it
+     carries is the drill-in partial. Per-kind color lives in the kind→color
+     table below; per-kind treatment (layout, elevation) follows that.
      ============================================================ */
   .card {
     position: relative;
     display: grid;
-    grid-template-columns: 118px 1fr;
+    grid-template-columns: var(--gutter-w) 1fr;
     gap: 16px; align-items: baseline;
     background: var(--paper-2);
     border: 1px solid var(--line);
@@ -157,8 +182,7 @@
   }
   .card .gutter .kind {
     display: inline-block;
-    font-family: var(--font-head);
-    text-transform: uppercase; letter-spacing: 0.12em;
+    letter-spacing: 0.12em;
     font-size: 10.5px; color: var(--kind, var(--ink-soft));
     margin-bottom: 3px;
   }
@@ -172,7 +196,7 @@
   }
   .card .body .summary code {
     font-family: var(--font-mono);
-    font-size: 0.86em; background: #EFE9DA; padding: 1px 5px; border-radius: 3px;
+    font-size: 0.86em; background: var(--code-bg); padding: 1px 5px; border-radius: 3px;
     color: var(--red);
   }
   .card .body .badges { margin-top: 7px; display: flex; gap: 6px; flex-wrap: wrap; }
@@ -180,23 +204,34 @@
     font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
     padding: 2px 7px; border-radius: 2px;
     border: 1px solid var(--line-strong); color: var(--ink-soft);
-    background: #fff;
+    background: var(--surface-raised);
   }
   .badge.tool  { border-color: var(--navy); color: var(--navy); }
   .badge.tok   { border-color: var(--blue); color: var(--blue); }
   .badge.err   { border-color: var(--red); color: #fff; background: var(--red); }
   .badge.agent { border-color: var(--red); color: var(--red); }
 
-  /* per-kind accent colors */
+  /* ---- kind → color table ----
+     The single place to recolor a kind. Every card reads var(--kind); these
+     seven rules are the only assignments of it. Defined ABOVE the per-kind
+     treatment so the color is set before any rule consumes it. */
   .card.k-user       { --kind: var(--blue); }
+  .card.k-assistant  { --kind: var(--navy); }
+  .card.k-thinking   { --kind: var(--orange); }
+  .card.k-tool_call  { --kind: var(--gold); }
+  .card.k-tool_result{ --kind: var(--olive); }
+  .card.k-subagent   { --kind: var(--red); }
+  .card.k-system     { --kind: var(--ink-faint); }
+
+  /* ---- per-kind treatment ---- */
 
   /* User messages come from "the other side" — right-align them like a chat. */
   .card.k-user {
-    grid-template-columns: 1fr 118px;
+    grid-template-columns: 1fr var(--gutter-w);
     margin-left: 15%;
     border-left: 1px solid var(--line);
     border-right: 4px solid var(--kind);
-    background: #fff;
+    background: var(--surface-raised);
     text-align: right;
   }
   .card.k-user .gutter { order: 2; }
@@ -209,9 +244,9 @@
   /* Assistant → the user: the headline of the conversation. Make it stand out. */
   .card.k-assistant {
     border-left-width: 5px;
-    background: #fff;
+    background: var(--surface-raised);
     padding: 18px 22px;
-    box-shadow: -2px 3px 0 rgba(13,25,64,0.06), 0 5px 18px rgba(13,25,64,0.09);
+    box-shadow: -2px 3px 0 rgba(var(--navy-rgb), .06), 0 5px 18px rgba(var(--navy-rgb), .09);
   }
   .card.k-assistant .gutter .kind { color: var(--navy); }
   .card.k-assistant .body .summary {
@@ -222,7 +257,7 @@
   /* keep the kind-colored active shadow (its own resting shadow would otherwise
      win on specificity/order), layered over its soft elevation */
   .card.k-assistant.active {
-    box-shadow: -3px 4px 0 var(--kind), 0 5px 18px rgba(13,25,64,0.09);
+    box-shadow: -3px 4px 0 var(--kind), 0 5px 18px rgba(var(--navy-rgb), .09);
   }
 
   /* Background machinery: present, but quieter than the conversation. */
@@ -244,12 +279,6 @@
   .card.k-system .body .summary {
     font-size: 13px; color: var(--ink-soft);
   }
-  .card.k-assistant  { --kind: var(--navy); }
-  .card.k-thinking   { --kind: var(--orange); }
-  .card.k-tool_call  { --kind: var(--gold); }
-  .card.k-tool_result{ --kind: #7A8B3D; }
-  .card.k-subagent   { --kind: var(--red); }
-  .card.k-system     { --kind: var(--ink-faint); }
 
   /* ============================================================
      Sidebar (detail) — collapsible + drag-resizable
@@ -261,7 +290,7 @@
     flex: 0 0 var(--sidebar-w);
     background: var(--paper-2);
     border-left: 1px solid var(--kind, var(--line-strong));
-    box-shadow: -8px 0 24px rgba(13,25,64,0.06);
+    box-shadow: -8px 0 24px rgba(var(--navy-rgb), .06);
     transition: border-color .15s ease;
     display: flex; flex-direction: column;
     overflow: hidden;
@@ -280,10 +309,9 @@
     display: flex; align-items: center; gap: 10px;
     padding: 14px 16px;
     border-bottom: 2px solid var(--kind, var(--gold));
-    background: #fff;
+    background: var(--surface-raised);
   }
   aside.detail .d-head .kind {
-    font-family: var(--font-head); text-transform: uppercase;
     letter-spacing: 0.14em; font-size: 13px; color: var(--kind, var(--ink));
   }
   aside.detail .d-head .d-time {
@@ -291,7 +319,7 @@
     font-size: 12px; color: var(--ink-faint);
   }
   aside.detail .d-head .close:first-of-type { margin-left: auto; }
-  aside.detail .d-head .close { border: 1px solid var(--line-strong); background: #fff;
+  aside.detail .d-head .close { border: 1px solid var(--line-strong); background: var(--surface-raised);
     color: var(--ink-soft); width: 26px; height: 26px; border-radius: 2px;
     cursor: pointer; font-size: 15px; line-height: 1;
   }
@@ -301,14 +329,14 @@
 
   .d-section { margin: 0 0 20px; }
   .d-section > h4 {
-    font-family: var(--font-head); font-weight: 400;
-    text-transform: uppercase; letter-spacing: 0.16em; font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.16em; font-size: 11px;
     color: var(--ink-faint); margin: 0 0 8px;
     padding-bottom: 5px; border-bottom: 1px solid var(--line);
   }
   .d-text {
     white-space: pre-wrap; font-size: 14px; line-height: 1.6;
-    background: #fff; border: 1px solid var(--line);
+    background: var(--surface-raised); border: 1px solid var(--line);
     border-radius: 3px; padding: 12px 14px;
   }
   .kv { display: grid; grid-template-columns: 130px 1fr; gap: 4px 14px; font-size: 13px; }
@@ -318,14 +346,14 @@
     font-family: var(--font-mono); font-size: 12px;
   }
   pre.code {
-    margin: 0; background: var(--navy); color: #E9ECF5;
+    margin: 0; background: var(--navy); color: var(--code-ink);
     border-radius: 3px; padding: 12px 14px; overflow-x: auto;
     font-family: var(--font-mono); font-size: 12px;
     line-height: 1.55;
   }
   .token-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .token-grid .cell {
-    background: #fff; border: 1px solid var(--line); border-radius: 3px;
+    background: var(--surface-raised); border: 1px solid var(--line); border-radius: 3px;
     padding: 8px 10px;
   }
   .token-grid .cell .k {
@@ -346,7 +374,7 @@
     writing-mode: vertical-rl;
     background: var(--navy); color: var(--paper);
     padding: 14px 8px; border: none; border-radius: 3px 0 0 3px;
-    font-family: var(--font-head); letter-spacing: 0.16em; text-transform: uppercase;
+    letter-spacing: 0.16em;
     font-size: 11px; cursor: pointer;
   }
   body.sidebar-collapsed .reopen { display: block; }
@@ -357,7 +385,7 @@
 <header class="site">
   <img class="logo" src="images/logo.png" alt="Graceful Developer logo">
   <div class="titles">
-    <h1>Conversation Story</h1>
+    <h1 class="deco">Conversation Story</h1>
     <span class="subtitle">episode&nbsp;8 · before</span>
   </div>
   <div class="meta">
@@ -370,14 +398,340 @@
 
 <div class="shell">
   <main class="timeline">
-    <p class="rail-label">claude code</p>
-    <div id="cards"><!-- cards injected by JS --></div>
+    <p class="rail-label deco">claude code</p>
+
+    <!-- ============================================================
+         Event cards — static HTML, one <article> per event.
+         Sample events (one per kind) shaped like the intermediate schema
+         (see notes/plan.md). Each card carries its drill-in markup in a
+         <template class="detail">; JS clones it into the sidebar on click.
+         Detail rendering is deliberately generic here; per-kind detail
+         views come later. Provenance values are placeholder.
+         ============================================================ -->
+    <div id="cards">
+
+      <!-- user -->
+      <article class="card k-user" data-time="02:27:16">
+        <div class="gutter">
+          <span class="kind deco">User</span>
+          <span class="who">Jess</span>
+        </div>
+        <div class="body">
+          <div class="summary">Let's design the intermediate schema on paper first, before writing any Ruby.</div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">Message</h4>
+            <div class="d-text">Let's design the intermediate schema on paper first, before writing any Ruby.
+
+I want to get the shape right so the renderer only ever reads the schema, never the original log.</div>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>42</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+        </template>
+      </article>
+
+      <!-- thinking -->
+      <article class="card k-thinking" data-time="02:27:18">
+        <div class="gutter">
+          <span class="kind deco">Thinking</span>
+          <span class="who">assistant</span>
+        </div>
+        <div class="body">
+          <div class="summary">The user wants a paper-first schema. I should enumerate the observed event types and fold in the required fields…</div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">Reasoning</h4>
+            <div class="d-text">The user wants a paper-first schema. Let me enumerate the observed top-level types (user, assistant, system, attachment…) and make sure every required field is folded in: tokens, provenance, queued status, linking data, per-event agent identity, wall-clock time.</div>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>59</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+        </template>
+      </article>
+
+      <!-- assistant -->
+      <article class="card k-assistant" data-time="02:27:24">
+        <div class="gutter">
+          <span class="kind deco">Assistant</span>
+          <span class="who">Claude</span>
+        </div>
+        <div class="body">
+          <div class="summary">Here's a proposed schema: one ordered list of events, each with a tiny summary and a detail payload. Unknown records fall back to a generic event so nothing is dropped.</div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">Message</h4>
+            <div class="d-text">Here's a proposed schema: one ordered list of events, each with a tiny `summary` (default view) and a `detail` payload (drill-in). Everything in the log is representable; unknown records fall back to a generic event so nothing is dropped.</div>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Tokens</h4>
+            <div class="token-grid">
+              <div class="cell"><div class="k">input</div><div class="v">3</div></div>
+              <div class="cell"><div class="k">output</div><div class="v">322</div></div>
+              <div class="cell"><div class="k">cache creation</div><div class="v">10,619</div></div>
+              <div class="cell"><div class="k">cache read</div><div class="v">13,834</div></div>
+            </div>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Turn</h4>
+            <dl class="kv"><dt>stop_reason</dt><dd><code>end_turn</code></dd></dl>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>76</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+        </template>
+      </article>
+
+      <!-- tool_call — Read -->
+      <article class="card k-tool_call" data-time="02:28:02">
+        <div class="gutter">
+          <span class="kind deco">Tool Call</span>
+          <span class="who">Claude</span>
+        </div>
+        <div class="body">
+          <div class="summary"><b>Read</b> <code>notes/plan.md</code></div>
+          <div class="badges"><span class="badge tool">Read</span></div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">Tool call — Read</h4>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Fields</h4>
+            <dl class="kv">
+              <dt>Tool</dt><dd><code>Read</code></dd>
+              <dt>use_id</dt><dd><code>toolu_01X8…f3</code></dd>
+              <dt>file_path</dt><dd><code>notes/plan.md</code></dd>
+            </dl>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Input</h4>
+            <pre class="code">{
+  "file_path": "notes/plan.md"
+}</pre>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>93</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+        </template>
+      </article>
+
+      <!-- tool_result -->
+      <article class="card k-tool_result" data-time="02:28:02">
+        <div class="gutter">
+          <span class="kind deco">Tool Result</span>
+          <span class="who">system</span>
+        </div>
+        <div class="body">
+          <div class="summary">Read 296 lines from <code>notes/plan.md</code> (12.4 KB).</div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">Tool result</h4>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Fields</h4>
+            <dl class="kv">
+              <dt>For</dt><dd><code>toolu_01X8…f3</code></dd>
+              <dt>Duration</dt><dd><code>307 ms</code></dd>
+              <dt>Error</dt><dd><code>false</code></dd>
+              <dt>Lines</dt><dd><code>296</code></dd>
+            </dl>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>110</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+        </template>
+      </article>
+
+      <!-- tool_call — Bash (failed) -->
+      <article class="card k-tool_call" data-time="02:29:11">
+        <div class="gutter">
+          <span class="kind deco">Tool Call</span>
+          <span class="who">Claude</span>
+        </div>
+        <div class="body">
+          <div class="summary"><b>Bash</b> <code>ruby -v && bundle exec rake test</code></div>
+          <div class="badges"><span class="badge tool">Exec</span><span class="badge err">Error</span></div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">Tool call — Bash</h4>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Fields</h4>
+            <dl class="kv">
+              <dt>Tool</dt><dd><code>Bash</code></dd>
+              <dt>use_id</dt><dd><code>toolu_02Kd…9a</code></dd>
+              <dt>Error</dt><dd><code>true</code></dd>
+              <dt>Exit</dt><dd><code>1</code></dd>
+            </dl>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Input</h4>
+            <pre class="code">ruby -v && bundle exec rake test</pre>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>127</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+        </template>
+      </article>
+
+      <!-- tool_call — Write -->
+      <article class="card k-tool_call" data-time="02:30:15">
+        <div class="gutter">
+          <span class="kind deco">Tool Call</span>
+          <span class="who">Claude</span>
+        </div>
+        <div class="body">
+          <div class="summary"><b>Write</b> <code>lib/conversation_story/parser.rb</code></div>
+          <div class="badges"><span class="badge tool">Write</span></div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">Tool call — Write</h4>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Fields</h4>
+            <dl class="kv">
+              <dt>Tool</dt><dd><code>Write</code></dd>
+              <dt>use_id</dt><dd><code>toolu_04Rm…c7</code></dd>
+              <dt>file_path</dt><dd><code>lib/conversation_story/parser.rb</code></dd>
+            </dl>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Input</h4>
+            <pre class="code">require "json"
+
+module ConversationStory
+  class Parser
+    # …
+  end
+end</pre>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>144</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+        </template>
+      </article>
+
+      <!-- subagent -->
+      <article class="card k-subagent" data-time="02:31:40">
+        <div class="gutter">
+          <span class="kind deco">Subagent</span>
+          <span class="who">Explore</span>
+        </div>
+        <div class="body">
+          <div class="summary"><b>Agent</b> spawned <code>Explore</code> — “find every top-level event type in the example logs.”</div>
+          <div class="badges"><span class="badge agent">Subagent</span><span class="badge tok">45,231 tok</span><span class="badge tok">12 tools</span></div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">Subagent — Explore</h4>
+            <div class="d-text">Description: “Explore the example logs and enumerate every distinct top-level event `type` value, with counts.”
+
+→ opens its own nested story (same document shape, recursively).</div>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Fields</h4>
+            <dl class="kv">
+              <dt>agent_id</dt><dd><code>agent-ae2065…95e</code></dd>
+              <dt>agent_type</dt><dd><code>Explore</code></dd>
+              <dt>spawned_by</dt><dd><code>toolu_07Qz…b1</code></dd>
+              <dt>total_tokens</dt><dd><code>45,231</code></dd>
+              <dt>tool_uses</dt><dd><code>12</code></dd>
+            </dl>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>161</code></dd>
+              <dt>agent</dt><dd><code>agent-ae2065…95e</code></dd>
+            </dl>
+          </div>
+        </template>
+      </article>
+
+      <!-- system -->
+      <article class="card k-system" data-time="02:35:02">
+        <div class="gutter">
+          <span class="kind deco">System</span>
+          <span class="who">system</span>
+        </div>
+        <div class="body">
+          <div class="summary">Stop hook summary — turn complete in 12.3s across 41 messages.</div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">System event</h4>
+            <div class="d-text">stop_hook_summary — deferred to a later version (hooks). Shown here as summary-only for now.</div>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Fields</h4>
+            <dl class="kv">
+              <dt>level</dt><dd><code>info</code></dd>
+              <dt>turn_duration</dt><dd><code>12,340 ms</code></dd>
+              <dt>message_count</dt><dd><code>41</code></dd>
+              <dt>prevented_continuation</dt><dd><code>false</code></dd>
+            </dl>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>178</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+        </template>
+      </article>
+
+    </div>
   </main>
 
   <aside class="detail" id="sidebar">
     <div class="resizer" id="resizer"></div>
     <div class="d-head">
-      <span class="kind" id="d-kind">Detail</span>
+      <span class="kind deco" id="d-kind">Detail</span>
       <span class="d-time" id="d-time"></span>
       <button class="close" id="d-clear" title="Clear selection">◇</button>
       <button class="close" id="d-close" title="Collapse sidebar">×</button>
@@ -391,186 +745,54 @@
   </aside>
 </div>
 
-<button class="reopen" id="reopen">Details</button>
+<button class="reopen deco" id="reopen">Details</button>
 
 <script>
 /* ------------------------------------------------------------------
-   Sample events — one per kind, shaped like the intermediate schema
-   (see notes/plan.md). Detail rendering is deliberately generic here;
-   per-kind detail views come later.
+   Interactivity ONLY. The cards and their detail payloads are static
+   HTML above (each card owns a <template class="detail">); this script
+   just wires up selection, collapse/reopen, and drag-to-resize. It reads
+   everything it shows from the DOM — no event data lives here.
 ------------------------------------------------------------------ */
-const EVENTS = [
-  {
-    kind: "user", who: "Jess", time: "02:27:16",
-    summary: "Let's design the intermediate schema on paper first, before writing any Ruby.",
-    badges: [],
-    detail: { section: "Message", text:
-      "Let's design the intermediate schema on paper first, before writing any Ruby.\n\nI want to get the shape right so the renderer only ever reads the schema, never the original log." }
-  },
-  {
-    kind: "thinking", who: "assistant", time: "02:27:18",
-    summary: "The user wants a paper-first schema. I should enumerate the observed event types and fold in the required fields…",
-    badges: [],
-    detail: { section: "Reasoning", text:
-      "The user wants a paper-first schema. Let me enumerate the observed top-level types (user, assistant, system, attachment…) and make sure every required field is folded in: tokens, provenance, queued status, linking data, per-event agent identity, wall-clock time." }
-  },
-  {
-    kind: "assistant", who: "Claude", time: "02:27:24", model: "opus-4-6",
-    summary: "Here's a proposed schema: one ordered list of events, each with a tiny summary and a detail payload. Unknown records fall back to a generic event so nothing is dropped.",
-    badges: [],
-    detail: { section: "Message", text:
-      "Here's a proposed schema: one ordered list of events, each with a tiny `summary` (default view) and a `detail` payload (drill-in). Everything in the log is representable; unknown records fall back to a generic event so nothing is dropped.",
-      tokens: {input:3, output:322, cache_creation:10619, cache_read:13834},
-      stop_reason: "end_turn" }
-  },
-  {
-    kind: "tool_call", who: "Claude", time: "02:28:02",
-    summary: "<b>Read</b> <code>notes/plan.md</code>",
-    badges: [{t:"Read", c:"tool"}],
-    detail: { section: "Tool call — Read", kv: {
-      "Tool": "Read", "use_id": "toolu_01X8…f3", "file_path": "notes/plan.md" },
-      code: '{\n  "file_path": "notes/plan.md"\n}' }
-  },
-  {
-    kind: "tool_result", who: "system", time: "02:28:02",
-    summary: "Read 296 lines from <code>notes/plan.md</code> (12.4 KB).",
-    badges: [],
-    detail: { section: "Tool result", kv: {
-      "For": "toolu_01X8…f3", "Duration": "307 ms", "Error": "false", "Lines": "296" },
-      text: "  1  # Conversation Story — Getting Started Plan\n  2\n  3  ## Context\n  4  …" }
-  },
-  {
-    kind: "tool_call", who: "Claude", time: "02:29:11",
-    summary: "<b>Bash</b> <code>ruby -v && bundle exec rake test</code>",
-    badges: [{t:"Exec", c:"tool"}, {t:"Error", c:"err"}],
-    detail: { section: "Tool call — Bash", kv: {
-      "Tool": "Bash", "use_id": "toolu_02Kd…9a", "Error": "true", "Exit": "1" },
-      code: 'ruby -v && bundle exec rake test' }
-  },
-  {
-    kind: "tool_call", who: "Claude", time: "02:30:15",
-    summary: "<b>Write</b> <code>lib/conversation_story/parser.rb</code>",
-    badges: [{t:"Write", c:"tool"}],
-    detail: { section: "Tool call — Write", kv: {
-      "Tool": "Write", "use_id": "toolu_04Rm…c7", "file_path": "lib/conversation_story/parser.rb" },
-      code: 'require "json"\n\nmodule ConversationStory\n  class Parser\n    # …\n  end\nend' }
-  },
-  {
-    kind: "subagent", who: "Explore", time: "02:31:40",
-    summary: "<b>Agent</b> spawned <code>Explore</code> — “find every top-level event type in the example logs.”",
-    badges: [{t:"Subagent", c:"agent"}, {t:"45,231 tok", c:"tok"}, {t:"12 tools", c:"tok"}],
-    detail: { section: "Subagent — Explore", kv: {
-      "agent_id": "agent-ae2065…95e", "agent_type": "Explore",
-      "spawned_by": "toolu_07Qz…b1",
-      "total_tokens": "45,231", "tool_uses": "12" },
-      text: "Description: “Explore the example logs and enumerate every distinct top-level event `type` value, with counts.”\n\n→ opens its own nested story (same document shape, recursively)." }
-  },
-  {
-    kind: "system", who: "system", time: "02:35:02",
-    summary: "Stop hook summary — turn complete in 12.3s across 41 messages.",
-    badges: [],
-    detail: { section: "System event", kv: {
-      "level": "info", "turn_duration": "12,340 ms", "message_count": "41",
-      "prevented_continuation": "false" },
-      text: "stop_hook_summary — deferred to a later version (hooks). Shown here as summary-only for now." }
-  },
-];
-
-const KIND_LABEL = {
-  user: "User", assistant: "Assistant", thinking: "Thinking",
-  tool_call: "Tool Call", tool_result: "Tool Result",
-  subagent: "Subagent", system: "System"
-};
-
-/* ---- render cards ---- */
-const cardsEl = document.getElementById('cards');
-EVENTS.forEach((ev, i) => {
-  const card = document.createElement('article');
-  card.className = `card k-${ev.kind}`;
-  card.dataset.i = i;
-  card.innerHTML = `
-    <div class="gutter">
-      <span class="kind">${KIND_LABEL[ev.kind]}</span>
-      <span class="who">${ev.who}</span>
-    </div>
-    <div class="body">
-      <div class="summary">${ev.summary}</div>
-      ${ev.badges.length ? `<div class="badges">${ev.badges.map(b=>`<span class="badge ${b.c}">${b.t}</span>`).join('')}</div>` : ''}
-    </div>`;
-  card.addEventListener('click', () => {
-    if (card.classList.contains('active')) { clearSelection(); }
-    else { selectCard(i); }
-  });
-  cardsEl.appendChild(card);
-});
-
-/* ---- detail rendering ---- */
-const body = document.body;
+const body    = document.body;
 const sidebar = document.getElementById('sidebar');
-const dKind = document.getElementById('d-kind');
-const dTime = document.getElementById('d-time');
-const dBody = document.getElementById('d-body');
+const dKind   = document.getElementById('d-kind');
+const dTime   = document.getElementById('d-time');
+const dBody   = document.getElementById('d-body');
+const cards   = document.querySelectorAll('.card');
 
-function selectCard(i) {
-  document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-  const card = document.querySelector(`.card[data-i="${i}"]`);
+/* the empty-state markup that ships in the sidebar; restored on clear */
+const EMPTY_HTML = dBody.innerHTML;
+
+function selectCard(card) {
+  cards.forEach(c => c.classList.remove('active'));
   card.classList.add('active');
-  const ev = EVENTS[i];
 
   body.classList.remove('sidebar-collapsed');
-  dKind.textContent = KIND_LABEL[ev.kind];
-  dTime.textContent = ev.time + ' UTC';
+  dKind.textContent = card.querySelector('.gutter .kind').textContent;
+  dTime.textContent = card.dataset.time + ' UTC';
   sidebar.style.setProperty('--kind', getComputedStyle(card).getPropertyValue('--kind'));
 
-  const d = ev.detail;
-  let html = '';
-  html += `<div class="d-section"><h4>${d.section}</h4>`;
-  if (d.text)  html += `<div class="d-text">${escapeHtml(d.text)}</div>`;
-  html += `</div>`;
-
-  if (d.kv) {
-    html += `<div class="d-section"><h4>Fields</h4><dl class="kv">`;
-    for (const [k,v] of Object.entries(d.kv)) html += `<dt>${k}</dt><dd><code>${v}</code></dd>`;
-    html += `</dl></div>`;
-  }
-  if (d.tokens) {
-    html += `<div class="d-section"><h4>Tokens</h4><div class="token-grid">`;
-    for (const [k,v] of Object.entries(d.tokens))
-      html += `<div class="cell"><div class="k">${k.replace(/_/g,' ')}</div><div class="v">${v.toLocaleString()}</div></div>`;
-    html += `</div></div>`;
-  }
-  if (d.stop_reason) {
-    html += `<div class="d-section"><h4>Turn</h4><dl class="kv"><dt>stop_reason</dt><dd><code>${d.stop_reason}</code></dd></dl></div>`;
-  }
-  if (d.code) {
-    html += `<div class="d-section"><h4>Input</h4><pre class="code">${escapeHtml(d.code)}</pre></div>`;
-  }
-  html += `<div class="d-section"><h4>Provenance</h4><dl class="kv">
-    <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
-    <dt>source.line</dt><dd><code>${42 + i*17}</code></dd>
-    <dt>agent</dt><dd><code>${ev.kind==='subagent'?'agent-ae2065…95e':'main'}</code></dd>
-  </dl></div>`;
-
-  dBody.innerHTML = html;
+  dBody.replaceChildren(card.querySelector('template.detail').content.cloneNode(true));
   dBody.scrollTop = 0;
 }
 
-function escapeHtml(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
-
-const EMPTY_HTML = `<div class="empty-detail">
-    <div class="mark">❖</div>
-    <p>Select an event to see its details.</p>
-  </div>`;
-
 /* deselect any card but keep the sidebar open and empty */
 function clearSelection() {
-  document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+  cards.forEach(c => c.classList.remove('active'));
   body.classList.remove('sidebar-collapsed');
   dKind.textContent = 'Detail';
   dTime.textContent = '';
   sidebar.style.setProperty('--kind', 'var(--line-strong)');
   dBody.innerHTML = EMPTY_HTML;
 }
+
+cards.forEach(card => {
+  card.addEventListener('click', () => {
+    if (card.classList.contains('active')) clearSelection();
+    else selectCard(card);
+  });
+});
 
 /* ---- collapse / reopen / clear ---- */
 document.getElementById('d-close').addEventListener('click', () => body.classList.add('sidebar-collapsed'));
@@ -589,7 +811,7 @@ window.addEventListener('mousemove', e => {
 window.addEventListener('mouseup', () => { dragging = false; body.classList.remove('resizing'); });
 
 /* open the first assistant message by default so the page is never empty */
-selectCard(2);
+selectCard(document.querySelector('.card.k-assistant'));
 </script>
 </body>
 </html>
