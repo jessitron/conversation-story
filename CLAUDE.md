@@ -3,23 +3,22 @@
 Turn a Claude agent conversation log into an explorable, pretty static web page,
 so Jess can narrate "how a conversation went" while the page shows it accurately.
 
-Read `README.md` for the architecture and  vision (the four "Mountains", constraints, limitations)
+Read `README.md` for the architecture and vision (the four "Mountains", constraints, limitations)
 and `notes/plan.md` for the current design — especially the **intermediate schema**
-and the settled **Decisions**.
-
+and the settled **Decisions**. For the **page look & feel**, see
+`design-prototype.html` (a static art-deco mockup with sample cards) and
+`notes/2026-07-20-session-2-design-prototype.md`; the ERB renderer should
+reproduce that design.
 
 ## Conventions
 
 - **Ruby**, managed via rbenv/asdf (`.ruby-version`). **Stdlib-first**
   (`json`, `yaml`, `erb`); only dev dep is `minitest`. No Rails.
-- **The schema is the contract.** Known event kinds store only *named* fields —
+- **The schema is the contract.** Known event kinds store only _named_ fields —
   no raw source-JSON blob, and the renderer reads the schema, never the original
-  log. Anything to be displayed must first be promoted to a named field. The
-  human escape hatch is provenance: every event has `source: {file, line}` into
-  the committed source logs. Only the `unknown` fallback kind keeps `raw`, so
+  log. Only the `unknown` fallback kind keeps `raw`, so
   unrecognized record types aren't silently lost (a README constraint).
-- **`examples/` are golden fixtures.** Test the parser against both
-  `episode-8-before` and `episode-8-after`.
+- **`examples/` are golden fixtures.** Test the parser against every conversation log in there.
 - **`out/` is committed** (not gitignored); examples ship with the repo and can
   be pushed to `gh-pages` when Jess chooses.
 - **`notes/`** holds design docs and session notes, tracked in git so they follow
@@ -27,6 +26,9 @@ and the settled **Decisions**.
 
 ## Status
 
-Planning / schema-design phase. No app code yet. Next step per `notes/plan.md`:
-the parser skeleton + golden-fixture test, building Mountain 1 (every event as an
-identical card) end-to-end first.
+Schema designed and **page design prototyped** (`design-prototype.html`). No app
+code yet. Next step per `notes/plan.md`: the parser skeleton + golden-fixture test,
+building Mountain 1 (every event as an identical card) end-to-end first.
+
+When building the renderer, reproduce `design-prototype.html` and **self-host the
+fonts** (Tenor Sans / Sen / Cascadia Code — the prototype uses a CDN).
