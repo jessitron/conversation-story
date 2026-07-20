@@ -49,6 +49,13 @@ program's source changes — not just when `story.yaml` is stale).
   the design's CSS kind class and escapes all content.
 - `bin/render` copies `assets/` **and** `images/` next to the pages; pages link
   them with relative `../assets/…` / `../images/…`.
+- **Hidden events**: the parser flags harness-bookkeeping records with
+  `hidden: true` (still emitted, so `event_count` == line count); the renderer
+  skips them and its "events" stat counts only visible ones. episode-8-before:
+  224 → 118 visible / 106 hidden. Hidden set + the deliberately-kept-visible set
+  (all `queue_operation`s incl. dequeue/remove markers, `queued_command`,
+  `task_reminder`) live in `parser.rb`'s `HIDDEN_*` constants and are explained
+  in `notes/2026-07-20-session-6-hidden-events.md`.
 
 Run things with `rake parse` / `render` / `build` / `serve` / `test` (all
 examples by default; `LOG=`/`PORT=` env vars to scope). See README.md.
