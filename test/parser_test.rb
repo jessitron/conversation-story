@@ -58,9 +58,11 @@ class ParserTest < Minitest::Test
     define_method("test_#{name}_renders_copyable_event_id") do
       doc  = ConversationStory::Parser.new(log).to_document
       html = ConversationStory::Renderer.new(doc).to_html
-      assert_equal doc["events"].size, html.scan(/class="copy-ref"/).size,
-                   "expected one copy-ref chip per event"
-      assert_includes html, %(data-copy="#{name}:1")
+      visible = doc["events"].reject { |e| e["hidden"] }
+      assert_equal visible.size, html.scan(/class="copy-ref"/).size,
+                   "expected one copy-ref chip per visible event"
+      assert_includes html, %(data-copy="#{visible.first["ref"]}"),
+                       "first visible event's ref should be copyable"
     end
 
     define_method("test_#{name}_assistant_turns_carry_named_tokens") do
@@ -99,14 +101,19 @@ class ParserTest < Minitest::Test
       assert_equal doc, reloaded, "story.yaml must round-trip under safe_load"
     end
 
-    define_method("test_#{name}_renders_one_card_per_event") do
+    define_method("test_#{name}_renders_one_card_per_visible_event") do
       doc  = ConversationStory::Parser.new(log).to_document
       html = ConversationStory::Renderer.new(doc).to_html
+      visible = doc["events"].reject { |e| e["hidden"] }
 
-      assert_equal doc["events"].size, html.scan(/class="card /).size,
-                   "expected one card per event"
-      assert_includes html, "event-#{doc["events"].size}",
-                       "expected sequential event anchors"
+      # Hidden (harness-bookkeeping) events are parsed but not rendered, so the
+      # page shows one card per VISIBLE event, numbered 1..visible.size.
+      assert_operator visible.size, :<, doc["events"].size,
+                      "expected some events to be hidden"
+      assert_equal visible.size, html.scan(/class="card /).size,
+                   "expected one card per visible event"
+      assert_includes html, "event-#{visible.size}",
+                       "expected sequential event anchors over visible events"
       # the JS defaults selection to a .k-assistant card; make sure one exists
       assert_includes html, "card k-assistant"
     end

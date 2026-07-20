@@ -76,7 +76,7 @@ module ConversationStory
       render(page_template,
              title:         h(@meta["name"]),
              subtitle:      h(subtitle),
-             events_stat:   h(@meta["event_count"] || @events.size),
+             events_stat:   h(visible_events.size),
              duration_stat: h(duration),
              model_stat:    h(model_label(@meta["model"])),
              branch_stat:   h(@meta["git_branch"] || "—"),
@@ -85,8 +85,17 @@ module ConversationStory
 
     private
 
+    # Events the page actually shows: harness-bookkeeping events are parsed and
+    # kept in the document (so nothing is lost and provenance stays exact) but
+    # carry `hidden: true`; the story page is the conversation from Jess's
+    # perspective, so we drop them here. Card numbering runs over the visible
+    # sequence, keeping #event-N anchors dense and 1-based.
+    def visible_events
+      @visible_events ||= @events.reject { |e| e["hidden"] }
+    end
+
     def cards_html
-      @events.each_with_index.map { |event, i| render_card(event, i + 1) }.join("\n")
+      visible_events.each_with_index.map { |event, i| render_card(event, i + 1) }.join("\n")
     end
 
     def render_card(event, index)

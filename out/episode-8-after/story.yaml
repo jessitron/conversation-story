@@ -28,6 +28,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 1
+  hidden: true
 - id: 2fc648ca-d807-4ee3-ae6c-3f72c1ef47bc
   ref: episode-8-after:2
   agent: main
@@ -39,6 +40,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 2
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: line-3
   ref: episode-8-after:3
   agent: main
@@ -50,6 +56,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 3
+  hidden: true
 - id: ac22d079-cf1d-413e-9534-cee88c2dc2c9
   ref: episode-8-after:4
   agent: main
@@ -77,6 +84,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 5
+  hidden: true
 - id: 3033a83c-ed25-4187-ad77-7616757d1be7
   ref: episode-8-after:6
   agent: main
@@ -88,6 +96,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 6
+  hidden: true
 - id: 48909f62-637b-4611-ba04-7dc10e3e4a08
   ref: episode-8-after:7
   agent: main
@@ -99,6 +108,25 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 7
+  detail:
+    text: |-
+      - update-config: Use this skill to configure the Claude Code harness via settings.json. Automated behaviors ("from now on when X", "each time X", "whenever X", "before/after X") require hooks configured in settings.json - the harness executes these, not Claude, so memory/preferences cannot fulfill them. Also use for: permissions ("allow X", "add permission", "move permission to"), env vars ("set X=Y"), hook troubleshooting, or any changes to settings.json/settings.local.json files. Examples: "allow npm commands", "add bq permission to global settings", "move permission to user settings", "set DEBUG=true", "when claude stops show X". For simple settings like theme/model, use Config tool.
+      - keybindings-help: Use when the user wants to customize keyboard shortcuts, rebind keys, add chord bindings, or modify ~/.claude/keybindings.json. Examples: "rebind ctrl+s", "add a chord shortcut", "change the submit key", "customize keybindings".
+      - simplify: Review changed code for reuse, quality, and efficiency, then fix any issues found.
+      - loop: Run a prompt or slash command on a recurring interval (e.g. /loop 5m /foo). Omit the interval to let the model self-pace. - When the user wants to set up a recurring task, poll for status, or run something repeatedly on an interval (e.g. "check the deploy every 5 minutes", "keep running /babysit-prs"). Do NOT invoke for one-off tasks.
+      - schedule: Create, update, list, or run scheduled remote agents (triggers) that execute on a cron schedule. - When the user wants to schedule a recurring remote agent, set up automated tasks, create a cron job for Claude Code, or manage their scheduled agents/triggers.
+      - claude-api: Build, debug, and optimize Claude API / Anthropic SDK apps. Apps built with this skill should include prompt caching.
+      TRIGGER when: code imports `anthropic`/`@anthropic-ai/sdk`; user asks to use the Claude API, Anthropic SDKs, or Managed Agents (`/v1/agents`, `/v1/sessions`); user asks to add, modify, debug, optimize, or improve a Claude feature (prompt caching, cache hit rate, adaptive thinking, compaction, code_execution, batch, files API, citations, memory tool) or a Claude model (Opus/Sonnet/Haiku) in a file; or user asks about prompt caching / cache hit rate / cache reads / cache creation in any project that uses the Anthropic SDK (even without mentioning Claude by name).
+      DO NOT TRIGGER when: file imports `openai`/non-Anthropic SDK, filename signals another provider (`agent-openai.py`, `*-generic.py`), code is provider-neutral, or task is general programming/ML.
+      - honeycomb:honeycomb-setup: Set up the Honeycomb MCP server connection for Claude Code
+      - honeycomb:beeline-migration: Use when the user asks to "migrate from Beelines", "upgrade from Beeline to OpenTelemetry", "migrate to OTel", "replace Beelines", "Beeline end of life", "Beeline EOL", "switch from Beeline to OTel", "migrate Go Beeline", "migrate Python Beeline", "migrate Node Beeline", "migrate Java Beeline", "migrate Ruby Beeline", "W3C trace headers", "W3C propagation", "incremental migration to OpenTelemetry", or needs guidance on migrating from Honeycomb Beelines to OpenTelemetry SDKs.
+      - honeycomb:query-patterns: Use when constructing or interpreting Honeycomb queries — provides opinionated guidance on which operations to use (percentiles not AVG for latency, HEATMAP for distributions), how to combine calculations, relational field patterns, and how to interpret results (P99/P50 ratios, heatmap bands, TOTAL/OTHER rows, raw JSON via query_result_json). Load this skill before calling run_query. Trigger phrases: "show me latency", "what's the error rate", "find slow requests", "show me the distribution", "query Honeycomb", "find outliers", "search traces", "why is latency high", "why are some requests slow", "what does this result mean", "explain the heatmap", "interpret these numbers", "is it getting worse", "compare before and after", "find fields", "discover columns", "look at past queries", "query across services", "use relational fields", "download raw results", or any request to query, visualize, or interpret Honeycomb data.
+      - honeycomb:slos-and-triggers: Use when interpreting Honeycomb SLO compliance, budget burn rates, or trigger status — provides decision heuristics for what the numbers mean and what action to take, including detecting misconfigured SLIs, deciding when to freeze deploys vs page on-call, and designing burn alert thresholds. The get_slos and get_triggers tools return raw numbers; this skill tells you how to act on them. Load this skill before calling get_slos or get_triggers. Trigger phrases: "check our SLOs", "are we meeting our SLOs", "which SLOs are healthy", "is the error budget OK", "are any alerts firing", "what's the burn rate", "set up an SLO", "create a trigger", "configure alerts", "set up burn alerts", "check trigger status", "starting on-call", "reliability picture", "should we freeze deploys", "is this SLO misconfigured", "are we within budget", "SLO is broken", "budget is negative", or any request about service level objectives, error budgets, burn rates, or alerting in Honeycomb.
+      - honeycomb:otel-migration: Use when the user asks to "migrate existing app to OTel", "add OpenTelemetry to existing project", "retrofit OTel into my codebase", "thread context through my code", "context propagation", "bridge Prometheus metrics to OTel", "logging bridge", "migrate logging to OTel", "slog bridge", "logback bridge", "verify my instrumentation", "traces are disconnected", "orphaned spans", "migrate to OpenTelemetry", "OTel migration plan", "how do I sequence an OTel migration", "add tracing to existing code", "refactor for context propagation", "Fiber context gotcha", or needs guidance on retrofitting OpenTelemetry into an existing, uninstrumented application. This skill is for migrating existing codebases, NOT greenfield instrumentation (use otel-instrumentation) or Beeline-specific migration (use beeline-migration).
+      - honeycomb:otel-instrumentation: Use when the user asks to "instrument my app", "add tracing", "set up OpenTelemetry", "configure OTel", "add custom spans", "add attributes to spans", "send traces to Honeycomb", "set up OTLP", "configure the OTel SDK", "add span events", "add span links", "instrument with OpenTelemetry", "set up tracing for Go", "set up tracing for Python", "set up tracing for Node.js", "set up tracing for Java", "set up tracing for Ruby", "set up tracing for .NET", "add observability", "improve instrumentation", "configure sampling", "set up head sampling", "set up tail sampling", "configure the OTel Collector", or needs guidance on OpenTelemetry SDK setup, custom instrumentation, or sending data to Honeycomb.
+      - honeycomb:production-investigation: Use when investigating production issues in Honeycomb — provides the structured sequence of tool calls (context priming, broad query, BubbleUp, filtered drill-down, trace analysis) and how to chain results between steps using query_run_pk, trace IDs, and BubbleUp differentiators. Without it, queries work but miss the systematic narrowing that identifies root causes. Trigger phrases: "investigate a production issue", "debug a latency spike", "find root cause", "use BubbleUp", "analyze traces", "find what changed", "debug an outage", "why is my API slow", "why are requests failing", "what's causing errors", "something is wrong with", "users are complaining", "latency is spiking", "errors are increasing", "check service dependencies", "view service map", "health check", "SLO burning", or any request to investigate or debug production problems.
+      - honeycomb:observability-fundamentals: Use when answering conceptual "why" questions about observability — explains the foundations of why Honeycomb works the way it does: wide structured events, high cardinality, the core analysis loop, events vs metrics vs logs, and how instrumentation decisions connect to debugging outcomes. Grounds recommendations in first principles rather than tool-specific how-to. Trigger phrases: "what is observability", "why observability", "why Honeycomb", "events vs metrics", "events vs logs", "what should I instrument", "why wide events", "what is high cardinality", "how does BubbleUp work", "core analysis loop", "what makes good instrumentation", "observability vs monitoring", "why not just use metrics", "why not just use logs", "what is an event", "what is a span", "why structured events", "what is dimensionality", "explain observability", or any conceptual or philosophical question about observability, events, instrumentation strategy, or why Honeycomb's approach differs from traditional monitoring.
+  hidden: true
 - id: 5599dcfc-aaf2-48fe-b139-80b4f5e7ca1c
   ref: episode-8-after:8
   agent: main
@@ -110,6 +138,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 8
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: e7a7902f-d8ac-4852-a46e-b15315db6156
   ref: episode-8-after:9
   agent: main
@@ -192,6 +225,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 12
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: d1b356c6-a1cb-4520-ba06-7651bf88f73f
   ref: episode-8-after:13
   agent: main
@@ -317,6 +355,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 14
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 1e9e7cd7-5b2f-4ff6-914b-883dec050900
   ref: episode-8-after:15
   agent: main
@@ -365,6 +408,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 16
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 26cf1669-c1d8-4ead-a1ec-61ea03a6790e
   ref: episode-8-after:17
   agent: main
@@ -376,6 +424,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 17
+  hidden: true
 - id: 074adc9b-65c1-4828-867f-b791e973bc8e
   ref: episode-8-after:18
   agent: main
@@ -387,6 +436,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 18
+  hidden: true
 - id: line-19
   ref: episode-8-after:19
   agent: main
@@ -398,6 +448,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 19
+  hidden: true
 - id: 26832747-8ff8-482c-8e99-64ac56279ac6
   ref: episode-8-after:20
   agent: main
@@ -425,6 +476,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 21
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: d8108038-3794-4d4a-91f2-aee2a8fc95ac
   ref: episode-8-after:22
   agent: main
@@ -484,6 +540,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 24
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: f16617ce-0bf2-43a6-8073-8ac6bcb2e604
   ref: episode-8-after:25
   agent: main
@@ -516,6 +577,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 26
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: e47b63aa-ec3f-470d-abe5-5979fcebc569
   ref: episode-8-after:27
   agent: main
@@ -550,6 +616,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 28
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 4c3786a4-8021-4c94-b034-84ba9208dfdb
   ref: episode-8-after:29
   agent: main
@@ -574,6 +645,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 30
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 2f894ac6-1e63-43ec-b958-0fc4cc50dd48
   ref: episode-8-after:31
   agent: main
@@ -608,6 +684,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 32
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 6118e881-bc56-41b3-be3c-abe0f7ffb982
   ref: episode-8-after:33
   agent: main
@@ -654,6 +735,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 34
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 0d05cd10-2940-487b-b357-3d9a95fe979e
   ref: episode-8-after:35
   agent: main
@@ -688,6 +774,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 36
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: c6ba2ddf-f6eb-4b0f-890c-2a7ca6cb88f2
   ref: episode-8-after:37
   agent: main
@@ -733,6 +824,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 38
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: a0401072-000b-4be3-97e4-00b33e67b47b
   ref: episode-8-after:39
   agent: main
@@ -767,6 +863,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 40
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 710db22d-2453-4b49-bd2b-b103a04e9440
   ref: episode-8-after:41
   agent: main
@@ -844,6 +945,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 42
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: eb10809f-162a-4694-9d51-6a56efb7853c
   ref: episode-8-after:43
   agent: main
@@ -903,6 +1009,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 45
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: d852e539-0567-48c9-922d-8f1ff14deed1
   ref: episode-8-after:46
   agent: main
@@ -929,6 +1040,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 47
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 25f56045-6820-4e51-b08f-c8abb51bb04d
   ref: episode-8-after:48
   agent: main
@@ -974,6 +1090,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 50
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: b781737c-e349-48b8-87fe-5efd15bd8cce
   ref: episode-8-after:51
   agent: main
@@ -1007,6 +1128,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 52
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 7734a02f-cc89-4fc6-bf16-21eb5e7c44ec
   ref: episode-8-after:53
   agent: main
@@ -1067,6 +1193,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 55
+  hidden: true
 - id: 281706e2-c92b-4f8e-821d-c11acc558023
   ref: episode-8-after:56
   agent: main
@@ -1078,6 +1205,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 56
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 6cd5d623-cead-45eb-8661-5e8b0bbac9f7
   ref: episode-8-after:57
   agent: main
@@ -1104,6 +1236,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 58
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: c48d51aa-5385-46a5-ad19-092facedbdc0
   ref: episode-8-after:59
   agent: main
@@ -1163,6 +1300,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 61
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: fb830f53-1865-41b9-a07c-2022ecd50890
   ref: episode-8-after:62
   agent: main
@@ -1189,6 +1331,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 63
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: line-64
   ref: episode-8-after:64
   agent: main
@@ -1200,6 +1347,15 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 64
+  detail:
+    text: |-
+      <task-notification>
+      <task-id>bpcd7npkf</task-id>
+      <tool-use-id>toolu_01VhEih6eZJ48ySXrY1xCJKe</tool-use-id>
+      <output-file>/private/tmp/claude-501/-Users-jessitron-code-simple10-agents-observe/e7510810-97ee-474c-a897-cb7540ad71ed/tasks/bpcd7npkf.output</output-file>
+      <status>completed</status>
+      <summary>Background command "Start dev server on alternate ports" completed (exit code 0)</summary>
+      </task-notification>
 - id: 792aee04-d6ec-41fc-9391-59dd38eb0407
   ref: episode-8-after:65
   agent: main
@@ -1245,6 +1401,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 67
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 61998e55-60e1-4301-acc2-8a89ffb8ce20
   ref: episode-8-after:68
   agent: main
@@ -1273,6 +1434,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 69
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: bc14a009-08e0-4d1f-b3e3-f0ee41b4fc5b
   ref: episode-8-after:70
   agent: main
@@ -1284,6 +1450,15 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 70
+  detail:
+    text: |-
+      <task-notification>
+      <task-id>bpcd7npkf</task-id>
+      <tool-use-id>toolu_01VhEih6eZJ48ySXrY1xCJKe</tool-use-id>
+      <output-file>/private/tmp/claude-501/-Users-jessitron-code-simple10-agents-observe/e7510810-97ee-474c-a897-cb7540ad71ed/tasks/bpcd7npkf.output</output-file>
+      <status>completed</status>
+      <summary>Background command "Start dev server on alternate ports" completed (exit code 0)</summary>
+      </task-notification>
 - id: fac5dc86-c1b7-4b5b-bb13-d8576fdb7639
   ref: episode-8-after:71
   agent: main
@@ -1343,6 +1518,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 73
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 3299d8a5-06fb-47c5-8ef2-5c87528d9f24
   ref: episode-8-after:74
   agent: main
@@ -1394,6 +1574,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 75
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 3366be3b-d5ff-438a-a167-c1b39ca113b8
   ref: episode-8-after:76
   agent: main
@@ -1428,6 +1613,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 77
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: c4324114-f63a-4843-974a-ef64ce2f5316
   ref: episode-8-after:78
   agent: main
@@ -1454,6 +1644,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 79
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 4bd7d6f7-cc38-432d-9dc4-26ab7cbc3ee4
   ref: episode-8-after:80
   agent: main
@@ -1488,6 +1683,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 81
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 4cdccc61-53c5-4f11-be3d-07f41617cf14
   ref: episode-8-after:82
   agent: main
@@ -1539,6 +1739,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 83
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: cb81ddab-7f85-4fcb-8450-efd69b87b77b
   ref: episode-8-after:84
   agent: main
@@ -1611,6 +1816,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 87
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: fde1c12c-fb55-4327-a644-32320e4be252
   ref: episode-8-after:88
   agent: main
@@ -1635,6 +1845,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 89
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: '0219fd94-3115-420f-b7b4-b08a34397ca5'
   ref: episode-8-after:90
   agent: main
@@ -1669,6 +1884,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 91
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: a66e610c-adeb-4918-bb25-28e485082d27
   ref: episode-8-after:92
   agent: main
@@ -1695,6 +1915,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 93
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 4daa73e6-8f71-4f2d-9e21-e520c213fada
   ref: episode-8-after:94
   agent: main
@@ -1729,6 +1954,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 95
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 02f70198-7dee-4084-91e3-3a33760a1342
   ref: episode-8-after:96
   agent: main
@@ -1761,6 +1991,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 97
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 1849f1f0-8eef-4124-8c9b-fbc721c61404
   ref: episode-8-after:98
   agent: main
@@ -1801,6 +2036,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 99
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 7a2f094d-66db-4941-986b-6b87dd410067
   ref: episode-8-after:100
   agent: main
@@ -1812,6 +2052,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 100
+  hidden: true
 - id: 749afd9a-328a-4ba0-96f7-1854f8ef861b
   ref: episode-8-after:101
   agent: main
@@ -1823,6 +2064,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 101
+  hidden: true
 - id: e225a0ac-bf9f-4265-bd79-97d57368d918
   ref: episode-8-after:102
   agent: main
@@ -1850,6 +2092,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 103
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: line-104
   ref: episode-8-after:104
   agent: main
@@ -1861,6 +2108,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 104
+  hidden: true
 - id: bd7dfdbb-85a0-4b26-a1d8-7c23394a371c
   ref: episode-8-after:105
   agent: main
@@ -1909,6 +2157,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 106
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 960e5123-d472-4b07-a57a-639ad3429509
   ref: episode-8-after:107
   agent: main
@@ -1920,6 +2173,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 107
+  hidden: true
 - id: line-108
   ref: episode-8-after:108
   agent: main
@@ -1931,6 +2185,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 108
+  hidden: true
 - id: b5d9d1ec-f27f-4cd1-8267-3c2c390e666b
   ref: episode-8-after:109
   agent: main
@@ -1955,6 +2210,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 110
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 70abb383-a809-434c-bdee-fa85556294f6
   ref: episode-8-after:111
   agent: main
@@ -2014,6 +2274,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 113
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: f2adf1ea-c7cd-412b-b207-ae69b38eae92
   ref: episode-8-after:114
   agent: main
@@ -2098,6 +2363,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 115
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 3272eb99-e506-44f5-978e-dca4c2358d71
   ref: episode-8-after:116
   agent: main
@@ -2159,6 +2429,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 118
+  hidden: true
 - id: 8fcbf33e-b3f8-4602-833b-9db91c01ebce
   ref: episode-8-after:119
   agent: main
@@ -2170,6 +2441,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 119
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 23ce2190-f1c5-4ca2-abed-54fa1d703e1d
   ref: episode-8-after:120
   agent: main
@@ -2196,6 +2472,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 121
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: f6edea7b-7eb6-4b05-9961-890b4bfc5d09
   ref: episode-8-after:122
   agent: main
@@ -2266,6 +2547,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 125
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: f645cc8a-358d-4e4d-8274-84d1a59fb82d
   ref: episode-8-after:126
   agent: main
@@ -2304,6 +2590,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 127
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: b3897a92-b069-4d21-a23c-b7a895f98c3e
   ref: episode-8-after:128
   agent: main
@@ -2338,6 +2629,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 129
+  hidden: true
 - id: 638fcc70-780e-46dc-941f-d0302104f97e
   ref: episode-8-after:130
   agent: main
@@ -2349,6 +2641,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 130
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 53b2c935-8d57-40fb-88cb-cf5ec840e34d
   ref: episode-8-after:131
   agent: main
@@ -2375,6 +2672,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 132
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 199bd6f3-e6e8-4277-b0ab-668bfcfb344b
   ref: episode-8-after:133
   agent: main
@@ -2434,6 +2736,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 135
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 3d76dc7d-667d-4c29-a249-5f0a21909378
   ref: episode-8-after:136
   agent: main
@@ -2460,6 +2767,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 137
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 3e868271-a589-4ec7-8ce8-a1e890d47cd9
   ref: episode-8-after:138
   agent: main
@@ -2519,6 +2831,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 140
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 89a65586-b6e2-4d4b-9162-2c2aa53546c3
   ref: episode-8-after:141
   agent: main
@@ -2563,6 +2880,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 142
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: bd75a1f8-8401-4eb8-acc7-83d35ec0cb4d
   ref: episode-8-after:143
   agent: main
@@ -2622,6 +2944,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 145
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: f81a98dc-3682-4d82-accb-124609a687a4
   ref: episode-8-after:146
   agent: main
@@ -2633,6 +2960,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 146
+  hidden: true
 - id: c8e2f968-8c9c-4682-b729-9f3c95b8b3ac
   ref: episode-8-after:147
   agent: main
@@ -2660,6 +2988,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 148
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 22db5a4e-7c09-4d35-80ad-f8a8a0df1de3
   ref: episode-8-after:149
   agent: main
@@ -2703,6 +3036,11 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 150
+  detail:
+    text: |-
+      Sending OTLP log...
+      {}✅ Log sent successfully!
+  hidden: true
 - id: 6a4a4c8d-a322-490d-9cf2-d5b1467cbf00
   ref: episode-8-after:151
   agent: main
@@ -2714,6 +3052,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 151
+  hidden: true
 - id: c1252dc4-3949-42e0-9bb0-ef419f9e4cb5
   ref: episode-8-after:152
   agent: main
@@ -2725,6 +3064,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 152
+  hidden: true
 - id: line-153
   ref: episode-8-after:153
   agent: main
@@ -2741,6 +3081,7 @@ events:
       type: last-prompt
       lastPrompt: that's a great idea! make it self-bootstrapping
       sessionId: e7510810-97ee-474c-a897-cb7540ad71ed
+  hidden: true
 - id: line-154
   ref: episode-8-after:154
   agent: main
@@ -2752,3 +3093,4 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 154
+  hidden: true

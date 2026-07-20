@@ -29,6 +29,27 @@ module ConversationStory
       "queue-operation"       => "queue_operation",
     }.freeze
 
+    # Harness bookkeeping — records that are not part of the conversation "from
+    # Jess's perspective". They are still parsed into events (so nothing is lost
+    # and event_count == line count), but flagged `hidden: true` so the renderer
+    # skips them. See notes/2026-07-20-session-6-hidden-events.md for the full
+    # rationale (which types, and why the ones we KEEP are worth keeping).
+    #
+    # Whole kinds that are always hidden:
+    HIDDEN_KINDS = %w[system file_snapshot permission_mode].freeze
+    # Attachment subtypes that are pure context-loading / hook plumbing. The two
+    # conversation-relevant attachments stay visible: `queued_command` (delivered
+    # queued input AND background <task-notification>s — "the agent being nudged")
+    # and `task_reminder` (the system nudging the agent about pending tasks).
+    HIDDEN_ATTACHMENT_TYPES = %w[
+      hook_success deferred_tools_delta mcp_instructions_delta skill_listing
+    ].freeze
+    # The unsent-prompt buffer (a `last-prompt` record → `unknown` fallback).
+    HIDDEN_RECORD_TYPES = %w[last-prompt].freeze
+    # queue-operation stays fully visible — including the bare `dequeue`/`remove`
+    # markers — so the enqueue→deliver lifecycle (and whether a background result
+    # landed mid-turn or as its own turn) is legible.
+
     ELLIPSIS = "…"
     SUMMARY_LIMIT = 140
 
@@ -80,7 +101,19 @@ module ConversationStory
       }
       add_detail(event, kind, rec)
       add_assistant_fields(event, rec) if kind == "assistant_message"
+      event["hidden"] = true if hidden?(kind, rec)
       event
+    end
+
+    # Is this record harness bookkeeping the renderer should skip? See the
+    # HIDDEN_* constants above.
+    def hidden?(kind, rec)
+      return true if HIDDEN_KINDS.include?(kind)
+      return true if HIDDEN_RECORD_TYPES.include?(rec["type"])
+      return true if kind == "attachment" &&
+                     HIDDEN_ATTACHMENT_TYPES.include?(rec.dig("attachment", "type"))
+
+      false
     end
 
     def kind_for(rec)
@@ -168,9 +201,28 @@ module ConversationStory
       when "tool_result"
         text = extract_text(rec.dig("message", "content"))
         event["detail"] = { "text" => text } unless text.empty?
+      when "queue_operation"
+        # `enqueue` carries the queued payload (a queued user message, or a
+        # background <task-notification> like "…failed with exit code 1").
+        # `dequeue`/`remove` are bare markers with no content.
+        content = rec["content"].to_s
+        event["detail"] = { "text" => content } unless content.strip.empty?
+      when "attachment"
+        text = attachment_detail_text(rec)
+        event["detail"] = { "text" => text } unless text.strip.empty?
       when "unknown"
         event["detail"] = { "raw" => rec }
       end
+    end
+
+    # The human-relevant body of a (visible) attachment: `queued_command` carries
+    # a `prompt` (the delivered notification/input); other attachments may carry a
+    # `content` array of text blocks.
+    def attachment_detail_text(rec)
+      att = rec["attachment"] || {}
+      return att["prompt"].to_s if att["prompt"]
+
+      extract_text(att["content"])
     end
 
     # (b) named token + turn fields on assistant turns.

@@ -137,10 +137,24 @@ the raw record is always one hop away for a human. Therefore:
   spawning `Agent` call's `toolUseResult` and live under `tool.subagent_tokens`.
 - **Provenance**: jsonl is one record per line, so `{file, line}` is exact.
   Content blocks within a record share that record's line.
+- **Hidden**: some records are harness bookkeeping, not part of the conversation
+  "from Jess's perspective". The parser still emits them as events (so nothing is
+  lost and `event_count` == line count), but marks them `hidden: true`; the
+  renderer skips hidden events and its header "events" stat counts only visible
+  ones. Hidden set: kinds `system`, `file_snapshot`, `permission_mode`; the
+  `last-prompt` record; and attachments of subtype `hook_success`,
+  `deferred_tools_delta`, `mcp_instructions_delta`, `skill_listing`. **Kept
+  visible** (deliberately): all `queue_operation`s — including the bare
+  `dequeue`/`remove` markers, so the enqueue→deliver lifecycle is legible — plus
+  attachments `queued_command` (delivered queued input AND background
+  `<task-notification>`s) and `task_reminder` (the system nudging the agent). The
+  field is omitted (not `false`) on visible events. See
+  `notes/2026-07-20-session-6-hidden-events.md` for the full rationale.
 - **Queued**: `queue-operation` events (`operation: enqueue`, etc.) carry
-  `content` referencing a `tool-use-id` and `task-id`. Parser resolves these to
-  set `queued: true` on the related event, and also emits the queue-operation as
-  its own event so the raw fact is visible.
+  `content` referencing a `tool-use-id` and `task-id`. The visible `enqueue`
+  event stores that content in `detail.text` (e.g. a "…failed with exit code 1"
+  notification). Resolving these to set `queued: true` on the *related*
+  conversational event is still TBD.
 - **Approval**: these example logs contain **no per-tool approve/deny record**
   (only global `permission-mode` change events and `stop_hook_summary` hooks), so
   we emit no approval field. Newer Claude logs may include real approval data; we
