@@ -8,7 +8,10 @@
 #   bin/render STORY [-o OUTPUT]  # OUTPUT defaults to stdout
 
 require "yaml"
+require "fileutils"
 require_relative "../lib/conversation_story/renderer"
+
+REPO_ROOT = File.expand_path("..", __dir__)
 
 input = nil
 output = nil
@@ -23,6 +26,24 @@ until args.empty?
 end
 abort "usage: render STORY [-o OUTPUT]" unless input
 
+# Copy the shared, inert front-end assets next to the pages that link them.
+# Pages live at out/<name>/index.html and link ../assets and ../images, so the
+# site root is the parent of the page's directory. (Skipped for stdout runs.)
+# Incremental copying is a later optimization; cp_r each build is fine for now.
+def sync_assets(site_root)
+  %w[assets images].each do |dir|
+    src = File.join(REPO_ROOT, dir)
+    FileUtils.cp_r(src, site_root) if File.directory?(src)
+  end
+end
+
 document = YAML.safe_load_file(input)
 html = ConversationStory::Renderer.new(document).to_html
-output ? File.write(output, html) : $stdout.write(html)
+
+if output
+  FileUtils.mkdir_p(File.dirname(output))
+  File.write(output, html)
+  sync_assets(File.expand_path(File.join(File.dirname(output), "..")))
+else
+  $stdout.write(html)
+end

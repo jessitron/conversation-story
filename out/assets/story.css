@@ -1,0 +1,382 @@
+/* ============================================================
+   Conversation Story — shared stylesheet.
+   Authored here (source of truth). The build copies this to
+   out/assets/story.css; both design-prototype.html and every generated page
+   link it. Reproduce design intent HERE, never inline in the HTML.
+   ============================================================ */
+
+/* ============================================================
+   Design tokens
+   ------------------------------------------------------------
+   Change the *shared concepts* here (palette, surfaces, the deco
+   label voice, the kind→color table below). One-off tuning numbers
+   (individual font sizes, letter-spacings) are left as literals at
+   their site on purpose — so a nudge in one place never leaks to five.
+   ============================================================ */
+:root {
+  /* Brand palette (from notes/fonts-and-colors.txt) */
+  --red:    #A6142F;   /* graceful-red    */
+  --navy:   #0D1940;   /* graceful-navy   */
+  --blue:   #3772A6;   /* graceful-blue   */
+  --yellow: #F2CE1B;   /* graceful-yellow */
+  --orange: #F28444;   /* graceful-orange */
+  --olive:  #7A8B3D;   /* derived accent — used for tool_result kind */
+
+  /* Navy as raw RGB components, so shadows can vary the alpha */
+  --navy-rgb: 13, 25, 64;
+
+  /* Derived neutrals — warm "paper" deco feel */
+  --paper:      #F7F3EA;   /* page background            */
+  --paper-2:    #FBF8F1;   /* resting card surface       */
+  --surface-raised: #fff;  /* elevated / white surface   */
+  --ink:        var(--navy);
+  --ink-soft:   #47506E;
+  --ink-faint:  #8A90A6;
+  --line:       #E3DCCB;
+  --line-strong:#C9BF9F;
+  --gold:       #C9A227;
+  --code-bg:    #EFE9DA;   /* inline code chip in a summary */
+  --code-ink:   #E9ECF5;   /* code text on the navy pre block */
+
+  --card-radius: 3px;
+  --sidebar-w: 420px;
+  --gutter-w: 118px;       /* the card's fixed meta column */
+
+  --font-head: "Tenor Sans", "Sen", system-ui, sans-serif;
+  --font-body: "Sen", system-ui, sans-serif;
+  --font-mono: "Cascadia Code", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+/* clip the off-page leader lines so they never create a horizontal scrollbar.
+   overflow-x: clip (not hidden) doesn't create a scroll container, so it
+   leaves the sticky sidebar's vertical scrolling untouched. */
+html { overflow-x: clip; }
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--paper);
+  background-image:
+    radial-gradient(circle at 50% -10%, rgba(55,114,166,0.06), transparent 60%);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* The deco label voice: Tenor Sans, small-caps-y uppercase. Shared by every
+   heading-flavored label. Each site still sets its own size / color /
+   letter-spacing (local tuning); this only centralizes the font + casing,
+   so restyling "the deco voice" is one edit. */
+.deco { font-family: var(--font-head); text-transform: uppercase; }
+
+/* ============================================================
+   Header
+   ============================================================ */
+header.site {
+  display: flex; align-items: center; gap: 20px;
+  padding: 14px 26px;
+  background: var(--navy);
+  color: var(--paper);
+  border-bottom: 3px solid var(--gold);
+  box-shadow: 0 2px 0 rgba(var(--navy-rgb), .25), 0 6px 18px rgba(var(--navy-rgb), .18);
+}
+header.site .logo {
+  width: 52px; height: 52px; flex: 0 0 auto;
+  /* logo is black line-art; invert to sit on navy */
+  filter: invert(1) brightness(1.6);
+}
+header.site .titles { display: flex; flex-direction: column; gap: 2px; }
+header.site h1 {
+  font-weight: 400; font-size: 22px; margin: 0;
+  letter-spacing: 0.14em;
+}
+header.site .subtitle {
+  font-size: 12.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--yellow);
+}
+header.site .meta {
+  margin-left: auto; display: flex; gap: 26px;
+  text-align: right;
+}
+header.site .meta .stat { display: flex; flex-direction: column; }
+header.site .meta .stat .k {
+  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-faint);
+}
+header.site .meta .stat .v {
+  font-family: var(--font-head); font-size: 16px; letter-spacing: 0.05em;
+}
+
+/* ============================================================
+   Layout: main column + sidebar
+   ============================================================ */
+.shell { display: flex; align-items: flex-start; }
+
+main.timeline {
+  flex: 1 1 auto; min-width: 0;
+  padding: 30px clamp(20px, 4vw, 60px) 120px;
+  max-width: 980px; margin: 0 auto;
+  transition: margin-right .18s ease;
+}
+.timeline .rail-label {
+  letter-spacing: 0.22em;
+  font-size: 12px; color: var(--ink-faint);
+  margin: 0 0 18px 2px;
+  display: flex; align-items: center; gap: 12px;
+}
+.timeline .rail-label::after {
+  content: ""; flex: 1 1 auto; height: 1px;
+  background: linear-gradient(to right, var(--line-strong), transparent);
+}
+
+/* ============================================================
+   Event cards — shared anatomy
+   ------------------------------------------------------------
+   One <a class="card k-KIND" id="event-N" href="#event-N"> per event: an
+   anchor, so each event is deep-linkable AND keyboard-focusable for free.
+   In the ERB build this whole block is the event-card partial, and the
+   <template class="detail"> it carries is the drill-in partial. Per-kind
+   color lives in the kind→color table below; per-kind treatment (layout,
+   elevation) follows that.
+   ============================================================ */
+.card {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--gutter-w) 1fr;
+  gap: 16px; align-items: baseline;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--kind, var(--ink-faint));
+  border-radius: var(--card-radius);
+  padding: 13px 18px 13px 16px;
+  margin: 0 0 10px;
+  color: inherit; text-decoration: none;   /* cards are <a> anchors */
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.card.active {
+  border-color: var(--kind, var(--gold));
+  box-shadow: -3px 4px 0 var(--kind, var(--gold));
+}
+.card:focus-visible {
+  outline: 2px solid var(--kind, var(--gold));
+  outline-offset: 3px;
+}
+
+/* Leader line to the detail pane: an in-flow pseudo-element anchored to the
+   card, so it scrolls (and rubber-band bounces) together with the card.
+   It runs off the right of the page and is clipped by html{overflow-x:clip};
+   the sidebar paints on top of it, so it reads as "going behind" the pane.
+   Only shown for the active card. */
+.card::after {
+  content: ""; position: absolute;
+  top: 50%; left: 100%; width: 100vw;
+  border-top: 2px dotted var(--kind, var(--gold));
+  opacity: 0; pointer-events: none;
+}
+.card.active::after { opacity: 1; }
+/* when the detail pane is collapsed, its card's line has nothing to point to */
+body.sidebar-collapsed .card.active::after { opacity: 0; }
+
+.card .gutter {
+  font-size: 11px; letter-spacing: 0.06em; color: var(--ink-faint);
+  white-space: nowrap; padding-top: 2px;
+}
+.card .gutter .kind {
+  display: inline-block;
+  letter-spacing: 0.12em;
+  font-size: 10.5px; color: var(--kind, var(--ink-soft));
+  margin-bottom: 3px;
+}
+.card .gutter .who { display: block; color: var(--ink-soft); font-weight: 500; }
+
+.card .body { min-width: 0; }
+.card .body .summary {
+  color: var(--ink);
+  overflow: hidden; text-overflow: ellipsis;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+.card .body .summary code {
+  font-family: var(--font-mono);
+  font-size: 0.86em; background: var(--code-bg); padding: 1px 5px; border-radius: 3px;
+  color: var(--red);
+}
+.card .body .badges { margin-top: 7px; display: flex; gap: 6px; flex-wrap: wrap; }
+.badge {
+  font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 2px;
+  border: 1px solid var(--line-strong); color: var(--ink-soft);
+  background: var(--surface-raised);
+}
+.badge.tool  { border-color: var(--navy); color: var(--navy); }
+.badge.tok   { border-color: var(--blue); color: var(--blue); }
+.badge.err   { border-color: var(--red); color: #fff; background: var(--red); }
+.badge.agent { border-color: var(--red); color: var(--red); }
+
+/* ---- kind → color table ----
+   The single place to recolor a kind. Every card reads var(--kind); these
+   seven rules are the only assignments of it. Defined ABOVE the per-kind
+   treatment so the color is set before any rule consumes it. */
+.card.k-user       { --kind: var(--blue); }
+.card.k-assistant  { --kind: var(--navy); }
+.card.k-thinking   { --kind: var(--orange); }
+.card.k-tool_call  { --kind: var(--gold); }
+.card.k-tool_result{ --kind: var(--olive); }
+.card.k-subagent   { --kind: var(--red); }
+.card.k-system     { --kind: var(--ink-faint); }
+
+/* ---- per-kind treatment ---- */
+
+/* User messages come from "the other side" — right-align them like a chat. */
+.card.k-user {
+  grid-template-columns: 1fr var(--gutter-w);
+  margin-left: 15%;
+  border-left: 1px solid var(--line);
+  border-right: 4px solid var(--kind);
+  background: var(--surface-raised);
+  text-align: right;
+}
+.card.k-user .gutter { order: 2; }
+.card.k-user .body   { order: 1; }
+.card.k-user .gutter .kind { color: var(--kind); }
+.card.k-user .body .summary { text-align: right; }
+.card.k-user .body .badges { justify-content: flex-end; }
+.card.k-user.active { box-shadow: 3px 4px 0 var(--kind); }
+
+/* Assistant → the user: the headline of the conversation. Make it stand out. */
+.card.k-assistant {
+  border-left-width: 5px;
+  background: var(--surface-raised);
+  padding: 18px 22px;
+  box-shadow: -2px 3px 0 rgba(var(--navy-rgb), .06), 0 5px 18px rgba(var(--navy-rgb), .09);
+}
+.card.k-assistant .gutter .kind { color: var(--navy); }
+.card.k-assistant .body .summary {
+  font-family: var(--font-head);
+  font-size: 17px; line-height: 1.5; color: var(--ink);
+  -webkit-line-clamp: 4;
+}
+/* keep the kind-colored active shadow (its own resting shadow would otherwise
+   win on specificity/order), layered over its soft elevation */
+.card.k-assistant.active {
+  box-shadow: -3px 4px 0 var(--kind), 0 5px 18px rgba(var(--navy-rgb), .09);
+}
+
+/* Background machinery: present, but quieter than the conversation. */
+.card.k-thinking,
+.card.k-tool_call,
+.card.k-tool_result,
+.card.k-system {
+  background: transparent;
+  padding: 8px 16px;
+  opacity: 0.7;
+}
+.card.k-thinking:hover,
+.card.k-tool_call:hover,
+.card.k-tool_result:hover,
+.card.k-system:hover { opacity: 1; }
+.card.k-thinking .body .summary,
+.card.k-tool_call .body .summary,
+.card.k-tool_result .body .summary,
+.card.k-system .body .summary {
+  font-size: 13px; color: var(--ink-soft);
+}
+
+/* ============================================================
+   Sidebar (detail) — collapsible + drag-resizable
+   ============================================================ */
+aside.detail {
+  position: sticky; top: 0; align-self: flex-start;
+  height: 100vh;
+  width: var(--sidebar-w);
+  flex: 0 0 var(--sidebar-w);
+  background: var(--paper-2);
+  border-left: 1px solid var(--kind, var(--line-strong));
+  box-shadow: -8px 0 24px rgba(var(--navy-rgb), .06);
+  transition: border-color .15s ease;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+body.sidebar-collapsed aside.detail { display: none; }
+
+aside.detail .resizer {
+  position: absolute; left: -3px; top: 0; bottom: 0; width: 7px;
+  cursor: col-resize; z-index: 5;
+}
+aside.detail .resizer:hover, body.resizing aside.detail .resizer {
+  background: linear-gradient(to right, transparent, rgba(201,162,39,0.5));
+}
+
+aside.detail .d-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 2px solid var(--kind, var(--gold));
+  background: var(--surface-raised);
+}
+aside.detail .d-head .kind {
+  letter-spacing: 0.14em; font-size: 13px; color: var(--kind, var(--ink));
+}
+aside.detail .d-head .d-time {
+  font-family: var(--font-mono);
+  font-size: 12px; color: var(--ink-faint);
+}
+aside.detail .d-head .close:first-of-type { margin-left: auto; }
+aside.detail .d-head .close { border: 1px solid var(--line-strong); background: var(--surface-raised);
+  color: var(--ink-soft); width: 26px; height: 26px; border-radius: 2px;
+  cursor: pointer; font-size: 15px; line-height: 1;
+}
+aside.detail .d-head .close:hover { background: var(--paper); color: var(--red); }
+
+aside.detail .d-body { overflow-y: auto; padding: 16px; }
+
+.d-section { margin: 0 0 20px; }
+.d-section > h4 {
+  font-weight: 400;
+  letter-spacing: 0.16em; font-size: 11px;
+  color: var(--ink-faint); margin: 0 0 8px;
+  padding-bottom: 5px; border-bottom: 1px solid var(--line);
+}
+.d-text {
+  white-space: pre-wrap; font-size: 14px; line-height: 1.6;
+  background: var(--surface-raised); border: 1px solid var(--line);
+  border-radius: 3px; padding: 12px 14px;
+}
+.kv { display: grid; grid-template-columns: 130px 1fr; gap: 4px 14px; font-size: 13px; }
+.kv dt { color: var(--ink-faint); }
+.kv dd { margin: 0; color: var(--ink); font-variant-numeric: tabular-nums; }
+.kv dd code, .mono {
+  font-family: var(--font-mono); font-size: 12px;
+}
+pre.code {
+  margin: 0; background: var(--navy); color: var(--code-ink);
+  border-radius: 3px; padding: 12px 14px; overflow-x: auto;
+  font-family: var(--font-mono); font-size: 12px;
+  line-height: 1.55;
+}
+.token-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.token-grid .cell {
+  background: var(--surface-raised); border: 1px solid var(--line); border-radius: 3px;
+  padding: 8px 10px;
+}
+.token-grid .cell .k {
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint);
+}
+.token-grid .cell .v { font-family: var(--font-head); font-size: 18px; }
+
+.empty-detail {
+  margin: auto; text-align: center; color: var(--ink-faint);
+  padding: 40px 30px;
+}
+.empty-detail .mark { font-size: 40px; opacity: .4; }
+
+/* Floating re-open tab when collapsed */
+.reopen {
+  position: fixed; right: 0; top: 50%; transform: translateY(-50%);
+  display: none; z-index: 25;
+  writing-mode: vertical-rl;
+  background: var(--navy); color: var(--paper);
+  padding: 14px 8px; border: none; border-radius: 3px 0 0 3px;
+  letter-spacing: 0.16em;
+  font-size: 11px; cursor: pointer;
+}
+body.sidebar-collapsed .reopen { display: block; }

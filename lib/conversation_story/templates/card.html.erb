@@ -1,0 +1,15 @@
+<%# One event = one card. An <a> anchor so it's deep-linkable AND keyboard- %>
+<%# focusable for free; the URL fragment (#event-N) drives selection (see       %>
+<%# assets/story.js). All content is pre-escaped in the renderer; structure is  %>
+<%# fixed here, so a card can't emit unbalanced tags. Detail lives in the        %>
+<%# <template> and is cloned into the sidebar on select.                        %>
+      <a class="card k-<%= css_kind %>" id="event-<%= n %>" href="#event-<%= n %>" data-time="<%= data_time %>">
+        <div class="gutter">
+          <span class="kind deco"><%= kind_label %></span>
+          <span class="who"><%= who %></span>
+        </div>
+        <div class="body">
+          <div class="summary"><%= summary_html %></div>
+        </div>
+        <template class="detail"><%= detail_html %></template>
+      </a>

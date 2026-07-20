@@ -17,6 +17,14 @@
 
 LOGS = ENV["LOG"] ? FileList[ENV["LOG"]] : FileList["examples/*.jsonl"]
 
+# Source files each program is built from. Listing them as prerequisites means
+# editing the parser/renderer/templates/assets re-runs the affected phase — the
+# output depends on the code, not just the story.yaml on disk.
+PARSE_SRC  = FileList["bin/parse", "lib/conversation_story/parser.rb"]
+RENDER_SRC = FileList["bin/render", "lib/conversation_story/renderer.rb",
+                      "lib/conversation_story/templates/*.erb",
+                      "assets/**/*", "images/**/*"]
+
 def name_for(log)  = File.basename(log, ".jsonl")
 def story_for(log) = File.join("out", name_for(log), "story.yaml")
 def page_for(log)  = File.join("out", name_for(log), "index.html")
@@ -33,15 +41,16 @@ LOGS.each do |log|
 
   directory out_dir
 
-  # bin/parse: log -> intermediate YAML. Re-runs when the log is newer.
-  file story => [log, out_dir] do
+  # bin/parse: log -> intermediate YAML. Re-runs when the log or parser changes.
+  file story => [log, out_dir, *PARSE_SRC] do
     sh "ruby", "bin/parse", log, "-o", story
   end
 
   # bin/render: YAML -> page. Depends on the YAML, so asking for the page runs
   # bin/parse first when the story is missing or stale. That's the dependency
-  # the Rakefile owns; the two programs never call each other.
-  file page => story do
+  # the Rakefile owns; the two programs never call each other. Also depends on
+  # the renderer/templates/assets so a design edit re-renders.
+  file page => [story, *RENDER_SRC] do
     sh "ruby", "bin/render", story, "-o", page
   end
 end
