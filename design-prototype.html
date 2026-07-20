@@ -131,9 +131,6 @@
     cursor: pointer;
     transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
   }
-  .card:hover {
-    box-shadow: -2px 3px 0 rgba(13,25,64,0.06), 0 3px 14px rgba(13,25,64,0.08);
-  }
   .card.active {
     border-color: var(--kind, var(--gold));
     box-shadow: -3px 4px 0 var(--kind, var(--gold));
@@ -235,7 +232,7 @@
   .card.k-thinking:hover,
   .card.k-tool_call:hover,
   .card.k-tool_result:hover,
-  .card.k-system:hover { opacity: 1; box-shadow: none; }
+  .card.k-system:hover { opacity: 1; }
   .card.k-thinking .body .summary,
   .card.k-tool_call .body .summary,
   .card.k-tool_result .body .summary,
