@@ -132,7 +132,6 @@
     transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
   }
   .card:hover {
-    transform: translateX(2px);
     box-shadow: -2px 3px 0 rgba(13,25,64,0.06), 0 3px 14px rgba(13,25,64,0.08);
   }
   .card.active {
@@ -208,7 +207,6 @@
   .card.k-user .gutter .kind { color: var(--kind); }
   .card.k-user .body .summary { text-align: right; }
   .card.k-user .body .badges { justify-content: flex-end; }
-  .card.k-user:hover { transform: translateX(-2px); }
   .card.k-user.active { box-shadow: 3px 4px 0 var(--kind); }
 
   /* Assistant → the user: the headline of the conversation. Make it stand out. */
@@ -237,7 +235,7 @@
   .card.k-thinking:hover,
   .card.k-tool_call:hover,
   .card.k-tool_result:hover,
-  .card.k-system:hover { opacity: 1; }
+  .card.k-system:hover { opacity: 1; box-shadow: none; }
   .card.k-thinking .body .summary,
   .card.k-tool_call .body .summary,
   .card.k-tool_result .body .summary,
