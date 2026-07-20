@@ -133,8 +133,9 @@ test/
 - Run against BOTH `episode-8-before` and `-after` to confirm the fallback path
   and the range-of-timeframes constraint.
 - Assert every event has non-null `source.file`/`source.line` (provenance) and a
-  non-null `agent`; assert assistant messages carry `tokens.raw`; assert subagent
-  events are present and tagged with their `agent:` id.
+  non-null `agent`; assert assistant messages carry named token fields
+  (`tokens.input`/`tokens.output`); assert subagent events are present and tagged
+  with their `agent:` id.
 
 ## Decisions (settled with Jess)
 
