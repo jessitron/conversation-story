@@ -3,24 +3,10 @@
 Turn a Claude agent conversation log into an explorable, pretty static web page,
 so Jess can narrate "how a conversation went" while the page shows it accurately.
 
-Read `README.md` for the vision (the four "Mountains", constraints, limitations)
+Read `README.md` for the architecture and  vision (the four "Mountains", constraints, limitations)
 and `notes/plan.md` for the current design — especially the **intermediate schema**
 and the settled **Decisions**.
 
-## Architecture
-
-Fixed pipeline, three separate Ruby programs:
-
-```
-Input Logs  ->  Intermediate YAML  ->  Output HTML (static)
-   bin/parse         bin/render + bin/serve
-```
-
-- **Input logs** are Claude logs: a `.jsonl` plus a sibling `subagents/` dir of
-  `agent-*.jsonl` + `agent-*.meta.json`.
-- **Intermediate** is YAML: one ordered list of events, each with a tiny
-  `summary` (default view) and a `detail` payload (drill-in). Hand-editable.
-- **Output** is a static site; minimal JS for interactivity.
 
 ## Conventions
 

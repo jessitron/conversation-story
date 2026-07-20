@@ -2,7 +2,7 @@
 
 I want to describe to people how a conversation with my agent went.
 As I describe the story verbally, I also want to display a web page showing
-the conversation accurately, based on the agent's log. 
+the conversation accurately, based on the agent's log.
 
 The web page should display everything that happened in the conversation, but most of it will be a tiny summary by default. I can click on an event for more detail.
 
@@ -21,6 +21,10 @@ We're building this app in Ruby. There are separate programs for Input Logs -> I
 ## North Star
 
 A conversation with an agent is intelligible. I can display it, step through it, drill into it. I can explain what's happening to another person, and they can explore what happened too. Also, it's pretty.
+
+## Along the journey
+
+I love to learn more about how Claude Code works using what we encounter in these logs.
 
 ## Mountains
 
@@ -43,4 +47,3 @@ The intermediate format can be modified by hand when that's useful to me.
 Right now, no other agents; later, we can make new routes from logs -> intermediate.
 Right now, it doesn't run on any conversation that isn't in the examples directory. Later we'll give it ways to pull from whatever's available in .claude
 This doesn't need to run on anyone else's computer, but I do like to document assumptions and prerequisites.
-
