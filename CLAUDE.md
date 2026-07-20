@@ -33,17 +33,29 @@ each card is `<a class="card k-KIND" id="event-…" href="#event-…">` carrying
 
 ## Status
 
-Schema designed, **page design prototyped** (`design-prototype.html`), and the
-**pipeline is scaffolded**. Parse and render are **two separate programs**
-(`bin/parse`, `bin/render`) over stub `lib/` classes; the `Rakefile` is only the
-task runner that knows the dependency between them. Next step per
-`notes/plan.md`: fill in the parser skeleton + golden-fixture test, building
-Mountain 1 (every event as an identical card) end-to-end first.
+**Mountain 1 is done** (parse → render → serve, end-to-end on the real example
+logs). Parse and render are **two separate programs** (`bin/parse`, `bin/render`)
+over real `lib/` classes now; the `Rakefile` is the task runner that knows the
+dependency between them (and, as of Mountain 1, re-runs a phase when its
+program's source changes — not just when `story.yaml` is stale).
+
+- **Granularity: one event per JSONL record** (main log only). The golden test
+  asserts `event_count == line count` (224 / 154). Splitting an assistant
+  record's blocks (thinking / text / tool_use) into their own cards, and
+  inlining subagent stories, are **Mountain 2+**.
+- Parser maps each record `type` → a schema `kind`; `user` splits into
+  `user_message` vs `tool_result` by content shape; `last-prompt` intentionally
+  hits the `unknown` fallback (keeps `detail.raw`). Renderer maps schema `kind` →
+  the design's CSS kind class and escapes all content.
+- `bin/render` copies `assets/` **and** `images/` next to the pages; pages link
+  them with relative `../assets/…` / `../images/…`.
 
 Run things with `rake parse` / `render` / `build` / `serve` / `test` (all
 examples by default; `LOG=`/`PORT=` env vars to scope). See README.md.
 
-Still TODO before/with the renderer: **self-host the fonts** (Tenor Sans / Sen /
-Cascadia Code) into `assets/fonts/` with `@font-face` in `story.css`, replacing the
-CDN `<link>` the prototype still uses; and `bin/render` must **copy `assets/` →
-`out/assets/`** each build. See the session-5 note for the full open-threads list.
+Still TODO: **self-host the fonts** (Tenor Sans / Sen / Cascadia Code) into
+`assets/fonts/` with `@font-face` in `story.css`, replacing the CDN `<link>` the
+prototype + generated pages still use; the **deterministic HTML well-formedness
+check** (plan.md TODO); then **Mountain 2** (interactivity: block-level cards,
+richer per-kind detail, subagent nesting). See the session-5 note for the full
+open-threads list.
