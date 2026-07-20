@@ -229,6 +229,18 @@ test/
 - `out/` is **committed** (not gitignored), so examples ship with the repo and
   can be pushed to `gh-pages` when Jess chooses.
 
+## Deferred to a later version
+
+- **Hooks** (Jess *is* interested, just not yet). The logs carry a lot of hook
+  detail we're currently leaving as summary-only: `system` events
+  (`stop_hook_summary`, `turn_duration` with `durationMs`/`messageCount`,
+  `hookInfos` = commands + timings, `hookErrors`, `level`,
+  `preventedContinuation`) and the ~157 `attachment` records that are actually
+  hook-execution records (`hookName`, `hookEvent`, `command`, `stdout`/`stderr`/
+  `exitCode`/`durationMs`). When we tackle this, design named fields for them
+  (same "schema is the contract" rule) so hook activity is intelligible on the
+  page.
+
 ## Staged build (after schema is agreed) — Mountain 1 first
 
 1. **Parser skeleton**: read a `.jsonl`, emit the schema above as YAML, routing
