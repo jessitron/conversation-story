@@ -71,12 +71,16 @@ meta:
 
 events:
   - id: dc51411e-...             # from uuid
-    agent: main                  # REQUIRED on every event: which conversation
-                                 #   'main', or a subagent id. Derived from
-                                 #   isSidechain + which file it came from.
+    agent: main                  # REQUIRED on every event: which conversation.
+                                 #   (c) Use explicit `agentId` when the record
+                                 #   has one (subagent records); else 'main'.
     parent: <uuid|null>          # from parentUuid, for threading
     kind: assistant_message      # see kinds below
     role: assistant              # user | assistant | system | null
+    model: claude-opus-4-6       # (b) assistant turns: which model produced it
+    stop_reason: tool_use        # (b) end_turn | tool_use | max_tokens | ...
+    stop_details: null           # (b) verbatim when present
+    stop_sequence: null          # (b)
     at: "2026-04-14T02:27:16.236Z"   # timestamp (UTC, may be null)
     queued: false                # whether this was queued (see queue below)
     summary: "..."               # one line; policy TBD, adjustable later
@@ -98,7 +102,7 @@ events:
       source_tool_assistant_uuid: <uuid|null>  # on tool_result records
       tool_use_id: toolu_01X8...     # on tool_call/tool_result, pairs them
 
-    # --- tokens: full usage, verbatim, on assistant messages ---
+    # --- tokens: all counts, named (NO raw passthrough) ---
     tokens:
       input: 3
       output: 322
@@ -107,14 +111,29 @@ events:
       ephemeral_1h: 10619
       ephemeral_5m: 0
       service_tier: standard
-      raw: { ...entire usage object... }   # keep everything, unflattened too
+      iterations:                    # per-internal-round-trip breakdown, named
+        - { input: 3, output: 322, cache_read: 13834, cache_creation: 10619 }
 
     # --- tool events add: ---
     tool:
       name: Agent
       use_id: toolu_01X8...
-      input: { ... }                 # verbatim
+      input: { ... }                 # the tool's arguments (structured, named)
       result_ref: <event id of the result>
+      is_error: false                # (b) did the tool call fail
+      duration_ms: 307               # (b) from toolUseResult.durationMs
+      result:                        # (b) named fields from toolUseResult
+        content: "..."               #   the text result the model saw
+        # tool-specific, named (only what we display; follow source for the rest):
+        stdout: "..."                #   Bash
+        stderr: "..."                #   Bash
+        interrupted: false
+        structured_patch: [ ... ]    #   Edit/Write diffs
+        num_files: 3                 #   Glob/Grep
+      subagent_tokens:               # (b) for Agent calls — subagent's own totals
+        total_tokens: 45231
+        total_tool_use_count: 12
+        tool_stats: { ... }
       # NOTE: no `approval:` field — these logs carry no per-tool approve/deny.
       # Add it later if a newer example log includes real approval data.
     # Agent tool events also link to the nested story:
@@ -124,17 +143,32 @@ events:
 
   - id: ...
     agent: main
-    kind: unknown                # FALLBACK: preserves raw for anything new
-    summary: "queue-operation"
+    kind: unknown                # FALLBACK ONLY: unrecognized record type.
+    summary: "some-new-type"
     source: { file: ..., line: ... }
-    detail: { raw: { ...original json... } }
+    detail: { raw: { ...original json... } }   # raw kept ONLY for unknown
 ```
+
+### The schema is the contract — no raw for known types
+
+Every event has `source: {file, line}` and the source logs are **committed**, so
+the raw record is always one hop away for a human. Therefore:
+
+- **Known event kinds store only named fields. No `raw`/source-JSON blob.** The
+  renderer reads the schema, never the original log. Anything we want to display
+  must be promoted to a named field here first.
+- **`raw` survives on exactly one kind: `unknown`** — the fallback for record
+  types we don't recognize yet, so nothing is silently lost while we're still
+  discovering the format. When we learn a new type, we give it named fields and
+  it stops being `unknown`.
 
 ### Notes on the required fields
 
-- **Tokens**: the log's `usage` object is rich (input/output, cache creation &
-  read, `ephemeral_1h`/`ephemeral_5m`, `service_tier`, per-`iterations`
-  breakdown). Capture named fields *and* keep `raw` so nothing is lost.
+- **Tokens**: capture every count as a **named field** — input/output, cache
+  creation & read, `ephemeral_1h`/`ephemeral_5m`, `service_tier`, and the
+  per-`iterations` breakdown as a named list. No `raw` passthrough. Subagent
+  totals (`total_tokens`, `total_tool_use_count`, `tool_stats`) come from the
+  spawning `Agent` call's `toolUseResult` and live under `tool.subagent_tokens`.
 - **Provenance**: jsonl is one record per line, so `{file, line}` is exact.
   Content blocks within a record share that record's line.
 - **Queued**: `queue-operation` events (`operation: enqueue`, etc.) carry
@@ -145,10 +179,15 @@ events:
   (only global `permission-mode` change events and `stop_hook_summary` hooks), so
   we emit no approval field. Newer Claude logs may include real approval data; we
   add it when an example with it appears.
-- **Agent identity**: `isSidechain` is `false` in the main log and `true` in
-  subagent files (which share the session id but have their own parentUuid
-  chain). Every event gets `agent:` so subagent and main events coexist in one
-  document and can be filtered/grouped by conversation.
+- **Agent identity**: records carry an explicit `agentId` in subagent files; use
+  it directly for `agent:` (fall back to `main` when absent). `isSidechain`
+  (`false` in the main log, `true` in subagent files) corroborates it. Every
+  event gets `agent:` so subagent and main events coexist in one document and can
+  be filtered/grouped by conversation.
+- **Newly captured (b)**: `model`, `stop_reason`/`stop_details`/`stop_sequence`
+  on assistant turns; `tool.is_error` and `tool.duration_ms`; the named
+  `tool.result` fields (content, stdout/stderr, structured_patch, …); and
+  `tool.subagent_tokens`. These were previously in the log but not in the schema.
 
 ### Event `kind`s (initial set + fallback)
 
@@ -220,12 +259,21 @@ test/
 - **Schema first**: design the intermediate on paper before coding.
 - **Subagents**: included in the one document; every event carries an `agent:` id.
 - **Provenance**: every event records `source: {file, line}`.
-- **Tokens**: `tokens.raw` is the source of truth (preserves `iterations` and the
-  `ephemeral_*` cache-TTL breakdown); headline named fields exposed for
-  convenience. Model `iterations` in detail only if/when we display it.
+- **Schema is the contract**: known event kinds store **only named fields** — no
+  raw/source-JSON blob and the renderer never reads the original log. Provenance
+  (`source: {file, line}`) into the committed source logs is the human escape
+  hatch. `raw` survives only on the `unknown` fallback kind.
+- **Tokens**: every count is a **named field** (input, output, cache
+  creation/read, `ephemeral_1h`/`ephemeral_5m`, `service_tier`, and `iterations`
+  as a named list). No raw. Subagent totals live under `tool.subagent_tokens`.
   - `ephemeral_1h`/`ephemeral_5m` = input tokens written to the 1-hour vs
     5-minute prompt cache tiers. `iterations` = per-internal-round-trip token
     breakdown within one recorded assistant turn (aggregate lives at top level).
+- **More named fields (b)**: `model`, `stop_reason`/`stop_details`/
+  `stop_sequence`, `tool.is_error`, `tool.duration_ms`, named `tool.result`
+  fields, and `tool.subagent_tokens`.
+- **Agent identity (c)**: use the record's explicit `agentId` for `agent:`
+  (fall back to `main`); `isSidechain` corroborates.
 - **Approval**: not present in these example logs, so not emitted. Add it when a
   newer example log includes real approval data.
 - **Timezone**: display timestamps in **UTC**; time-of-day is a detail-view

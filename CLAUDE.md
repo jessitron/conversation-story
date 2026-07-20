@@ -26,8 +26,12 @@ Input Logs  ->  Intermediate YAML  ->  Output HTML (static)
 
 - **Ruby**, managed via rbenv/asdf (`.ruby-version`). **Stdlib-first**
   (`json`, `yaml`, `erb`); only dev dep is `minitest`. No Rails.
-- **Never drop log data.** Unknown event types route to a generic `unknown`
-  event that preserves the raw JSON, so nothing is lost (a README constraint).
+- **The schema is the contract.** Known event kinds store only *named* fields —
+  no raw source-JSON blob, and the renderer reads the schema, never the original
+  log. Anything to be displayed must first be promoted to a named field. The
+  human escape hatch is provenance: every event has `source: {file, line}` into
+  the committed source logs. Only the `unknown` fallback kind keeps `raw`, so
+  unrecognized record types aren't silently lost (a README constraint).
 - **`examples/` are golden fixtures.** Test the parser against both
   `episode-8-before` and `episode-8-after`.
 - **`out/` is committed** (not gitignored); examples ship with the repo and can
