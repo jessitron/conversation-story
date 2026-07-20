@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conversation Story — Design Prototype</title>
+<!-- Fonts via CDN for the prototype only; the real static build SELF-HOSTS these
+     (Tenor Sans / Sen / Cascadia Code). See notes/plan.md. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cascadia+Code:wght@400;600&family=Tenor+Sans&family=Sen:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="story.css">
+</head>
+<body>
+
+<header class="site">
+  <img class="logo" src="../images/logo.png" alt="Graceful Developer logo">
+  <div class="titles">
+    <h1 class="deco">Conversation Story</h1>
+    <span class="subtitle">episode&nbsp;8 · before</span>
+  </div>
+  <div class="meta">
+    <div class="stat"><span class="k">Events</span><span class="v">224</span></div>
+    <div class="stat"><span class="k">Duration</span><span class="v">8m&nbsp;41s</span></div>
+    <div class="stat"><span class="k">Model</span><span class="v">Opus&nbsp;4.6</span></div>
+    <div class="stat"><span class="k">Branch</span><span class="v">main</span></div>
+  </div>
+</header>
+
+<div class="shell">
+  <main class="timeline">
+    <p class="rail-label deco">claude code</p>
+
+    <!-- ============================================================
+         Event cards — static HTML, one <a> anchor per event.
+         Sample events (one per kind) shaped like the intermediate schema
+         (see notes/plan.md). Each card is deep-linkable (id + href="#event-N")
+         and carries its drill-in markup in a <template class="detail">; JS
+         clones it into the sidebar on select. Detail rendering is deliberately
+         generic here; per-kind detail views come later. Provenance values are
+         placeholder.
+         ============================================================ -->
+    <div id="cards">
+
+      <!-- user -->
+      <a class="card k-user" id="event-1" href="#event-1" data-time="02:27:16">
+        <div class="gutter">
+          <span class="kind deco">User</span>
+          <span class="who">Jess</span>
+        </div>
+        <div class="body">
+          <div class="summary">Let's design the intermediate schema on paper first, before writing any Ruby.</div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">Message</h4>
+            <div class="d-text">Let's design the intermediate schema on paper first, before writing any Ruby.
+
+I want to get the shape right so the renderer only ever reads the schema, never the original log.</div>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>42</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+          <div class="d-footer">
+            <button type="button" class="copy-ref" data-copy="episode-8-before:42" title="Copy event id to clipboard"><code>episode-8-before:42</code><span class="copy-hint">copy</span></button>
+          </div>
+        </template>
+      </a>
+
+      <!-- thinking -->
+      <a class="card k-thinking" id="event-2" href="#event-2" data-time="02:27:18">
+        <div class="gutter">
+          <span class="kind deco">Thinking</span>
+          <span class="who">assistant</span>
+        </div>
+        <div class="body">
+          <div class="summary">The user wants a paper-first schema. I should enumerate the observed event types and fold in the required fields…</div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">Reasoning</h4>
+            <div class="d-text">The user wants a paper-first schema. Let me enumerate the observed top-level types (user, assistant, system, attachment…) and make sure every required field is folded in: tokens, provenance, queued status, linking data, per-event agent identity, wall-clock time.</div>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>59</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+          <div class="d-footer">
+            <button type="button" class="copy-ref" data-copy="episode-8-before:59" title="Copy event id to clipboard"><code>episode-8-before:59</code><span class="copy-hint">copy</span></button>
+          </div>
+        </template>
+      </a>
+
+      <!-- assistant -->
+      <a class="card k-assistant" id="event-3" href="#event-3" data-time="02:27:24">
+        <div class="gutter">
+          <span class="kind deco">Assistant</span>
+          <span class="who">Claude</span>
+        </div>
+        <div class="body">
+          <div class="summary">Here's a proposed schema: one ordered list of events, each with a tiny summary and a detail payload. Unknown records fall back to a generic event so nothing is dropped.</div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">Message</h4>
+            <div class="d-text">Here's a proposed schema: one ordered list of events, each with a tiny `summary` (default view) and a `detail` payload (drill-in). Everything in the log is representable; unknown records fall back to a generic event so nothing is dropped.</div>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Tokens</h4>
+            <div class="token-grid">
+              <div class="cell"><div class="k">input</div><div class="v">3</div></div>
+              <div class="cell"><div class="k">output</div><div class="v">322</div></div>
+              <div class="cell"><div class="k">cache creation</div><div class="v">10,619</div></div>
+              <div class="cell"><div class="k">cache read</div><div class="v">13,834</div></div>
+            </div>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Turn</h4>
+            <dl class="kv"><dt>stop_reason</dt><dd><code>end_turn</code></dd></dl>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>76</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+          <div class="d-footer">
+            <button type="button" class="copy-ref" data-copy="episode-8-before:76" title="Copy event id to clipboard"><code>episode-8-before:76</code><span class="copy-hint">copy</span></button>
+          </div>
+        </template>
+      </a>
+
+      <!-- tool_call — Read -->
+      <a class="card k-tool_call" id="event-4" href="#event-4" data-time="02:28:02">
+        <div class="gutter">
+          <span class="kind deco">Tool Call</span>
+          <span class="who">Claude</span>
+        </div>
+        <div class="body">
+          <div class="summary"><b>Read</b> <code>notes/plan.md</code></div>
+          <div class="badges"><span class="badge tool">Read</span></div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">Tool call — Read</h4>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Fields</h4>
+            <dl class="kv">
+              <dt>Tool</dt><dd><code>Read</code></dd>
+              <dt>use_id</dt><dd><code>toolu_01X8…f3</code></dd>
+              <dt>file_path</dt><dd><code>notes/plan.md</code></dd>
+            </dl>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Input</h4>
+            <pre class="code">{
+  "file_path": "notes/plan.md"
+}</pre>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>93</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+          <div class="d-footer">
+            <button type="button" class="copy-ref" data-copy="episode-8-before:93" title="Copy event id to clipboard"><code>episode-8-before:93</code><span class="copy-hint">copy</span></button>
+          </div>
+        </template>
+      </a>
+
+      <!-- tool_result -->
+      <a class="card k-tool_result" id="event-5" href="#event-5" data-time="02:28:02">
+        <div class="gutter">
+          <span class="kind deco">Tool Result</span>
+          <span class="who">system</span>
+        </div>
+        <div class="body">
+          <div class="summary">Read 296 lines from <code>notes/plan.md</code> (12.4 KB).</div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">Tool result</h4>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Fields</h4>
+            <dl class="kv">
+              <dt>For</dt><dd><code>toolu_01X8…f3</code></dd>
+              <dt>Duration</dt><dd><code>307 ms</code></dd>
+              <dt>Error</dt><dd><code>false</code></dd>
+              <dt>Lines</dt><dd><code>296</code></dd>
+            </dl>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>110</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+          <div class="d-footer">
+            <button type="button" class="copy-ref" data-copy="episode-8-before:110" title="Copy event id to clipboard"><code>episode-8-before:110</code><span class="copy-hint">copy</span></button>
+          </div>
+        </template>
+      </a>
+
+      <!-- tool_call — Bash (failed) -->
+      <a class="card k-tool_call" id="event-6" href="#event-6" data-time="02:29:11">
+        <div class="gutter">
+          <span class="kind deco">Tool Call</span>
+          <span class="who">Claude</span>
+        </div>
+        <div class="body">
+          <div class="summary"><b>Bash</b> <code>ruby -v && bundle exec rake test</code></div>
+          <div class="badges"><span class="badge tool">Exec</span><span class="badge err">Error</span></div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">Tool call — Bash</h4>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Fields</h4>
+            <dl class="kv">
+              <dt>Tool</dt><dd><code>Bash</code></dd>
+              <dt>use_id</dt><dd><code>toolu_02Kd…9a</code></dd>
+              <dt>Error</dt><dd><code>true</code></dd>
+              <dt>Exit</dt><dd><code>1</code></dd>
+            </dl>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Input</h4>
+            <pre class="code">ruby -v && bundle exec rake test</pre>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>127</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+          <div class="d-footer">
+            <button type="button" class="copy-ref" data-copy="episode-8-before:127" title="Copy event id to clipboard"><code>episode-8-before:127</code><span class="copy-hint">copy</span></button>
+          </div>
+        </template>
+      </a>
+
+      <!-- tool_call — Write -->
+      <a class="card k-tool_call" id="event-7" href="#event-7" data-time="02:30:15">
+        <div class="gutter">
+          <span class="kind deco">Tool Call</span>
+          <span class="who">Claude</span>
+        </div>
+        <div class="body">
+          <div class="summary"><b>Write</b> <code>lib/conversation_story/parser.rb</code></div>
+          <div class="badges"><span class="badge tool">Write</span></div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">Tool call — Write</h4>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Fields</h4>
+            <dl class="kv">
+              <dt>Tool</dt><dd><code>Write</code></dd>
+              <dt>use_id</dt><dd><code>toolu_04Rm…c7</code></dd>
+              <dt>file_path</dt><dd><code>lib/conversation_story/parser.rb</code></dd>
+            </dl>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Input</h4>
+            <pre class="code">require "json"
+
+module ConversationStory
+  class Parser
+    # …
+  end
+end</pre>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>144</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+          <div class="d-footer">
+            <button type="button" class="copy-ref" data-copy="episode-8-before:144" title="Copy event id to clipboard"><code>episode-8-before:144</code><span class="copy-hint">copy</span></button>
+          </div>
+        </template>
+      </a>
+
+      <!-- subagent -->
+      <a class="card k-subagent" id="event-8" href="#event-8" data-time="02:31:40">
+        <div class="gutter">
+          <span class="kind deco">Subagent</span>
+          <span class="who">Explore</span>
+        </div>
+        <div class="body">
+          <div class="summary"><b>Agent</b> spawned <code>Explore</code> — “find every top-level event type in the example logs.”</div>
+          <div class="badges"><span class="badge agent">Subagent</span><span class="badge tok">45,231 tok</span><span class="badge tok">12 tools</span></div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">Subagent — Explore</h4>
+            <div class="d-text">Description: “Explore the example logs and enumerate every distinct top-level event `type` value, with counts.”
+
+→ opens its own nested story (same document shape, recursively).</div>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Fields</h4>
+            <dl class="kv">
+              <dt>agent_id</dt><dd><code>agent-ae2065…95e</code></dd>
+              <dt>agent_type</dt><dd><code>Explore</code></dd>
+              <dt>spawned_by</dt><dd><code>toolu_07Qz…b1</code></dd>
+              <dt>total_tokens</dt><dd><code>45,231</code></dd>
+              <dt>tool_uses</dt><dd><code>12</code></dd>
+            </dl>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>161</code></dd>
+              <dt>agent</dt><dd><code>agent-ae2065…95e</code></dd>
+            </dl>
+          </div>
+          <div class="d-footer">
+            <button type="button" class="copy-ref" data-copy="episode-8-before:161" title="Copy event id to clipboard"><code>episode-8-before:161</code><span class="copy-hint">copy</span></button>
+          </div>
+        </template>
+      </a>
+
+      <!-- system -->
+      <a class="card k-system" id="event-9" href="#event-9" data-time="02:35:02">
+        <div class="gutter">
+          <span class="kind deco">System</span>
+          <span class="who">system</span>
+        </div>
+        <div class="body">
+          <div class="summary">Stop hook summary — turn complete in 12.3s across 41 messages.</div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">System event</h4>
+            <div class="d-text">stop_hook_summary — deferred to a later version (hooks). Shown here as summary-only for now.</div>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Fields</h4>
+            <dl class="kv">
+              <dt>level</dt><dd><code>info</code></dd>
+              <dt>turn_duration</dt><dd><code>12,340 ms</code></dd>
+              <dt>message_count</dt><dd><code>41</code></dd>
+              <dt>prevented_continuation</dt><dd><code>false</code></dd>
+            </dl>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>178</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+          <div class="d-footer">
+            <button type="button" class="copy-ref" data-copy="episode-8-before:178" title="Copy event id to clipboard"><code>episode-8-before:178</code><span class="copy-hint">copy</span></button>
+          </div>
+        </template>
+      </a>
+
+    </div>
+  </main>
+
+  <aside class="detail" id="sidebar">
+    <div class="resizer" id="resizer"></div>
+    <div class="d-head">
+      <span class="kind deco" id="d-kind">Detail</span>
+      <span class="d-time" id="d-time"></span>
+      <button class="close" id="d-clear" title="Clear selection">◇</button>
+      <button class="close" id="d-close" title="Collapse sidebar">×</button>
+    </div>
+    <div class="d-body" id="d-body">
+      <div class="empty-detail">
+        <div class="mark">❖</div>
+        <p>Select an event to see its details.</p>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<button class="reopen deco" id="reopen">Details</button>
+
+<script src="story.js"></script>
+</body>
+</html>

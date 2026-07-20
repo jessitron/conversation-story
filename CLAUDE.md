@@ -7,7 +7,7 @@ Read `README.md` for the architecture and vision (the four "Mountains", constrai
 and `notes/plan.md` for the current design — especially the settled **Decisions**.
 The **intermediate schema** (the `story.yaml` contract) has its own file,
 `notes/intermediate-schema.md`. For the **page look & feel**, see
-`design-prototype.html` (a static art-deco mockup with sample cards) plus
+`assets/design-prototype.html` (a static art-deco mockup with sample cards) plus
 `notes/2026-07-20-session-2-design-prototype.md` and
 `notes/2026-07-20-session-5-prototype-cleanup.md`.
 

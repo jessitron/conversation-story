@@ -8,7 +8,7 @@ require "time"
 module ConversationStory
   # Turns an intermediate document (the hash loaded from a story.yaml) into a
   # static HTML page via ERB. The renderer reads ONLY the schema — never the
-  # original log — and reproduces the look of design-prototype.html by reusing
+  # original log — and reproduces the look of assets/design-prototype.html by reusing
   # assets/story.css + assets/story.js as-is and generating only the per-event
   # card HTML and the header stats.
   class Renderer
