@@ -174,6 +174,57 @@
 
   /* per-kind accent colors */
   .card.k-user       { --kind: var(--blue); }
+
+  /* User messages come from "the other side" — right-align them like a chat. */
+  .card.k-user {
+    grid-template-columns: 1fr 118px;
+    margin-left: 15%;
+    border-left: 1px solid var(--line);
+    border-right: 4px solid var(--kind);
+    background: #fff;
+    text-align: right;
+  }
+  .card.k-user .gutter { order: 2; }
+  .card.k-user .body   { order: 1; }
+  .card.k-user .gutter .kind { color: var(--kind); }
+  .card.k-user .body .summary { text-align: right; }
+  .card.k-user .body .badges { justify-content: flex-end; }
+  .card.k-user:hover { transform: translateX(-2px); }
+  .card.k-user.active { box-shadow: 3px 4px 0 var(--kind); }
+
+  /* Assistant → the user: the headline of the conversation. Make it stand out. */
+  .card.k-assistant {
+    border-left-width: 5px;
+    background: #fff;
+    padding: 18px 22px;
+    box-shadow: -2px 3px 0 rgba(13,25,64,0.06), 0 5px 18px rgba(13,25,64,0.09);
+  }
+  .card.k-assistant .gutter .kind { color: var(--navy); }
+  .card.k-assistant .body .summary {
+    font-family: var(--font-head);
+    font-size: 17px; line-height: 1.5; color: var(--ink);
+    -webkit-line-clamp: 4;
+  }
+
+  /* Background machinery: present, but quieter than the conversation. */
+  .card.k-thinking,
+  .card.k-tool_call,
+  .card.k-tool_result,
+  .card.k-system {
+    background: transparent;
+    padding: 8px 16px;
+    opacity: 0.7;
+  }
+  .card.k-thinking:hover,
+  .card.k-tool_call:hover,
+  .card.k-tool_result:hover,
+  .card.k-system:hover { opacity: 1; }
+  .card.k-thinking .body .summary,
+  .card.k-tool_call .body .summary,
+  .card.k-tool_result .body .summary,
+  .card.k-system .body .summary {
+    font-size: 13px; color: var(--ink-soft);
+  }
   .card.k-assistant  { --kind: var(--navy); }
   .card.k-thinking   { --kind: var(--orange); }
   .card.k-tool_call  { --kind: var(--gold); }
@@ -279,6 +330,18 @@
     font-size: 11px; cursor: pointer;
   }
   body.sidebar-collapsed .reopen { display: block; }
+
+  /* Leader line: connects the active card to the detail pane */
+  .connector {
+    position: fixed; z-index: 20; pointer-events: none;
+    height: 0; border-top: 2px dashed var(--kind, var(--gold));
+    display: none;
+  }
+  .connector::after {   /* a small node where it meets the sidebar */
+    content: ""; position: absolute; right: -4px; top: -4px;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--kind, var(--gold));
+  }
 </style>
 </head>
 <body>
@@ -321,6 +384,7 @@
 </div>
 
 <button class="reopen" id="reopen">Details</button>
+<div class="connector" id="connector"></div>
 
 <script>
 /* ------------------------------------------------------------------
@@ -431,6 +495,8 @@ const sidebar = document.getElementById('sidebar');
 const dKind = document.getElementById('d-kind');
 const dTime = document.getElementById('d-time');
 const dBody = document.getElementById('d-body');
+const connector = document.getElementById('connector');
+let activeIndex = null;
 
 function selectCard(i) {
   document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
@@ -474,6 +540,34 @@ function selectCard(i) {
 
   dBody.innerHTML = html;
   dBody.scrollTop = 0;
+
+  activeIndex = i;
+  positionConnector();
+}
+
+/* draw the leader line from the active card's right edge to the sidebar */
+function positionConnector() {
+  if (activeIndex === null || body.classList.contains('sidebar-collapsed')) {
+    connector.style.display = 'none';
+    return;
+  }
+  const card = document.querySelector(`.card[data-i="${activeIndex}"]`);
+  const cardRect = card.getBoundingClientRect();
+  const barRect = sidebar.getBoundingClientRect();
+  const midY = cardRect.top + cardRect.height / 2;
+
+  // hide if the card has scrolled out of view
+  if (cardRect.bottom < 0 || cardRect.top > window.innerHeight) {
+    connector.style.display = 'none';
+    return;
+  }
+  const left = cardRect.right;
+  const width = Math.max(0, barRect.left - left);
+  connector.style.display = 'block';
+  connector.style.left = left + 'px';
+  connector.style.top = midY + 'px';
+  connector.style.width = width + 'px';
+  connector.style.setProperty('--kind', getComputedStyle(card).getPropertyValue('--kind'));
 }
 
 function escapeHtml(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
@@ -491,12 +585,18 @@ function clearSelection() {
   dTime.textContent = '';
   sidebar.style.setProperty('--kind', 'var(--gold)');
   dBody.innerHTML = EMPTY_HTML;
+  activeIndex = null;
+  positionConnector();
 }
 
 /* ---- collapse / reopen / clear ---- */
-document.getElementById('d-close').addEventListener('click', () => body.classList.add('sidebar-collapsed'));
+document.getElementById('d-close').addEventListener('click', () => { body.classList.add('sidebar-collapsed'); positionConnector(); });
 document.getElementById('d-clear').addEventListener('click', clearSelection);
-document.getElementById('reopen').addEventListener('click', () => body.classList.remove('sidebar-collapsed'));
+document.getElementById('reopen').addEventListener('click', () => { body.classList.remove('sidebar-collapsed'); positionConnector(); });
+
+/* keep the leader line pinned to the card as things move */
+window.addEventListener('scroll', positionConnector, { passive: true });
+window.addEventListener('resize', positionConnector);
 
 /* ---- drag to resize ---- */
 const resizer = document.getElementById('resizer');
@@ -506,6 +606,7 @@ window.addEventListener('mousemove', e => {
   if (!dragging) return;
   const w = Math.min(720, Math.max(300, window.innerWidth - e.clientX));
   document.documentElement.style.setProperty('--sidebar-w', w + 'px');
+  positionConnector();
 });
 window.addEventListener('mouseup', () => { dragging = false; body.classList.remove('resizing'); });
 
