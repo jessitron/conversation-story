@@ -60,16 +60,21 @@ Rakefile                      # task runner: knows phase dependencies, shells ou
 bin/
   parse                       # PROGRAM: jsonl -> intermediate story.yaml
   render                      # PROGRAM: story.yaml -> index.html
+assets/                       # AUTHORED shared front-end assets — source of truth
+  story.css                   # the whole design (extracted from design-prototype.html)
+  story.js                    # interactivity only (deep-link selection, resize, …)
+  fonts/                      # self-hosted woff2 (TODO; prototype still uses the CDN)
 lib/
   conversation_story/
     parser.rb                 # jsonl -> document (Ruby hash), with fallbacks
     schema.rb                 # document/event value objects + validation
     renderer.rb               # document -> HTML via ERB
-    templates/                # ERB: page + event-card partial
+    templates/                # ERB: page + event-card partial (code-coupled)
 out/                          # generated site — COMMITTED (Jess's choice)
+  assets/                     # COPIED from /assets at build time (generated)
   <name>/
     story.yaml                # intermediate YAML (parse output; hand-editable)
-    index.html                # rendered page (render output)
+    index.html                # rendered page; links ../assets/story.css + .js
 test/
   parser_test.rb              # golden-fixture tests against examples/
   fixtures/
@@ -98,6 +103,16 @@ test/
   "hand-edit the intermediate" constraint just works and gh-pages ignores it.
 - `out/` is **committed** (not gitignored), so examples ship with the repo and
   can be pushed to `gh-pages` when Jess chooses.
+- **Shared assets live in top-level `assets/`, not `lib/`.** `story.css`/`story.js`
+  are inert static files shared by *every* page (the only per-page difference is
+  the card HTML + header stats), so they sit at the site level. ERB templates,
+  by contrast, stay in `lib/.../templates/` because they're code-coupled (the
+  renderer binds variables into them). `bin/render` copies `assets/` ->
+  `out/assets/` each build (stdlib `FileUtils.cp_r`; a rake file-task can make it
+  incremental). Pages link them with **relative** paths (`../assets/story.css`),
+  never absolute — a gh-pages project subpath (`/conversation-story/`) breaks
+  `/assets/…` but not `../assets/…`. `design-prototype.html` links the same
+  `assets/` files, so the mockup and the shipped pages can never drift.
 
 ## Deferred to a later version
 

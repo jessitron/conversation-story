@@ -1,0 +1,107 @@
+/* ============================================================
+   Conversation Story — shared page script (interactivity only).
+   Authored here (source of truth). The build copies this to
+   out/assets/story.js; both design-prototype.html and every generated page
+   link it. No event data lives here — it reads everything from the DOM.
+   ============================================================ */
+
+/* ------------------------------------------------------------------
+   The cards and their detail payloads are static HTML in the page (each card
+   owns a <template class="detail">); this script just wires up selection,
+   collapse/reopen, and drag-to-resize.
+
+   Selection is driven by the URL fragment (#event-N), so every event is
+   deep-linkable and shareable. Cards are <a href="#event-N"> anchors, which
+   also makes them keyboard-focusable and Enter-activatable for free.
+------------------------------------------------------------------ */
+const body    = document.body;
+const sidebar = document.getElementById('sidebar');
+const dKind   = document.getElementById('d-kind');
+const dTime   = document.getElementById('d-time');
+const dBody   = document.getElementById('d-body');
+const cards   = document.querySelectorAll('.card');
+const DEFAULT_CARD = document.querySelector('.card.k-assistant');  // so the page is never empty
+
+/* the empty-state markup that ships in the sidebar; restored on clear */
+const EMPTY_HTML = dBody.innerHTML;
+
+/* update the URL fragment without scrolling or firing hashchange.
+   Wrapped because some browsers block history writes on file:// URLs —
+   selection must still work even when the URL can't be updated. */
+function setFragment(frag) {
+  try { history.replaceState(null, '', frag); } catch (_) { /* file:// */ }
+}
+
+/* show a card's detail in the sidebar (pure UI — does not touch the URL) */
+function selectCard(card) {
+  cards.forEach(c => c.classList.remove('active'));
+  card.classList.add('active');
+
+  body.classList.remove('sidebar-collapsed');
+  dKind.textContent = card.querySelector('.gutter .kind').textContent;
+  dTime.textContent = card.dataset.time + ' UTC';
+  sidebar.style.setProperty('--kind', getComputedStyle(card).getPropertyValue('--kind'));
+
+  dBody.replaceChildren(card.querySelector('template.detail').content.cloneNode(true));
+  dBody.scrollTop = 0;
+}
+
+/* deselect any card but keep the sidebar open and empty */
+function clearSelection() {
+  cards.forEach(c => c.classList.remove('active'));
+  body.classList.remove('sidebar-collapsed');
+  dKind.textContent = 'Detail';
+  dTime.textContent = '';
+  sidebar.style.setProperty('--kind', 'var(--line-strong)');
+  dBody.innerHTML = EMPTY_HTML;
+}
+
+/* URL fragment -> selection. Unknown/empty fragment falls back to the default
+   card so the page is never empty. Used on load and on hashchange; scrolls the
+   target into view only when arriving via a real fragment (deep link). */
+function syncFromHash() {
+  const id = decodeURIComponent(location.hash.slice(1));
+  const card = id ? document.getElementById(id) : null;
+  const target = (card && card.classList.contains('card')) ? card : DEFAULT_CARD;
+  selectCard(target);
+  if (location.hash) target.scrollIntoView({ block: 'center' });
+}
+
+/* one delegated listener on the container: a click anywhere in a card selects
+   it and writes its id to the URL (shareable), WITHOUT the native jump-to-anchor
+   scroll — the detail shows in the sticky sidebar. Modified clicks (⌘/ctrl/…)
+   fall through so "open link in new tab" still works. */
+document.getElementById('cards').addEventListener('click', e => {
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  const card = e.target.closest('.card');
+  if (!card) return;
+  e.preventDefault();
+  if (card.classList.contains('active')) return;   // already showing; nothing to do
+  setFragment('#' + card.id);
+  selectCard(card);
+});
+
+/* deep links, back/forward, and hand-edited fragments */
+window.addEventListener('hashchange', syncFromHash);
+
+/* ---- collapse / reopen / clear ---- */
+document.getElementById('d-close').addEventListener('click', () => body.classList.add('sidebar-collapsed'));
+document.getElementById('d-clear').addEventListener('click', () => {
+  setFragment(location.pathname + location.search);   // drop the #event-N
+  clearSelection();
+});
+document.getElementById('reopen').addEventListener('click', () => body.classList.remove('sidebar-collapsed'));
+
+/* ---- drag to resize ---- */
+const resizer = document.getElementById('resizer');
+let dragging = false;
+resizer.addEventListener('mousedown', e => { dragging = true; body.classList.add('resizing'); e.preventDefault(); });
+window.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  const w = Math.min(720, Math.max(300, window.innerWidth - e.clientX));
+  document.documentElement.style.setProperty('--sidebar-w', w + 'px');
+});
+window.addEventListener('mouseup', () => { dragging = false; body.classList.remove('resizing'); });
+
+/* initial paint: honor a deep link if present, else open the default card */
+syncFromHash();
