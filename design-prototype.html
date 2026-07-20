@@ -38,6 +38,10 @@
 
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; }
+  /* clip the off-page leader lines so they never create a horizontal scrollbar.
+     overflow-x: clip (not hidden) doesn't create a scroll container, so it
+     leaves the sticky sidebar's vertical scrolling untouched. */
+  html { overflow-x: clip; }
   body {
     font-family: var(--font-body);
     color: var(--ink);
@@ -135,6 +139,19 @@
     border-color: var(--kind, var(--gold));
     box-shadow: -3px 4px 0 var(--kind, var(--gold));
   }
+
+  /* Leader line to the detail pane: an in-flow pseudo-element anchored to the
+     card, so it scrolls (and rubber-band bounces) together with the card.
+     It runs off the right of the page and is clipped by html{overflow-x:clip};
+     the sidebar paints on top of it, so it reads as "going behind" the pane.
+     Only shown for the active card. */
+  .card::after {
+    content: ""; position: absolute;
+    top: 50%; left: 100%; width: 100vw;
+    border-top: 2px dotted var(--kind, var(--gold));
+    opacity: 0; pointer-events: none;
+  }
+  .card.active::after { opacity: 1; }
 
   .card .gutter {
     font-size: 11px; letter-spacing: 0.06em; color: var(--ink-faint);
@@ -330,18 +347,6 @@
     font-size: 11px; cursor: pointer;
   }
   body.sidebar-collapsed .reopen { display: block; }
-
-  /* Leader line: connects the active card to the detail pane */
-  .connector {
-    position: fixed; z-index: 20; pointer-events: none;
-    height: 0; border-top: 2px dashed var(--kind, var(--gold));
-    display: none;
-  }
-  .connector::after {   /* a small node where it meets the sidebar */
-    content: ""; position: absolute; right: -4px; top: -4px;
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--kind, var(--gold));
-  }
 </style>
 </head>
 <body>
@@ -384,7 +389,6 @@
 </div>
 
 <button class="reopen" id="reopen">Details</button>
-<div class="connector" id="connector"></div>
 
 <script>
 /* ------------------------------------------------------------------
@@ -495,8 +499,6 @@ const sidebar = document.getElementById('sidebar');
 const dKind = document.getElementById('d-kind');
 const dTime = document.getElementById('d-time');
 const dBody = document.getElementById('d-body');
-const connector = document.getElementById('connector');
-let activeIndex = null;
 
 function selectCard(i) {
   document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
@@ -540,34 +542,6 @@ function selectCard(i) {
 
   dBody.innerHTML = html;
   dBody.scrollTop = 0;
-
-  activeIndex = i;
-  positionConnector();
-}
-
-/* draw the leader line from the active card's right edge to the sidebar */
-function positionConnector() {
-  if (activeIndex === null || body.classList.contains('sidebar-collapsed')) {
-    connector.style.display = 'none';
-    return;
-  }
-  const card = document.querySelector(`.card[data-i="${activeIndex}"]`);
-  const cardRect = card.getBoundingClientRect();
-  const barRect = sidebar.getBoundingClientRect();
-  const midY = cardRect.top + cardRect.height / 2;
-
-  // hide if the card has scrolled out of view
-  if (cardRect.bottom < 0 || cardRect.top > window.innerHeight) {
-    connector.style.display = 'none';
-    return;
-  }
-  const left = cardRect.right;
-  const width = Math.max(0, barRect.left - left);
-  connector.style.display = 'block';
-  connector.style.left = left + 'px';
-  connector.style.top = midY + 'px';
-  connector.style.width = width + 'px';
-  connector.style.setProperty('--kind', getComputedStyle(card).getPropertyValue('--kind'));
 }
 
 function escapeHtml(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
@@ -585,18 +559,12 @@ function clearSelection() {
   dTime.textContent = '';
   sidebar.style.setProperty('--kind', 'var(--gold)');
   dBody.innerHTML = EMPTY_HTML;
-  activeIndex = null;
-  positionConnector();
 }
 
 /* ---- collapse / reopen / clear ---- */
-document.getElementById('d-close').addEventListener('click', () => { body.classList.add('sidebar-collapsed'); positionConnector(); });
+document.getElementById('d-close').addEventListener('click', () => body.classList.add('sidebar-collapsed'));
 document.getElementById('d-clear').addEventListener('click', clearSelection);
-document.getElementById('reopen').addEventListener('click', () => { body.classList.remove('sidebar-collapsed'); positionConnector(); });
-
-/* keep the leader line pinned to the card as things move */
-window.addEventListener('scroll', positionConnector, { passive: true });
-window.addEventListener('resize', positionConnector);
+document.getElementById('reopen').addEventListener('click', () => body.classList.remove('sidebar-collapsed'));
 
 /* ---- drag to resize ---- */
 const resizer = document.getElementById('resizer');
@@ -606,7 +574,6 @@ window.addEventListener('mousemove', e => {
   if (!dragging) return;
   const w = Math.min(720, Math.max(300, window.innerWidth - e.clientX));
   document.documentElement.style.setProperty('--sidebar-w', w + 'px');
-  positionConnector();
 });
 window.addEventListener('mouseup', () => { dragging = false; body.classList.remove('resizing'); });
 
