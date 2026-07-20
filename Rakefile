@@ -1,85 +1,65 @@
 # frozen_string_literal: true
-
-# Phases of the pipeline, as named tasks. Run `rake -T` to list them.
 #
-#   rake parse   examples/*.jsonl        -> out/<name>/story.yaml
-#   rake render  out/*/story.yaml        -> out/<name>/index.html
-#   rake build   parse then render
-#   rake serve   serve out/ on :8080
-#   rake test    golden-fixture tests
+# The pipeline is two SEPARATE PROGRAMS — bin/parse and bin/render — that share
+# nothing at runtime except the intermediate story.yaml on disk. This Rakefile
+# is only the task runner: it knows the dependency (a page needs its story.yaml,
+# which needs its log) and shells out to each program in its own process.
 #
-# Default is ALL examples. Override for one-offs with env vars:
-#   LOG=examples/episode-8-before.jsonl rake parse
-#   NAME=episode-8-before rake render
+#   rake parse    bin/parse:  examples/<name>.jsonl -> out/<name>/story.yaml
+#   rake render   bin/render: out/<name>/story.yaml -> out/<name>/index.html
+#   rake build    parse then render, dependency-ordered
+#   rake serve    serve out/ on :8080
+#   rake test     golden-fixture tests
+#
+# Default is ALL examples. Scope to one with LOG= :
+#   LOG=examples/episode-8-before.jsonl rake build
 #   PORT=9000 rake serve
 
-require "yaml"
-require "fileutils"
+LOGS = ENV["LOG"] ? FileList[ENV["LOG"]] : FileList["examples/*.jsonl"]
 
-require_relative "lib/conversation_story"
+def name_for(log)  = File.basename(log, ".jsonl")
+def story_for(log) = File.join("out", name_for(log), "story.yaml")
+def page_for(log)  = File.join("out", name_for(log), "index.html")
 
-EXAMPLES_DIR = "examples"
-OUT_DIR      = "out"
+stories = []
+pages   = []
 
-# The example name (basename without .jsonl) for a given log path.
-def name_for(log_path)
-  File.basename(log_path, ".jsonl")
-end
+LOGS.each do |log|
+  story   = story_for(log)
+  page    = page_for(log)
+  out_dir = File.dirname(story)
+  stories << story
+  pages   << page
 
-# Logs to process: LOG=… for one, otherwise every examples/*.jsonl.
-def logs_to_parse
-  return [ENV["LOG"]] if ENV["LOG"]
+  directory out_dir
 
-  Dir.glob(File.join(EXAMPLES_DIR, "*.jsonl")).sort
-end
+  # bin/parse: log -> intermediate YAML. Re-runs when the log is newer.
+  file story => [log, out_dir] do
+    sh "ruby", "bin/parse", log, "-o", story
+  end
 
-# story.yaml files to render: NAME=… for one, otherwise every out/*/story.yaml.
-def stories_to_render
-  return [File.join(OUT_DIR, ENV["NAME"], "story.yaml")] if ENV["NAME"]
-
-  Dir.glob(File.join(OUT_DIR, "*", "story.yaml")).sort
-end
-
-desc "Parse conversation logs into intermediate story.yaml (LOG=path for one)"
-task :parse do
-  logs = logs_to_parse
-  abort "No logs found in #{EXAMPLES_DIR}/*.jsonl" if logs.empty?
-
-  logs.each do |log_path|
-    name = name_for(log_path)
-    dest_dir = File.join(OUT_DIR, name)
-    dest = File.join(dest_dir, "story.yaml")
-    FileUtils.mkdir_p(dest_dir)
-
-    document = ConversationStory::Parser.new(log_path).to_document
-    File.write(dest, YAML.dump(document))
-    puts "parsed  #{log_path} -> #{dest}"
+  # bin/render: YAML -> page. Depends on the YAML, so asking for the page runs
+  # bin/parse first when the story is missing or stale. That's the dependency
+  # the Rakefile owns; the two programs never call each other.
+  file page => story do
+    sh "ruby", "bin/render", story, "-o", page
   end
 end
 
-desc "Render story.yaml into index.html (NAME=example for one)"
-task :render do
-  stories = stories_to_render
-  abort "No story.yaml found. Run `rake parse` first." if stories.empty?
+desc "Parse logs into intermediate story.yaml (LOG=path to scope to one)"
+task parse: stories
 
-  stories.each do |story_path|
-    dest = File.join(File.dirname(story_path), "index.html")
+desc "Render story.yaml into index.html (runs parse first when needed)"
+task render: pages
 
-    document = YAML.safe_load_file(story_path)
-    html = ConversationStory::Renderer.new(document).to_html
-    File.write(dest, html)
-    puts "rendered #{story_path} -> #{dest}"
-  end
-end
-
-desc "Parse then render (LOG=/NAME= to scope to one example)"
-task build: %i[parse render]
+desc "Parse then render"
+task build: :render
 
 desc "Serve out/ as a static site (PORT=8080 by default)"
 task :serve do
   port = ENV.fetch("PORT", "8080")
-  puts "Serving #{OUT_DIR}/ at http://localhost:#{port}  (Ctrl-C to stop)"
-  sh "ruby", "-run", "-e", "httpd", OUT_DIR, "-p", port
+  puts "Serving out/ at http://localhost:#{port}  (Ctrl-C to stop)"
+  sh "ruby", "-run", "-e", "httpd", "out", "-p", port
 end
 
 desc "Run the golden-fixture tests"

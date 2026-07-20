@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# render — a standalone program. Turns an intermediate story YAML into a static
+# HTML page. It reads ONLY the YAML (the contract) — never the original log —
+# and shares nothing with the parser at runtime.
+#
+#   bin/render STORY [-o OUTPUT]  # OUTPUT defaults to stdout
+
+require "yaml"
+require_relative "../lib/conversation_story/renderer"
+
+input = nil
+output = nil
+args = ARGV.dup
+until args.empty?
+  arg = args.shift
+  case arg
+  when "-o", "--output" then output = args.shift
+  when "-h", "--help"   then warn "usage: render STORY [-o OUTPUT]"; exit 0
+  else input = arg
+  end
+end
+abort "usage: render STORY [-o OUTPUT]" unless input
+
+document = YAML.safe_load_file(input)
+html = ConversationStory::Renderer.new(document).to_html
+output ? File.write(output, html) : $stdout.write(html)

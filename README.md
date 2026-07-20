@@ -16,28 +16,40 @@ The output HTML is a static site. There is minimal JS to support interactivity.
 
 The intermediate description is YAML to describe what will be on the page. It includes all the information needed to generate the output, and not more.
 
-We're building this app in Ruby. Each phase of the pipeline is a **rake task**:
-parse (Input Logs -> Intermediate), render (Intermediate -> Output HTML), and serve.
+We're building this app in Ruby. Parse and render are **two separate programs**
+(`bin/parse` and `bin/render`) that share nothing at runtime except the
+intermediate `story.yaml` on disk. Rake is just the task runner — it knows the
+dependency between the phases and shells out to each program.
 
 ## Running it
 
-Ruby only (see `.ruby-version`); the pipeline uses stdlib (`json`, `yaml`, `erb`)
+Ruby only (see `.ruby-version`); the programs use stdlib (`json`, `yaml`, `erb`)
 and rake, which ships with Ruby. The one dev dependency is `minitest`.
 
 ```sh
 rake -T        # list all tasks
-rake parse     # examples/*.jsonl  -> out/<name>/story.yaml   (intermediate YAML)
-rake render    # out/*/story.yaml  -> out/<name>/index.html   (the page)
-rake build     # parse then render
+rake parse     # bin/parse:  examples/*.jsonl -> out/<name>/story.yaml
+rake render    # bin/render: out/*/story.yaml -> out/<name>/index.html
+rake build     # parse then render (dependency-ordered)
 rake serve     # serve out/ at http://localhost:8080
 rake test      # golden-fixture tests
 ```
 
-**Default is all examples.** Override for a single one with env vars:
+Because `rake` tracks the dependency, asking for the page (`rake render` /
+`rake build`) runs `bin/parse` first when a `story.yaml` is missing or older
+than its log.
+
+The programs also run standalone if you want to pipe them by hand:
 
 ```sh
-LOG=examples/episode-8-before.jsonl rake parse   # parse just this log
-NAME=episode-8-before rake render                # render just this story
+bin/parse examples/episode-8-before.jsonl -o out/episode-8-before/story.yaml
+bin/render out/episode-8-before/story.yaml -o out/episode-8-before/index.html
+```
+
+**Default is all examples.** Scope to one with env vars:
+
+```sh
+LOG=examples/episode-8-before.jsonl rake build   # just this example
 PORT=9000 rake serve                             # serve on a different port
 ```
 

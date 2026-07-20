@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# parse — a standalone program. Turns a Claude conversation log (a .jsonl file
+# plus its sibling subagent directory) into the intermediate story YAML.
+#
+# This program shares NOTHING with the renderer at runtime. Its only output is
+# the YAML file, which is the contract the renderer later consumes.
+#
+#   bin/parse LOG [-o OUTPUT]     # OUTPUT defaults to stdout
+
+require "yaml"
+require_relative "../lib/conversation_story/parser"
+
+input = nil
+output = nil
+args = ARGV.dup
+until args.empty?
+  arg = args.shift
+  case arg
+  when "-o", "--output" then output = args.shift
+  when "-h", "--help"   then warn "usage: parse LOG [-o OUTPUT]"; exit 0
+  else input = arg
+  end
+end
+abort "usage: parse LOG [-o OUTPUT]" unless input
+
+document = ConversationStory::Parser.new(input).to_document
+yaml = YAML.dump(document)
+output ? File.write(output, yaml) : $stdout.write(yaml)

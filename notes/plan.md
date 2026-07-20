@@ -208,7 +208,10 @@ renderer handles them with the same code.
 ```
 .ruby-version                 # for rbenv/asdf
 Gemfile                       # minimal; minitest only to start
-Rakefile                      # phase tasks: parse / render / serve / test
+Rakefile                      # task runner: knows phase dependencies, shells out
+bin/
+  parse                       # PROGRAM: jsonl -> intermediate story.yaml
+  render                      # PROGRAM: story.yaml -> index.html
 lib/
   conversation_story/
     parser.rb                 # jsonl -> document (Ruby hash), with fallbacks
@@ -224,17 +227,23 @@ test/
   fixtures/
 ```
 
-- **Phases are rake tasks**, not shell scripts. `rake -T` lists them; the logic
-  lives in `lib/` classes (tasks stay thin wrappers). Rake ships with Ruby, so
-  no new dep, and the everyday commands (`rake parse`, `rake render`,
-  `rake serve`) are simple enough to allowlist without bash-approval friction.
+- **Parse and render are two SEPARATE PROGRAMS** (`bin/parse`, `bin/render`).
+  They are not two functions in one process — each requires only its own `lib/`
+  code and they share nothing at runtime except the `story.yaml` on disk (the
+  contract). `bin/parse` could be swapped for a different-source parser later
+  without the renderer knowing.
+- **Rake is only the task runner.** It owns the *dependency* between the phases
+  (a page needs its `story.yaml`, which needs its log) via file tasks, and shells
+  out to each program in its own process. `rake -T` lists tasks; the everyday
+  commands are simple enough to allowlist without bash-approval friction.
   - `rake parse`  — every `examples/*.jsonl` -> `out/<name>/story.yaml`
-  - `rake render` — every `out/*/story.yaml` -> `out/<name>/index.html`
+  - `rake render` — every `out/*/story.yaml` -> `out/<name>/index.html` (runs
+    parse first when a story is missing or stale)
+  - `rake build`  — parse then render
   - `rake serve`  — serve `out/` (`ruby -run -e httpd out -p 8080`)
   - `rake test`   — minitest golden fixtures
-- **Default is all examples; env vars override for one-offs.** e.g.
-  `LOG=examples/episode-8-before.jsonl rake parse`,
-  `NAME=episode-8-before rake render`.
+- **Default is all examples; `LOG=` scopes to one.** e.g.
+  `LOG=examples/episode-8-before.jsonl rake build`.
 - **Stdlib-first**: `json`, `yaml`, `erb` are built in. Only dev dep is
   `minitest`. No Rails.
 - Intermediate YAML lives in `out/<name>/story.yaml` alongside its page, so the
