@@ -153,8 +153,12 @@ the raw record is always one hop away for a human. Therefore:
 - **Queued**: `queue-operation` events (`operation: enqueue`, etc.) carry
   `content` referencing a `tool-use-id` and `task-id`. The visible `enqueue`
   event stores that content in `detail.text` (e.g. a "…failed with exit code 1"
-  notification). Resolving these to set `queued: true` on the *related*
-  conversational event is still TBD.
+  notification). The bare `dequeue` marker is hidden (no content of its own);
+  instead, the parser matches it to whichever event actually delivers that
+  content — a `task_notification` by `task-id`, or a plain queued Jess message
+  by exact text match — and sets `dequeued: true` there, so the renderer can
+  flag "this arrived via the queue, not as an ordinary turn" on the event that
+  has something to show.
 - **Approval**: these example logs contain **no per-tool approve/deny record**
   (only global `permission-mode` change events and `stop_hook_summary` hooks), so
   we emit no approval field. Newer Claude logs may include real approval data; we

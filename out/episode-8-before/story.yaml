@@ -1414,6 +1414,7 @@ events:
   link_ids:
   - queue:b18a2ol71
   - tool:toolu_01FUkRJFakAtnNtN5VwzdgMT
+  hidden: true
 - id: a68cbe0e-8a9c-4fb6-9209-0ff71dcbb565
   ref: episode-8-before:61
   agent: main
@@ -1463,6 +1464,7 @@ events:
       <status>completed</status>
       <summary>Background command "Start dev server on alternate ports 4982/5175" completed (exit code 0)</summary>
       </task-notification>
+  dequeued: true
   link_ids:
   - queue:b18a2ol71
   - tool:toolu_01FUkRJFakAtnNtN5VwzdgMT
@@ -4079,6 +4081,7 @@ events:
   operation: dequeue
   link_ids:
   - queue:line-174
+  hidden: true
 - id: 12df8ff6-1eec-4d1d-ada3-9c2afcdc0265
   ref: episode-8-before:177
   agent: main
@@ -4122,6 +4125,9 @@ events:
   detail:
     text: no! I'm sorry. I mean, what could we change about the context here that
       would have told you these things?
+  dequeued: true
+  link_ids:
+  - queue:line-174
 - id: a9ff92aa-78b6-4550-86e5-a6a8e7147f73
   ref: episode-8-before:180
   agent: main

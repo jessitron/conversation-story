@@ -236,6 +236,7 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 .badge.tok   { border-color: var(--blue); color: var(--blue); }
 .badge.err   { border-color: var(--red); color: #fff; background: var(--red); }
 .badge.agent { border-color: var(--red); color: var(--red); }
+.badge.queue { border-color: var(--olive); color: var(--olive); }
 
 /* ---- kind → color table ----
    The single place to recolor a kind. Every card reads var(--kind); these

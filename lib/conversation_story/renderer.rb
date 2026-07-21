@@ -164,6 +164,7 @@ module ConversationStory
                when "tool_result" then tool_result_badges(event)
                else []
                end
+      badges << %(<span class="badge queue">Dequeued</span>) if event["dequeued"]
       return "" if badges.empty?
 
       %(<div class="badges">#{badges.join}</div>)
