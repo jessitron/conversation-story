@@ -44,11 +44,30 @@ function selectCard(card) {
 
   dBody.replaceChildren(card.querySelector('template.detail').content.cloneNode(true));
   dBody.scrollTop = 0;
+  updateRelated(card);
+}
+
+/* ---- causal-chain highlight ----
+   The parser links causally-related events (a tool call and its result, a
+   queue enqueue and its dequeue, the tool call that started a background task
+   and the notification it eventually delivers) with a shared token in the
+   card's data-link attribute. Selecting a card lights up every OTHER card
+   that shares one of its tokens, so the connection is visible without
+   hunting through the log for a matching id. */
+function linkTokens(card) {
+  return (card.dataset.link || '').split(' ').filter(Boolean);
+}
+function updateRelated(activeCard) {
+  const tokens = new Set(linkTokens(activeCard));
+  cards.forEach(c => {
+    c.classList.toggle('related', tokens.size > 0 && c !== activeCard &&
+      linkTokens(c).some(t => tokens.has(t)));
+  });
 }
 
 /* deselect any card but keep the sidebar open and empty */
 function clearSelection() {
-  cards.forEach(c => c.classList.remove('active'));
+  cards.forEach(c => c.classList.remove('active', 'related'));
   body.classList.remove('sidebar-collapsed');
   dKind.textContent = 'Detail';
   dTime.textContent = '';
@@ -121,6 +140,18 @@ dBody.addEventListener('click', e => {
   const btn = e.target.closest('.copy-ref');
   if (!btn) return;
   copyText(btn.dataset.copy).then(() => flashCopied(btn)).catch(() => {});
+});
+
+/* ---- focus mode: hide the background-machinery cards (thinking, tool calls
+   and results, system/queue chatter) so only the actual back-and-forth with
+   Jess shows. A CSS class toggle — no data is removed, so switching back
+   loses nothing and deep links into a hidden card still work (the click
+   listener and #cards still see it; only its box is display:none). ---- */
+const focusToggle = document.getElementById('focus-toggle');
+focusToggle.addEventListener('click', () => {
+  const on = body.classList.toggle('focus-mode');
+  focusToggle.textContent = on ? 'Show everything' : 'Just the conversation';
+  focusToggle.setAttribute('aria-pressed', String(on));
 });
 
 /* ---- collapse / reopen / clear ---- */

@@ -117,5 +117,64 @@ class ParserTest < Minitest::Test
       # the JS defaults selection to a .k-assistant card; make sure one exists
       assert_includes html, "card k-assistant"
     end
+
+    define_method("test_#{name}_tool_calls_have_named_tool_fields") do
+      doc = ConversationStory::Parser.new(log).to_document
+      calls = doc["events"].select { |e| e["kind"] == "tool_call" }
+      refute_empty calls, "expected some tool_call events"
+      calls.each do |e|
+        assert e.dig("tool", "name"), "tool_call #{e["ref"]} missing tool.name"
+        assert e.dig("tool", "use_id"), "tool_call #{e["ref"]} missing tool.use_id"
+      end
+    end
+
+    define_method("test_#{name}_tool_call_and_result_share_a_link_id") do
+      doc = ConversationStory::Parser.new(log).to_document
+      events = doc["events"]
+      calls_by_use_id = events.select { |e| e["kind"] == "tool_call" }
+                              .to_h { |e| [e.dig("tool", "use_id"), e] }
+      paired = events.select { |e| e["kind"] == "tool_result" && calls_by_use_id[e.dig("tool", "use_id")] }
+      refute_empty paired, "expected at least one tool_result to pair with its tool_call"
+
+      paired.each do |result|
+        call = calls_by_use_id[result.dig("tool", "use_id")]
+        token = "tool:#{result.dig("tool", "use_id")}"
+        assert_includes call["link_ids"] || [], token
+        assert_includes result["link_ids"] || [], token
+      end
+    end
+  end
+
+  # episode-8-before:63 is a delivered <task-notification> — a background
+  # result arriving as a plain `user` record. It is NOT something Jess typed,
+  # and its whole point is the human-readable <summary> field inside the XML.
+  def test_task_notification_is_not_attributed_to_jess_and_extracts_summary
+    log = File.expand_path("../examples/episode-8-before.jsonl", __dir__)
+    doc = ConversationStory::Parser.new(log).to_document
+    note = doc["events"].find { |e| e["kind"] == "task_notification" }
+
+    refute_nil note, "expected a task_notification event in episode-8-before"
+    assert_equal "system", ConversationStory::Renderer::WHO[note["kind"]]
+    refute_match(/<task-notification>/, note["summary"],
+                 "summary should be the extracted <summary> text, not the raw XML")
+    assert_includes note["summary"], "completed"
+  end
+
+  # The enqueue, its dequeue, and the eventual task_notification delivery are
+  # one lifecycle for one background task; dequeue/remove carry no id of their
+  # own, so pairing with their enqueue is positional (FIFO), and the
+  # originating tool_call joins via the tool-use-id embedded in the XML.
+  def test_queue_lifecycle_and_notification_share_a_link_id
+    log = File.expand_path("../examples/episode-8-before.jsonl", __dir__)
+    doc = ConversationStory::Parser.new(log).to_document
+    events = doc["events"]
+
+    enqueue = events.find { |e| e["kind"] == "queue_operation" && e["operation"] == "enqueue" }
+    notification = events.find { |e| e["kind"] == "task_notification" }
+    refute_nil enqueue
+    refute_nil notification
+
+    shared = (enqueue["link_ids"] || []) & (notification["link_ids"] || [])
+    refute_empty shared, "the enqueue and the notification it eventually delivers should share a link token"
   end
 end

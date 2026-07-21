@@ -2,16 +2,7 @@
 
 ## now
 
-- make the HTML in messages display as HTML; but in the summary, make sure it doesn't truncate into something malformed.
-- make tool calls look like the tool calls in the prototype
-- when I click a tool call, result, or related system notification, the others in that causal chain light up too
-- a mode where fewer of the details show
-- why does episode-8-before:9 just say "Thinking..." ? That's boring.
-- let's add the filename into Tool call: Read summaries
-- actually none of the tool calls are showing me their arguments, uncool
-- system messages are not from me, don't say they came from Jess.
-- in an event like episode-8-before:63, the content contains XML and one of those fields is `<summary>` and that is what we wanna display in the summary
-- I need a way to see the connection between queue and dequeue, they need to light up together
+(all cleared as of 2026-07-20 — see notes/2026-07-20-session-7-tool-calls-and-linking.md)
 
 ## later
 
@@ -19,3 +10,13 @@
   it (e.g. a frontmatter flag or sidecar lock file the parse task checks). Note:
   rake's mtime rule already skips re-parsing when the story is newer than its
   log, but that's not an explicit "leave this alone" signal — we want one.
+- self-host the fonts (Tenor Sans / Sen / Cascadia Code) into `assets/fonts/`
+  with `@font-face` in `story.css`, replacing the CDN `<link>`.
+- the deterministic HTML well-formedness check (plan.md TODO).
+- Mountain 2: block-level cards (split thinking/text/tool_use within one
+  record into separate cards — right now a record is still one card, just
+  classified by its single content block), richer per-kind detail, subagent
+  nesting (inline a spawned Agent's own story instead of just linking to it).
+- the `<ol>`/`<ul>` merge in `Markdown` only re-glues *adjacent* same-type
+  blocks; a loose list interrupted by an aside paragraph would still split.
+  Fine for what's in the example logs; revisit if a real log hits it.

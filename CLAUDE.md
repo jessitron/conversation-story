@@ -56,13 +56,39 @@ program's source changes — not just when `story.yaml` is stale).
   (all `queue_operation`s incl. dequeue/remove markers, `queued_command`,
   `task_reminder`) live in `parser.rb`'s `HIDDEN_*` constants and are explained
   in `notes/2026-07-20-session-6-hidden-events.md`.
+- **Assistant records are classified by their one content block**, not always
+  `assistant_message`: `tool_use` → `tool_call` (with named `tool.name`,
+  `tool.use_id`, `tool.input`, `tool.primary_arg`), `thinking` → `thinking`,
+  else `assistant_message`. Every assistant record in the example logs carries
+  exactly one block — this is still one-event-per-line, not Mountain 2
+  block-splitting. `tool_result` events carry named `tool.{use_id,is_error,
+  duration_ms,result}` pulled from the record's content block + `toolUseResult`.
+- A background task's result delivered mid-conversation as a `<task-notification>`
+  XML blob gets its own kind, `task_notification` (not `user_message` — it's
+  not something Jess typed); its summary is the extracted `<summary>` field.
+- **`ConversationStory::Markdown`** (`lib/conversation_story/markdown.rb`) is a
+  small, safe markdown-subset renderer used for prose detail text
+  (user/assistant messages, reasoning). Escapes raw text before any markdown
+  substitution, so no input can inject real HTML.
+- **Causal-chain linking**: the parser tags related events (a `tool_call` and
+  its `tool_result`; a queue `enqueue`/`dequeue`/`remove`; the `task_notification`
+  it eventually delivers; the originating background `tool_call`) with shared
+  tokens in `link_ids`. The renderer emits them as a `data-link` attribute;
+  `story.js` highlights every card sharing a token with the active one
+  (`.card.related`). See `notes/2026-07-20-session-7-tool-calls-and-linking.md`.
+- **Focus mode**: a header toggle (`#focus-toggle`) adds `body.focus-mode`,
+  which hides every card that isn't `k-user`/`k-assistant` — pure CSS/JS, no
+  data changes.
 
 Run things with `rake parse` / `render` / `build` / `serve` / `test` (all
-examples by default; `LOG=`/`PORT=` env vars to scope). See README.md.
+examples by default; `LOG=`/`PORT=` env vars to scope). See README.md. Note:
+the Rakefile's `RENDER_SRC`/`PARSE_SRC` lists source files explicitly (not a
+glob) — a new `lib/` file needs adding there or `rake build` won't notice it
+changed.
 
 Still TODO: **self-host the fonts** (Tenor Sans / Sen / Cascadia Code) into
 `assets/fonts/` with `@font-face` in `story.css`, replacing the CDN `<link>` the
 prototype + generated pages still use; the **deterministic HTML well-formedness
-check** (plan.md TODO); then **Mountain 2** (interactivity: block-level cards,
-richer per-kind detail, subagent nesting). See the session-5 note for the full
-open-threads list.
+check** (plan.md TODO); then **Mountain 2** (real block-splitting, richer
+per-kind detail, subagent nesting). See TODO.md and the session-7 note for the
+current open-threads list.

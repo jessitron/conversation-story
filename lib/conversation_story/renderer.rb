@@ -4,6 +4,7 @@ require "erb"
 require "cgi"
 require "json"
 require "time"
+require_relative "markdown"
 
 module ConversationStory
   # Turns an intermediate document (the hash loaded from a story.yaml) into a
@@ -19,50 +20,64 @@ module ConversationStory
     # share the quiet `system` treatment; `unknown` keeps its own class so the
     # fallback is visually spottable.
     CSS_KIND = Hash.new { |_h, k| k }.merge(
-      "user_message"     => "user",
-      "assistant_message"=> "assistant",
-      "thinking"         => "thinking",
-      "tool_call"        => "tool_call",
-      "tool_result"      => "tool_result",
-      "subagent"         => "subagent",
-      "system"           => "system",
-      "attachment"       => "system",
-      "file_snapshot"    => "system",
-      "permission_mode"  => "system",
-      "queue_operation"  => "system",
-      "unknown"          => "unknown",
+      "user_message"      => "user",
+      "assistant_message" => "assistant",
+      "thinking"          => "thinking",
+      "tool_call"         => "tool_call",
+      "tool_result"       => "tool_result",
+      "subagent"          => "subagent",
+      "system"            => "system",
+      "attachment"        => "system",
+      "file_snapshot"     => "system",
+      "permission_mode"   => "system",
+      "queue_operation"   => "system",
+      "task_notification" => "system",
+      "unknown"           => "unknown",
     ).freeze
 
     KIND_LABEL = {
       "user_message"      => "User",
       "assistant_message" => "Assistant",
-      "thinking"          => "Thinking",
-      "tool_call"         => "Tool Call",
-      "tool_result"       => "Tool Result",
-      "subagent"          => "Subagent",
-      "system"            => "System",
-      "attachment"        => "Attachment",
-      "file_snapshot"     => "Snapshot",
-      "permission_mode"   => "Permission",
-      "queue_operation"   => "Queue",
-      "unknown"           => "Unknown",
+      "thinking"           => "Thinking",
+      "tool_call"          => "Tool Call",
+      "tool_result"        => "Tool Result",
+      "subagent"           => "Subagent",
+      "system"             => "System",
+      "attachment"         => "Attachment",
+      "file_snapshot"      => "Snapshot",
+      "permission_mode"    => "Permission",
+      "queue_operation"    => "Queue",
+      "task_notification"  => "Task Notification",
+      "unknown"            => "Unknown",
     }.freeze
 
     # the actor shown in the card gutter (by kind, not role: a tool_result is a
-    # user-role record but comes from the system, not the human).
+    # user-role record but comes from the system, not the human — and so is a
+    # task_notification, a background result delivered mid-conversation).
     WHO = Hash.new("system").merge(
       "user_message"      => "Jess",
       "assistant_message" => "Claude",
       "thinking"          => "Claude",
+      "tool_call"         => "Claude",
     ).freeze
 
     DETAIL_HEADING = Hash.new("Detail").merge(
       "user_message"      => "Message",
       "assistant_message" => "Message",
       "thinking"          => "Reasoning",
-      "tool_result"       => "Tool result",
       "system"            => "System event",
+      "task_notification" => "Notification",
     ).freeze
+
+    # detail text for these kinds is conversational prose written in markdown;
+    # everything else (tool output, XML/system blobs — including
+    # task_notification, whose body is the <task-notification> XML, not prose)
+    # is shown as literal text.
+    MARKDOWN_KINDS = %w[user_message assistant_message thinking].freeze
+
+    # tool_use input keys big enough that they get their own "Input" section
+    # instead of a Fields row.
+    BLOB_INPUT_KEYS = %w[command content prompt].freeze
 
     # @param document [Hash] the intermediate document (from YAML).
     def initialize(document)
@@ -106,27 +121,161 @@ module ConversationStory
              kind_label:   h(KIND_LABEL.fetch(kind, kind)),
              who:          h(WHO[kind]),
              data_time:    h(time_of_day(event["at"])),
-             summary_html: h(event["summary"]),
+             link_attr:    link_attr(event),
+             summary_html: summary_html(event),
+             badges_html:  badges_html(event),
              detail_html:  detail_html(event))
+    end
+
+    # A related-events highlight hook (items 3 & 10): the parser already
+    # figured out which events are causally linked (a tool_call and its
+    # tool_result; a queue enqueue, its dequeue, and the delivered
+    # task_notification; the tool_call that spawned a background task) and
+    # gave every event in a chain a shared token in `link_ids`. Cards just
+    # carry the tokens as a data attribute; assets/story.js does the matching.
+    def link_attr(event)
+      ids = event["link_ids"]
+      return "" if ids.nil? || ids.empty?
+
+      %( data-link="#{h ids.join(" ")}")
+    end
+
+    # ---- summary (card face) --------------------------------------------------
+
+    def summary_html(event)
+      return tool_call_summary_html(event) if event["kind"] == "tool_call"
+
+      h(event["summary"])
+    end
+
+    # Matches the prototype's tool-call look: bold tool name, the primary
+    # argument as an inline code chip (item 2, 6, 7 — tool calls were showing
+    # neither their name distinctly nor their arguments at all).
+    def tool_call_summary_html(event)
+      tool = event["tool"] || {}
+      name = %(<b>#{h tool["name"]}</b>)
+      arg  = tool["primary_arg"]
+      arg ? %(#{name} <code>#{h arg}</code>) : name
+    end
+
+    def badges_html(event)
+      badges = case event["kind"]
+               when "tool_call"   then tool_call_badges(event)
+               when "tool_result" then tool_result_badges(event)
+               else []
+               end
+      return "" if badges.empty?
+
+      %(<div class="badges">#{badges.join}</div>)
+    end
+
+    def tool_call_badges(event)
+      [%(<span class="badge tool">#{h event.dig("tool", "name")}</span>)]
+    end
+
+    def tool_result_badges(event)
+      badges = []
+      name = event.dig("tool", "name")
+      badges << %(<span class="badge tool">#{h name}</span>) if name
+      badges << %(<span class="badge err">Error</span>) if event.dig("tool", "is_error")
+      badges
     end
 
     # ---- detail (drill-in) markup -------------------------------------------
 
     def detail_html(event)
-      sections = []
-      heading = DETAIL_HEADING[event["kind"]]
-      text = event.dig("detail", "text") || event["summary"]
-      sections << section(heading, %(<div class="d-text">#{h text}</div>))
-
-      if (raw = event.dig("detail", "raw"))
-        sections << section("Raw record",
-                            %(<pre class="code">#{h JSON.pretty_generate(raw)}</pre>))
-      end
-
+      sections = kind_sections(event)
       sections << section("Provenance", provenance_dl(event))
       # The copyable event id goes last and understated — it's a debugging aid.
       sections << event_id_footer(event) if event["ref"]
       sections.join("\n")
+    end
+
+    def kind_sections(event)
+      case event["kind"]
+      when "tool_call"   then tool_call_sections(event)
+      when "tool_result" then tool_result_sections(event)
+      else generic_sections(event)
+      end
+    end
+
+    def generic_sections(event)
+      sections = [text_section(event)]
+      if (raw = event.dig("detail", "raw"))
+        sections << section("Raw record", %(<pre class="code">#{h JSON.pretty_generate(raw)}</pre>))
+      end
+      sections
+    end
+
+    # Conversational kinds (user/assistant messages, reasoning, a delivered
+    # task notification) render their text as markdown (item 1); everything
+    # else (tool dumps, XML/system blobs) stays literal preformatted text so
+    # code and structured output aren't reinterpreted as prose.
+    def text_section(event)
+      heading = DETAIL_HEADING[event["kind"]]
+      text = event.dig("detail", "text") || event["summary"]
+      if MARKDOWN_KINDS.include?(event["kind"])
+        section(heading, %(<div class="d-markdown">#{Markdown.to_html(text)}</div>))
+      else
+        section(heading, %(<div class="d-text">#{h text}</div>))
+      end
+    end
+
+    def tool_call_sections(event)
+      tool = event["tool"] || {}
+      sections = [section("Tool call — #{tool["name"]}", "")]
+      sections << section("Fields", tool_call_fields_dl(tool))
+      input_html = tool_call_input_html(tool)
+      sections << section("Input", input_html) if input_html
+      sections
+    end
+
+    def tool_call_fields_dl(tool)
+      rows = [["Tool", tool["name"]], ["use_id", tool["use_id"]]]
+      (tool["input"] || {}).each do |k, v|
+        next if BLOB_INPUT_KEYS.include?(k) || v.is_a?(Hash) || v.is_a?(Array)
+
+        rows << [k, v]
+      end
+      kv_dl(rows)
+    end
+
+    def tool_call_input_html(tool)
+      input = tool["input"] || {}
+      return nil if input.empty?
+
+      blob = BLOB_INPUT_KEYS.map { |k| input[k] }.compact.first
+      body = blob ? blob.to_s : JSON.pretty_generate(input)
+      %(<pre class="code">#{h body}</pre>)
+    end
+
+    def tool_result_sections(event)
+      tool = event["tool"] || {}
+      heading = tool["name"] ? "Tool result — #{tool["name"]}" : "Tool result"
+      sections = [section(heading, "")]
+      sections << section("Fields", tool_result_fields_dl(tool))
+      text = event.dig("detail", "text")
+      sections << section("Result", %(<div class="d-text">#{h text}</div>)) if text && !text.empty?
+      sections
+    end
+
+    def tool_result_fields_dl(tool)
+      rows = [["For", tool["use_id"]], ["Error", tool["is_error"]]]
+      rows << ["Duration", "#{tool["duration_ms"]} ms"] if tool["duration_ms"]
+
+      result = tool["result"] || {}
+      rows << ["num_files", result["num_files"]] if result["num_files"]
+      rows << ["stderr", result["stderr"]] if result["stderr"] && !result["stderr"].empty?
+
+      if (st = tool["subagent_tokens"])
+        rows << ["total_tokens", st["total_tokens"]]
+        rows << ["tool_uses", st["total_tool_use_count"]]
+      end
+      kv_dl(rows)
+    end
+
+    def kv_dl(rows)
+      %(<dl class="kv">#{rows.map { |k, v| %(<dt>#{h k}</dt><dd><code>#{h v}</code></dd>) }.join}</dl>)
     end
 
     # A quiet, click-to-copy footer for the event's human-referable id. It's a

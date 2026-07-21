@@ -22,6 +22,7 @@ LOGS = ENV["LOG"] ? FileList[ENV["LOG"]] : FileList["examples/*.jsonl"]
 # output depends on the code, not just the story.yaml on disk.
 PARSE_SRC  = FileList["bin/parse", "lib/conversation_story/parser.rb"]
 RENDER_SRC = FileList["bin/render", "lib/conversation_story/renderer.rb",
+                      "lib/conversation_story/markdown.rb",
                       "lib/conversation_story/templates/*.erb",
                       "assets/**/*", "images/**/*"]
 

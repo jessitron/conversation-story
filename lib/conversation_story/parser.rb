@@ -8,20 +8,20 @@ module ConversationStory
   # notes/intermediate-schema.md, ready to serialize as YAML.
   #
   # Mountain 1 granularity: ONE event per record (per line). The golden test
-  # asserts event_count == line count. Block-level splitting (a thinking block
-  # and a tool_use block inside one assistant record becoming their own cards)
-  # is a later mountain; here the whole record is a single card.
+  # asserts event_count == line count. Splitting an assistant record's blocks
+  # into separate cards is still out of scope — but every assistant record in
+  # the example logs carries exactly one content block, so classifying the
+  # record's `kind` by that block's type (thinking / tool_use / text) is not
+  # block-splitting, just a finer-grained `kind` for the one block present.
   #
   # The schema is the contract: known event kinds store only named fields.
   # Unrecognized record types fall back to kind `unknown` with `detail.raw` kept
   # verbatim, so nothing in the log is silently lost.
   class Parser
-    # top-level record `type` -> schema kind. `user` is refined by its content
-    # (a plain string is a message; an array carries a tool_result). Any type
-    # not listed here falls through to `unknown` (the fallback), keeping its raw
-    # record so we never lose data while still discovering the format.
+    # top-level record `type` -> schema kind, for types with a fixed kind.
+    # `user` and `assistant` are refined by content shape (see user_kind /
+    # assistant_kind). Any type not listed here falls through to `unknown`.
     TYPE_TO_KIND = {
-      "assistant"             => "assistant_message",
       "system"                => "system",
       "attachment"            => "attachment",
       "file-history-snapshot" => "file_snapshot",
@@ -46,9 +46,21 @@ module ConversationStory
     ].freeze
     # The unsent-prompt buffer (a `last-prompt` record → `unknown` fallback).
     HIDDEN_RECORD_TYPES = %w[last-prompt].freeze
-    # queue-operation stays fully visible — including the bare `dequeue`/`remove`
-    # markers — so the enqueue→deliver lifecycle (and whether a background result
-    # landed mid-turn or as its own turn) is legible.
+    # queue-operation and task_notification stay fully visible — including the
+    # bare `dequeue`/`remove` markers — so the enqueue→deliver lifecycle (and
+    # whether a background result landed mid-turn or as its own turn) is legible.
+
+    # A background task result arrives mid-conversation as a plain `user`
+    # record whose string content is this XML blob — NOT something Jess typed.
+    TASK_NOTIFICATION_TAG = "<task-notification>"
+
+    # tool_use `name` -> which input key is worth surfacing as the one-line
+    # "primary arg" (in card summaries and the Fields section). Anything not
+    # listed here shows no primary arg (just the tool name).
+    PRIMARY_ARG_KEY = {
+      "Read" => "file_path", "Write" => "file_path", "Edit" => "file_path",
+      "Bash" => "command", "Grep" => "pattern", "Glob" => "pattern",
+    }.freeze
 
     ELLIPSIS = "…"
     SUMMARY_LIMIT = 140
@@ -65,6 +77,7 @@ module ConversationStory
     def to_document
       records = read_records
       events  = records.map { |lineno, rec| build_event(lineno, rec) }
+      link_related_events!(events)
       { "meta" => build_meta(records, events), "events" => events }
     end
 
@@ -99,8 +112,9 @@ module ConversationStory
         "summary" => summary_for(kind, rec),
         "source"  => { "file" => @log_file, "line" => lineno },
       }
+      event["operation"] = rec["operation"] if kind == "queue_operation"
       add_detail(event, kind, rec)
-      add_assistant_fields(event, rec) if kind == "assistant_message"
+      add_assistant_fields(event, rec) if rec["type"] == "assistant"
       event["hidden"] = true if hidden?(kind, rec)
       event
     end
@@ -117,15 +131,35 @@ module ConversationStory
     end
 
     def kind_for(rec)
-      type = rec["type"]
-      return "unknown" unless TYPE_TO_KIND.key?(type) || type == "user"
-
-      if type == "user"
-        # a tool_result arrives as a user-role record whose content is an array
-        rec.dig("message", "content").is_a?(Array) ? "tool_result" : "user_message"
-      else
-        TYPE_TO_KIND.fetch(type)
+      case rec["type"]
+      when "user"      then user_kind(rec)
+      when "assistant" then assistant_kind(rec)
+      else TYPE_TO_KIND.fetch(rec["type"], "unknown")
       end
+    end
+
+    # a tool_result arrives as a user-role record whose content is an array; a
+    # delivered background-task result arrives as a user-role record whose
+    # string content is a <task-notification> blob — not something Jess typed.
+    def user_kind(rec)
+      content = rec.dig("message", "content")
+      return "tool_result" if content.is_a?(Array)
+      return "task_notification" if content.is_a?(String) &&
+                                     content.strip.start_with?(TASK_NOTIFICATION_TAG)
+
+      "user_message"
+    end
+
+    # every assistant record observed carries exactly one content block; its
+    # type picks the finer-grained kind (tool_use -> tool_call, thinking ->
+    # thinking, text -> assistant_message). Order matters if that ever changes:
+    # a tool_use or thinking block is more informative than an empty text block.
+    def assistant_kind(rec)
+      blocks = Array(rec.dig("message", "content"))
+      return "tool_call" if blocks.any? { |b| b["type"] == "tool_use" }
+      return "thinking" if blocks.any? { |b| b["type"] == "thinking" }
+
+      "assistant_message"
     end
 
     # (c) prefer an explicit agentId (subagent records carry one); else `main`.
@@ -138,9 +172,12 @@ module ConversationStory
 
     def summary_for(kind, rec)
       case kind
-      when "user_message"      then truncate(rec.dig("message", "content").to_s)
+      when "user_message"      then truncate(strip_markdown(rec.dig("message", "content").to_s))
       when "assistant_message" then assistant_summary(rec)
+      when "thinking"          then thinking_summary(rec)
+      when "tool_call"         then tool_call_summary(rec)
       when "tool_result"       then tool_result_summary(rec)
+      when "task_notification" then task_notification_summary(rec)
       when "system"            then system_summary(rec)
       when "attachment"        then attachment_summary(rec)
       when "file_snapshot"     then "File history snapshot"
@@ -151,20 +188,36 @@ module ConversationStory
     end
 
     def assistant_summary(rec)
-      blocks = Array(rec.dig("message", "content"))
-      text = blocks.select { |b| b["type"] == "text" }
-                   .map { |b| b["text"] }.join(" ").strip
-      return truncate(text) unless text.empty?
+      text = Array(rec.dig("message", "content"))
+             .select { |b| b["type"] == "text" }.map { |b| b["text"] }.join(" ").strip
+      truncate(strip_markdown(text))
+    end
 
-      tools = blocks.select { |b| b["type"] == "tool_use" }.map { |b| b["name"] }
-      return truncate("Tool call: #{tools.join(", ")}") unless tools.empty?
+    def thinking_summary(rec)
+      text = thinking_text(rec).strip
+      text.empty? ? "(reasoning — not captured)" : truncate(strip_markdown(text))
+    end
 
-      "Thinking#{ELLIPSIS}"
+    def tool_call_summary(rec)
+      tu = tool_use_block(rec)
+      return "Tool call" unless tu
+
+      arg = primary_arg(tu["name"], tu["input"] || {})
+      truncate(arg ? "#{tu["name"]} #{arg}" : tu["name"].to_s)
     end
 
     def tool_result_summary(rec)
       text = extract_text(rec.dig("message", "content"))
       text.empty? ? "Tool result" : truncate(text)
+    end
+
+    # the <summary> field inside the <task-notification> blob is the whole
+    # point of the notification; showing the raw XML as the summary (the old
+    # generic behavior) buried it.
+    def task_notification_summary(rec)
+      content = rec.dig("message", "content").to_s
+      inner = content[%r{<summary>(.*?)</summary>}m, 1]
+      truncate(inner || content)
     end
 
     def system_summary(rec)
@@ -187,8 +240,8 @@ module ConversationStory
 
     # ---- detail payload (drill-in) -------------------------------------------
     #
-    # Known kinds get a named `detail.text` (the renderer reads the schema, never
-    # the log). Only `unknown` keeps `detail.raw` verbatim.
+    # Known kinds get named `detail`/`tool` fields (the renderer reads the
+    # schema, never the log). Only `unknown` keeps `detail.raw` verbatim.
 
     def add_detail(event, kind, rec)
       case kind
@@ -198,9 +251,18 @@ module ConversationStory
         text = Array(rec.dig("message", "content"))
                .select { |b| b["type"] == "text" }.map { |b| b["text"] }.join("\n\n")
         event["detail"] = { "text" => text } unless text.strip.empty?
+      when "thinking"
+        text = thinking_text(rec)
+        event["detail"] = { "text" => text } unless text.strip.empty?
+      when "tool_call"
+        add_tool_call_fields(event, rec)
       when "tool_result"
         text = extract_text(rec.dig("message", "content"))
         event["detail"] = { "text" => text } unless text.empty?
+        add_tool_result_fields(event, rec)
+      when "task_notification"
+        content = rec.dig("message", "content").to_s
+        event["detail"] = { "text" => content } unless content.strip.empty?
       when "queue_operation"
         # `enqueue` carries the queued payload (a queued user message, or a
         # background <task-notification> like "…failed with exit code 1").
@@ -213,6 +275,60 @@ module ConversationStory
       when "unknown"
         event["detail"] = { "raw" => rec }
       end
+    end
+
+    def thinking_text(rec)
+      Array(rec.dig("message", "content"))
+        .select { |b| b["type"] == "thinking" }.map { |b| b["thinking"] }.join("\n\n")
+    end
+
+    def tool_use_block(rec)
+      Array(rec.dig("message", "content")).find { |b| b["type"] == "tool_use" }
+    end
+
+    def add_tool_call_fields(event, rec)
+      tu = tool_use_block(rec)
+      return unless tu
+
+      input = tu["input"] || {}
+      event["tool"] = { "name" => tu["name"], "use_id" => tu["id"], "input" => input }
+      arg = primary_arg(tu["name"], input)
+      event["tool"]["primary_arg"] = arg if arg
+    end
+
+    def primary_arg(name, input)
+      key = PRIMARY_ARG_KEY[name]
+      return truncate(input[key].to_s, 90) if key && input[key]
+      return input["subagent_type"] || input["description"] if name == "Agent"
+
+      nil
+    end
+
+    # (b) named tool-result fields from the record's own content block and its
+    # sibling `toolUseResult` (durationMs, stdout/stderr, structured_patch…).
+    def add_tool_result_fields(event, rec)
+      block = Array(rec.dig("message", "content")).first || {}
+      tool = { "use_id" => block["tool_use_id"], "is_error" => block.fetch("is_error", false) }
+
+      tur = rec["toolUseResult"]
+      if tur.is_a?(Hash)
+        tool["duration_ms"] = tur["durationMs"] || tur["totalDurationMs"]
+        result = {}
+        result["stdout"]           = tur["stdout"] if tur.key?("stdout")
+        result["stderr"]           = tur["stderr"] if tur.key?("stderr")
+        result["interrupted"]      = tur["interrupted"] if tur.key?("interrupted")
+        result["num_files"]        = tur["numFiles"] if tur.key?("numFiles")
+        result["structured_patch"] = tur["structuredPatch"] if tur["structuredPatch"]
+        tool["result"] = result unless result.empty?
+
+        if tur["totalTokens"]
+          tool["subagent_tokens"] = {
+            "total_tokens"          => tur["totalTokens"],
+            "total_tool_use_count"  => tur["totalToolUseCount"],
+          }
+        end
+      end
+      event["tool"] = tool
     end
 
     # The human-relevant body of a (visible) attachment: `queued_command` carries
@@ -245,6 +361,102 @@ module ConversationStory
         "ephemeral_5m"   => usage.dig("cache_creation", "ephemeral_5m_input_tokens"),
         "service_tier"   => usage["service_tier"],
       }
+    end
+
+    # ---- cross-event linking (item 3/10: light up the causal chain together) -
+    #
+    # Two independent pairings, both keyed by an id already carried in the log:
+    #   tool_call <-> tool_result, by the tool_use_id both sides share.
+    #   queue enqueue <-> dequeue/remove <-> the delivered task_notification,
+    #   by task-id (from the <task-notification> XML) — dequeue/remove carry no
+    #   id of their own, so pairing with their enqueue is positional (FIFO,
+    #   which is exactly what a queue is).
+    # A shared link_ids token on both events is all the renderer/JS need to
+    # highlight the whole chain together; the original background tool_call
+    # joins the chain too, via the tool-use-id embedded in the notification.
+    def link_related_events!(events)
+      calls_by_use_id = events.select { |e| e["kind"] == "tool_call" }
+                               .to_h { |e| [e.dig("tool", "use_id"), e] }
+
+      events.each do |e|
+        next unless e["kind"] == "tool_result"
+
+        use_id = e.dig("tool", "use_id")
+        call = calls_by_use_id[use_id]
+        next unless call
+
+        link!(call, e, "tool:#{use_id}")
+        name = call.dig("tool", "name")
+        e["tool"]["name"] = name
+        resummarize_tool_result!(e, name)
+      end
+
+      link_queue_lifecycle!(events, calls_by_use_id)
+    end
+
+    def resummarize_tool_result!(event, name)
+      return unless name
+
+      text = event.dig("detail", "text").to_s
+      event["summary"] = truncate(text.empty? ? "#{name} — no output" : "#{name}: #{text}")
+    end
+
+    def link_queue_lifecycle!(events, calls_by_use_id)
+      pending = []
+      events.each do |e|
+        case e["kind"]
+        when "queue_operation" then link_queue_operation!(e, pending, calls_by_use_id)
+        when "task_notification" then link_task_notification!(e, calls_by_use_id)
+        end
+      end
+    end
+
+    def link_queue_operation!(event, pending, calls_by_use_id)
+      if event["operation"] == "enqueue"
+        task_id, tool_use_id = task_notification_ids(event.dig("detail", "text"))
+        pending << { event: event, task_id: task_id, tool_use_id: tool_use_id }
+        return
+      end
+
+      enqueued = pending.shift
+      return unless enqueued
+
+      token = "queue:#{enqueued[:task_id] || "line-#{enqueued[:event].dig("source", "line")}"}"
+      link!(enqueued[:event], event, token)
+      link_to_originating_tool!(enqueued[:tool_use_id], calls_by_use_id, enqueued[:event], event)
+    end
+
+    def link_task_notification!(event, calls_by_use_id)
+      task_id, tool_use_id = task_notification_ids(event.dig("detail", "text"))
+      link_token!(event, "queue:#{task_id}") if task_id
+      link_to_originating_tool!(tool_use_id, calls_by_use_id, event)
+    end
+
+    def link_to_originating_tool!(tool_use_id, calls_by_use_id, *events)
+      return unless tool_use_id
+
+      token = "tool:#{tool_use_id}"
+      events.each { |e| link_token!(e, token) }
+      call = calls_by_use_id[tool_use_id]
+      link_token!(call, token) if call
+    end
+
+    def task_notification_ids(text)
+      return [nil, nil] unless text
+
+      [text[%r{<task-id>(.*?)</task-id>}m, 1], text[%r{<tool-use-id>(.*?)</tool-use-id>}m, 1]]
+    end
+
+    def link!(a, b, token)
+      link_token!(a, token)
+      link_token!(b, token)
+    end
+
+    def link_token!(event, token)
+      return unless event
+
+      ids = (event["link_ids"] ||= [])
+      ids << token unless ids.include?(token)
     end
 
     # ---- meta ----------------------------------------------------------------
@@ -299,6 +511,22 @@ module ConversationStory
     def truncate(str, limit = SUMMARY_LIMIT)
       s = str.to_s.gsub(/\s+/, " ").strip
       s.length > limit ? "#{s[0, limit - 1].rstrip}#{ELLIPSIS}" : s
+    end
+
+    # Cosmetic-only cleanup for one-line plain-text summaries: strip the markdown
+    # markup itself (not just leave it as literal asterisks/backticks), so a
+    # truncated summary never shows a stray unmatched `**` or backtick. The full
+    # text still gets real markdown rendering in the detail view (see
+    # ConversationStory::Markdown) — this is only for the compact summary line.
+    def strip_markdown(text)
+      text.to_s
+          .gsub(/^\#{1,6}\s+/, "")
+          .gsub(/^[-*]\s+/, "")
+          .gsub(/^\d+\.\s+/, "")
+          .gsub(/```[^\n]*\n?/, "")
+          .gsub(/(\*\*|__)(.+?)\1/, '\2')
+          .gsub(/(?<![\w*])[*_]([^*_\n]+)[*_](?!\w)/, '\1')
+          .gsub(/`([^`]+)`/, '\1')
     end
 
     # tool_result content is either a String or an array of {type:text, text:…}

@@ -98,6 +98,17 @@ header.site .meta {
   margin-left: auto; display: flex; gap: 26px;
   text-align: right;
 }
+header.site .focus-toggle {
+  margin-left: 22px; flex: 0 0 auto;
+  background: transparent; border: 1px solid rgba(247,243,234,.35);
+  color: var(--paper); border-radius: 2px;
+  font-size: 10.5px; letter-spacing: 0.1em;
+  padding: 7px 12px; cursor: pointer;
+}
+header.site .focus-toggle:hover,
+header.site .focus-toggle[aria-pressed="true"] {
+  background: rgba(247,243,234,.14); border-color: var(--yellow); color: var(--yellow);
+}
 header.site .meta .stat { display: flex; flex-direction: column; }
 header.site .meta .stat .k {
   font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
@@ -162,6 +173,19 @@ main.timeline {
   outline: 2px solid var(--kind, var(--gold));
   outline-offset: 3px;
 }
+/* The rest of a causal chain (a tool call and its result, a queue enqueue and
+   its dequeue, the call that started a background task and the notification
+   it eventually delivers) — lit up together with the active card, via a
+   shared token in data-link (see assets/story.js). Quieter than .active: this
+   is "related", not "selected". */
+.card.related {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(201,162,39,.4);
+  opacity: 1;
+}
+
+/* ---- focus mode: hide everything but the direct back-and-forth with Jess --- */
+body.focus-mode .card:not(.k-user):not(.k-assistant) { display: none; }
 
 /* Leader line to the detail pane: an in-flow pseudo-element anchored to the
    card, so it scrolls (and rubber-band bounces) together with the card.
