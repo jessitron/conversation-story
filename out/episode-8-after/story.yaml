@@ -1189,6 +1189,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 48
+  hidden: true
 - id: f2d63364-310a-4aac-9da7-bdef5b233d76
   ref: episode-8-after:49
   agent: main
@@ -2108,6 +2109,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 84
+  hidden: true
 - id: 7aa5d61b-d953-472f-8367-d023bb7b8cbd
   ref: episode-8-after:85
   agent: main
@@ -2997,6 +2999,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 122
+  hidden: true
 - id: 45df823f-1bce-4325-a0b6-1ff7456c0b4a
   ref: episode-8-after:123
   agent: main

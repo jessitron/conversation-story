@@ -985,6 +985,7 @@ events:
   source:
     file: episode-8-before.jsonl
     line: 44
+  hidden: true
 - id: 9eb8ef58-91c2-4a02-8982-a38ce59e409b
   ref: episode-8-before:45
   agent: main
@@ -1820,6 +1821,7 @@ events:
   source:
     file: episode-8-before.jsonl
     line: 79
+  hidden: true
 - id: b88e0289-4940-4659-960b-cab658c0c0eb
   ref: episode-8-before:80
   agent: main
@@ -2680,6 +2682,7 @@ events:
   source:
     file: episode-8-before.jsonl
     line: 115
+  hidden: true
 - id: 9f1e7a98-33f3-47b4-a7fd-1d38cf7c0df9
   ref: episode-8-before:116
   agent: main
@@ -3396,6 +3399,7 @@ events:
   source:
     file: episode-8-before.jsonl
     line: 144
+  hidden: true
 - id: 57de088a-fc1e-4bde-80dc-acb1becb237d
   ref: episode-8-before:145
   agent: main
@@ -4246,6 +4250,7 @@ events:
   source:
     file: episode-8-before.jsonl
     line: 187
+  hidden: true
 - id: 5c209e75-4553-4259-a779-dd91e9003202
   ref: episode-8-before:188
   agent: main

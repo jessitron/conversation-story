@@ -40,7 +40,9 @@ module ConversationStory
     # Attachment subtypes that are pure context-loading / hook plumbing. The two
     # conversation-relevant attachments stay visible: `queued_command` (delivered
     # queued input AND background <task-notification>s — "the agent being nudged")
-    # and `task_reminder` (the system nudging the agent about pending tasks).
+    # and `task_reminder` (the system nudging the agent about pending tasks) —
+    # except a `task_reminder` with itemCount 0 has nothing to show, so those
+    # are hidden individually below rather than by type.
     HIDDEN_ATTACHMENT_TYPES = %w[
       hook_success deferred_tools_delta mcp_instructions_delta skill_listing
     ].freeze
@@ -126,6 +128,9 @@ module ConversationStory
       return true if HIDDEN_RECORD_TYPES.include?(rec["type"])
       return true if kind == "attachment" &&
                      HIDDEN_ATTACHMENT_TYPES.include?(rec.dig("attachment", "type"))
+      return true if kind == "attachment" &&
+                     rec.dig("attachment", "type") == "task_reminder" &&
+                     rec.dig("attachment", "itemCount").to_i.zero?
 
       false
     end
