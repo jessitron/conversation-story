@@ -17,6 +17,14 @@ is mostly: **reuse `assets/` as-is and generate only the per-event card HTML** �
 each card is `<a class="card k-KIND" id="event-…" href="#event-…">` carrying a
 `<template class="detail">`; the URL fragment drives selection (deep-linkable).
 
+## Event references
+
+Jess refers to individual events as `<example-name>:<line>`, e.g.
+`episode-8-before:104` — the example's directory/file name, a colon, and the
+1-indexed line number in that example's main `.jsonl` log (matches `source.line`
+in the generated `story.yaml`). To look one up: find the `story.yaml` entry
+whose `ref:` matches, or `sed -n '<line>p' examples/<example-name>.jsonl`.
+
 ## Conventions
 
 - **Ruby**, managed via rbenv/asdf (`.ruby-version`). **Stdlib-first**
