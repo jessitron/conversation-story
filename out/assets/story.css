@@ -179,8 +179,8 @@ main.timeline {
    shared token in data-link (see assets/story.js). Quieter than .active: this
    is "related", not "selected". */
 .card.related {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 2px rgba(201,162,39,.4);
+  border-color: var(--kind, var(--gold));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--kind, var(--gold)) 40%, transparent);
   opacity: 1;
 }
 
