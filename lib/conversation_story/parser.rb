@@ -48,12 +48,12 @@ module ConversationStory
     ].freeze
     # The unsent-prompt buffer (a `last-prompt` record → `unknown` fallback).
     HIDDEN_RECORD_TYPES = %w[last-prompt].freeze
-    # queue-operation and task_notification stay visible — including the bare
-    # `remove` marker, so the enqueue→abandon lifecycle is legible — EXCEPT the
-    # bare `dequeue` marker, which is hidden: it carries no content of its own,
-    # and the event it delivers gets `dequeued: true` instead (see
-    # match_delivery! below), so the "took a detour through the queue" fact
-    # still shows, just on the event that actually has something to say.
+    # queue-operation and task_notification stay visible — EXCEPT the bare
+    # `dequeue`/`remove` markers, which are hidden: they carry no content of
+    # their own, and the event each one delivers gets `dequeued: true` or
+    # `removed_from_queue: true` instead (see match_delivery! below), so the
+    # "took a detour through the queue" fact still shows, just on the event
+    # that actually has something to say.
 
     # A background task result arrives mid-conversation as a plain `user`
     # record whose string content is this XML blob — NOT something Jess typed.
@@ -229,9 +229,12 @@ module ConversationStory
     # point of the notification; showing the raw XML as the summary (the old
     # generic behavior) buried it.
     def task_notification_summary(rec)
-      content = rec.dig("message", "content").to_s
-      inner = content[%r{<summary>(.*?)</summary>}m, 1]
-      truncate(inner || content)
+      summary_from_task_notification(rec.dig("message", "content").to_s)
+    end
+
+    def summary_from_task_notification(text)
+      inner = text[%r{<summary>(.*?)</summary>}m, 1]
+      truncate(inner || text)
     end
 
     def system_summary(rec)
@@ -240,10 +243,23 @@ module ConversationStory
       count ? "#{sub} — #{count} hook#{"s" unless count == 1}" : sub
     end
 
+    # `queued_command` carries the same payload shapes as a top-level
+    # `task_notification`/`user_message` (it's the same content, just delivered
+    # via the queue-detour envelope instead) — extract its <summary> the same
+    # way, so the card doesn't just say the literal type name "queued_command".
     def attachment_summary(rec)
       att = rec["attachment"] || {}
+      return queued_command_summary(att) if att["type"] == "queued_command"
+
       label = [att["type"], att["hookName"] || att["hookEvent"]].compact.join(": ")
       label.empty? ? "Attachment" : label
+    end
+
+    def queued_command_summary(att)
+      prompt = att["prompt"].to_s
+      return summary_from_task_notification(prompt) if prompt.strip.start_with?(TASK_NOTIFICATION_TAG)
+
+      truncate(prompt)
     end
 
     def queue_summary(rec)
@@ -436,7 +452,7 @@ module ConversationStory
         case e["kind"]
         when "queue_operation"
           link_queue_operation!(e, pending, awaiting_delivery, calls_by_use_id)
-        when "task_notification", "user_message"
+        when "task_notification", "user_message", "attachment"
           match_delivery!(e, awaiting_delivery)
           link_task_notification!(e, calls_by_use_id) if e["kind"] == "task_notification"
         end
@@ -458,20 +474,22 @@ module ConversationStory
       link!(enqueued[:event], event, token)
       link_to_originating_tool!(enqueued[:tool_use_id], calls_by_use_id, enqueued[:event], event)
 
-      # A bare `dequeue` marker carries no content of its own — it's redundant
-      # once the delivered event downstream is tagged `dequeued: true` (below),
-      # so hide it the same way an empty task_reminder is hidden.
-      return unless event["operation"] == "dequeue"
-
+      # A bare `dequeue`/`remove` marker carries no content of its own — it's
+      # redundant once the event it delivers downstream is tagged
+      # `dequeued: true` / `removed_from_queue: true` (below), so hide it the
+      # same way an empty task_reminder is hidden.
       event["hidden"] = true
-      awaiting_delivery << enqueued.merge(token: token)
+      awaiting_delivery << enqueued.merge(token: token, operation: event["operation"])
     end
 
-    # Finds the event that actually delivers a dequeued item's content — a
-    # `task_notification` matched by task-id, or (for a plain queued Jess
+    # Finds the event that actually delivers a dequeued/removed item's content
+    # — a `task_notification` matched by task-id, a `queued_command` attachment
+    # (also matched by task-id, since it carries the same <task-notification>
+    # payload through the queue-detour envelope), or (for a plain queued Jess
     # message) the next `user_message` with identical text — and tags it
-    # `dequeued: true` so the renderer can show it took a detour through the
-    # queue instead of arriving as this turn's ordinary input.
+    # `dequeued: true` or `removed_from_queue: true` (depending on which marker
+    # took it off the queue) so the renderer can show it took a detour through
+    # the queue instead of arriving as this turn's ordinary input.
     def match_delivery!(event, awaiting_delivery)
       text = event.dig("detail", "text")
       task_id = task_notification_ids(text)[0]
@@ -481,7 +499,8 @@ module ConversationStory
       return unless idx
 
       pending_item = awaiting_delivery.delete_at(idx)
-      event["dequeued"] = true
+      field = pending_item[:operation] == "remove" ? "removed_from_queue" : "dequeued"
+      event[field] = true
       link_token!(event, pending_item[:token])
     end
 

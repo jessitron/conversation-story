@@ -165,6 +165,7 @@ module ConversationStory
                else []
                end
       badges << %(<span class="badge queue">Dequeued</span>) if event["dequeued"]
+      badges << %(<span class="badge queue">Removed from queue</span>) if event["removed_from_queue"]
       return "" if badges.empty?
 
       %(<div class="badges">#{badges.join}</div>)
@@ -292,13 +293,14 @@ module ConversationStory
 
     def provenance_dl(event)
       src = event["source"] || {}
-      <<~HTML.strip
-        <dl class="kv">
-          <dt>source.file</dt><dd><code>#{h src["file"]}</code></dd>
-          <dt>source.line</dt><dd><code>#{h src["line"]}</code></dd>
-          <dt>agent</dt><dd><code>#{h event["agent"]}</code></dd>
-        </dl>
-      HTML
+      rows = [
+        ["source.file", src["file"]],
+        ["source.line", src["line"]],
+        ["agent", event["agent"]],
+      ]
+      links = event["link_ids"]
+      rows << ["link_ids", links.join(", ")] if links && !links.empty?
+      kv_dl(rows)
     end
 
     def section(title, inner_html)

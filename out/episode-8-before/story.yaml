@@ -1992,6 +1992,7 @@ events:
   link_ids:
   - queue:b5kvlgp7j
   - tool:toolu_01VRS8G5GarLAUSoUb7iyMm2
+  hidden: true
 - id: e04d7b3c-ff6f-45e5-861c-76bdbf9cdf9a
   ref: episode-8-before:87
   agent: main
@@ -1999,7 +2000,8 @@ events:
   kind: attachment
   role:
   at: '2026-04-14T02:29:53.538Z'
-  summary: queued_command
+  summary: Background command "Start Vite dev client on port 5175" failed with exit
+    code 1
   source:
     file: episode-8-before.jsonl
     line: 87
@@ -2012,6 +2014,9 @@ events:
       <status>failed</status>
       <summary>Background command "Start Vite dev client on port 5175" failed with exit code 1</summary>
       </task-notification>
+  removed_from_queue: true
+  link_ids:
+  - queue:b5kvlgp7j
 - id: f064bb66-289c-451f-a755-ea718efd8174
   ref: episode-8-before:88
   agent: main
@@ -2450,6 +2455,7 @@ events:
   link_ids:
   - queue:bg9aeupg8
   - tool:toolu_01676bB5UaB8qK7z7XXhHg3j
+  hidden: true
 - id: e9d2d51e-ec1c-4d5d-8877-8184286ad5e6
   ref: episode-8-before:105
   agent: main
@@ -2457,7 +2463,8 @@ events:
   kind: attachment
   role:
   at: '2026-04-14T02:30:08.910Z'
-  summary: queued_command
+  summary: Background command "Start Vite client using local install on port 5175"
+    failed with exit code 1
   source:
     file: episode-8-before.jsonl
     line: 105
@@ -2470,6 +2477,9 @@ events:
       <status>failed</status>
       <summary>Background command "Start Vite client using local install on port 5175" failed with exit code 1</summary>
       </task-notification>
+  removed_from_queue: true
+  link_ids:
+  - queue:bg9aeupg8
 - id: 0d3bfa7e-fbc9-4caa-8677-6ac5265907c0
   ref: episode-8-before:106
   agent: main
