@@ -2,7 +2,7 @@
 
 ## now
 
-(all cleared as of 2026-07-20 — see notes/2026-07-20-session-7-tool-calls-and-linking.md)
+(all done — see git log)
 
 ## later
 
@@ -17,6 +17,6 @@
   record into separate cards — right now a record is still one card, just
   classified by its single content block), richer per-kind detail, subagent
   nesting (inline a spawned Agent's own story instead of just linking to it).
-- the `<ol>`/`<ul>` merge in `Markdown` only re-glues *adjacent* same-type
+- the `<ol>`/`<ul>` merge in `Markdown` only re-glues _adjacent_ same-type
   blocks; a loose list interrupted by an aside paragraph would still split.
   Fine for what's in the example logs; revisit if a real log hits it.

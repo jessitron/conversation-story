@@ -69,6 +69,10 @@ module ConversationStory
 
     ELLIPSIS = "…"
     SUMMARY_LIMIT = 140
+    # user/assistant messages are the actual conversation — the headline
+    # content of the page — so they get a much longer leash before truncating
+    # than the "background machinery" kinds (tool calls, thinking, etc).
+    MESSAGE_SUMMARY_LIMIT = 400
 
     # @param log_path [String] path to the top-level conversation .jsonl.
     def initialize(log_path)
@@ -165,7 +169,7 @@ module ConversationStory
     def assistant_kind(rec)
       blocks = Array(rec.dig("message", "content"))
       return "tool_call" if blocks.any? { |b| b["type"] == "tool_use" }
-      return "thinking" if blocks.any? { |b| b["type"] == "thinking" }
+      return "thinking" if blocks.any? { |b| %w[thinking redacted_thinking].include?(b["type"]) }
 
       "assistant_message"
     end
@@ -180,7 +184,7 @@ module ConversationStory
 
     def summary_for(kind, rec)
       case kind
-      when "user_message"      then truncate(strip_markdown(rec.dig("message", "content").to_s))
+      when "user_message"      then truncate(strip_markdown(rec.dig("message", "content").to_s), MESSAGE_SUMMARY_LIMIT)
       when "assistant_message" then assistant_summary(rec)
       when "thinking"          then thinking_summary(rec)
       when "tool_call"         then tool_call_summary(rec)
@@ -198,10 +202,12 @@ module ConversationStory
     def assistant_summary(rec)
       text = Array(rec.dig("message", "content"))
              .select { |b| b["type"] == "text" }.map { |b| b["text"] }.join(" ").strip
-      truncate(strip_markdown(text))
+      truncate(strip_markdown(text), MESSAGE_SUMMARY_LIMIT)
     end
 
     def thinking_summary(rec)
+      return "(reasoning — redacted by Anthropic)" if redacted_thinking?(rec)
+
       text = thinking_text(rec).strip
       text.empty? ? "(reasoning — not captured)" : truncate(strip_markdown(text))
     end
@@ -290,6 +296,13 @@ module ConversationStory
         .select { |b| b["type"] == "thinking" }.map { |b| b["thinking"] }.join("\n\n")
     end
 
+    # A `redacted_thinking` block carries only an encrypted `data` blob (no
+    # human-readable `thinking` text) — Anthropic redacted the reasoning
+    # content itself, not just this parser's view of it.
+    def redacted_thinking?(rec)
+      Array(rec.dig("message", "content")).any? { |b| b["type"] == "redacted_thinking" }
+    end
+
     def tool_use_block(rec)
       Array(rec.dig("message", "content")).find { |b| b["type"] == "tool_use" }
     end
@@ -306,7 +319,12 @@ module ConversationStory
 
     def primary_arg(name, input)
       key = PRIMARY_ARG_KEY[name]
-      return truncate(input[key].to_s, 90) if key && input[key]
+      if key && input[key]
+        # Read/Write/Edit take a file_path; the directory is rarely the
+        # interesting part of a one-line summary, so show just the filename.
+        value = key == "file_path" ? File.basename(input[key].to_s) : input[key].to_s
+        return truncate(value, 90)
+      end
       return input["subagent_type"] || input["description"] if name == "Agent"
 
       nil
@@ -402,11 +420,13 @@ module ConversationStory
       link_queue_lifecycle!(events, calls_by_use_id)
     end
 
+    # The card already carries a "Bash"/"Read"/etc. tool badge, so the summary
+    # itself doesn't need to repeat the tool name — just the output.
     def resummarize_tool_result!(event, name)
       return unless name
 
       text = event.dig("detail", "text").to_s
-      event["summary"] = truncate(text.empty? ? "#{name} — no output" : "#{name}: #{text}")
+      event["summary"] = truncate(text.empty? ? "No output" : text)
     end
 
     def link_queue_lifecycle!(events, calls_by_use_id)

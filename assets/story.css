@@ -277,7 +277,6 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 }
 .card.k-assistant .gutter .kind { color: var(--navy); }
 .card.k-assistant .body .summary {
-  font-family: var(--font-head);
   font-size: 17px; line-height: 1.5; color: var(--ink);
   -webkit-line-clamp: 4;
 }
