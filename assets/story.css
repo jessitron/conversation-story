@@ -59,8 +59,8 @@
   --fs-small:   12px;  /* everything glanceable, not read: badges, keys, chips, gutter,
                           section headings, subtitle, timestamps, code, kv rows,
                           quiet-card summaries, refs, focus toggle, reopen tab */
-  --fs-body:    15px;  /* default reading size: prose, user-card summary, detail text */
-  --fs-summary: 18px;  /* the loud lines: assistant-card summary, token values */
+  --fs-body:    15px;  /* default reading size: prose, detail text */
+  --fs-summary: 18px;  /* the loud lines: the conversation itself (user + assistant summaries), token values */
   --fs-title:   22px;  /* the page title */
   --fs-display: 40px;  /* oversized decorative glyph (empty-state mark) — off the reading ramp */
 
@@ -303,6 +303,10 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
   box-shadow: -2px 3px 0 rgba(var(--navy-rgb), .06), 0 5px 18px rgba(var(--navy-rgb), .09);
 }
 .card.k-assistant .gutter .kind { color: var(--navy); }
+/* Both sides of the actual conversation share one text treatment, so a user
+   message and an assistant message always read at the same size/prominence.
+   (User-only tweaks like right-alignment stay in the .k-user block above.) */
+.card.k-user .body .summary,
 .card.k-assistant .body .summary {
   font-size: var(--fs-summary); line-height: var(--lh); color: var(--ink);
   -webkit-line-clamp: 4;
