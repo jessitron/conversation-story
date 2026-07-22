@@ -124,7 +124,7 @@ module ConversationStory
              link_attr:    link_attr(event),
              summary_html: summary_html(event),
              badges_html:  badges_html(event),
-             detail_html:  detail_html(event))
+             detail_html:  detail_html(event, index))
     end
 
     # A related-events highlight hook (items 3 & 10): the parser already
@@ -138,6 +138,27 @@ module ConversationStory
       return "" if ids.nil? || ids.empty?
 
       %( data-link="#{h ids.join(" ")}")
+    end
+
+    # link_id token -> [[card index, event], ...], built once over the visible
+    # sequence so detail sections can turn an event's own link_ids into
+    # jump-to-anchor buttons for the rest of its causal chain.
+    def link_index
+      @link_index ||= Hash.new { |h, k| h[k] = [] }.tap do |idx|
+        visible_events.each_with_index { |e, i| (e["link_ids"] || []).each { |tok| idx[tok] << [i + 1, e] } }
+      end
+    end
+
+    # Every OTHER visible event that shares a link_id token with this one
+    # (deduped, in card order) — the data the "Related events" detail section
+    # renders as buttons.
+    def related_events(event, self_n)
+      ids = event["link_ids"]
+      return [] if ids.nil? || ids.empty?
+
+      found = {}
+      ids.each { |tok| link_index[tok].each { |n, e| found[n] ||= e unless n == self_n } }
+      found.sort.map { |n, e| [n, e] }
     end
 
     # ---- summary (card face) --------------------------------------------------
@@ -185,12 +206,33 @@ module ConversationStory
 
     # ---- detail (drill-in) markup -------------------------------------------
 
-    def detail_html(event)
+    def detail_html(event, n)
       sections = kind_sections(event)
+      sections << related_events_section(event, n)
       sections << section("Provenance", provenance_dl(event))
       # The copyable event id goes last and understated — it's a debugging aid.
       sections << event_id_footer(event) if event["ref"]
       sections.join("\n")
+    end
+
+    # Buttons for every other event in this one's causal chain (item: "show
+    # linked events on the details tab"). Plain <a href="#event-N"> anchors —
+    # clicking one changes location.hash, and assets/story.js's hashchange
+    # listener (already wired for deep links) picks it up and selects that
+    # card; no new JS needed.
+    def related_events_section(event, n)
+      related = related_events(event, n)
+      return "" if related.empty?
+
+      links = related.map { |m, e| related_link_html(m, e) }.join
+      section("Related events", %(<div class="related-links">#{links}</div>))
+    end
+
+    def related_link_html(n, event)
+      kind = h(KIND_LABEL.fetch(event["kind"], event["kind"]))
+      summary = event["kind"] == "tool_call" ? tool_call_summary_html(event) : h(event["summary"])
+      %(<a class="related-link" href="#event-#{n}">) +
+        %(<span class="kind-tag">#{kind}</span><span class="summary">#{summary}</span></a>)
     end
 
     def kind_sections(event)
