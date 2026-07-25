@@ -2,10 +2,15 @@
 
 ## now
 
-(all done — see git log)
+- get the left padding the same between Assistant and Tool call cards
+- highlighting because I clicked something with the same link ID should be identical to highlighting because I clicked that card, not subtly different
+- I want input, output, and notifications to use a consistent font, background color, etc. for the INPUT, RESULT, NOTIFICATION fields.
+- Queue enqueue should include the summary of what it is enqueueing
+
 
 ## later
 
+- I clearly need a subagent whose job is to guard the CSS and keep it consistent. 
 - mark an intermediate story.yaml as hand-edited so `rake parse` won't overwrite
   it (e.g. a frontmatter flag or sidecar lock file the parse task checks). Note:
   rake's mtime rule already skips re-parsing when the story is newer than its
