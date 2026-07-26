@@ -83,7 +83,17 @@ program's source changes — not just when `story.yaml` is stale).
   it eventually delivers; the originating background `tool_call`) with shared
   tokens in `link_ids`. The renderer emits them as a `data-link` attribute;
   `story.js` highlights every card sharing a token with the active one
-  (`.card.related`). See `notes/2026-07-20-session-7-tool-calls-and-linking.md`.
+  (`.card.related`, styled **identically** to `.active` — only the leader line to
+  the detail pane is selection-only). See
+  `notes/2026-07-20-session-7-tool-calls-and-linking.md`.
+- **Two voices in the detail pane** (session 9): PROSE (`.d-text` / `.d-markdown`
+  — body font on paper) vs MACHINE (`pre.code` — mono on navy, and it *wraps*).
+  Tool INPUT, tool RESULT, notification blobs and raw records all go through
+  `Renderer#machine_html` so they look the same. Don't reintroduce a third look.
+- **Card alignment**: `--card-inset` (`:root`) is the distance from a card's outer
+  edge to its content, accent border included; `.card` derives `--card-pad` from
+  it and `--card-accent`. A card wanting a heavier accent redefines
+  **`--card-accent`** (see `.k-assistant`) — never `--card-pad`.
 - **Focus mode**: a header toggle (`#focus-toggle`) adds `body.focus-mode`,
   which hides every card that isn't `k-user`/`k-assistant` — pure CSS/JS, no
   data changes.
@@ -93,6 +103,11 @@ examples by default; `LOG=`/`PORT=` env vars to scope). See README.md. Note:
 the Rakefile's `RENDER_SRC`/`PARSE_SRC` lists source files explicitly (not a
 glob) — a new `lib/` file needs adding there or `rake build` won't notice it
 changed.
+
+To *see* a CSS change: `bin/screenshot [example] ['#event-N'] [out.png]` shoots a
+built page with headless Chrome. Passing a fragment selects that card, so its
+detail pane and its highlighted causal chain are in the shot (the region above
+the target screenshots blank — a headless repaint artifact, not a page bug).
 
 Still TODO: **self-host the fonts** (Tenor Sans / Sen / Cascadia Code) into
 `assets/fonts/` with `@font-face` in `story.css`, replacing the CDN `<link>` the
