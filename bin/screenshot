@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Screenshot a generated story page with headless Chrome — a quick visual check
+# that a CSS change landed the way it reads on paper.
+#
+#   bin/screenshot [example-name] [#fragment] [out.png]
+#
+# Defaults to episode-8-before, no fragment, and a png in the scratch dir.
+# The fragment selects a card (the page's selection is fragment-driven), so
+# e.g. '#event-42' screenshots that card selected with its detail pane open.
+set -euo pipefail
+
+CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+example="${1:-episode-8-before}"
+fragment="${2:-}"
+out="${3:-/tmp/story-$example.png}"
+
+repo="$(cd "$(dirname "$0")/.." && pwd)"
+page="$repo/out/$example/index.html"
+[ -f "$page" ] || { echo "no such page: $page (run 'rake build')" >&2; exit 1; }
+
+"$CHROME" --headless --disable-gpu --hide-scrollbars \
+  --window-size=1400,1600 --screenshot="$out" \
+  --virtual-time-budget=2000 \
+  "file://$page$fragment" >/dev/null 2>&1
+
+echo "$out"
