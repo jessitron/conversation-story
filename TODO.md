@@ -2,15 +2,19 @@
 
 ## now
 
-- get the left padding the same between Assistant and Tool call cards
-- highlighting because I clicked something with the same link ID should be identical to highlighting because I clicked that card, not subtly different
-- I want input, output, and notifications to use a consistent font, background color, etc. for the INPUT, RESULT, NOTIFICATION fields.
-- Queue enqueue should include the summary of what it is enqueueing
+(empty — see notes/2026-07-26-session-9-card-alignment-and-one-machine-voice.md
+for the four that just landed)
 
 
 ## later
 
-- I clearly need a subagent whose job is to guard the CSS and keep it consistent. 
+- I clearly need a subagent whose job is to guard the CSS and keep it consistent.
+  Two things it would have caught this session: a `var()` on a token that no
+  longer exists (fails silently), and a rule whose `opacity` override lost to a
+  same-specificity rule later in the file.
+- the prototype has no sample RESULT / NOTIFICATION detail section, so the
+  "machine voice" (`pre.code`) is only half-demonstrated there. Add one so the
+  prototype keeps showing everything that ships.
 - mark an intermediate story.yaml as hand-edited so `rake parse` won't overwrite
   it (e.g. a frontmatter flag or sidecar lock file the parse task checks). Note:
   rake's mtime rule already skips re-parsing when the story is newer than its

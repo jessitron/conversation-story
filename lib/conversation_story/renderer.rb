@@ -246,23 +246,30 @@ module ConversationStory
     def generic_sections(event)
       sections = [text_section(event)]
       if (raw = event.dig("detail", "raw"))
-        sections << section("Raw record", %(<pre class="code">#{h JSON.pretty_generate(raw)}</pre>))
+        sections << section("Raw record", machine_html(JSON.pretty_generate(raw)))
       end
       sections
     end
 
-    # Conversational kinds (user/assistant messages, reasoning, a delivered
-    # task notification) render their text as markdown (item 1); everything
-    # else (tool dumps, XML/system blobs) stays literal preformatted text so
-    # code and structured output aren't reinterpreted as prose.
+    # Conversational kinds (user/assistant messages, reasoning) render their text
+    # as markdown — the prose voice. Everything else is machine text (a
+    # <task-notification> blob, a queued payload, an attachment dump), so it gets
+    # the same treatment as a tool's Input and Result: `machine_html`.
     def text_section(event)
       heading = DETAIL_HEADING[event["kind"]]
       text = event.dig("detail", "text") || event["summary"]
       if MARKDOWN_KINDS.include?(event["kind"])
         section(heading, %(<div class="d-markdown">#{Markdown.to_html(text)}</div>))
       else
-        section(heading, %(<div class="d-text">#{h text}</div>))
+        section(heading, machine_html(text))
       end
+    end
+
+    # The one treatment for text a program wrote or read — tool input, tool
+    # result, a notification blob, a raw record. Same font, same background
+    # everywhere (see the `pre.code` comment in assets/story.css).
+    def machine_html(text)
+      %(<pre class="code">#{h text}</pre>)
     end
 
     def tool_call_sections(event)
@@ -290,7 +297,7 @@ module ConversationStory
 
       blob = BLOB_INPUT_KEYS.map { |k| input[k] }.compact.first
       body = blob ? blob.to_s : JSON.pretty_generate(input)
-      %(<pre class="code">#{h body}</pre>)
+      machine_html(body)
     end
 
     def tool_result_sections(event)
@@ -299,7 +306,7 @@ module ConversationStory
       sections = [section(heading, "")]
       sections << section("Fields", tool_result_fields_dl(tool))
       text = event.dig("detail", "text")
-      sections << section("Result", %(<div class="d-text">#{h text}</div>)) if text && !text.empty?
+      sections << section("Result", machine_html(text)) if text && !text.empty?
       sections
     end
 

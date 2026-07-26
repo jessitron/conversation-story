@@ -42,6 +42,11 @@
   --card-radius: 3px;
   --sidebar-w: 420px;
   --gutter-w: 118px;       /* the card's fixed meta column */
+  /* Distance from a card's outer edge to its content, ACCENT BORDER INCLUDED.
+     Every card resolves its padding on the accent side from this (see .card's
+     --card-pad), so a loud card with a thicker accent border still starts its
+     text at the same x as a quiet one — the timeline reads as one column. */
+  --card-inset: 20px;
 
   --font-head: "Tenor Sans", "Sen", system-ui, sans-serif;
   --font-body: "Sen", system-ui, sans-serif;
@@ -178,37 +183,40 @@ main.timeline {
    elevation) follows that.
    ============================================================ */
 .card {
+  /* the kind-colored accent border, and the padding that goes with it: a card
+     that widens the accent (see .k-assistant) narrows this padding to match, so
+     content still lands at --card-inset. Redefine --card-accent, not --card-pad. */
+  --card-accent: 4px;
+  --card-pad: calc(var(--card-inset) - var(--card-accent));
   position: relative;
   display: grid;
   grid-template-columns: var(--gutter-w) 1fr;
   gap: 16px; align-items: baseline;
   background: var(--paper-2);
   border: 1px solid var(--line);
-  border-left: 4px solid var(--kind, var(--ink-faint));
+  border-left: var(--card-accent) solid var(--kind, var(--ink-faint));
   border-radius: var(--card-radius);
-  padding: 13px 18px 13px 16px;
+  padding: 13px 18px 13px var(--card-pad);
   margin: 0 0 10px;
   color: inherit; text-decoration: none;   /* cards are <a> anchors */
   cursor: pointer;
   transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
 }
-.card.active {
+/* Highlighted = the selected card, PLUS the rest of its causal chain (a tool
+   call and its result, a queue enqueue and its dequeue, the call that started a
+   background task and the notification it eventually delivers — matched by a
+   shared token in data-link, see assets/story.js). One treatment for both:
+   being lit up because you clicked this card and being lit up because you
+   clicked its sibling should look the same, not subtly different. The leader
+   line to the detail pane (.card.active::after) is the one thing only the
+   selected card gets — it points at the pane, which shows one event. */
+.card.active, .card.related {
   border-color: var(--kind, var(--gold));
   box-shadow: -3px 4px 0 var(--kind, var(--gold));
 }
 .card:focus-visible {
   outline: 2px solid var(--kind, var(--gold));
   outline-offset: 3px;
-}
-/* The rest of a causal chain (a tool call and its result, a queue enqueue and
-   its dequeue, the call that started a background task and the notification
-   it eventually delivers) — lit up together with the active card, via a
-   shared token in data-link (see assets/story.js). Quieter than .active: this
-   is "related", not "selected". */
-.card.related {
-  border-color: var(--kind, var(--gold));
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--kind, var(--gold)) 40%, transparent);
-  opacity: 1;
 }
 
 /* ---- focus mode: hide everything but the direct back-and-forth with Jess --- */
@@ -283,8 +291,10 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 .card.k-user {
   grid-template-columns: 1fr var(--gutter-w);
   margin-left: 15%;
+  /* the accent (and its matching --card-pad) moves to the right edge */
   border-left: 1px solid var(--line);
-  border-right: 4px solid var(--kind);
+  border-right: var(--card-accent) solid var(--kind);
+  padding-right: var(--card-pad);
   background: var(--surface-raised);
   text-align: right;
 }
@@ -293,13 +303,16 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 .card.k-user .gutter .kind { color: var(--kind); }
 .card.k-user .body .summary { text-align: right; }
 .card.k-user .body .badges { justify-content: flex-end; }
-.card.k-user.active { box-shadow: 3px 4px 0 var(--kind); }
+/* accent is on the right here, so the highlight shadow leans the other way */
+.card.k-user.active, .card.k-user.related { box-shadow: 3px 4px 0 var(--kind); }
 
 /* Assistant → the user: the headline of the conversation. Make it stand out. */
 .card.k-assistant {
-  border-left-width: 5px;
+  /* a heavier accent, but --card-pad shrinks by the same 1px, so the text still
+     starts at --card-inset — level with the tool-call/thinking cards above it */
+  --card-accent: 5px;
   background: var(--surface-raised);
-  padding: 18px 22px;
+  padding: 18px 22px 18px var(--card-pad);
   box-shadow: -2px 3px 0 rgba(var(--navy-rgb), .06), 0 5px 18px rgba(var(--navy-rgb), .09);
 }
 .card.k-assistant .gutter .kind { color: var(--navy); }
@@ -313,7 +326,7 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 }
 /* keep the kind-colored active shadow (its own resting shadow would otherwise
    win on specificity/order), layered over its soft elevation */
-.card.k-assistant.active {
+.card.k-assistant.active, .card.k-assistant.related {
   box-shadow: -3px 4px 0 var(--kind), 0 5px 18px rgba(var(--navy-rgb), .09);
 }
 
@@ -323,13 +336,17 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 .card.k-tool_result,
 .card.k-system {
   background: transparent;
-  padding: 8px 16px;
+  padding: 8px 16px 8px var(--card-pad);
   opacity: 0.7;
 }
 .card.k-thinking:hover,
 .card.k-tool_call:hover,
 .card.k-tool_result:hover,
 .card.k-system:hover { opacity: 1; }
+/* ...and a quiet card that's highlighted (selected, or in the selected chain)
+   stops being quiet. Must live AFTER the opacity: 0.7 above — same specificity,
+   so source order decides. */
+.card.active, .card.related { opacity: 1; }
 .card.k-thinking .body .summary,
 .card.k-tool_call .body .summary,
 .card.k-tool_result .body .summary,
@@ -391,22 +408,52 @@ aside.detail .d-body { overflow-y: auto; padding: 16px; }
   color: var(--ink-faint); margin: 0 0 8px;
   padding-bottom: 5px; border-bottom: 1px solid var(--line);
 }
-.d-text {
-  white-space: pre-wrap; font-size: var(--fs-body); line-height: var(--lh);
+/* ---- the two voices inside a detail pane ----
+   PROSE (.d-text literal, .d-markdown rendered): something a person wrote —
+   a message, some reasoning. Body font on a light paper surface.
+   MACHINE (pre.code, below): something a program wrote or read — a tool's
+   INPUT, its RESULT, a NOTIFICATION blob, a raw record. Mono on the navy
+   slab. All of those are ONE treatment on purpose: same font, same
+   background, so "this is machine text" reads instantly and consistently. */
+.d-text, .d-markdown {
+  font-size: var(--fs-body); line-height: var(--lh);
   background: var(--surface-raised); border: 1px solid var(--line);
   border-radius: 3px; padding: 12px 14px;
 }
+.d-text { white-space: pre-wrap; }
+/* rendered markdown brings its own blocks; don't let the first/last one push
+   the box open, and keep its code blocks flush to the machine treatment */
+.d-markdown > :first-child { margin-top: 0; }
+.d-markdown > :last-child { margin-bottom: 0; }
+.d-markdown ul, .d-markdown ol { margin: 0 0 10px; padding-left: 22px; }
+.d-markdown h1, .d-markdown h2, .d-markdown h3,
+.d-markdown h4, .d-markdown h5, .d-markdown h6 {
+  font-family: var(--font-head); font-weight: 400; font-size: var(--fs-body);
+  letter-spacing: var(--ls-tight); margin: 14px 0 6px;
+}
+/* an inline code chip reads the same here as on a card face */
+.d-markdown code {
+  font-family: var(--font-mono);
+  font-size: 0.86em; background: var(--code-bg); padding: 1px 5px; border-radius: 3px;
+  color: var(--red);
+}
+.d-markdown pre.code code { background: none; padding: 0; color: inherit; }
 .kv { display: grid; grid-template-columns: 130px 1fr; gap: 4px 14px; font-size: var(--fs-small); }
 .kv dt { color: var(--ink-faint); }
 .kv dd { margin: 0; color: var(--ink); font-variant-numeric: tabular-nums; }
 .kv dd code, .mono {
   font-family: var(--font-mono); font-size: var(--fs-small);
 }
+/* THE machine-text treatment: tool INPUT, tool RESULT, a NOTIFICATION blob, a
+   raw record, a fenced code block inside prose. One look for all of them.
+   Wraps rather than scrolls — the pane is ~420px and tool output is full of
+   long lines; a horizontal scrollbar per block made them unreadable. */
 pre.code {
   margin: 0; background: var(--navy); color: var(--code-ink);
   border-radius: 3px; padding: 12px 14px; overflow-x: auto;
   font-family: var(--font-mono); font-size: var(--fs-small);
   line-height: var(--lh);
+  white-space: pre-wrap; overflow-wrap: anywhere;
 }
 .token-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
 .token-grid .cell {
@@ -460,10 +507,10 @@ pre.code {
 .related-link:focus-visible { outline: 1px dotted var(--ink-faint); outline-offset: 2px; }
 .related-link .kind-tag {
   font-family: var(--font-head); text-transform: uppercase; letter-spacing: var(--ls-wide);
-  font-size: var(--fs-micro); color: var(--ink-faint); flex: 0 0 auto;
+  font-size: var(--fs-small); color: var(--ink-faint); flex: 0 0 auto;
 }
 .related-link .summary {
-  font-size: var(--fs-detail); color: var(--ink);
+  font-size: var(--fs-small); color: var(--ink);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 

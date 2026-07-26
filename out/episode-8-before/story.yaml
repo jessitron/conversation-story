@@ -1360,7 +1360,8 @@ events:
   kind: queue_operation
   role:
   at: '2026-04-14T02:29:24.530Z'
-  summary: Queue enqueue
+  summary: 'Queue enqueue: Background command "Start dev server on alternate ports
+    4982/5175" completed (exit code 0)'
   source:
     file: episode-8-before.jsonl
     line: 58
@@ -1903,7 +1904,8 @@ events:
   kind: queue_operation
   role:
   at: '2026-04-14T02:29:53.010Z'
-  summary: Queue enqueue
+  summary: 'Queue enqueue: Background command "Start Vite dev client on port 5175"
+    failed with exit code 1'
   source:
     file: episode-8-before.jsonl
     line: 82
@@ -2301,7 +2303,8 @@ events:
   kind: queue_operation
   role:
   at: '2026-04-14T02:30:04.708Z'
-  summary: Queue enqueue
+  summary: 'Queue enqueue: Background command "Start Vite client using local install
+    on port 5175" failed with exit code 1'
   source:
     file: episode-8-before.jsonl
     line: 98
@@ -4059,7 +4062,8 @@ events:
   kind: queue_operation
   role:
   at: '2026-04-14T02:32:22.466Z'
-  summary: Queue enqueue
+  summary: 'Queue enqueue: no! I''m sorry. I mean, what could we change about the
+    context here that would have told you these things?'
   source:
     file: episode-8-before.jsonl
     line: 174

@@ -256,16 +256,27 @@ module ConversationStory
     end
 
     def queued_command_summary(att)
-      prompt = att["prompt"].to_s
-      return summary_from_task_notification(prompt) if prompt.strip.start_with?(TASK_NOTIFICATION_TAG)
-
-      truncate(prompt)
+      queued_payload_summary(att["prompt"].to_s)
     end
 
+    # An `enqueue` carries the payload it is queueing (a message Jess typed while
+    # the agent was busy, or a background <task-notification>) — that payload is
+    # the interesting part, so the summary says WHAT got queued, not just that
+    # something did. `dequeue`/`remove` are bare markers with nothing to show
+    # (and are hidden anyway), so they keep the short verb.
     def queue_summary(rec)
       op = rec["operation"] || "queue"
-      # the content is a <task-notification> blob; a short verb is enough here
-      "Queue #{op}"
+      payload = queued_payload_summary(rec["content"].to_s)
+      payload.empty? ? "Queue #{op}" : truncate("Queue #{op}: #{payload}")
+    end
+
+    # The same payload shapes a `queued_command` attachment carries: either a
+    # <task-notification> blob (whose <summary> is the point) or plain text.
+    def queued_payload_summary(content)
+      return "" if content.strip.empty?
+      return summary_from_task_notification(content) if content.strip.start_with?(TASK_NOTIFICATION_TAG)
+
+      truncate(strip_markdown(content))
     end
 
     # ---- detail payload (drill-in) -------------------------------------------
