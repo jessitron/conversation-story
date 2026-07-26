@@ -47,7 +47,7 @@ module ConversationStory
       "file_snapshot"      => "Snapshot",
       "permission_mode"    => "Permission",
       "queue_operation"    => "Queue",
-      "task_notification"  => "Task Notification",
+      "task_notification"  => "Notification",
       "unknown"            => "Unknown",
     }.freeze
 
