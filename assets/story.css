@@ -443,6 +443,13 @@ aside.detail .d-body { overflow-y: auto; padding: 16px; }
   color: var(--red);
 }
 .d-markdown pre.code code { background: none; padding: 0; color: inherit; }
+/* A caveat about the numbers just above it — currently the one place the page
+   admits to estimating rather than reporting (a tool result's token cost is
+   nowhere in the log). Quiet and italic: it qualifies the data, it isn't data. */
+.d-note {
+  font-size: var(--fs-small); font-style: italic;
+  color: var(--ink-faint); margin: 8px 0 0; line-height: 1.5;
+}
 .kv { display: grid; grid-template-columns: 130px 1fr; gap: 4px 14px; font-size: var(--fs-small); }
 .kv dt { color: var(--ink-faint); }
 .kv dd { margin: 0; color: var(--ink); font-variant-numeric: tabular-nums; }

@@ -67,6 +67,18 @@ module ConversationStory
       "Bash" => "command", "Grep" => "pattern", "Glob" => "pattern",
     }.freeze
 
+    # A tool result is the thing that actually grows the context, but the log
+    # never counts one: `usage` appears on assistant records only. The single
+    # measured signal is the context delta at the next turn, and in the example
+    # logs that gap ALWAYS also holds harness records — 0 of 32 gaps contain a
+    # tool result by itself — so it can't be attributed cleanly. Hence an
+    # estimate from length. Calibrating against those deltas put the median near
+    # 2.5 chars/token, but the delta overstates the result's own share (it
+    # covers the whole gap), and tool output is code and JSON, which tokenizes
+    # denser than the prose-tuned 4. 3.5 splits the difference. Retune here if a
+    # better measurement turns up; the renderer labels the number an estimate.
+    CHARS_PER_TOKEN = 3.5
+
     ELLIPSIS = "…"
     SUMMARY_LIMIT = 140
     # user/assistant messages are the actual conversation — the headline
@@ -87,6 +99,7 @@ module ConversationStory
       records = read_records
       events  = records.map { |lineno, rec| build_event(lineno, rec) }
       link_related_events!(events)
+      mark_turns!(events)
       { "meta" => build_meta(records, events), "events" => events }
     end
 
@@ -382,6 +395,21 @@ module ConversationStory
         end
       end
       event["tool"] = tool
+      add_result_token_estimate(event)
+    end
+
+    # What this result added to the context — estimated, because nothing counts
+    # it (see CHARS_PER_TOKEN). Named `estimated_input` rather than `input` so
+    # no consumer can mistake it for a number the API reported; the renderer
+    # prints it with a ≈ and says where it came from.
+    def add_result_token_estimate(event)
+      chars = event.dig("detail", "text").to_s.length
+      return if chars.zero?
+
+      event["tokens"] = {
+        "result_chars"    => chars,
+        "estimated_input" => (chars / CHARS_PER_TOKEN).round,
+      }
     end
 
     # The human-relevant body of a (visible) attachment: `queued_command` carries
@@ -402,6 +430,12 @@ module ConversationStory
       event["stop_details"]  = msg["stop_details"]
       event["stop_sequence"] = msg["stop_sequence"]
 
+      # `message.id` is what makes a TURN visible in the schema: the thinking
+      # record, the text record and each tool_use record of one API response all
+      # carry it. mark_turns! groups on it, and the renderer uses it to show an
+      # assistant message the tool calls that came back with it.
+      event["links"] = { "message_id" => msg["id"] } if msg["id"]
+
       usage = msg["usage"]
       return unless usage.is_a?(Hash)
 
@@ -414,6 +448,51 @@ module ConversationStory
         "ephemeral_5m"   => usage.dig("cache_creation", "ephemeral_5m_input_tokens"),
         "service_tier"   => usage["service_tier"],
       }
+    end
+
+    # ---- assistant turns -----------------------------------------------------
+    #
+    # One API response can span several records — a thinking block, a text
+    # block, and one record per tool_use, all sharing `message.id` — and EVERY
+    # one of them repeats the whole turn's `usage`. So token counts are a fact
+    # about the TURN, not the record: attributing them per record would triple
+    # count a running total, and would print the same numbers on three cards.
+    #
+    # Each turn therefore elects a `turn_leader`, the one record that shows the
+    # numbers: the assistant_message record when the turn produced prose, and
+    # the turn's first record otherwise. The fallback is not hypothetical — 7 of
+    # 33 turns in episode-8-before (11 of 28 in episode-8-after) are bare
+    # tool_use with no text block, and without it their tokens, and the jump
+    # they cause in the running total, would appear on no card at all.
+    def mark_turns!(events)
+      running = 0
+      turns(events).each_value do |group|
+        leader = group.find { |e| e["kind"] == "assistant_message" } || group.first
+        leader["turn_leader"] = true
+
+        tokens = leader["tokens"]
+        next unless tokens
+
+        # The context actually sent this turn: fresh tokens, tokens written to
+        # the cache, and tokens read back from it. The log's bare `input_tokens`
+        # is only the uncached remainder — typically 1 or 3, which is why it
+        # can't be shown on its own as "the context length".
+        tokens["context"] = %w[input cache_creation cache_read].sum { |k| tokens[k].to_i }
+        tokens["added"]   = tokens["input"].to_i + tokens["cache_creation"].to_i
+        running += tokens["context"]
+        tokens["cumulative_context"] = running
+      end
+    end
+
+    # message_id => that turn's records, in log order. A record with no message
+    # id becomes a turn of its own (defensive — none in the example logs).
+    def turns(events)
+      events.each_with_object({}) do |e, acc|
+        next unless e["role"] == "assistant"
+
+        id = e.dig("links", "message_id") || "line-#{e.dig("source", "line")}"
+        (acc[id] ||= []) << e
+      end
     end
 
     # ---- cross-event linking (item 3/10: light up the causal chain together) -
@@ -564,8 +643,19 @@ module ConversationStory
         "ended_at"    => events.map { |e| e["at"] }.compact.last,
         "timezone"    => "UTC",
         "event_count" => events.size,
+        "final_context" => final_context(events),
         "agents"      => build_agents,
       }
+    end
+
+    # Where the context ended up: the last turn's whole input plus what that
+    # turn generated. One number for the whole story — the page header's
+    # CONTEXT stat. nil when the log has no assistant turn with usage.
+    def final_context(events)
+      last = events.reverse.find { |e| e["turn_leader"] && e["tokens"] }
+      return nil unless last
+
+      last["tokens"]["context"].to_i + last["tokens"]["output"].to_i
     end
 
     def first_present(recs, key)

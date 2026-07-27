@@ -124,6 +124,23 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   exactly one block — this is still one-event-per-line, not real
   block-splitting. `tool_result` events carry named `tool.{use_id,is_error,
   duration_ms,result}` pulled from the record's content block + `toolUseResult`.
+- **Tokens belong to a TURN, not a record** (session 13). One API response is
+  split across several records — thinking, text, one per `tool_use` — sharing
+  `message.id`, and **each repeats the whole turn's `usage`**. The parser emits
+  `links.message_id`, elects one **`turn_leader`** per turn (the
+  `assistant_message` record, else the turn's first record — 7 of 33 turns in
+  episode-8-before are bare `tool_use`), and puts the derived `context` /
+  `added` / `cumulative_context` only there. Attribute per record instead and a
+  running total silently triples while the page still looks fine. `message_id`
+  is deliberately **not** a `link_ids` token: that drives the board-wide
+  highlight, and lighting a whole turn every selection would drown out the
+  tool_call↔tool_result chains. A `tool_result` carries
+  `tokens.{result_chars,estimated_input}` — an **estimate** (length /
+  `Parser::CHARS_PER_TOKEN`, 3.5), because `usage` exists only on assistant
+  records and 0 of 32 inter-turn gaps hold a result by itself. It is not named
+  `input` on purpose, and the renderer always prints the `≈` and the caveat.
+  `meta.final_context` (last turn's context + output) is the header CONTEXT
+  stat. Details in `notes/intermediate-schema.md`.
 - A background task's result delivered mid-conversation as a `<task-notification>`
   XML blob gets its own kind, `task_notification` (not `user_message` — it's
   not something Jess typed); its summary is the extracted `<summary>` field.

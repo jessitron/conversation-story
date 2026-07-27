@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "minitest/autorun"
+require "json"
 require "yaml"
 require "conversation_story/parser"
 require "conversation_story/renderer"
@@ -180,5 +181,96 @@ class ParserTest < Minitest::Test
 
     shared = (enqueue["link_ids"] || []) & (notification["link_ids"] || [])
     refute_empty shared, "the enqueue and the notification it eventually delivers should share a link token"
+  end
+
+  # ---- assistant turns and token attribution --------------------------------
+  #
+  # The trap these guard: one API response spans several records, and each one
+  # repeats the whole turn's `usage`. Attributing tokens per record instead of
+  # per turn silently triples a running total, and the page still looks fine.
+
+  EXAMPLES.each do |log|
+    name = File.basename(log, ".jsonl")
+
+    define_method("test_#{name}_elects_exactly_one_leader_per_turn") do
+      doc = ConversationStory::Parser.new(log).to_document
+      assistant = doc["events"].select { |e| e["role"] == "assistant" }
+      by_turn = assistant.group_by { |e| e.dig("links", "message_id") }
+
+      refute_empty by_turn, "expected assistant turns in #{name}"
+      by_turn.each do |message_id, group|
+        leaders = group.select { |e| e["turn_leader"] }
+        assert_equal 1, leaders.size,
+                     "turn #{message_id} should have exactly one turn_leader, " \
+                     "got #{leaders.size} across #{group.size} records"
+      end
+    end
+
+    # A turn with no text block still has to show its tokens somewhere, or the
+    # running total jumps with no card to explain it. 7 of 33 turns in
+    # episode-8-before are bare tool_use, so this path is exercised for real.
+    define_method("test_#{name}_leader_prefers_the_message_record_but_always_exists") do
+      doc = ConversationStory::Parser.new(log).to_document
+      assistant = doc["events"].select { |e| e["role"] == "assistant" }
+
+      assistant.group_by { |e| e.dig("links", "message_id") }.each_value do |group|
+        leader = group.find { |e| e["turn_leader"] }
+        message = group.find { |e| e["kind"] == "assistant_message" }
+        assert_equal message, leader, "a turn with prose should lead with it" if message
+        assert_equal group.first, leader, "a turn with no prose should lead with its first record" unless message
+      end
+    end
+
+    # Recomputed independently from the log, so a change to how the parser
+    # groups turns can't quietly agree with itself.
+    define_method("test_#{name}_token_totals_match_an_independent_sum") do
+      doc = ConversationStory::Parser.new(log).to_document
+
+      seen = {}
+      expected_sum = 0
+      expected_final = nil
+      File.foreach(log) do |line|
+        next if line.strip.empty?
+
+        rec = JSON.parse(line)
+        usage = rec.dig("message", "usage")
+        next unless rec["type"] == "assistant" && usage.is_a?(Hash)
+
+        id = rec.dig("message", "id")
+        next if seen[id]
+
+        seen[id] = true
+        context = usage["input_tokens"].to_i +
+                  usage["cache_creation_input_tokens"].to_i +
+                  usage["cache_read_input_tokens"].to_i
+        expected_sum += context
+        expected_final = context + usage["output_tokens"].to_i
+      end
+
+      leaders = doc["events"].select { |e| e["turn_leader"] && e["tokens"] }
+      running = leaders.filter_map { |e| e.dig("tokens", "cumulative_context") }.max
+
+      assert_equal expected_sum, running,
+                   "cumulative_context should sum each TURN's context exactly once"
+      assert_equal expected_final, doc["meta"]["final_context"],
+                   "meta.final_context should be the last turn's context plus its output"
+    end
+
+    # `estimated_input` is our arithmetic, not the API's. The name has to stay
+    # distinct from the reported `input` so nothing downstream conflates them.
+    define_method("test_#{name}_tool_results_carry_a_clearly_named_estimate") do
+      doc = ConversationStory::Parser.new(log).to_document
+      results = doc["events"].select { |e| e["kind"] == "tool_result" && e["tokens"] }
+
+      refute_empty results, "expected tool_result events with an estimate in #{name}"
+      results.each do |e|
+        tokens = e["tokens"]
+        assert_operator tokens["result_chars"], :>, 0, "#{e["ref"]}: estimate needs a length"
+        assert_equal (tokens["result_chars"] / ConversationStory::Parser::CHARS_PER_TOKEN).round,
+                     tokens["estimated_input"], "#{e["ref"]}: estimate should follow CHARS_PER_TOKEN"
+        refute tokens.key?("input"),
+               "#{e["ref"]}: an estimate must not be named like a reported count"
+      end
+    end
   end
 end

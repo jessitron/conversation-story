@@ -38,5 +38,46 @@ class RendererTest < Minitest::Test
       refute_empty ids, "#{name}: rendered no cards at all"
       assert_equal ids.uniq.size, ids.size, "#{name}: duplicate card ids"
     end
+
+    # Every API response's numbers appear on exactly one card. If this drifts
+    # above the turn count, the same usage is being printed on the thinking,
+    # message and tool-call cards of one turn — which also means a running
+    # total is counting it more than once.
+    define_method("test_#{name}_prints_tokens_once_per_turn") do
+      doc = YAML.safe_load_file(path)
+      html = ConversationStory::Renderer.new(doc).to_html
+
+      turns = doc["events"].filter_map { |e| e.dig("links", "message_id") }.uniq.size
+      printed = html.scan(%r{<h4 class="deco">Tokens</h4>}).size
+
+      assert_operator turns, :>, 0, "#{name}: no assistant turns found"
+      assert_equal turns, printed,
+                   "#{name}: expected one Tokens section per turn (#{turns}), got #{printed}"
+    end
+
+    # A tool result's token cost is estimated, not reported. The page must say
+    # so wherever it shows one — an unlabelled ≈ reads as a measurement.
+    define_method("test_#{name}_labels_every_token_estimate_as_estimated") do
+      doc = YAML.safe_load_file(path)
+      html = ConversationStory::Renderer.new(doc).to_html
+
+      estimates = doc["events"].count { |e| e.dig("tokens", "estimated_input") }
+      notes = html.scan(%r{<p class="d-note">Estimated from}).size
+
+      assert_operator estimates, :>, 0, "#{name}: no tool-result estimates found"
+      assert_equal estimates, notes,
+                   "#{name}: every estimate needs its caveat (#{estimates} estimates, #{notes} notes)"
+    end
+
+    # The header stat comes from meta, so it can't disagree with the last
+    # turn's card the way a separately-computed number could.
+    define_method("test_#{name}_header_shows_the_final_context") do
+      doc = YAML.safe_load_file(path)
+      html = ConversationStory::Renderer.new(doc).to_html
+      expected = format("%.1fk", doc["meta"]["final_context"] / 1000.0)
+
+      assert_includes html, %(<span class="k">Context</span><span class="v">#{expected}</span>),
+                      "#{name}: header CONTEXT stat missing or not derived from meta.final_context"
+    end
   end
 end

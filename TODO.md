@@ -5,16 +5,19 @@ which mountain each item climbs.
 
 ## Mount Complete
 
-- **Say when an assistant turn includes tool calls.** On the Assistant messages, in the detail, let's also show all the tool calls that came back with that message.
 - **Subagents** inline a spawned Agent's own story instead
   of only listing it in `meta.agents`. The subagent logs are already on disk
   (`examples/<name>/subagents/agent-*.jsonl` + `.meta.json`) and the schema
   already reserves an `agent:` id on every event. Subagent tool calls should be expandable into the whole story of the subagent.
+- **Retune `Parser::CHARS_PER_TOKEN`** (3.5) if a better measurement turns up.
+  Today's tool-result estimate is calibrated against inter-turn context deltas,
+  which overstate the result's share because harness records share the gap. A
+  real tokenizer, or a log where a result sits alone in its gap, would settle
+  it. Not urgent — the page labels the number an estimate.
 - The `<ol>`/`<ul>` merge in `Markdown` only re-glues _adjacent_ same-type
   blocks; a loose list interrupted by an aside paragraph would still split.
   Fine for what's in the example logs; revisit if a real log hits it.
-- **Token stats** In the card detail, show: the current context length (input tokens), along with how many were cached (if available); the amount added to the context (output tokens); and a running total of all input tokens since the beginning
-- In the summary, show the total context length (like, I think that's input + output tokens for the last interaction)
+
 
 ## Mount Beautiful
 

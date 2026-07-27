@@ -28,6 +28,7 @@ meta:
   ended_at:   "2026-04-14T02:35:...Z"
   timezone: UTC                         # timestamps are UTC 'Z'
   event_count: 224
+  final_context: 45195                  # last turn's context + its output
   agents:                               # every conversation represented
     - id: main                          # the primary conversation
     - id: agent-ae20659fd0f63295e       # a subagent (from subagents/)
@@ -70,8 +71,12 @@ events:
       source_tool_assistant_uuid: <uuid|null>  # on tool_result records
       tool_use_id: toolu_01X8...     # on tool_call/tool_result, pairs them
 
+    turn_leader: true            # (omitted unless true) this record shows the
+                                 #   turn's token numbers — see "Turns" below
+
     # --- tokens: all counts, named (NO raw passthrough) ---
     tokens:
+      # as reported by the API:
       input: 3
       output: 322
       cache_creation: 10619
@@ -81,6 +86,16 @@ events:
       service_tier: standard
       iterations:                    # per-internal-round-trip breakdown, named
         - { input: 3, output: 322, cache_read: 13834, cache_creation: 10619 }
+      # derived, and ONLY on the turn_leader (see "Turns"):
+      context: 24456                 # input + cache_creation + cache_read —
+                                     #   the whole context actually sent
+      added: 10622                   # input + cache_creation — what was new
+      cumulative_context: 24456      # running sum of `context` over turns
+
+    # --- tokens on a tool_result: an ESTIMATE, named so ---
+    tokens:
+      result_chars: 4568             # length of the result text
+      estimated_input: 1305          # result_chars / Parser::CHARS_PER_TOKEN
 
     # --- tool events add: ---
     tool:
@@ -148,6 +163,43 @@ Keying by `ref` ties an edit to a line number, so editing a log orphans its
 edits. `Edits#apply` returns the refs that matched nothing and `bin/parse` warns
 about them — deliberately noisy, since the alternative is losing Jess's words in
 silence.
+
+## Turns: one API response, several records, one set of numbers
+
+An assistant "turn" is one API response, and the log splits it across several
+records — a thinking block, a text block, one per `tool_use` — all carrying the
+same `message.id`. **Every one of them repeats the whole turn's `usage`.** So
+token counts are a fact about the turn, not the record: attributing them
+per-record triples a running total, and prints identical numbers on three cards.
+
+`links.message_id` is what makes the turn visible in the schema. Each turn
+elects one **`turn_leader`** — the `assistant_message` record when the turn
+produced prose, the turn's first record otherwise. Only the leader carries the
+derived `context` / `added` / `cumulative_context`. The fallback is not
+hypothetical: 7 of 33 turns in episode-8-before and 11 of 28 in episode-8-after
+are bare `tool_use` with no text block, and without it their tokens — and the
+jump they cause in the running total — would appear on no card at all.
+
+`message_id` deliberately does **not** go into `link_ids`. That token drives the
+board-wide causal highlight, and lighting a whole turn on every selection would
+drown out the `tool_call`↔`tool_result` chains it exists for. The renderer
+indexes `links.message_id` separately for the "Tool calls in this turn" section.
+
+## Tool result tokens are estimated, and named so
+
+A tool result is the thing that actually grows the context, but nothing counts
+it: `usage` appears on assistant records only. The one measured signal is the
+context delta at the next turn, and in the example logs that gap **always** also
+holds harness records — 0 of 32 gaps contain a tool result by itself — so it
+cannot be attributed cleanly. Hence `estimated_input`, from length over
+`Parser::CHARS_PER_TOKEN` (3.5).
+
+The name matters: it is **not** `input`, so nothing downstream can conflate our
+arithmetic with a number the API reported, and the renderer prints it with a `≈`
+plus a visible caveat. Calibration against those deltas put the median near 2.5
+chars/token, but the delta overstates the result's own share (it covers the
+whole gap) and tool output is code and JSON, which tokenizes denser than the
+prose-tuned 4 — 3.5 splits the difference.
 
 ## Notes on the required fields
 

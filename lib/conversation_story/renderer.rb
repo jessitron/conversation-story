@@ -79,6 +79,11 @@ module ConversationStory
     # instead of a Fields row.
     BLOB_INPUT_KEYS = %w[command content prompt].freeze
 
+    # Kinds whose detail pane ends in an arbitrarily long machine-text section.
+    # They position their own Tokens section rather than letting detail_html
+    # append it after the blob.
+    BLOB_KINDS = %w[tool_call tool_result].freeze
+
     # @param document [Hash] the intermediate document (from YAML).
     def initialize(document)
       @document = document
@@ -93,6 +98,7 @@ module ConversationStory
              subtitle:      h(subtitle),
              events_stat:   h(visible_events.size),
              duration_stat: h(duration),
+             context_stat:  h(context_label(@meta["final_context"])),
              model_stat:    h(model_label(@meta["model"])),
              branch_stat:   h(@meta["git_branch"] || "—"),
              cards_html:    cards_html)
@@ -225,8 +231,16 @@ module ConversationStory
 
     # ---- detail (drill-in) markup -------------------------------------------
 
+    # Where the token numbers sit depends on what else is in the pane. A tool
+    # call's Input and a tool result's Result can each run for hundreds of
+    # lines, so those kinds place their numbers ABOVE the blob (see
+    # tool_call_sections / tool_result_sections) — appended, they'd sit below a
+    # full screen of scrolling and nobody would find them. Prose kinds read
+    # better the other way round: the message first, then what it cost.
     def detail_html(event)
       sections = kind_sections(event)
+      sections << turn_tool_calls_section(event)
+      sections << tokens_section(event) unless BLOB_KINDS.include?(event["kind"])
       sections << related_events_section(event)
       sections << section("Provenance", provenance_dl(event))
       # The copyable event id goes last and understated — it's a debugging aid.
@@ -252,6 +266,82 @@ module ConversationStory
       summary = event["kind"] == "tool_call" ? tool_call_summary_html(event) : h(event["summary"])
       %(<a class="related-link" href="##{h anchor_for(event)}">) +
         %(<span class="kind-tag">#{kind}</span><span class="summary">#{summary}</span></a>)
+    end
+
+    # "Say when an assistant turn includes tool calls." The tool_use records
+    # sharing this message's id came back in the SAME API response — they are
+    # literally what the assistant returned alongside its prose, so the message
+    # card names them. Reuses the related-link markup (and its CSS): these are
+    # the same kind of thing, a jump to another card in this story.
+    #
+    # Deliberately NOT wired into link_ids: that token drives the board-wide
+    # causal highlight, and lighting up a whole turn every time you select any
+    # part of it would drown out the tool_call↔tool_result chains it exists for.
+    def turn_tool_calls_section(event)
+      return "" unless event["kind"] == "assistant_message"
+
+      calls = turn_tool_calls(event)
+      return "" if calls.empty?
+
+      links = calls.map { |e| related_link_html(e) }.join
+      section("Tool calls in this turn", %(<div class="related-links">#{links}</div>))
+    end
+
+    def turn_tool_calls(event)
+      id = event.dig("links", "message_id")
+      return [] unless id
+
+      turn_index[id].select { |e| e["kind"] == "tool_call" }
+    end
+
+    # message_id -> its visible events, in card order.
+    def turn_index
+      @turn_index ||= Hash.new { |h, k| h[k] = [] }.tap do |idx|
+        visible_events.each do |e|
+          id = e.dig("links", "message_id")
+          idx[id] << e if id
+        end
+      end
+    end
+
+    # ---- tokens --------------------------------------------------------------
+
+    # Tokens belong to a turn, not a record (see Parser#mark_turns!), so the
+    # real numbers print once per turn, on the record the parser elected.
+    # tool_results get result_tokens_section instead: an estimate, labelled.
+    def tokens_section(event)
+      return "" unless event["turn_leader"]
+
+      tokens = event["tokens"]
+      return "" unless tokens
+
+      rows = [
+        ["Context",     "#{comma tokens["context"]}#{cached_note(tokens)}"],
+        ["Added",       comma(tokens["added"])],
+        ["Output",      comma(tokens["output"])],
+        ["Total input", comma(tokens["cumulative_context"])],
+      ]
+      section("Tokens", kv_dl(rows))
+    end
+
+    def cached_note(tokens)
+      read = tokens["cache_read"].to_i
+      read.zero? ? "" : " (#{comma read} cached)"
+    end
+
+    # The result is what actually lands in the context, but no count of it
+    # exists in the log (Parser::CHARS_PER_TOKEN explains why). An estimate that
+    # reads like a measurement is worse than no number, so the ≈ and the note
+    # are part of the content, not decoration.
+    def result_tokens_section(event)
+      est = event.dig("tokens", "estimated_input")
+      return "" unless est
+
+      rows = [["Result size", byte_label(event.dig("tokens", "result_chars"))],
+              ["Est. tokens", "≈#{comma est}"]]
+      section("Added to context",
+              kv_dl(rows) + %(<p class="d-note">Estimated from the result's length. ) +
+              %(The log reports token counts only on assistant turns.</p>))
     end
 
     def kind_sections(event)
@@ -295,6 +385,9 @@ module ConversationStory
       tool = event["tool"] || {}
       sections = [section("Tool call — #{tool["name"]}", "")]
       sections << section("Fields", tool_call_fields_dl(tool))
+      # A bare tool_use turn has no message card, so this card is the turn
+      # leader and carries the turn's numbers — above the Input blob.
+      sections << tokens_section(event)
       input_html = tool_call_input_html(tool)
       sections << section("Input", input_html) if input_html
       sections
@@ -324,6 +417,7 @@ module ConversationStory
       heading = tool["name"] ? "Tool result — #{tool["name"]}" : "Tool result"
       sections = [section(heading, "")]
       sections << section("Fields", tool_result_fields_dl(tool))
+      sections << result_tokens_section(event)
       text = event.dig("detail", "text")
       sections << section("Result", machine_html(text)) if text && !text.empty?
       sections
@@ -406,6 +500,14 @@ module ConversationStory
       "#{h}h #{m}m"
     end
 
+    # 45195 -> "45.2k". A header stat is for scale; the exact count sits on the
+    # last turn's card.
+    def context_label(tokens)
+      return "—" unless tokens
+
+      tokens < 1000 ? tokens.to_s : format("%.1fk", tokens / 1000.0)
+    end
+
     # "claude-opus-4-6" -> "Opus 4.6"; unknown shapes pass through unchanged.
     def model_label(model)
       return "—" if model.to_s.empty?
@@ -426,6 +528,16 @@ module ConversationStory
 
     def h(value)
       CGI.escapeHTML(value.to_s)
+    end
+
+    # 1206583 -> "1,206,583". Token counts are read as magnitudes; the .kv cells
+    # are already tabular-nums, so grouped digits line up down the column.
+    def comma(number)
+      number.to_i.to_s.reverse.scan(/\d{1,3}/).join(",").reverse
+    end
+
+    def byte_label(chars)
+      chars < 1024 ? "#{chars} B" : format("%.1f KB", chars / 1024.0)
     end
 
     def render(template, **locals)
