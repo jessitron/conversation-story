@@ -1,0 +1,137 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# Exercise the authoring server's write path end to end (Mount Malleable):
+# start bin/serve, save a summary over HTTP, and check that the edit reached
+# the sidecar file, the story.yaml AND the rendered page — then revert and
+# check it all went back. Also checks the two refusals that keep a local write
+# path from being a foot-gun: a story name that tries to climb out of out/, and
+# a ref that names no event.
+#
+#   bin/check-edit-api [example-name] [line]
+#
+# With no line, it picks the story's first VISIBLE event — a hidden
+# (harness-bookkeeping) event is editable in the sidecar but has no card, so
+# there'd be nothing on the page to check.
+#
+# Runs against a TEMPORARY edits dir, so it never touches Jess's real
+# summaries. It does re-run bin/parse + bin/render on the story under test,
+# which rewrites out/<name>/ — with the edit reverted, byte-for-byte the same.
+
+require "json"
+require "net/http"
+require "tmpdir"
+require "yaml"
+
+REPO   = File.expand_path("..", __dir__)
+STORY  = ARGV[0] || "episode-8-after"
+PORT   = 8123
+MARKER = "check-edit-api rewrote this line"
+
+failures = []
+
+def check(label, ok, detail = nil)
+  puts(ok ? "OK    #{label}" : "FAIL  #{label}#{detail ? " — #{detail}" : ""}")
+  ok
+end
+
+def put_summary(story:, ref:, summary:)
+  uri = URI("http://localhost:#{PORT}/api/summary")
+  req = Net::HTTP::Put.new(uri, "Content-Type" => "application/json")
+  req.body = JSON.generate(story: story, ref: ref, summary: summary)
+  res = Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(req) }
+  [res.code.to_i, JSON.parse(res.body)]
+end
+
+def story_events
+  YAML.safe_load_file(File.join(REPO, "out", STORY, "story.yaml"))["events"]
+end
+
+def summary_in_story
+  story_events.find { |e| e["ref"] == REF }
+end
+
+Dir.chdir(REPO)
+abort "no such page: out/#{STORY}/index.html (run 'rake build')" unless File.exist?("out/#{STORY}/index.html")
+
+target = if ARGV[1]
+           story_events.find { |e| e["ref"] == "#{STORY}:#{ARGV[1]}" } ||
+             abort("no event at line #{ARGV[1]} in #{STORY}")
+         else
+           story_events.find { |e| !e["hidden"] } || abort("#{STORY} has no visible events")
+         end
+REF = target["ref"]
+# Hidden events are parsed but never drawn, so "the page shows it" can't hold.
+ON_PAGE = !target["hidden"]
+puts "editing #{REF} (#{target["kind"]})#{ON_PAGE ? "" : " — hidden, so no card to check"}\n\n"
+
+Dir.mktmpdir("conversation-story-edits") do |edits_dir|
+  pid = spawn(RbConfig.ruby, "bin/serve", "-p", PORT.to_s, "--edits", edits_dir,
+              out: File::NULL, err: File::NULL)
+  begin
+    # wait for the port rather than sleeping a guessed amount
+    30.times do
+      break if (TCPSocket.new("localhost", PORT).close rescue nil)
+
+      sleep 0.1
+    end
+
+    res = Net::HTTP.get_response(URI("http://localhost:#{PORT}/api/health"))
+    failures << "health" unless check("GET /api/health says editing is on",
+                                      res.code == "200" && JSON.parse(res.body)["editing"] == true,
+                                      "#{res.code} #{res.body[0, 80]}")
+
+    generated = summary_in_story["summary"]
+
+    # ---- save -------------------------------------------------------------
+    code, body = put_summary(story: STORY, ref: REF, summary: MARKER)
+    failures << "save" unless check("PUT /api/summary accepts an edit for #{REF}",
+                                    code == 200 && body["edited"] == true && body["summary"] == MARKER,
+                                    "#{code} #{body}")
+
+    event = summary_in_story
+    failures << "story.yaml" unless check("story.yaml carries it, marked summary_edited",
+                                          event["summary"] == MARKER && event["summary_edited"] == true,
+                                          event.slice("summary", "summary_edited").to_s)
+
+    failures << "sidecar" unless check("edits/#{STORY}.yaml holds the override",
+                                       YAML.safe_load_file(File.join(edits_dir, "#{STORY}.yaml"))[REF] == MARKER)
+
+    if ON_PAGE
+      page = File.read("out/#{STORY}/index.html")
+      failures << "page" unless check("the rendered page shows it, marked data-edited",
+                                      page.include?(MARKER) && page.include?(%(data-edited="true")))
+    end
+
+    # ---- refusals ---------------------------------------------------------
+    code, = put_summary(story: "../../etc", ref: REF, summary: "nope")
+    failures << "traversal" unless check("a story name with a path in it is refused", code == 400, code.to_s)
+
+    code, = put_summary(story: STORY, ref: "#{STORY}:99999", summary: "nope")
+    failures << "unknown ref" unless check("a ref matching no event is refused", code == 400, code.to_s)
+
+    # ---- revert -----------------------------------------------------------
+    code, body = put_summary(story: STORY, ref: REF, summary: "")
+    failures << "revert" unless check("an empty summary reverts to the generated one",
+                                      code == 200 && body["edited"] == false && body["summary"] == generated,
+                                      "#{code} #{body}")
+
+    failures << "sidecar removed" unless check("the emptied sidecar file is gone",
+                                               !File.exist?(File.join(edits_dir, "#{STORY}.yaml")))
+
+    if ON_PAGE
+      failures << "page reverted" unless check("the page no longer shows the edit",
+                                               !File.read("out/#{STORY}/index.html").include?(MARKER))
+    end
+  ensure
+    Process.kill("TERM", pid)
+    Process.wait(pid)
+  end
+end
+
+if failures.empty?
+  puts "\nAll good: the write path works and out/#{STORY} is back to generated."
+else
+  warn "\n#{failures.size} failure(s): #{failures.join(", ")}"
+  exit 1
+end

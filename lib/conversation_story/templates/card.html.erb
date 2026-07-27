@@ -1,13 +1,18 @@
-<%# One event = one card. An <a> anchor so it's deep-linkable AND keyboard-    %>
-<%# focusable for free; the URL fragment drives selection (see assets/story.js) %>
-<%# and the fragment IS the event's ref, `<example>:<line>` — the same string   %>
-<%# Jess says out loud, so #episode-8-before:174 needs no lookup.               %>
-<%# All content is pre-escaped in the renderer; structure is                    %>
-<%# fixed here, so a card can't emit unbalanced tags. Detail lives in the       %>
-<%# <template> and is cloned into the sidebar on select. link_attr (optional)   %>
-<%# carries the shared tokens assets/story.js uses to highlight the rest of a   %>
-<%# causal chain (a tool call + its result, a queue enqueue + its dequeue…).    %>
-      <a class="card k-<%= css_kind %>" id="<%= anchor %>" href="#<%= anchor %>" data-time="<%= data_time %>"<%= link_attr %>>
+<%# One event = one card. An <a> anchor so it's deep-linkable AND keyboard-    -%>
+<%# focusable for free; the URL fragment drives selection (see assets/story.js) -%>
+<%# and the fragment IS the event's ref, `<example>:<line>` — the same string   -%>
+<%# Jess says out loud, so #episode-8-before:174 needs no lookup.               -%>
+<%# All content is pre-escaped in the renderer; structure is fixed here, so a   -%>
+<%# card can't emit unbalanced tags. Detail lives in the <template> and is      -%>
+<%# cloned into the sidebar on select. link_attr (optional) carries the shared  -%>
+<%# tokens assets/story.js uses to highlight the rest of a causal chain (a tool -%>
+<%# call + its result, a queue enqueue + its dequeue…); edited_attr (optional)  -%>
+<%# marks a summary Jess rewrote by hand, which only the editing UI reacts to.  -%>
+<%#                                                                            -%>
+<%# Every comment line here CLOSES WITH `-%>` on purpose: without the dash, ERB -%>
+<%# emits the line's newline, and this file is rendered once per event — so a   -%>
+<%# plain `%>` would add one blank line PER CARD to every generated page.       -%>
+      <a class="card k-<%= css_kind %>" id="<%= anchor %>" href="#<%= anchor %>" data-time="<%= data_time %>"<%= link_attr %><%= edited_attr %>>
         <div class="gutter">
           <span class="kind deco"><%= kind_label %></span>
           <span class="who"><%= who %></span>

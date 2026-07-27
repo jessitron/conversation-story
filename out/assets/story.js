@@ -48,6 +48,7 @@ function selectCard(card) {
   dBody.replaceChildren(card.querySelector('template.detail').content.cloneNode(true));
   dBody.scrollTop = 0;
   updateRelated(card);
+  showSummaryEditor(card);   // no-op unless the authoring server answered
 }
 
 /* ---- causal-chain highlight ----
@@ -175,6 +176,122 @@ window.addEventListener('mousemove', e => {
   document.documentElement.style.setProperty('--sidebar-w', w + 'px');
 });
 window.addEventListener('mouseup', () => { dragging = false; body.classList.remove('resizing'); });
+
+/* ============================================================
+   Mount Malleable — rewrite a card's summary on the page.
+
+   PROGRESSIVE ENHANCEMENT, and deliberately so: the published site is static
+   files with nowhere to write. On load we probe GET /api/health; only if the
+   local authoring server (bin/serve) answers does an editor appear at the top
+   of the detail pane. On GitHub Pages the probe 404s and this whole section
+   stays dark — same JS file, same pages, no build flag.
+
+   Saving PUTs {story, ref, summary} and the server rewrites
+   edits/<story>.yaml, re-runs bin/parse + bin/render, and answers with the
+   summary that actually landed on disk. So the page updates optimistically
+   from the SERVER's answer, never from what we typed, and a reload always
+   agrees with it. Clearing the text reverts to the parser's own summary.
+   ============================================================ */
+const STORY = body.dataset.story;
+let editing = false;
+
+/* Rebuild the editor for `card` at the top of the detail pane. Called from
+   selectCard, so it runs on every selection; a no-op until the probe succeeds. */
+function showSummaryEditor(card) {
+  if (!editing) return;
+  const summaryEl = card.querySelector('.summary');
+
+  const sec = document.createElement('div');
+  sec.className = 'd-section summary-edit';
+  sec.innerHTML =
+    '<h4 class="deco">Summary</h4>' +
+    '<textarea class="summary-input" rows="2" spellcheck="true"></textarea>' +
+    '<div class="summary-actions">' +
+      '<button type="button" class="summary-btn save">Save</button>' +
+      '<button type="button" class="summary-btn revert">Revert</button>' +
+      '<span class="summary-status"></span>' +
+    '</div>';
+
+  const input  = sec.querySelector('.summary-input');
+  const save   = sec.querySelector('.save');
+  const revert = sec.querySelector('.revert');
+  const status = sec.querySelector('.summary-status');
+
+  const currentText = () => summaryEl.textContent.trim();
+  const load = () => { input.value = currentText(); autogrow(input); };
+  load();
+  revert.disabled = !card.dataset.edited;
+
+  save.addEventListener('click', () => putSummary(card, input.value, status, revert));
+  revert.addEventListener('click', () => { putSummary(card, '', status, revert).then(load); });
+  input.addEventListener('input', () => autogrow(input));
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); save.click(); }
+    if (e.key === 'Escape') { e.preventDefault(); load(); }
+  });
+
+  dBody.prepend(sec);
+  autogrow(input);   // scrollHeight only reads true once it's in the document
+}
+
+/* Fit the box to the summary. A summary is one line of prose but can wrap to
+   several in a narrow sidebar, and a clipped half-line reads like a bug. CSS
+   caps the growth (max-height) and takes over with a scrollbar past that. */
+function autogrow(input) {
+  input.style.height = 'auto';
+  input.style.height = input.scrollHeight + 2 + 'px';
+}
+
+function putSummary(card, text, status, revert) {
+  status.textContent = 'saving…';
+  status.className = 'summary-status';
+  return fetch('/api/summary', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ story: STORY, ref: card.id, summary: text }),
+  })
+    .then(r => r.json().then(j => (r.ok ? j : Promise.reject(new Error(j.error || ('HTTP ' + r.status))))))
+    .then(result => {
+      applySavedSummary(card, result);
+      if (revert) revert.disabled = !result.edited;
+      status.textContent = result.edited ? 'saved' : 'reverted to generated';
+      status.classList.add('ok');
+    })
+    .catch(err => {
+      status.textContent = err.message;
+      status.classList.add('bad');
+    });
+}
+
+/* Put the server's answer on the card face. A generated summary can be markup
+   (a tool call's bold name + <code> argument), so we stash that HTML before
+   the first overwrite — that's what a revert restores. Other cards' "Related
+   events" links still show the old text until the page is reloaded. */
+function applySavedSummary(card, result) {
+  const summaryEl = card.querySelector('.summary');
+  if (result.edited) {
+    if (card.dataset.generatedSummary === undefined) card.dataset.generatedSummary = summaryEl.innerHTML;
+    summaryEl.textContent = result.summary;
+    card.dataset.edited = 'true';
+  } else if (card.dataset.generatedSummary !== undefined) {
+    summaryEl.innerHTML = card.dataset.generatedSummary;
+    delete card.dataset.edited;
+  } else {
+    summaryEl.textContent = result.summary;
+    delete card.dataset.edited;
+  }
+}
+
+fetch('/api/health')
+  .then(r => (r.ok ? r.json() : Promise.reject(new Error('static'))))
+  .then(info => {
+    if (!info.editing) return;
+    editing = true;
+    body.classList.add('editable');
+    const active = document.querySelector('.card.active');
+    if (active) showSummaryEditor(active);   // the probe lost the race with the first paint
+  })
+  .catch(() => { /* published site: no write path, no editor */ });
 
 /* initial paint: honor a deep link if present, else open the default card */
 syncFromHash();

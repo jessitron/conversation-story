@@ -131,6 +131,33 @@ Note: the Rakefile's `RENDER_SRC`/`PARSE_SRC`/`SITE_SRC` lists source files
 explicitly (not a glob) — a new `lib/` file needs adding there or `rake build`
 won't notice it changed.
 
+- **Hand-written summaries are a sidecar, not an edit to `out/`** (session 11,
+  Mount Malleable). `edits/<name>.yaml` maps event `ref` → summary;
+  `ConversationStory::Edits` loads it and `bin/parse` overlays it onto the
+  freshly parsed document, setting `summary` and stamping `summary_edited:
+  true`. **`story.yaml` therefore stays 100% derived** — from the log AND the
+  sidecar — so a parser improvement still reaches every un-edited card and no
+  file needs a "don't overwrite me" lock. `summary_edited` beats the composed
+  card faces (a `tool_call` otherwise ignores `summary`) and adds `data-edited`
+  to the card.
+- **`rake serve` is now `bin/serve`**, a WEBrick server that serves `out/` AND
+  accepts `PUT /api/summary`. A save writes the sidecar and then **shells out to
+  `bin/parse` and `bin/render`** — it never patches YAML or HTML in place, so
+  the two-separate-programs rule holds and a reload always matches `rake build`.
+  It binds **`localhost`, not `127.0.0.1`**, on purpose: with the v4 address
+  alone, a stray server bound to the wildcard answers `::1` first and the page
+  silently talks to it (static files fine, `/api/health` 404, editing
+  mysteriously off — this cost real time in session 11).
+- **The editor is progressive enhancement.** `assets/story.js` probes
+  `GET /api/health` and only builds the Summary box (and the `body.editable`
+  class the ✎ marker hangs off) if the local server answers. The published
+  Pages site runs the same JS with nothing to write to. Don't add a build flag.
+- Verify the write path with **`bin/check-edit-api`** (starts `bin/serve` against
+  a temp edits dir, saves + reverts, asserts sidecar/story/page all agree, and
+  checks the path-traversal and unknown-ref refusals). `bin/screenshot` takes a
+  full `http://…` URL now — the only way to *see* the editor, since `file://`
+  can't reach the API.
+
 - **The site root has a landing page**, `out/index.html`, written by a third
   program: `bin/site-index` (reads every `out/*/story.yaml`, never the logs —
   same contract rule as the renderer). It lists one card per story with the

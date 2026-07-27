@@ -32,7 +32,7 @@ rake parse     # bin/parse:  examples/*.jsonl -> out/<name>/story.yaml
 rake render    # bin/render: out/*/story.yaml -> out/<name>/index.html
 rake site      # bin/site-index: out/*/story.yaml -> out/index.html (landing page)
 rake build     # parse, render, then site (dependency-ordered)
-rake serve     # serve out/ at http://localhost:8080
+rake serve     # bin/serve: out/ at http://localhost:8080, with summary editing on
 rake test      # golden-fixture tests
 ```
 
@@ -54,8 +54,46 @@ LOG=examples/episode-8-before.jsonl rake build   # just this example
 PORT=9000 rake serve                             # serve on a different port
 ```
 
-The intermediate `out/<name>/story.yaml` is meant to be hand-editable — tweak it
-and re-run `rake render` to see the change.
+The intermediate `out/<name>/story.yaml` is readable and tweakable — change it
+and re-run `rake render` to see the difference. But it's a **generated** file:
+the next `rake parse` rebuilds it from the log and your change is gone. For an
+edit that lasts, use the sidecar below.
+
+## Editing summaries (Mount Malleable)
+
+A card's one-line summary is the parser's guess. To make it read the way you'd
+narrate it, run `rake serve` and edit it right on the page: select a card and a
+**Summary** box appears at the top of the detail pane. Save writes the new line;
+clearing the box reverts to the generated one.
+
+The edit is stored **outside** the generated output, in `edits/<name>.yaml` — a
+plain map of event ref to summary, tracked in git:
+
+```yaml
+episode-8-after:4: "Jess asks: can I rewind the timeline?"
+```
+
+`bin/parse` re-reads the log from scratch every time and overlays these on top,
+so a parser improvement still reaches every card you haven't rewritten, and
+nothing in `out/` is ever off-limits. An overridden event is stamped
+`summary_edited: true` in the story, which is what tells the renderer to print
+your line instead of a composed one (a tool call's name-plus-argument face, say).
+
+The write path is local only. `bin/serve` listens on localhost, and the page
+finds it by probing `GET /api/health` — no answer, no editor. The published
+GitHub Pages site is the same HTML with nothing to write to. Saving doesn't
+patch anything in place either: the server writes the sidecar and re-runs
+`bin/parse` and `bin/render` as subprocesses, so the page you reload came from
+the same two programs `rake build` would have run.
+
+```sh
+bin/check-edit-api            # smoke-test the whole write path (uses a temp edits dir)
+bin/screenshot http://localhost:8080/episode-8-after/ '#episode-8-after:4'
+```
+
+Because refs are line numbers, editing a log orphans its edits — `bin/parse`
+warns on stderr about overrides that match no event rather than dropping them
+silently.
 
 ## Published site
 
@@ -91,8 +129,9 @@ by mountain.
   intelligible on the web page.
 - **Mount Beautiful** — I enjoy looking at it. The drill-into-detail feels like
   exploration.
-- **Mount Malleable** — a local web app for shaping the story: edit a card's
-  summary right on the page and have the change stick.
+- **Mount Malleable** — a local web app for shaping the story. Summaries are
+  editable on the page and the change sticks (see above); what else wants
+  shaping — which events show, what order they read in — is still open.
 
 *(Climbed: **Mount Minimal** — every event in the main conversation shows as a
 card, all looking the same.)*

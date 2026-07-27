@@ -50,6 +50,8 @@ events:
     at: "2026-04-14T02:27:16.236Z"   # timestamp (UTC, may be null)
     queued: false                # whether this was queued (see queue below)
     summary: "..."               # one line; policy TBD, adjustable later
+    summary_edited: true         # (omitted unless true) the summary above is
+                                 #   Jess's, from edits/<name>.yaml — see below
     detail:                      # kind-specific; free-form under a known shape
       text: "full text..."
 
@@ -127,6 +129,25 @@ the raw record is always one hop away for a human. Therefore:
   types we don't recognize yet, so nothing is silently lost while we're still
   discovering the format. When we learn a new type, we give it named fields and
   it stops being `unknown`.
+
+## Hand-written summaries live outside this document
+
+`story.yaml` is **generated**, and stays that way. A summary Jess rewrites is
+stored in a sidecar, `edits/<name>.yaml` — a flat map of event `ref` to summary
+— and `bin/parse` overlays it onto the freshly parsed document, setting
+`summary` and stamping `summary_edited: true`. So the story is derived from *the
+log plus the sidecar*, and a parser improvement still reaches every event Jess
+hasn't touched. Nothing needs a "don't overwrite me" lock.
+
+`summary_edited` is the one thing the renderer needs from this: it means "print
+this text verbatim", which beats the composed card faces (a `tool_call` normally
+ignores `summary` and draws its tool name plus primary argument). It also gets a
+`data-edited` attribute on the card, which only the local editing UI reacts to.
+
+Keying by `ref` ties an edit to a line number, so editing a log orphans its
+edits. `Edits#apply` returns the refs that matched nothing and `bin/parse` warns
+about them — deliberately noisy, since the alternative is losing Jess's words in
+silence.
 
 ## Notes on the required fields
 

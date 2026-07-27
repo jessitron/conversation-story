@@ -134,6 +134,7 @@ module ConversationStory
              who:          h(WHO[kind]),
              data_time:    h(time_of_day(event["at"])),
              link_attr:    link_attr(event),
+             edited_attr:  event["summary_edited"] ? %( data-edited="true") : "",
              summary_html: summary_html(event),
              badges_html:  badges_html(event),
              detail_html:  detail_html(event))
@@ -177,7 +178,11 @@ module ConversationStory
 
     # ---- summary (card face) --------------------------------------------------
 
+    # A hand-written summary (Mount Malleable — see lib/conversation_story/edits.rb)
+    # wins over every generated face, including the tool-call one below: if Jess
+    # rewrote the line, her line is what shows.
     def summary_html(event)
+      return h(event["summary"]) if event["summary_edited"]
       return tool_call_summary_html(event) if event["kind"] == "tool_call"
 
       h(event["summary"])

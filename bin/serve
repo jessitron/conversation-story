@@ -1,0 +1,157 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# serve — the LOCAL authoring server (Mount Malleable). Two jobs:
+#
+#   1. Serve out/ as a static site, exactly as `ruby -run -e httpd` used to.
+#   2. Accept summary edits from the page and persist them.
+#
+# The published site (GitHub Pages) is still plain static files; this write path
+# exists only on Jess's machine. The page discovers it by probing GET
+# /api/health — no answer, no editing UI (see the editing block in
+# assets/story.js).
+#
+# A save does NOT patch story.yaml in place. It writes the sidecar
+# edits/<story>.yaml and then re-runs the real pipeline — bin/parse, bin/render —
+# in subprocesses, so the page you reload came from the same two programs a
+# `rake build` would run. Nothing here knows how to parse a log or draw a card.
+#
+#   bin/serve [-p PORT] [--edits DIR]   # default 8080, bound to localhost only
+#
+# --edits points the sidecar somewhere other than edits/ — that's how
+# bin/check-edit-api exercises the write path without touching Jess's real
+# summaries.
+
+require "webrick"
+require "json"
+require "yaml"
+require "rbconfig"
+require_relative "../lib/conversation_story/edits"
+
+REPO_ROOT = File.expand_path("..", __dir__)
+OUT_DIR   = File.join(REPO_ROOT, "out")
+RUBY      = RbConfig.ruby
+
+port = 8080
+EDITS_DIR = [ConversationStory::Edits::DEFAULT_DIR]
+args = ARGV.dup
+until args.empty?
+  arg = args.shift
+  case arg
+  when "-p", "--port"  then port = args.shift.to_i
+  when "--edits"       then EDITS_DIR[0] = File.expand_path(args.shift)
+  when "-h", "--help"  then warn "usage: serve [-p PORT] [--edits DIR]"; exit 0
+  end
+end
+
+# Story names come off the wire and become file paths. Only ever a bare name —
+# no slashes, no dots to climb out of out/ with.
+SAFE_NAME = /\A[A-Za-z0-9][A-Za-z0-9._-]*\z/
+
+class EditError < StandardError
+  attr_reader :status
+
+  def initialize(message, status: 400)
+    super(message)
+    @status = status
+  end
+end
+
+def story_paths(name)
+  raise EditError, "bad story name: #{name.inspect}" unless name.is_a?(String) && name.match?(SAFE_NAME)
+
+  paths = {
+    log:   File.join(REPO_ROOT, "examples", "#{name}.jsonl"),
+    story: File.join(OUT_DIR, name, "story.yaml"),
+    page:  File.join(OUT_DIR, name, "index.html"),
+  }
+  raise EditError.new("no such story: #{name}", status: 404) unless File.exist?(paths[:log])
+
+  paths
+end
+
+def event_for(story_path, ref)
+  document = YAML.safe_load_file(story_path)
+  (document["events"] || []).find { |e| e["ref"] == ref }
+end
+
+def run!(*command)
+  ok = system(*command)
+  raise EditError.new("pipeline failed: #{command.join(" ")}", status: 500) unless ok
+end
+
+# Write the override, then rebuild this one story through the ordinary programs.
+# Returns what actually landed on disk — never what the client asked for.
+def save_summary(name:, ref:, summary:)
+  paths = story_paths(name)
+  raise EditError.new("story not built yet: #{name}", status: 409) unless File.exist?(paths[:story])
+  raise EditError, "unknown event: #{ref.inspect}" unless event_for(paths[:story], ref)
+
+  edits = ConversationStory::Edits.for_story(name, dir: EDITS_DIR[0])
+  edits.set(ref, summary).save
+
+  run!(RUBY, File.join(REPO_ROOT, "bin", "parse"), paths[:log], "-o", paths[:story],
+       "--edits", EDITS_DIR[0])
+  run!(RUBY, File.join(REPO_ROOT, "bin", "render"), paths[:story], "-o", paths[:page])
+
+  event = event_for(paths[:story], ref)
+  { ref: ref, summary: event["summary"], edited: !!event["summary_edited"] }
+end
+
+def json_response(res, status, payload)
+  res.status = status
+  res["Content-Type"] = "application/json"
+  res.body = JSON.generate(payload)
+end
+
+# BindAddress "localhost", not "127.0.0.1": this listens on BOTH ::1 and
+# 127.0.0.1 (still this machine only). With the v4 address alone, a stray
+# server already bound to the wildcard address answers ::1 first — `localhost`
+# resolves to ::1 ahead of 127.0.0.1 — and the browser silently talks to it
+# instead: static files served fine, /api/health 404, editing mysteriously off.
+# Binding both means a port conflict raises EADDRINUSE here, loudly, instead.
+begin
+  server = WEBrick::HTTPServer.new(
+    Port: port,
+    BindAddress: "localhost",
+    DocumentRoot: OUT_DIR,
+    AccessLog: [],
+    Logger: WEBrick::Log.new($stderr, WEBrick::Log::WARN),
+  )
+rescue Errno::EADDRINUSE
+  abort "port #{port} is already in use — another server is running.\n" \
+        "  find it:  lsof -nP -iTCP:#{port} -sTCP:LISTEN\n" \
+        "  or pick another port:  PORT=8081 rake serve"
+end
+
+# The page's capability probe. Its mere existence means "you can edit here".
+server.mount_proc("/api/health") do |_req, res|
+  json_response(res, 200, editing: true)
+end
+
+server.mount_proc("/api/summary") do |req, res|
+  unless %w[PUT POST].include?(req.request_method)
+    next json_response(res, 405, error: "use PUT")
+  end
+
+  begin
+    body = JSON.parse(req.body.to_s)
+    result = save_summary(name: body["story"], ref: body["ref"], summary: body["summary"])
+    puts "  #{result[:edited] ? "edited " : "reverted"} #{result[:ref]}  #{result[:summary]}"
+    json_response(res, 200, result)
+  rescue EditError => e
+    json_response(res, e.status, error: e.message)
+  rescue JSON::ParserError => e
+    json_response(res, 400, error: "bad JSON: #{e.message}")
+  rescue StandardError => e
+    warn "#{e.class}: #{e.message}"
+    json_response(res, 500, error: "#{e.class}: #{e.message}")
+  end
+end
+
+%w[INT TERM].each { |sig| trap(sig) { server.shutdown } }
+
+$stdout.sync = true   # so a save shows up immediately even when piped to a log
+puts "Serving out/ at http://localhost:#{port}  (editing ON — Ctrl-C to stop)"
+puts "  summaries -> #{EDITS_DIR[0]}"
+server.start

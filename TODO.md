@@ -48,13 +48,25 @@ up next" — nothing here is scheduled.
 
 *A local web app for shaping the story — edit on the page, not in YAML.*
 
-- Edit a card's **summary** live on the page and have the change persist back to
-  `out/<name>/story.yaml`. Needs a local (dev-only) write path; the published
-  site stays static.
-- Prerequisite: **mark a story.yaml as hand-edited** so `rake parse` won't
-  overwrite it (a frontmatter flag or sidecar lock file the parse task checks).
-  Rake's mtime rule already skips re-parsing when the story is newer than its
-  log, but that's not an explicit "leave this alone" signal — we want one.
+**Done (session 11):** editing a card's summary on the page, persisted to the
+sidecar `edits/<name>.yaml` via `bin/serve`. No "hand-edited, don't touch"
+lock was needed in the end: the story stays fully generated and the edits are
+overlaid at parse time, so nothing can be clobbered. See the README section.
+
+Open:
+
+- **Nothing marks an orphaned edit on the page.** Change a log and its edits
+  stop matching; `bin/parse` warns on stderr, but the page says nothing. A
+  stats-bar count of stale overrides would make it visible while presenting.
+- **Other cards go stale until reload.** A saved summary updates its own card,
+  but the same text on OTHER cards' "Related events" links still shows the old
+  line until the page is reloaded (the server has already re-rendered).
+- **Only the summary is editable.** The other obvious shaping moves: hide an
+  event Jess doesn't want to show (today `hidden` is the parser's call alone),
+  and reorder or group cards. Both want a place in the sidecar beyond
+  `ref -> summary`, so decide the file's shape before adding the second thing.
+- **No undo beyond revert-to-generated.** Fine while `edits/` is in git; worth
+  revisiting if editing gets heavier.
 
 ## Maybe later
 

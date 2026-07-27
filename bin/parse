@@ -7,24 +7,44 @@
 # This program shares NOTHING with the renderer at runtime. Its only output is
 # the YAML file, which is the contract the renderer later consumes.
 #
-#   bin/parse LOG [-o OUTPUT]     # OUTPUT defaults to stdout
+# It has one other input besides the log: the sidecar `edits/<name>.yaml` of
+# hand-written summaries (Mount Malleable). The log is parsed from scratch every
+# time and the edits are overlaid on top, so the story stays fully derived —
+# a parser improvement still reaches every card Jess hasn't rewritten.
+#
+#   bin/parse LOG [-o OUTPUT] [--edits DIR] [--no-edits]
 
 require "yaml"
 require_relative "../lib/conversation_story/parser"
+require_relative "../lib/conversation_story/edits"
+
+USAGE = "usage: parse LOG [-o OUTPUT] [--edits DIR] [--no-edits]"
 
 input = nil
 output = nil
+edits_dir = ConversationStory::Edits::DEFAULT_DIR
 args = ARGV.dup
 until args.empty?
   arg = args.shift
   case arg
   when "-o", "--output" then output = args.shift
-  when "-h", "--help"   then warn "usage: parse LOG [-o OUTPUT]"; exit 0
+  when "--edits"        then edits_dir = args.shift
+  when "--no-edits"     then edits_dir = nil
+  when "-h", "--help"   then warn USAGE; exit 0
   else input = arg
   end
 end
-abort "usage: parse LOG [-o OUTPUT]" unless input
+abort USAGE unless input
 
 document = ConversationStory::Parser.new(input).to_document
+
+if edits_dir
+  edits = ConversationStory::Edits.for_story(File.basename(input, ".jsonl"), dir: edits_dir)
+  stale = edits.apply(document)
+  # A ref points at a line number, so a changed log can orphan an edit. Say so
+  # rather than dropping Jess's words in silence.
+  warn "#{edits.path}: #{stale.size} edit(s) match no event: #{stale.join(", ")}" unless stale.empty?
+end
+
 yaml = YAML.dump(document)
 output ? File.write(output, yaml) : $stdout.write(yaml)

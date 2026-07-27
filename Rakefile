@@ -21,7 +21,8 @@ LOGS = ENV["LOG"] ? FileList[ENV["LOG"]] : FileList["examples/*.jsonl"]
 # Source files each program is built from. Listing them as prerequisites means
 # editing the parser/renderer/templates/assets re-runs the affected phase — the
 # output depends on the code, not just the story.yaml on disk.
-PARSE_SRC  = FileList["bin/parse", "lib/conversation_story/parser.rb"]
+PARSE_SRC  = FileList["bin/parse", "lib/conversation_story/parser.rb",
+                      "lib/conversation_story/edits.rb"]
 RENDER_SRC = FileList["bin/render", "lib/conversation_story/renderer.rb",
                       "lib/conversation_story/markdown.rb",
                       "lib/conversation_story/templates/*.erb",
@@ -46,8 +47,12 @@ LOGS.each do |log|
 
   directory out_dir
 
-  # bin/parse: log -> intermediate YAML. Re-runs when the log or parser changes.
-  file story => [log, out_dir, *PARSE_SRC] do
+  # bin/parse: log -> intermediate YAML. Re-runs when the log, the parser, or
+  # the story's hand-written summaries change. The edits file is a prerequisite
+  # only when it exists — an absent one has no mtime to compare against, and
+  # the first one is written by bin/serve, which re-runs the pipeline itself.
+  edits = File.join("edits", "#{name_for(log)}.yaml")
+  file story => [log, out_dir, *PARSE_SRC, *(File.exist?(edits) ? [edits] : [])] do
     sh "ruby", "bin/parse", log, "-o", story
   end
 
@@ -80,11 +85,13 @@ task site: SITE_INDEX
 desc "Parse then render then write the landing page"
 task build: %i[render site]
 
-desc "Serve out/ as a static site (PORT=8080 by default)"
+desc "Serve out/ locally with summary editing enabled (PORT=8080 by default)"
 task :serve do
-  port = ENV.fetch("PORT", "8080")
-  puts "Serving out/ at http://localhost:#{port}  (Ctrl-C to stop)"
-  sh "ruby", "-run", "-e", "httpd", "out", "-p", port
+  # bin/serve, not `ruby -run -e httpd`: it serves the same static out/ AND
+  # accepts summary edits from the page, writing them to edits/<name>.yaml and
+  # re-running bin/parse + bin/render. Localhost only; the published site has
+  # no write path.
+  sh "ruby", "bin/serve", "-p", ENV.fetch("PORT", "8080")
 end
 
 desc "Run the golden-fixture tests"

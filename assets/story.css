@@ -534,3 +534,42 @@ pre.code {
   font-size: var(--fs-small); cursor: pointer;
 }
 body.sidebar-collapsed .reopen { display: block; }
+
+/* ============================================================
+   Mount Malleable — the summary editor (local authoring only)
+   ============================================================
+   None of this shows on the published site. assets/story.js probes the local
+   authoring server (bin/serve) and only adds body.editable when it answers, so
+   on GitHub Pages the editor is never built and the ✎ marker never paints.
+   The editor is a d-section like any other, first in the detail pane. */
+.summary-edit .summary-input {
+  width: 100%; box-sizing: border-box; resize: vertical;
+  /* story.js sizes the height to the text; these bound it. */
+  min-height: 3em; max-height: 40vh; overflow-y: auto;
+  font-family: var(--font-body); font-size: var(--fs-body); line-height: var(--lh);
+  color: var(--ink); background: var(--surface-raised);
+  border: 1px solid var(--line-strong); border-radius: var(--card-radius);
+  padding: 8px 10px;
+}
+.summary-edit .summary-input:focus {
+  outline: none; border-color: var(--blue);
+  box-shadow: 0 0 0 2px rgba(55, 114, 166, .18);
+}
+.summary-actions { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.summary-btn {
+  font-family: var(--font-body); font-size: var(--fs-small); letter-spacing: var(--ls-wide);
+  padding: 6px 12px; border-radius: 2px; cursor: pointer;
+  background: var(--navy); color: var(--paper); border: 1px solid var(--navy);
+}
+.summary-btn.revert { background: transparent; color: var(--ink-soft); border-color: var(--line-strong); }
+.summary-btn:hover:not(:disabled) { border-color: var(--gold); }
+.summary-btn:disabled { opacity: .4; cursor: default; }
+.summary-status { font-size: var(--fs-small); color: var(--ink-faint); }
+.summary-status.ok  { color: var(--olive); }
+.summary-status.bad { color: var(--red); }
+
+/* Which cards carry Jess's words instead of the parser's. A quiet authoring
+   affordance, not part of the story — hence body.editable only. */
+body.editable .card[data-edited] .summary::after {
+  content: "✎"; margin-left: 8px; color: var(--gold); font-size: var(--fs-small);
+}

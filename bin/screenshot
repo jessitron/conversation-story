@@ -2,26 +2,40 @@
 # Screenshot a generated story page with headless Chrome — a quick visual check
 # that a CSS change landed the way it reads on paper.
 #
-#   bin/screenshot [example-name] [#fragment] [out.png]
+#   bin/screenshot [example-name | http://…] [#fragment] [out.png]
 #
 # Defaults to episode-8-before, no fragment, and a png in the scratch dir.
 # The fragment selects a card (the page's selection is fragment-driven) and is
 # the event's ref, so e.g. '#episode-8-before:174' screenshots that card
 # selected with its detail pane open.
+#
+# Pass a full http:// URL to shoot the page as SERVED rather than from disk —
+# that's the only way to see the summary editor, which appears only when
+# bin/serve answers the /api/health probe (see the Mount Malleable block in
+# assets/story.js). E.g.:
+#
+#   rake serve &
+#   bin/screenshot http://localhost:8080/episode-8-after/ '#episode-8-after:4'
 set -euo pipefail
 
 CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 example="${1:-episode-8-before}"
 fragment="${2:-}"
-out="${3:-/tmp/story-$example.png}"
 
-repo="$(cd "$(dirname "$0")/.." && pwd)"
-page="$repo/out/$example/index.html"
-[ -f "$page" ] || { echo "no such page: $page (run 'rake build')" >&2; exit 1; }
+if [[ "$example" == http* ]]; then
+  url="$example"
+  out="${3:-/tmp/story-served.png}"
+else
+  out="${3:-/tmp/story-$example.png}"
+  repo="$(cd "$(dirname "$0")/.." && pwd)"
+  page="$repo/out/$example/index.html"
+  [ -f "$page" ] || { echo "no such page: $page (run 'rake build')" >&2; exit 1; }
+  url="file://$page"
+fi
 
 "$CHROME" --headless --disable-gpu --hide-scrollbars \
   --window-size=1400,1600 --screenshot="$out" \
   --virtual-time-budget=2000 \
-  "file://$page$fragment" >/dev/null 2>&1
+  "$url$fragment" >/dev/null 2>&1
 
 echo "$out"
