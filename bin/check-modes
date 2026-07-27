@@ -206,6 +206,77 @@ scenario "focus mode is gone" do |s|
   s.exists?("focus-toggle") ? "focus-toggle still in the DOM" : nil
 end
 
+scenario "right arrow moves the selection one card, left arrow moves it back" do |s|
+  ids = s.card_ids
+  start = ids[3]
+  s.click_id(start)
+  s.key(:Right)
+  next "right did not land on #{ids[4]} (got #{s.active_id.inspect})" unless s.active_id == ids[4]
+  s.key(:Left)
+  next "left did not return to #{start} (got #{s.active_id.inspect})" unless s.active_id == start
+  nil
+end
+
+scenario "shift+right jumps to the next user/assistant card" do |s|
+  ids = s.card_ids
+  s.click_id(ids[0])
+  s.key([:Shift, :Right])
+  landed = s.active_id
+  next "landed on nothing" unless landed
+  next "#{landed} is not a message card" unless s.message?(landed)
+  expected = ids.drop(1).find { |id| s.message?(id) }
+  next "skipped past #{expected} to #{landed}" unless landed == expected
+  nil
+end
+
+scenario "arrow navigation leaves a collapsed sidebar collapsed" do |s|
+  ids = s.card_ids
+  # Can't hard-code a start index: the page always loads with DEFAULT_CARD
+  # already active, and clicking the active card toggles the sidebar instead
+  # of opening it — so, like the neighbouring scenarios, find the first card
+  # that isn't already selected.
+  start = ids.find { |id| id != s.active_id }
+  landing = ids[ids.index(start) + 1]
+  s.click_id(start)
+  s.key(:Escape)          # collapse, keeping the selection
+  s.key(:Right)
+  next "arrow popped the sidebar open" unless s.collapsed?
+  next "arrow did not move the selection (active=#{s.active_id.inspect})" unless s.active_id == landing
+  nil
+end
+
+scenario "keys typed into a focused text box do not reach the page" do |s|
+  before_mode = s.mode
+  before_active = s.active_id
+  s.focus_new_textarea
+  s.key("N")
+  s.key(:Right)
+  next "typing changed the mode to #{s.mode.inspect}" unless s.mode == before_mode
+  next "typing moved the selection to #{s.active_id.inspect}" unless s.active_id == before_active
+  nil
+end
+
+scenario "the x / e / N hotkeys switch modes" do |s|
+  s.key("N")   # type("N") gives e.key === 'N'; [:Shift,'n'] would give 'n' + shiftKey
+  next "N did not enter narrate (mode=#{s.mode.inspect})" unless s.mode == "narrate"
+  s.key("x")
+  next "x did not return to explore (mode=#{s.mode.inspect})" unless s.mode == "explore"
+  s.key("n")   # lowercase is the forgiving alias from explore
+  next "n did not enter narrate (mode=#{s.mode.inspect})" unless s.mode == "narrate"
+  s.key("x")
+  s.key("e")   # no server here, so edit must stay unavailable
+  next "e entered edit mode with no server" if s.mode == "edit"
+  nil
+end
+
+scenario "shift+right scrolls the target into view" do |s|
+  s.click_id(s.card_ids[0])
+  before = s.scroll_y
+  8.times { s.key([:Shift, :Right]) }
+  next "page never scrolled (still at #{before})" unless s.scroll_y > before
+  nil
+end
+
 # ---------------------------------------------------------------- runner
 
 browser = Ferrum::Browser.new(headless: true, window_size: [1400, 900], browser_path: CHROME)

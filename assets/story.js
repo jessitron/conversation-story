@@ -215,15 +215,72 @@ document.getElementById('d-clear').addEventListener('click', () => {
    box" (see showSummaryEditor). */
 const TYPING = 'input, textarea, select, [contenteditable]';
 
+/* Every card in document order, materialized once. `navigable` is the subset
+   the arrows may land on — all of them, except in narrate where only what has
+   been revealed exists to the user yet. */
+const CARDS = Array.from(cards);
+const isMessage = c => c.classList.contains('k-user') || c.classList.contains('k-assistant');
+function navigable() {
+  return mode === 'narrate' ? CARDS.filter(c => c.classList.contains('revealed')) : CARDS;
+}
+
+/* Move the selection by one card, or by one user/assistant message with shift.
+   Does NOT open the sidebar — that state is Jess's (see collapseSidebar). */
+function moveSelection(dir, byMessage) {
+  const list = navigable();
+  if (!list.length) return;
+  const active = document.querySelector('.card.active');
+  let i = list.indexOf(active);
+  if (i < 0) i = dir > 0 ? -1 : list.length;
+  let next = i + dir;
+  if (byMessage) {
+    while (next >= 0 && next < list.length && !isMessage(list[next])) next += dir;
+  }
+  if (next < 0 || next >= list.length) return;
+  const card = list[next];
+  setFragment('#' + card.id);
+  selectCard(card);
+  card.scrollIntoView({ block: 'nearest' });
+}
+
 window.addEventListener('keydown', e => {
   if (e.target.closest && e.target.closest(TYPING)) return;
   if (e.metaKey || e.ctrlKey || e.altKey) return;
-  if (e.key !== 'Escape') return;
-  e.preventDefault();
+
+  /* Letter keys are matched case-insensitively. Shift+N arrives as 'N' from a
+     real keyboard but as 'n' + shiftKey from CDP-synthesized input, and caps
+     lock is a third way to get the same intent — folding case means one case
+     label covers all of them. Named keys ('ArrowRight', 'Escape') are longer
+     than one character and pass through untouched. */
+  const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+  const act = fn => { e.preventDefault(); fn(); };
+
+  switch (key) {
+    case 'x': return act(() => setMode('explore'));
+    case 'e': return act(() => setMode('edit'));
+    case 'Escape': return act(escapeKey);
+  }
+
+  if (mode === 'narrate') return;   // Task 4 owns narrate's arrows
+
+  switch (key) {
+    /* 'n' and 'N' are the same key here: from explore or edit, both mean
+       "start narrating". They only diverge inside narrate, where Task 4 gives
+       'n' the beat-forward job. */
+    case 'n':          return act(() => setMode('narrate'));
+    case 'ArrowRight': return act(() => moveSelection(1, e.shiftKey));
+    case 'ArrowLeft':  return act(() => moveSelection(-1, e.shiftKey));
+  }
+});
+
+/* Escape peels one layer at a time: an open sidebar first, then the selection
+   (or, in narrate, the mode itself — see Task 4's exit). */
+function escapeKey() {
   if (!body.classList.contains('sidebar-collapsed')) { collapseSidebar(); return; }
+  if (mode === 'narrate') { setMode('explore'); return; }
   setFragment(location.pathname + location.search);
   clearSelection();
-});
+}
 
 /* ---- drag to resize ---- */
 const resizer = document.getElementById('resizer');
