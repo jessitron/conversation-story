@@ -1,0 +1,5 @@
+# Hand-written event summaries — Jess's words, not the parser's.
+# Keyed by event ref (<example>:<line>); bin/parse overlays these onto the
+# freshly parsed story.yaml. Edit here or on the page (rake serve).
+episode-8-before:15: Currently, no -- the timeline is live-only with no rewind. Here's
+  how it works today.... A rewind feature would be cool though.

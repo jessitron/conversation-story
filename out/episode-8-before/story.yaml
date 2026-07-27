@@ -348,11 +348,8 @@ events:
   kind: assistant_message
   role: assistant
   at: '2026-04-14T02:28:43.593Z'
-  summary: 'Currently, no -- the timeline is live-only with no rewind. Here''s how
-    it works today: The timeline dots are positioned based on Date.now() - event.timestamp,
-    so they always represent "how long ago" relative to right now Dots drift leftward
-    via CSS animation and fall off-screen when they age past the selected range (1m/5m/10m/60m)
-    All events for the session are already loaded client-side, but the…'
+  summary: Currently, no -- the timeline is live-only with no rewind. Here's how it
+    works today.... A rewind feature would be cool though.
   source:
     file: episode-8-before.jsonl
     line: 15
@@ -379,6 +376,7 @@ events:
     ephemeral_1h: 1735
     ephemeral_5m: 0
     service_tier: standard
+  summary_edited: true
 - id: 6efddd2e-d89c-45bd-9347-316e95c1d9ca
   ref: episode-8-before:16
   agent: main
