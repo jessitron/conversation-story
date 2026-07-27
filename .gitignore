@@ -1,1 +1,7 @@
 settings.local.json
+
+# Jess's global gitexcludes ignores .tool-versions (a sensible default: tool
+# pins are usually personal). Here it's the opposite — the asdf pin is the
+# thing that keeps every one of Jess's computers on the same Ruby, so it has
+# to be tracked. A repo .gitignore outranks core.excludesFile, so this wins.
+!.tool-versions

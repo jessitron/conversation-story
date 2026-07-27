@@ -45,8 +45,11 @@ this change are dead links; nothing aliases them.) Two things follow:
 
 ## Conventions
 
-- **Ruby**, managed via rbenv/asdf (`.ruby-version`). **Stdlib-first**
-  (`json`, `yaml`, `erb`); only dev dep is `minitest`. No Rails.
+- **Ruby 4**, managed via **asdf**, pinned in `.tool-versions` (asdf's native
+  file — there is no `.ruby-version` here, and rbenv isn't in play). Without
+  that file asdf falls back to `~/.tool-versions`, which differs per machine.
+  **Stdlib-first** (`json`, `yaml`, `erb`); only dev dep is `minitest`. No Rails.
+  CI pins the same major in `.github/workflows/pages.yml` — bump both together.
 - **The schema is the contract.** Known event kinds store only _named_ fields —
   no raw source-JSON blob, and the renderer reads the schema, never the original
   log. Only the `unknown` fallback kind keeps `raw`, so

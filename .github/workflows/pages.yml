@@ -39,9 +39,15 @@ jobs:
 
       # Stdlib-only Ruby (json/yaml/erb) with minitest and rake as default
       # gems: no Gemfile, nothing to bundle install.
+      #
+      # Kept in step with the local asdf pin in .tool-versions. Not
+      # `ruby-version: .tool-versions` (setup-ruby reads that file, but then a
+      # patch bump Jess installs locally would silently change CI too); '4.0'
+      # takes setup-ruby's latest 4.0.x, so bump this when the pin's major
+      # moves.
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4'
+          ruby-version: '4.0'
 
       - name: Test
         run: rake test

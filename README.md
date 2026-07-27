@@ -23,7 +23,8 @@ dependency between the phases and shells out to each program.
 
 ## Running it
 
-Ruby only (see `.ruby-version`); the programs use stdlib (`json`, `yaml`, `erb`)
+Ruby only — version pinned in `.tool-versions` for [asdf](https://asdf-vm.com)
+(`asdf install` picks it up). The programs use stdlib (`json`, `yaml`, `erb`)
 and rake, which ships with Ruby. The one dev dependency is `minitest`.
 
 ```sh
