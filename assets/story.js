@@ -222,8 +222,51 @@ function showSummaryEditor(card) {
   load();
   revert.disabled = !card.dataset.edited;
 
-  save.addEventListener('click', () => putSummary(card, input.value, status, revert));
-  revert.addEventListener('click', () => { putSummary(card, '', status, revert).then(load); });
+  /* Send a summary to the server and reconcile the page with its answer.
+     Empty text means "no override". */
+  function submit(text) {
+    // What we're about to throw away, if it was Jess's line and not the
+    // parser's. Captured before the request so undo has something to restore.
+    const lost = card.dataset.edited ? currentText() : null;
+
+    status.className = 'summary-status';
+    status.textContent = 'saving…';
+    return fetch('/api/summary', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ story: STORY, ref: card.id, summary: text }),
+    })
+      .then(r => r.json().then(j => (r.ok ? j : Promise.reject(new Error(j.error || ('HTTP ' + r.status))))))
+      .then(result => {
+        applySavedSummary(card, result);
+        revert.disabled = !result.edited;
+        status.textContent = result.edited ? 'saved' : 'reverted to generated';
+        status.classList.add('ok');
+        if (lost !== null && lost !== result.summary) offerUndo(lost);
+      })
+      .catch(err => {
+        status.textContent = err.message;
+        status.classList.add('bad');
+      });
+  }
+
+  /* A hand-written line just disappeared — Revert dropped it, or a Save wrote
+     over an older one. The sidecar is in git and the box is right there, but
+     neither is a *click*, and Revert is one keystroke away from being an
+     accident. So the confirmation itself carries the way back. It survives only
+     until the next request or reselect: one level, in-session, which is what
+     this is protecting against. */
+  function offerUndo(lost) {
+    const undo = document.createElement('button');
+    undo.type = 'button';
+    undo.className = 'undo';
+    undo.textContent = 'undo';
+    undo.addEventListener('click', () => submit(lost).then(load));
+    status.append(' · ', undo);
+  }
+
+  save.addEventListener('click', () => submit(input.value));
+  revert.addEventListener('click', () => { submit('').then(load); });
   input.addEventListener('input', () => autogrow(input));
   input.addEventListener('keydown', e => {
     if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); save.click(); }
@@ -240,27 +283,6 @@ function showSummaryEditor(card) {
 function autogrow(input) {
   input.style.height = 'auto';
   input.style.height = input.scrollHeight + 2 + 'px';
-}
-
-function putSummary(card, text, status, revert) {
-  status.textContent = 'saving…';
-  status.className = 'summary-status';
-  return fetch('/api/summary', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ story: STORY, ref: card.id, summary: text }),
-  })
-    .then(r => r.json().then(j => (r.ok ? j : Promise.reject(new Error(j.error || ('HTTP ' + r.status))))))
-    .then(result => {
-      applySavedSummary(card, result);
-      if (revert) revert.disabled = !result.edited;
-      status.textContent = result.edited ? 'saved' : 'reverted to generated';
-      status.classList.add('ok');
-    })
-    .catch(err => {
-      status.textContent = err.message;
-      status.classList.add('bad');
-    });
 }
 
 /* Put the server's answer on the card face. A generated summary can be markup

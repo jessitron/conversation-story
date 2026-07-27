@@ -27,6 +27,11 @@ Ruby only — version pinned in `.tool-versions` for [asdf](https://asdf-vm.com)
 (`asdf install` picks it up). The programs use stdlib (`json`, `yaml`, `erb`)
 and rake, which ships with Ruby. The one dev dependency is `minitest`.
 
+`rake serve` additionally needs **`gem install webrick`** — Ruby 4.0 unbundled
+it. That's the only program with a dependency; parse, render, the tests and CI
+stay stdlib-only, which is why there's still no Gemfile. `bin/serve` prints the
+install command if it's missing.
+
 ```sh
 rake -T        # list all tasks
 rake parse     # bin/parse:  examples/*.jsonl -> out/<name>/story.yaml
@@ -65,7 +70,12 @@ edit that lasts, use the sidecar below.
 A card's one-line summary is the parser's guess. To make it read the way you'd
 narrate it, run `rake serve` and edit it right on the page: select a card and a
 **Summary** box appears at the top of the detail pane. Save writes the new line;
-clearing the box reverts to the generated one.
+clearing the box (or hitting Revert) goes back to the generated one.
+
+Whenever a save or a revert throws away a line you wrote, the confirmation
+carries an **undo** next to it — one click puts your words back. It lasts until
+the next save or until you select another card; past that, the sidecar file is
+in git.
 
 The edit is stored **outside** the generated output, in `edits/<name>.yaml` — a
 plain map of event ref to summary, tracked in git:

@@ -568,6 +568,16 @@ body.sidebar-collapsed .reopen { display: block; }
 .summary-status.ok  { color: var(--olive); }
 .summary-status.bad { color: var(--red); }
 
+/* The way back, offered inside the confirmation that just took something away
+   (see offerUndo in story.js). Underlined so it reads as an action, not as
+   more status text — it's the one thing in that line you can click. */
+.summary-status .undo {
+  background: none; border: none; padding: 0; cursor: pointer;
+  font-family: inherit; font-size: inherit; color: inherit;
+  text-decoration: underline; text-underline-offset: 2px;
+}
+.summary-status .undo:hover { color: var(--red); }
+
 /* Which cards carry Jess's words instead of the parser's. A quiet authoring
    affordance, not part of the story — hence body.editable only. */
 body.editable .card[data-edited] .summary::after {

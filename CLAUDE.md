@@ -50,6 +50,10 @@ this change are dead links; nothing aliases them.) Two things follow:
   that file asdf falls back to `~/.tool-versions`, which differs per machine.
   **Stdlib-first** (`json`, `yaml`, `erb`); only dev dep is `minitest`. No Rails.
   CI pins the same major in `.github/workflows/pages.yml` — bump both together.
+  **One scoped exception**: `bin/serve` needs `gem install webrick` (Ruby 4.0
+  unbundled it), and says so on `LoadError`. Parse, render, the tests and CI
+  never require it, so there's still no Gemfile — keep it that way, and check
+  anything new in `bin/serve`'s requires is actually stdlib on Ruby 4.
 - **The schema is the contract.** Known event kinds store only _named_ fields —
   no raw source-JSON blob, and the renderer reads the schema, never the original
   log. Only the `unknown` fallback kind keeps `raw`, so
@@ -155,6 +159,11 @@ won't notice it changed.
   `GET /api/health` and only builds the Summary box (and the `body.editable`
   class the ✎ marker hangs off) if the local server answers. The published
   Pages site runs the same JS with nothing to write to. Don't add a build flag.
+- **Every write goes through one `submit(text)`** inside `showSummaryEditor` —
+  Save, Revert and undo are all the same request, differing only in the text.
+  `submit` captures the outgoing hand-written line first and, if the response
+  shows it was discarded, offers an `undo` in the status area. So undo needs no
+  server support and no history: it's just another save of the old text.
 - Verify the write path with **`bin/check-edit-api`** (starts `bin/serve` against
   a temp edits dir, saves + reverts, asserts sidecar/story/page all agree, and
   checks the path-traversal and unknown-ref refusals). `bin/screenshot` takes a

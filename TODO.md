@@ -65,8 +65,10 @@ Open:
   event Jess doesn't want to show (today `hidden` is the parser's call alone),
   and reorder or group cards. Both want a place in the sidecar beyond
   `ref -> summary`, so decide the file's shape before adding the second thing.
-- **No undo beyond revert-to-generated.** Fine while `edits/` is in git; worth
-  revisiting if editing gets heavier.
+- **Undo is one level and in-session.** A save or revert that discards a
+  hand-written line offers an `undo` in the status area, but it's gone on the
+  next save or on reselecting the card. A real history would mean keeping
+  superseded summaries somewhere; `edits/` being in git covers the rest.
 
 ## Maybe later
 
