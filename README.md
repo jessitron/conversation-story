@@ -30,7 +30,8 @@ and rake, which ships with Ruby. The one dev dependency is `minitest`.
 rake -T        # list all tasks
 rake parse     # bin/parse:  examples/*.jsonl -> out/<name>/story.yaml
 rake render    # bin/render: out/*/story.yaml -> out/<name>/index.html
-rake build     # parse then render (dependency-ordered)
+rake site      # bin/site-index: out/*/story.yaml -> out/index.html (landing page)
+rake build     # parse, render, then site (dependency-ordered)
 rake serve     # serve out/ at http://localhost:8080
 rake test      # golden-fixture tests
 ```
@@ -55,6 +56,20 @@ PORT=9000 rake serve                             # serve on a different port
 
 The intermediate `out/<name>/story.yaml` is meant to be hand-editable — tweak it
 and re-run `rake render` to see the change.
+
+## Published site
+
+The examples are live at **https://jessitron.github.io/conversation-story/**.
+
+`.github/workflows/pages.yml` publishes them on every push to `main`: it runs
+`rake test`, then `rake build`, then uploads `out/` to GitHub Pages. The Pages
+source is set to "GitHub Actions" rather than a branch, which is what lets the
+site root be `out/` on `main` — branch-based Pages can only serve a repo root
+or `/docs`, so there's no `gh-pages` branch and no `docs/` rename.
+
+`out/` is still committed, so the generated pages show up in a diff. The
+workflow rebuilds anyway: if the committed pages and a fresh build ever
+disagree, what gets published follows `lib/` and `examples/`.
 
 ## North Star
 

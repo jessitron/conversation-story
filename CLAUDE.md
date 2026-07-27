@@ -123,16 +123,33 @@ program's source changes — not just when `story.yaml` is stale).
   which hides every card that isn't `k-user`/`k-assistant` — pure CSS/JS, no
   data changes.
 
-Run things with `rake parse` / `render` / `build` / `serve` / `test` (all
-examples by default; `LOG=`/`PORT=` env vars to scope). See README.md. Note:
-the Rakefile's `RENDER_SRC`/`PARSE_SRC` lists source files explicitly (not a
-glob) — a new `lib/` file needs adding there or `rake build` won't notice it
-changed.
+Run things with `rake parse` / `render` / `site` / `build` / `serve` / `test`
+(all examples by default; `LOG=`/`PORT=` env vars to scope). See README.md.
+Note: the Rakefile's `RENDER_SRC`/`PARSE_SRC`/`SITE_SRC` lists source files
+explicitly (not a glob) — a new `lib/` file needs adding there or `rake build`
+won't notice it changed.
+
+- **The site root has a landing page**, `out/index.html`, written by a third
+  program: `bin/site-index` (reads every `out/*/story.yaml`, never the logs —
+  same contract rule as the renderer). It lists one card per story with the
+  same Events / Duration / Model labels the story's own header shows, by
+  calling `Renderer#subtitle`/`#duration`/`#model_label` — those three are
+  `public` on the renderer precisely so the landing page can't drift from the
+  page it links to. Its styles are `assets/index.css`, built from
+  `story.css`'s tokens and loaded after it; the story pages don't link it.
+  `bin/site-index` also drops a `.nojekyll` in the site root.
+- **Deploy: `.github/workflows/pages.yml`** publishes to GitHub Pages on every
+  push to `main` — `rake test`, `rake build`, then upload `out/`. The Pages
+  source is "GitHub Actions", *not* a branch, because branch-based Pages can
+  only serve a repo root or `/docs` and the site root here is `out/` on `main`.
+  There is no `gh-pages` branch. Live at
+  <https://jessitron.github.io/conversation-story/>.
 
 To *see* a CSS change: `bin/screenshot [example] ['#<ref>'] [out.png]` shoots a
 built page with headless Chrome. Passing a fragment selects that card, so its
 detail pane and its highlighted causal chain are in the shot (the region above
 the target screenshots blank — a headless repaint artifact, not a page bug).
+`bin/screenshot .` shoots the landing page (`out/./index.html` resolves).
 
 Still TODO: **self-host the fonts** (Tenor Sans / Sen / Cascadia Code) into
 `assets/fonts/` with `@font-face` in `story.css`, replacing the CDN `<link>` the

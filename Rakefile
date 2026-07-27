@@ -7,7 +7,8 @@
 #
 #   rake parse    bin/parse:  examples/<name>.jsonl -> out/<name>/story.yaml
 #   rake render   bin/render: out/<name>/story.yaml -> out/<name>/index.html
-#   rake build    parse then render, dependency-ordered
+#   rake site     bin/site-index: out/*/story.yaml -> out/index.html (landing)
+#   rake build    parse then render then site, dependency-ordered
 #   rake serve    serve out/ on :8080
 #   rake test     golden-fixture tests
 #
@@ -25,6 +26,9 @@ RENDER_SRC = FileList["bin/render", "lib/conversation_story/renderer.rb",
                       "lib/conversation_story/markdown.rb",
                       "lib/conversation_story/templates/*.erb",
                       "assets/**/*", "images/**/*"]
+SITE_SRC   = FileList["bin/site-index", "lib/conversation_story/renderer.rb"]
+
+SITE_INDEX = "out/index.html"
 
 def name_for(log)  = File.basename(log, ".jsonl")
 def story_for(log) = File.join("out", name_for(log), "story.yaml")
@@ -62,8 +66,19 @@ task parse: stories
 desc "Render story.yaml into index.html (runs parse first when needed)"
 task render: pages
 
-desc "Parse then render"
-task build: :render
+# The landing page at the SITE ROOT. Unlike the per-story tasks above this one
+# isn't scoped by LOG= : it lists every story present in out/, because that's
+# what a visitor arriving at the root should see. It depends on the stories'
+# YAML (the contract it reads) and on its own source.
+file SITE_INDEX => [*stories, *SITE_SRC] do
+  sh "ruby", "bin/site-index", "out"
+end
+
+desc "Write the site-root landing page listing every built story"
+task site: SITE_INDEX
+
+desc "Parse then render then write the landing page"
+task build: %i[render site]
 
 desc "Serve out/ as a static site (PORT=8080 by default)"
 task :serve do

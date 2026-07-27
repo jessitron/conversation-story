@@ -1,0 +1,108 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# site-index — a standalone program. Writes the SITE ROOT's landing page: one
+# card per built story, linking into that story's page.
+#
+# The stories live at out/<name>/index.html. Nothing generates out/index.html,
+# so a visitor arriving at the site root — which is exactly what GitHub Pages
+# serves — gets a directory listing at best and a 404 at worst. This program
+# fills that gap.
+#
+# Like bin/render, it reads ONLY the contract: each out/<name>/story.yaml,
+# never the original logs. It reuses ConversationStory::Renderer's meta labels
+# (subtitle / duration / model) so a story is described the same way here as on
+# its own page.
+#
+#   bin/site-index [SITE_ROOT]    # SITE_ROOT defaults to out/
+
+require "cgi"
+require "yaml"
+require_relative "../lib/conversation_story/renderer"
+
+site_root = ARGV[0] || "out"
+abort "site-index: no such directory: #{site_root}" unless File.directory?(site_root)
+
+def h(value) = CGI.escapeHTML(value.to_s)
+
+# One entry per out/<name>/story.yaml, ordered by when the conversation began
+# (the site reads as a chronology), falling back to directory name.
+stories = Dir.glob(File.join(site_root, "*", "story.yaml")).sort.map do |path|
+  document = YAML.safe_load_file(path)
+  renderer = ConversationStory::Renderer.new(document)
+  meta     = document["meta"] || {}
+  events   = document["events"] || []
+
+  {
+    dir:      File.basename(File.dirname(path)),
+    subtitle: renderer.subtitle,
+    duration: renderer.duration,
+    model:    renderer.model_label(meta["model"]),
+    # The page's own "Events" stat counts VISIBLE events, not log lines — match
+    # it, so the landing page and the page it links to agree.
+    events:   events.count { |e| !e["hidden"] },
+    started:  meta["started_at"].to_s,
+  }
+end.sort_by { |s| [s[:started], s[:dir]] }
+
+warn "site-index: no story.yaml under #{site_root}/*/ — writing an empty index" if stories.empty?
+
+cards = stories.map do |s|
+  <<~HTML
+    <a class="story-card" href="#{h s[:dir]}/">
+      <span class="story-name deco">#{h s[:subtitle]}</span>
+      <span class="story-dir"><code>#{h s[:dir]}</code></span>
+      <span class="story-stats">
+        <span class="stat"><span class="k">Events</span><span class="v">#{h s[:events]}</span></span>
+        <span class="stat"><span class="k">Duration</span><span class="v">#{h s[:duration]}</span></span>
+        <span class="stat"><span class="k">Model</span><span class="v">#{h s[:model]}</span></span>
+      </span>
+    </a>
+  HTML
+end.map(&:rstrip).join("\n")
+
+html = <<~HTML
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conversation Story</title>
+  <!-- Fonts via CDN for now; self-hosting into assets/fonts/ is a TODO (see notes/plan.md). -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cascadia+Code:wght@400;600&family=Tenor+Sans&family=Sen:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/story.css">
+  <link rel="stylesheet" href="assets/index.css">
+  </head>
+  <body>
+
+  <header class="site">
+    <img class="logo" src="images/logo.png" alt="Graceful Developer logo">
+    <div class="titles">
+      <h1 class="deco">Conversation Story</h1>
+      <span class="subtitle">an explorable log of a coding conversation</span>
+    </div>
+  </header>
+
+  <main class="landing">
+    <p class="rail-label deco">stories</p>
+    <div class="story-list">
+  #{cards.gsub(/^/, "    ").rstrip}
+    </div>
+  </main>
+
+  </body>
+  </html>
+HTML
+
+path = File.join(site_root, "index.html")
+File.write(path, html)
+warn "site-index: wrote #{path} (#{stories.size} #{stories.size == 1 ? "story" : "stories"})"
+
+# Tell GitHub Pages not to run the content through Jekyll. The Actions-based
+# deploy in .github/workflows/pages.yml serves the artifact as-is and never
+# invokes Jekyll, so this is belt-and-braces — but it matters if the Pages
+# source is ever switched to a branch, because conversation logs are full of
+# text Jekyll's Liquid templating would try to interpret.
+File.write(File.join(site_root, ".nojekyll"), "")

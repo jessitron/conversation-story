@@ -434,5 +434,12 @@ module ConversationStory
     def card_template
       @card_template ||= ERB.new(File.read(File.join(TEMPLATES, "card.html.erb")), trim_mode: "-")
     end
+
+    # These three derive a human label from `meta` alone — they don't touch the
+    # events or the page. bin/site-index shows the same labels on the landing
+    # page's card for each story, so they're part of the renderer's surface
+    # rather than page-internal helpers. One source for "how a story is
+    # described", so the landing page can't drift from the page it links to.
+    public :subtitle, :duration, :model_label
   end
 end

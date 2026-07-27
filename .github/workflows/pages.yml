@@ -1,0 +1,59 @@
+# Publish the site to GitHub Pages.
+#
+# The Pages source is "GitHub Actions" rather than a branch, because the site
+# root is `out/` on main and branch-based Pages can only serve a repo root or
+# /docs. This workflow uploads out/ from main, so the published site is
+# main/out — no gh-pages branch, no docs/ rename.
+#
+# It REBUILDS rather than shipping the committed out/. out/ is committed so the
+# pages are reviewable in a diff, but the build is the source of truth: if the
+# two ever disagree, the published site should follow lib/ and examples/, not a
+# stale checked-in artifact. `rake test` runs first, so a broken parser fails
+# the deploy instead of publishing a wrong story.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish rather than cancelling it — a half-applied Pages
+# deploy is worse than a slightly late one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Stdlib-only Ruby (json/yaml/erb) with minitest and rake as default
+      # gems: no Gemfile, nothing to bundle install.
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+
+      - name: Test
+        run: rake test
+
+      - name: Build the site into out/
+        run: rake build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
