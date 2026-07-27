@@ -778,9 +778,7 @@ events:
   kind: assistant_message
   role: assistant
   at: '2026-04-14T02:29:09.892Z'
-  summary: It looks like "jess was here" is already there on line 77 -- that's part
-    of the modified file showing in your git status. Did you already make this change?
-    Now let me figure out how to run it on a different port.
+  summary: Now let me figure out how to run it on a different port.
   source:
     file: episode-8-before.jsonl
     line: 35
@@ -801,6 +799,7 @@ events:
     ephemeral_1h: 560
     ephemeral_5m: 0
     service_tier: standard
+  summary_edited: true
 - id: 570b4ff3-b3d4-499e-bfd9-05b210618702
   ref: episode-8-before:36
   agent: main
@@ -1384,10 +1383,7 @@ events:
   role: assistant
   at: '2026-04-14T02:29:27.769Z'
   summary: That's starting up in the background. It should be available at http://localhost:5175
-    in a moment (Vite dev client) with the server on port 4982. You should see "jess
-    was here" next to "Observe" in the sidebar header. Compare that with your regular
-    install to confirm it's the right instance. Let me know when you can see it and
-    we can start on the rewind feature!
+    in a moment...
   source:
     file: episode-8-before.jsonl
     line: 59
@@ -1408,6 +1404,7 @@ events:
     ephemeral_1h: 291
     ephemeral_5m: 0
     service_tier: standard
+  summary_edited: true
 - id: line-60
   ref: episode-8-before:60
   agent: main

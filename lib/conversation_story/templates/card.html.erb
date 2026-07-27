@@ -9,9 +9,13 @@
 <%# call + its result, a queue enqueue + its dequeue…); edited_attr (optional)  -%>
 <%# marks a summary Jess rewrote by hand, which only the editing UI reacts to.  -%>
 <%#                                                                            -%>
-<%# Every comment line here CLOSES WITH `-%>` on purpose: without the dash, ERB -%>
-<%# emits the line's newline, and this file is rendered once per event — so a   -%>
-<%# plain `%>` would add one blank line PER CARD to every generated page.       -%>
+<%# Every comment line here ends with a DASH before the closing delimiter, on   -%>
+<%# purpose: otherwise ERB emits the line's newline, and this file renders once -%>
+<%# per event — so each undashed comment adds a blank line PER CARD to every    -%>
+<%# generated page. Never write a closing delimiter inside the comment text     -%>
+<%# either (not even in backticks): it ends the tag early and the rest of the   -%>
+<%# line lands on the page. That shipped once; test/renderer_test.rb now fails  -%>
+<%# if any ERB delimiter reaches the output.                                    -%>
       <a class="card k-<%= css_kind %>" id="<%= anchor %>" href="#<%= anchor %>" data-time="<%= data_time %>"<%= link_attr %><%= edited_attr %>>
         <div class="gutter">
           <span class="kind deco"><%= kind_label %></span>

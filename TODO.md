@@ -12,25 +12,27 @@ up next" — nothing here is scheduled.
   in progression while narrating (a presenter mode) rather than showing the
   whole timeline at once. Selection is fragment-driven, so "next" is
   "`getElementById` the next `.card` and set the hash."
+- **Edit is a mode** in interactive, step-through mode, that's different from edit mode where I can change the summaries. The summaries still display in every mode, and there is a subtle indication of whether they have been edited.
+- There is a mode switch in the header. explore/edit/narrate or hotkeys x/e/N
+- The cards are selectable; clicking them opens the detail. Clicking the card again should close the detail
+- Escape should close the detail sidebar
+- don't show 'DETAILS' as the closed sidebar. It can be invisible. That keeps it clean for narration.
+- right arrow should go to the next card (and left previous)
+- shift+right arrow should go to the next assistant/user card. It should scroll to it as well.
+- **Narration mode** is an interactive, step-through mode. It starts with no cards displayed. Right-arrow or 'n' causes the first message to appear, a user message. 'n' again causes subsequent cards to appear one at a time until the next assistant/user message appears, then pauses. This scrolls down as necessary so the appearing card is on the screen. It also selects that assistant/user message. Escape exits narration mode; 'N' enters it. If you enter narration mode with a card selected, then narration starts from there.
 
 ## Mount Complete
 
-- **Say when an assistant turn includes tool calls.** Every assistant record in
-  the example logs carries exactly one content block, so a turn where Claude
-  says something *and* calls a tool becomes two separate cards with nothing on
-  the message card announcing the tool call. Reading the page, it looks like
-  Claude spoke and then, unrelatedly, a tool ran. The card should show that the
-  message led to tool calls (and which ones).
-- **Subagents** (wanted, not urgent): inline a spawned Agent's own story instead
+- **Say when an assistant turn includes tool calls.** On the Assistant messages, in the detail, let's also show all the tool calls that came back with that message.
+- **Subagents** inline a spawned Agent's own story instead
   of only listing it in `meta.agents`. The subagent logs are already on disk
   (`examples/<name>/subagents/agent-*.jsonl` + `.meta.json`) and the schema
-  already reserves an `agent:` id on every event.
-- **Block-level cards**: split thinking / text / tool_use *within* one record
-  into separate cards. Today a record is one card, classified by its single
-  block — which works only because these logs never mix block types in a record.
+  already reserves an `agent:` id on every event. Subagent tool calls should be expandable into the whole story of the subagent.
 - The `<ol>`/`<ul>` merge in `Markdown` only re-glues _adjacent_ same-type
   blocks; a loose list interrupted by an aside paragraph would still split.
   Fine for what's in the example logs; revisit if a real log hits it.
+- **Token stats** In the card detail, show: the current context length (input tokens), along with how many were cached (if available); the amount added to the context (output tokens); and a running total of all input tokens since the beginning
+- In the summary, show the total context length (like, I think that's input + output tokens for the last interaction)
 
 ## Mount Beautiful
 
@@ -40,35 +42,13 @@ up next" — nothing here is scheduled.
   would have caught in session 9: a `var()` on a token that no longer exists
   (fails silently), and a rule whose `opacity` override lost to a
   same-specificity rule later in the file.
-- The prototype has no sample RESULT / NOTIFICATION detail section, so the
-  "machine voice" (`pre.code`) is only half-demonstrated there. Add one so the
-  prototype keeps showing everything that ships.
+- the list of related events in the detail view, I want it to look different. More like the other details, less imitation of the card.
 
 ## Mount Malleable
 
-*A local web app for shaping the story — edit on the page, not in YAML.*
+_A local web app for shaping the story — edit on the page, not in YAML._
 
-**Done (session 11):** editing a card's summary on the page, persisted to the
-sidecar `edits/<name>.yaml` via `bin/serve`. No "hand-edited, don't touch"
-lock was needed in the end: the story stays fully generated and the edits are
-overlaid at parse time, so nothing can be clobbered. See the README section.
-
-Open:
-
-- **Nothing marks an orphaned edit on the page.** Change a log and its edits
-  stop matching; `bin/parse` warns on stderr, but the page says nothing. A
-  stats-bar count of stale overrides would make it visible while presenting.
-- **Other cards go stale until reload.** A saved summary updates its own card,
-  but the same text on OTHER cards' "Related events" links still shows the old
-  line until the page is reloaded (the server has already re-rendered).
-- **Only the summary is editable.** The other obvious shaping moves: hide an
-  event Jess doesn't want to show (today `hidden` is the parser's call alone),
-  and reorder or group cards. Both want a place in the sidecar beyond
-  `ref -> summary`, so decide the file's shape before adding the second thing.
-- **Undo is one level and in-session.** A save or revert that discards a
-  hand-written line offers an `undo` in the status area, but it's gone on the
-  next save or on reselecting the card. A real history would mean keeping
-  superseded summaries somewhere; `edits/` being in git covers the rest.
+- **Title is editable**
 
 ## Maybe later
 

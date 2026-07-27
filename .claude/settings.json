@@ -1,5 +1,6 @@
 {
   "enabledPlugins": {
-    "learning-opportunities@learning-opportunities": true
+    "learning-opportunities@learning-opportunities": true,
+    "superpowers@claude-plugins-official": true
   }
 }
