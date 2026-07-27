@@ -81,13 +81,21 @@ I love to learn more about how Claude Code works using what we encounter in thes
 
 ## Mountains
 
-1. Minimal: show every event that happened in the main conversation as a card, all looking the same.
+Mountains have names, not numbers — we climb them in whatever order the work
+wants, and several are underway at once. `TODO.md` is the working list, grouped
+by mountain.
 
-2. Interactive: I can step through the story in a clear way. I can make events visible in progression, and zoom in to details when I want to.
+- **Mount Interactive** — I can step through the story in a clear way. I can
+  make events visible in progression, and zoom in to details when I want to.
+- **Mount Complete** — everything recorded in the conversation log is
+  intelligible on the web page.
+- **Mount Beautiful** — I enjoy looking at it. The drill-into-detail feels like
+  exploration.
+- **Mount Malleable** — a local web app for shaping the story: edit a card's
+  summary right on the page and have the change stick.
 
-3. Complete: everything recorded in the conversation log is intelligible on the web page
-
-4. Beautiful: I enjoy looking at it. The drill-into-detail feels like exploration.
+*(Climbed: **Mount Minimal** — every event in the main conversation shows as a
+card, all looking the same.)*
 
 ## Constraints
 

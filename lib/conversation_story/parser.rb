@@ -7,7 +7,7 @@ module ConversationStory
   # produces the intermediate "document": a Ruby hash matching the schema in
   # notes/intermediate-schema.md, ready to serialize as YAML.
   #
-  # Mountain 1 granularity: ONE event per record (per line). The golden test
+  # Granularity: ONE event per record (per line). The golden test
   # asserts event_count == line count. Splitting an assistant record's blocks
   # into separate cards is still out of scope — but every assistant record in
   # the example logs carries exactly one content block, so classifying the

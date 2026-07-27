@@ -6,7 +6,7 @@ require "conversation_story/parser"
 require "conversation_story/renderer"
 
 # Golden-fixture tests: run the parser against every real example log and assert
-# the Mountain 1 contract holds — no data lost, required fields present, YAML
+# the one-event-per-record contract holds — no data lost, required fields, YAML
 # round-trips, and the renderer emits exactly one card per event.
 class ParserTest < Minitest::Test
   EXAMPLES = Dir.glob(File.expand_path("../examples/*.jsonl", __dir__)).sort

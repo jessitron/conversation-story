@@ -3,7 +3,7 @@
 Turn a Claude agent conversation log into an explorable, pretty static web page,
 so Jess can narrate "how a conversation went" while the page shows it accurately.
 
-Read `README.md` for the architecture and vision (the four "Mountains", constraints, limitations)
+Read `README.md` for the architecture and vision (the named "Mountains", constraints, limitations)
 and `notes/plan.md` for the current design — especially the settled **Decisions**.
 The **intermediate schema** (the `story.yaml` contract) has its own file,
 `notes/intermediate-schema.md`. For the **page look & feel**, see
@@ -59,16 +59,18 @@ this change are dead links; nothing aliases them.) Two things follow:
 
 ## Status
 
-**Mountain 1 is done** (parse → render → serve, end-to-end on the real example
-logs). Parse and render are **two separate programs** (`bin/parse`, `bin/render`)
-over real `lib/` classes now; the `Rakefile` is the task runner that knows the
-dependency between them (and, as of Mountain 1, re-runs a phase when its
-program's source changes — not just when `story.yaml` is stale).
+**Mount Minimal is climbed** (parse → render → serve, end-to-end on the real
+example logs). Parse and render are **two separate programs** (`bin/parse`,
+`bin/render`) over real `lib/` classes now; the `Rakefile` is the task runner
+that knows the dependency between them (and re-runs a phase when its program's
+source changes — not just when `story.yaml` is stale). The remaining mountains
+are named in README.md and worked from `TODO.md`, which groups every open item
+by mountain. Mountains are **named, not numbered** — don't reintroduce numbers.
 
 - **Granularity: one event per JSONL record** (main log only). The golden test
   asserts `event_count == line count` (224 / 154). Splitting an assistant
   record's blocks (thinking / text / tool_use) into their own cards, and
-  inlining subagent stories, are **Mountain 2+**.
+  inlining subagent stories, are **Mount Complete** work.
 - Parser maps each record `type` → a schema `kind`; `user` splits into
   `user_message` vs `tool_result` by content shape; `last-prompt` intentionally
   hits the `unknown` fallback (keeps `detail.raw`). Renderer maps schema `kind` →
@@ -92,7 +94,7 @@ program's source changes — not just when `story.yaml` is stale).
   `assistant_message`: `tool_use` → `tool_call` (with named `tool.name`,
   `tool.use_id`, `tool.input`, `tool.primary_arg`), `thinking` → `thinking`,
   else `assistant_message`. Every assistant record in the example logs carries
-  exactly one block — this is still one-event-per-line, not Mountain 2
+  exactly one block — this is still one-event-per-line, not real
   block-splitting. `tool_result` events carry named `tool.{use_id,is_error,
   duration_ms,result}` pulled from the record's content block + `toolUseResult`.
 - A background task's result delivered mid-conversation as a `<task-notification>`
@@ -151,9 +153,9 @@ detail pane and its highlighted causal chain are in the shot (the region above
 the target screenshots blank — a headless repaint artifact, not a page bug).
 `bin/screenshot .` shoots the landing page (`out/./index.html` resolves).
 
-Still TODO: **self-host the fonts** (Tenor Sans / Sen / Cascadia Code) into
-`assets/fonts/` with `@font-face` in `story.css`, replacing the CDN `<link>` the
-prototype + generated pages still use; the **deterministic HTML well-formedness
-check** (plan.md TODO); then **Mountain 2** (real block-splitting, richer
-per-kind detail, subagent nesting). See TODO.md and the session-7 note for the
-current open-threads list.
+**`TODO.md` is the open-threads list**, grouped by mountain. The big ones:
+step-through navigation and a presenter mode (Mount Interactive); showing that
+an assistant turn made tool calls, plus block-splitting and subagent nesting
+(Mount Complete); self-hosting the fonts (Mount Beautiful); and editing a card's
+summary live on the page (Mount Malleable). The session-7 note has more context
+on the linking work.
