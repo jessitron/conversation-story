@@ -48,12 +48,17 @@ this change are dead links; nothing aliases them.) Two things follow:
 - **Ruby 4**, managed via **asdf**, pinned in `.tool-versions` (asdf's native
   file — there is no `.ruby-version` here, and rbenv isn't in play). Without
   that file asdf falls back to `~/.tool-versions`, which differs per machine.
-  **Stdlib-first** (`json`, `yaml`, `erb`); only dev dep is `minitest`. No Rails.
   CI pins the same major in `.github/workflows/pages.yml` — bump both together.
-  **One scoped exception**: `bin/serve` needs `gem install webrick` (Ruby 4.0
-  unbundled it), and says so on `LoadError`. Parse, render, the tests and CI
-  never require it, so there's still no Gemfile — keep it that way, and check
-  anything new in `bin/serve`'s requires is actually stdlib on Ruby 4.
+- **Stdlib-first, with a `Gemfile` for the one exception.** `json`/`yaml`/`erb`
+  are real default gems; `bin/parse`, `bin/render` and `bin/site-index` need
+  nothing else. But Ruby 4.0 **unbundled webrick**, which `rake serve` requires,
+  so it's declared — along with `rake` and `minitest`, which ship with Ruby only
+  as *bundled* gems (the category webrick just fell out of). `Gemfile.lock` is
+  committed and CI runs `bundle exec` with `bundler-cache: true`, so CI and
+  Jess's machines resolve identically. No Rails. Adding a gem should stay a
+  deliberate act — this Gemfile is a portability fix, not an invitation, so
+  check that anything new in a `require` is actually stdlib on Ruby 4 before
+  reaching for a gem.
 - **The schema is the contract.** Known event kinds store only _named_ fields —
   no raw source-JSON blob, and the renderer reads the schema, never the original
   log. Only the `unknown` fallback kind keeps `raw`, so

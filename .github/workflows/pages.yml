@@ -37,23 +37,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Stdlib-only Ruby (json/yaml/erb) with minitest and rake as default
-      # gems: no Gemfile, nothing to bundle install.
-      #
       # Kept in step with the local asdf pin in .tool-versions. Not
       # `ruby-version: .tool-versions` (setup-ruby reads that file, but then a
       # patch bump Jess installs locally would silently change CI too); '4.0'
       # takes setup-ruby's latest 4.0.x, so bump this when the pin's major
       # moves.
+      #
+      # bundler-cache installs Gemfile.lock (cached between runs) so CI runs the
+      # same rake and minitest as Jess's machine. Without it a bare `rake test`
+      # would quietly use whatever versions ship with CI's Ruby, and the
+      # committed lock would mean nothing here. Nothing in the build needs
+      # webrick — only `rake serve` does — but resolving the whole lock is
+      # simpler than explaining an exception.
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '4.0'
+          bundler-cache: true
 
       - name: Test
-        run: rake test
+        run: bundle exec rake test
 
       - name: Build the site into out/
-        run: rake build
+        run: bundle exec rake build
 
       - uses: actions/configure-pages@v5
 

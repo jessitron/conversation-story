@@ -24,13 +24,21 @@ dependency between the phases and shells out to each program.
 ## Running it
 
 Ruby only — version pinned in `.tool-versions` for [asdf](https://asdf-vm.com)
-(`asdf install` picks it up). The programs use stdlib (`json`, `yaml`, `erb`)
-and rake, which ships with Ruby. The one dev dependency is `minitest`.
+(`asdf install` picks it up). Then:
 
-`rake serve` additionally needs **`gem install webrick`** — Ruby 4.0 unbundled
-it. That's the only program with a dependency; parse, render, the tests and CI
-stay stdlib-only, which is why there's still no Gemfile. `bin/serve` prints the
-install command if it's missing.
+```sh
+bundle install
+```
+
+The programs themselves use stdlib (`json`, `yaml`, `erb`). The Gemfile exists
+for one reason: **Ruby 4.0 unbundled webrick**, which `rake serve` needs, so
+without a declared dependency a fresh machine's `rake serve` just fails.
+`rake` and `minitest` are declared alongside it because they ship with Ruby as
+*bundled* gems, not default gems — the same category webrick was in until 4.0
+evicted it. `bin/serve` prints `bundle install` if webrick is missing.
+
+Plain `rake` works fine; `bundle exec rake` pins the exact versions in
+`Gemfile.lock`, which is what CI does.
 
 ```sh
 rake -T        # list all tasks

@@ -23,16 +23,17 @@
 # summaries.
 
 # The ONE thing in this repo that isn't stdlib. Ruby 4.0 unbundled webrick, so
-# it needs installing once per machine — and only for this program. Parse,
-# render, the tests and CI never touch it, which is why there's still no
-# Gemfile. Fail with the command rather than a bare LoadError.
+# it needs installing per machine — and only for this program. Parse, render and
+# the tests stay stdlib-only. It's declared in the Gemfile so a fresh checkout
+# gets it from `bundle install` instead of a remembered `gem install`.
+# Fail with the command rather than a bare LoadError.
 begin
   require "webrick"
 rescue LoadError
   abort <<~MSG
     bin/serve needs the webrick gem (Ruby 4.0 unbundled it):
 
-        gem install webrick
+        bundle install
 
     Only `rake serve` needs it — parse, render and test are stdlib-only.
   MSG
