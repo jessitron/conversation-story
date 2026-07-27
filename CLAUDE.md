@@ -57,10 +57,16 @@ this change are dead links; nothing aliases them.) Two things follow:
   so it's declared — along with `rake` and `minitest`, which ship with Ruby only
   as *bundled* gems (the category webrick just fell out of). `Gemfile.lock` is
   committed and CI runs `bundle exec` with `bundler-cache: true`, so CI and
-  Jess's machines resolve identically. No Rails. Adding a gem should stay a
-  deliberate act — this Gemfile is a portability fix, not an invitation, so
-  check that anything new in a `require` is actually stdlib on Ruby 4 before
-  reaching for a gem. `notes/2026-07-27-session-12-ruby-4-and-gemfile.md` has
+  Jess's machines resolve identically. No Rails.
+  **"Stdlib-first" is about which programs stay dependency-free, not a ban on
+  gems.** The property worth protecting is that `bin/parse`, `bin/render` and
+  `bin/site-index` need nothing but default gems — that's what lets CI skip
+  `bundle install` for a build. Outside those three, a gem that earns its place
+  is welcome; reach for one when it's the better tool (session 12 added
+  `ferrum` for exactly that reason). Don't harden this bullet into "add no
+  gems" — that reading has already been wrong once, and Jess's answer was
+  "there's nothing wrong with gems."
+  `notes/2026-07-27-session-12-ruby-4-and-gemfile.md` has
   the default-vs-bundled-vs-dropped gem taxonomy, why `.gitignore` carries a
   `!.tool-versions` negation, and how to tell a hand-installed gem from one that
   shipped with Ruby. The Gemfile's `:test` group exists because of **`ferrum`**
@@ -151,7 +157,15 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   to explore, otherwise clears the selection (narrate never clears it). In
   narrate, `.revealed` is a prefix of the cards and the newest one is the
   selection.
-  `bin/check-modes` drives all of it with real keystrokes in headless Chrome.
+  `bin/check-modes` drives all of it with real keystrokes in headless Chrome —
+  **read the trap list at the top of that script before adding a scenario**
+  (colon ids make `at_css("#"+id)` throw; a real click on a far-down card
+  misses unless you center-scroll first; `[:Shift,'n']` is not `"N"`; the page
+  always loads with a card already selected, so never hard-code an index where
+  you need an *un*selected card). `notes/2026-07-27-session-12-mount-interactive.md`
+  explains each one, why the sidebar became sticky state, and the two
+  deliberate deviations from the design note (case-folded `n`/`N`, plain arrows
+  scroll too) that are easy to "fix" back by mistake.
 
 Run things with `rake parse` / `render` / `site` / `build` / `serve` / `test`
 (all examples by default; `LOG=`/`PORT=` env vars to scope). See README.md.

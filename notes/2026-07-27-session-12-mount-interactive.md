@@ -107,3 +107,45 @@ they're easy to "fix" back to the letter of the design by mistake:
 group: `ferrum` is a test-only dependency (`bin/check-modes` needs a real
 Chrome, nothing shipped needs it), so it doesn't belong in the default group
 alongside `webrick`/`rake`.
+
+## How this session was run, and what that's worth repeating for
+
+Brainstorm → design note → implementation plan → four subagent-implemented
+tasks, each with its own review. Three things earned their keep:
+
+**Spike the tooling before writing the plan, not during it.** The original
+plan had `bin/check-modes` built as an iframe harness dispatching synthetic
+`KeyboardEvent`s, because "headless Chrome can't type" was assumed. Once gems
+were on the table, twenty minutes of throwaway ferrum scripts turned all four
+traps above from future debugging rounds into *plan constraints written down
+before anyone implemented anything*. The plan then said "do not re-derive
+these," and nobody did. The general shape: when a plan depends on a fact about
+a tool, go find the fact out — Clausewitz's curious mind over the inventive
+one, applied to test harnesses.
+
+**Two of the bugs found during execution were in the plan, not the code.**
+A Task 3 scenario hard-coded a card index that collided with `DEFAULT_CARD`
+(the trap the plan itself had documented — writing a constraint down doesn't
+stop you violating it three sections later), and a Task 4 scenario asserted
+something that stayed true even with `exitNarrate()` deleted. Both surfaced
+only because implementers and reviewers were told explicitly **not to silently
+patch a failing test** — the Task 3 implementer diagnosed the collision,
+verified the production code was correct, and escalated instead of "fixing"
+the assertion. Worth keeping that instruction in future dispatches; a subagent
+that quietly makes a test green destroys the signal.
+
+**Ask reviewers what would make a test fail.** "For each scenario, what code
+change would make this fail?" caught the vacuous `exitNarrate` assertion that
+three earlier passes had waved through. The follow-up — stub the function,
+watch the test go red, restore it — is cheap and is the only actual proof a
+test is load-bearing.
+
+One process miss worth naming: the "stdlib-first" line in `CLAUDE.md` got read
+as "add no gems" and written into the plan as a hard constraint Jess had never
+asked for. She corrected it ("there's nothing wrong with gems"), which is what
+unlocked ferrum and, with it, a much better harness. That bullet has since been
+reworded to say what it actually protects — the three shipping programs staying
+dependency-free — rather than sounding like a prohibition. **A constraint
+inherited from a context file is not the same as a constraint the human holds;
+when one is about to shape a design decision, it's worth surfacing rather than
+silently obeying.**
