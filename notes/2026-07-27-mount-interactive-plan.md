@@ -20,9 +20,12 @@ CSS, ERB templates, Ruby 4 stdlib for the check script, headless Google Chrome.
 
 ## Global Constraints
 
-- **Ruby 4, stdlib only.** `json`, `yaml`, `erb`, `tmpdir`, `open3`. No Gemfile,
-  no new gems. `bin/check-modes` must not require `webrick` — it runs against
-  `file://` URLs, not `bin/serve`.
+- **Ruby 4, and add no gems.** There is a `Gemfile` as of 7e1b304, but it
+  declares only `webrick` (for `bin/serve`) plus `rake` and `minitest`. This
+  work needs nothing new in it. `bin/check-modes` uses `tmpdir` — a real default
+  gem — and must **not** require `webrick`: it runs against `file://` URLs, not
+  `bin/serve`, so it works without `bundle install`. Commands below are written
+  bare; CI runs them under `bundle exec`, and both must pass.
 - **`assets/` is the source of truth.** Edit `assets/story.js` and
   `assets/story.css`; the build copies them into `out/assets/`. Never edit
   `out/assets/*` by hand.
