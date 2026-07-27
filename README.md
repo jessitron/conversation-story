@@ -107,7 +107,7 @@ the same two programs `rake build` would have run.
 
 ```sh
 bin/check-edit-api            # smoke-test the whole write path (uses a temp edits dir)
-bin/screenshot http://localhost:8080/episode-8-after/ '#episode-8-after:4'
+bin/screenshot 'http://localhost:8080/episode-8-after/?mode=edit' '#episode-8-after:4'
 ```
 
 Because refs are line numbers, editing a log orphans its edits — `bin/parse`

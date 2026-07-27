@@ -32,6 +32,21 @@ _A local web app for shaping the story — edit on the page, not in YAML._
 
 - **Title is editable**
 
+## Mount Interactive
+
+_Three modes, a keyboard map, and narrate. Both items below are known,
+deliberately deferred rough edges from the final review — neither is a
+correctness bug that needs fixing right now._
+
+- A degraded or bogus `?mode=` value stays in the URL while the body is
+  `mode-explore`, and pressing `x` won't clear it — `setMode` early-returns on
+  a same-mode call. Cosmetic, but it's the one place the URL and the body
+  class disagree.
+- Clicking a related-event link in the detail pane during narrate fires
+  `hashchange`, and `syncFromHash` selects a card that's still hidden and
+  outside the revealed prefix. No error, and it self-heals on the next beat,
+  but mid-talk it's a spoiler.
+
 ## Maybe later
 
 - **Hooks.** The logs carry a lot of hook detail we currently leave as

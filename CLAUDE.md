@@ -147,8 +147,10 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   stays out of the URL. Edit un-hides only when the `/api/health` probe answers.
   Focus mode is gone. Keyboard: unshifted arrows move one card, shifted move one
   user/assistant message; `n`/`p` are shift-arrow aliases in narrate; `x`/`e`/`N`
-  switch modes; Escape peels sidebar → selection → mode. In narrate,
-  `.revealed` is a prefix of the cards and the newest one is the selection.
+  switch modes; Escape collapses the sidebar first — then, in narrate, exits
+  to explore, otherwise clears the selection (narrate never clears it). In
+  narrate, `.revealed` is a prefix of the cards and the newest one is the
+  selection.
   `bin/check-modes` drives all of it with real keystrokes in headless Chrome.
 
 Run things with `rake parse` / `render` / `site` / `build` / `serve` / `test`
@@ -175,9 +177,12 @@ won't notice it changed.
   silently talks to it (static files fine, `/api/health` 404, editing
   mysteriously off — this cost real time in session 11).
 - **The editor is progressive enhancement.** `assets/story.js` probes
-  `GET /api/health` and only builds the Summary box (and the `body.editable`
-  class the ✎ marker hangs off) if the local server answers. The published
-  Pages site runs the same JS with nothing to write to. Don't add a build flag.
+  `GET /api/health` and only builds the Summary box when the local server
+  answers *and* the page is in edit mode — `showSummaryEditor` checks both.
+  The ✎ edited marker isn't gated on either: it paints in every mode, on the
+  published site too, by design ("this line is Jess's, not the parser's" is
+  part of the story, not an authoring affordance). The published Pages site
+  runs the same JS with nothing to write to. Don't add a build flag.
 - **Every write goes through one `submit(text)`** inside `showSummaryEditor` —
   Save, Revert and undo are all the same request, differing only in the text.
   `submit` captures the outgoing hand-written line first and, if the response
@@ -186,8 +191,8 @@ won't notice it changed.
 - Verify the write path with **`bin/check-edit-api`** (starts `bin/serve` against
   a temp edits dir, saves + reverts, asserts sidecar/story/page all agree, and
   checks the path-traversal and unknown-ref refusals). `bin/screenshot` takes a
-  full `http://…` URL now — the only way to *see* the editor, since `file://`
-  can't reach the API.
+  full `http://…` URL with `?mode=edit` now — the only way to *see* the editor,
+  since `file://` can't reach the API and explore mode never builds the box.
 
 - **The site root has a landing page**, `out/index.html`, written by a third
   program: `bin/site-index` (reads every `out/*/story.yaml`, never the logs —

@@ -11,11 +11,12 @@
 #
 # Pass a full http:// URL to shoot the page as SERVED rather than from disk —
 # that's the only way to see the summary editor, which appears only when
-# bin/serve answers the /api/health probe (see the Mount Malleable block in
-# assets/story.js). E.g.:
+# bin/serve answers the /api/health probe AND the page is in edit mode (see
+# the Mount Malleable block in assets/story.js). So the URL needs ?mode=edit
+# too — explore mode never builds the box, even with a server behind it. E.g.:
 #
 #   rake serve &
-#   bin/screenshot http://localhost:8080/episode-8-after/ '#episode-8-after:4'
+#   bin/screenshot 'http://localhost:8080/episode-8-after/?mode=edit' '#episode-8-after:4'
 set -euo pipefail
 
 CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"

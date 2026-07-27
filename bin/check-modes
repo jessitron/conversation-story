@@ -199,6 +199,18 @@ scenario "with no server, the Edit button is hidden and ?mode=edit degrades",
   next "did not degrade to explore (mode=#{s.mode.inspect})" unless s.mode == "explore"
   next "no edit button in the switch" unless s.js("!!document.querySelector('#mode-switch [data-mode=\"edit\"]')")
   next "edit button is visible with no server" unless s.hidden_attr?('#mode-switch [data-mode="edit"]')
+
+  # The above only proves the PASSIVE `?mode=edit` load degraded. Also try to
+  # switch into edit mode ourselves (as the `e` hotkey or a switch click would)
+  # and confirm setMode's own `editingAvailable` guard refuses it — this is
+  # what actually exercises the guard rather than just its outcome at load.
+  # (The URL already reads "?mode=edit" from the initial navigation itself —
+  # setMode never ran to rewrite it — so compare before/after rather than
+  # asserting an absence.)
+  before_search = s.search
+  s.js("setMode('edit')")
+  next "setMode('edit') took with no server (mode=#{s.mode.inspect})" unless s.mode == "explore"
+  next "setMode('edit') rewrote the URL anyway (#{before_search.inspect} -> #{s.search.inspect})" unless s.search == before_search
   nil
 end
 

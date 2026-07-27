@@ -172,11 +172,18 @@ const modeSwitch = document.getElementById('mode-switch');
 const modeButtons = Array.from(modeSwitch.querySelectorAll('button'));
 let mode = 'explore';
 let editingAvailable = false;
+/* Set the moment ANY mode change actually takes effect (hotkey, switch click,
+   Escape, or the health-probe's own `?mode=edit` application below). The
+   probe reads this before forcing edit mode, so pressing e.g. `n` while the
+   probe is still in flight wins — the probe won't yank narrate back to edit
+   out from under a mode Jess already chose. */
+let modeChangedSinceLoad = false;
 
 function setMode(next) {
   if (!MODES.includes(next)) return;
   if (next === 'edit' && !editingAvailable) return;
   if (next === mode) return;
+  modeChangedSinceLoad = true;
   const prev = mode;
   mode = next;
 
@@ -244,9 +251,9 @@ function revealTo(target) {
   target = Math.min(CARDS.length, Math.max(0, target));
   clearPending();
   renderReveal();          // resync the DOM if a previous flurry was cut short
-  collapseSidebar();       // the stage stays clear unless Jess clicks a card
   const from = revealed;
-  if (target === from) return;
+  if (target === from) return;   // truly a no-op: don't touch the sidebar either
+  collapseSidebar();       // the stage stays clear unless Jess clicks a card
   revealed = target;
   if (target < from) { renderReveal(); landOn(); return; }
 
@@ -302,19 +309,17 @@ document.getElementById('d-clear').addEventListener('click', () => {
    box" (see showSummaryEditor). */
 const TYPING = 'input, textarea, select, [contenteditable]';
 
-/* Every card in document order, materialized once. `navigable` is the subset
-   the arrows may land on — all of them, except in narrate where only what has
-   been revealed exists to the user yet. */
+/* Every card in document order, materialized once. */
 const CARDS = Array.from(cards);
 const isMessage = c => c.classList.contains('k-user') || c.classList.contains('k-assistant');
-function navigable() {
-  return mode === 'narrate' ? CARDS.filter(c => c.classList.contains('revealed')) : CARDS;
-}
 
 /* Move the selection by one card, or by one user/assistant message with shift.
-   Does NOT open the sidebar — that state is Jess's (see collapseSidebar). */
+   Does NOT open the sidebar — that state is Jess's (see collapseSidebar).
+   Only ever called in explore/edit: the keydown handler's narrate branch
+   returns before reaching this, so there's no "revealed cards only" case to
+   filter for here. */
 function moveSelection(dir, byMessage) {
-  const list = navigable();
+  const list = CARDS;
   if (!list.length) return;
   const active = document.querySelector('.card.active');
   let i = list.indexOf(active);
@@ -520,7 +525,9 @@ fetch('/api/health')
     if (!info.editing) return;
     editingAvailable = true;
     modeButtons.find(b => b.dataset.mode === 'edit').hidden = false;
-    if (wantedMode === 'edit') setMode('edit');
+    // Only force edit mode for a `?mode=edit` load if Jess hasn't already
+    // moved on to something else while this request was in flight.
+    if (wantedMode === 'edit' && !modeChangedSinceLoad) setMode('edit');
   })
   .catch(() => { /* published site: no write path, no edit mode */ });
 
