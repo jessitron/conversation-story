@@ -107,13 +107,17 @@ class ParserTest < Minitest::Test
       visible = doc["events"].reject { |e| e["hidden"] }
 
       # Hidden (harness-bookkeeping) events are parsed but not rendered, so the
-      # page shows one card per VISIBLE event, numbered 1..visible.size.
+      # page shows one card per VISIBLE event.
       assert_operator visible.size, :<, doc["events"].size,
                       "expected some events to be hidden"
       assert_equal visible.size, html.scan(/class="card /).size,
                    "expected one card per visible event"
-      assert_includes html, "event-#{visible.size}",
-                       "expected sequential event anchors over visible events"
+      # Each card is anchored by its ref (`<example>:<line>`), so a ref Jess
+      # quotes pastes straight into the URL fragment. Check every visible one.
+      visible.each do |e|
+        assert_includes html, %(id="#{e["ref"]}" href="##{e["ref"]}"),
+                        "expected #{e["ref"]} to anchor its own card"
+      end
       # the JS defaults selection to a .k-assistant card; make sure one exists
       assert_includes html, "card k-assistant"
     end

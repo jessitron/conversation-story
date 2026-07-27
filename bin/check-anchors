@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Verify that a generated page's fragment-driven selection actually resolves a
+# ref anchor (`#<example>:<line>`) in a real browser. The colon is legal in an
+# HTML id and a URL fragment, but it IS a CSS pseudo-class introducer — so this
+# guards against anyone "fixing" story.js to use querySelector('#'+id), which
+# would throw and silently break every deep link.
+#
+#   bin/check-anchors [example-name] [line]
+#
+# Renders the page with the fragment, lets story.js run, and reports which card
+# ended up .active. Exits nonzero if it isn't the one the fragment named.
+set -euo pipefail
+
+CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+example="${1:-episode-8-before}"
+line="${2:-174}"
+ref="$example:$line"
+
+repo="$(cd "$(dirname "$0")/.." && pwd)"
+page="$repo/out/$example/index.html"
+[ -f "$page" ] || { echo "no such page: $page (run 'rake build')" >&2; exit 1; }
+
+# Hidden (harness-bookkeeping) events are parsed but get no card, so there is
+# nothing for the fragment to select — story.js falls back to the default card.
+# That's correct, not a failure; say so and stop.
+if grep -A30 "ref: $ref\$" "$repo/out/$example/story.yaml" |
+   sed -n '/^- id:/q;p' | grep -q '^  hidden: true'; then
+  echo "SKIP  $ref is a hidden event — no card by design"
+  exit 0
+fi
+
+dom="$("$CHROME" --headless --disable-gpu --virtual-time-budget=2000 \
+       --dump-dom "file://$page#$ref" 2>/dev/null)"
+
+active="$(printf '%s' "$dom" |
+  grep -o 'class="card [^"]*active[^"]*" id="[^"]*"' |
+  grep -o 'id="[^"]*"' | sed 's/id="//; s/"//' | head -1)"
+
+if [ "$active" = "$ref" ]; then
+  echo "OK  #$ref selected its own card"
+else
+  echo "FAIL  #$ref -> active card is '${active:-<none>}'" >&2
+  exit 1
+fi
+
+# The causal chain should light up too: every card sharing a data-link token.
+related="$(printf '%s' "$dom" | grep -c 'class="card [^"]*related' || true)"
+echo "    $related related card(s) highlighted"

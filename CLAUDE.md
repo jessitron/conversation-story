@@ -14,7 +14,7 @@ The **intermediate schema** (the `story.yaml` contract) has its own file,
 The prototype's CSS/JS now live in **`assets/story.css` + `assets/story.js`** (the
 prototype links them, so it can't drift from what ships). So "reproduce the design"
 is mostly: **reuse `assets/` as-is and generate only the per-event card HTML** —
-each card is `<a class="card k-KIND" id="event-…" href="#event-…">` carrying a
+each card is `<a class="card k-KIND" id="<ref>" href="#<ref>">` carrying a
 `<template class="detail">`; the URL fragment drives selection (deep-linkable).
 
 ## Event references
@@ -24,6 +24,24 @@ Jess refers to individual events as `<example-name>:<line>`, e.g.
 1-indexed line number in that example's main `.jsonl` log (matches `source.line`
 in the generated `story.yaml`). To look one up: find the `story.yaml` entry
 whose `ref:` matches, or `sed -n '<line>p' examples/<example-name>.jsonl`.
+
+**A ref is also the card's HTML id and URL fragment**, so linking Jess to an
+event is pure string concatenation — no lookup, no counting:
+
+    http://localhost:8080/<example-name>/#<example-name>:<line>
+
+(Session 10 change. Cards used to be numbered `#event-N` over the *visible*
+events, which drifted from log line numbers — `episode-8-before:174` was
+`#event-89` — and made "link me to that" a scripting job. Anchors built before
+this change are dead links; nothing aliases them.) Two things follow:
+
+- **Hidden events have no card**, so their refs aren't linkable — the fragment
+  won't resolve and `story.js` falls back to the default card. That's by design.
+- **The colon is a CSS pseudo-class introducer.** Resolve fragments with
+  `getElementById`, never `querySelector('#' + id)`, and don't add id-based CSS
+  selectors. `bin/check-anchors [example] [line]` drives a real headless browser
+  to assert a ref fragment still selects its own card (and reports how much of
+  the causal chain lit up); run it after touching selection code.
 
 ## Conventions
 
@@ -60,10 +78,16 @@ program's source changes — not just when `story.yaml` is stale).
 - **Hidden events**: the parser flags harness-bookkeeping records with
   `hidden: true` (still emitted, so `event_count` == line count); the renderer
   skips them and its "events" stat counts only visible ones. episode-8-before:
-  224 → 118 visible / 106 hidden. Hidden set + the deliberately-kept-visible set
-  (all `queue_operation`s incl. dequeue/remove markers, `queued_command`,
-  `task_reminder`) live in `parser.rb`'s `HIDDEN_*` constants and are explained
-  in `notes/2026-07-20-session-6-hidden-events.md`.
+  224 → 109 visible / 115 hidden; episode-8-after: 154 → 72 visible. Hidden set +
+  the deliberately-kept-visible set (`queued_command`, `task_reminder`, and
+  `queue_operation` **enqueue**s) live in `parser.rb`'s `HIDDEN_*` constants and
+  are explained in `notes/2026-07-20-session-6-hidden-events.md`.
+- **The queue detour shows on the message, not on a marker card.** Only the
+  `enqueue` gets a card (it carries the queued payload). The bare
+  `dequeue`/`remove` markers are hidden — they have no content of their own — and
+  the event each one delivers is stamped `dequeued: true` / `removed_from_queue:
+  true` instead, which the renderer draws as a badge. So a queued message is two
+  cards, the enqueue and the delivered message, sharing a `queue:` link token.
 - **Assistant records are classified by their one content block**, not always
   `assistant_message`: `tool_use` → `tool_call` (with named `tool.name`,
   `tool.use_id`, `tool.input`, `tool.primary_arg`), `thinking` → `thinking`,
@@ -79,8 +103,9 @@ program's source changes — not just when `story.yaml` is stale).
   (user/assistant messages, reasoning). Escapes raw text before any markdown
   substitution, so no input can inject real HTML.
 - **Causal-chain linking**: the parser tags related events (a `tool_call` and
-  its `tool_result`; a queue `enqueue`/`dequeue`/`remove`; the `task_notification`
-  it eventually delivers; the originating background `tool_call`) with shared
+  its `tool_result`; a queue `enqueue` and the message it delivers; the
+  `task_notification` it eventually delivers; the originating background
+  `tool_call`) with shared
   tokens in `link_ids`. The renderer emits them as a `data-link` attribute;
   `story.js` highlights every card sharing a token with the active one
   (`.card.related`, styled **identically** to `.active` — only the leader line to
@@ -104,7 +129,7 @@ the Rakefile's `RENDER_SRC`/`PARSE_SRC` lists source files explicitly (not a
 glob) — a new `lib/` file needs adding there or `rake build` won't notice it
 changed.
 
-To *see* a CSS change: `bin/screenshot [example] ['#event-N'] [out.png]` shoots a
+To *see* a CSS change: `bin/screenshot [example] ['#<ref>'] [out.png]` shoots a
 built page with headless Chrome. Passing a fragment selects that card, so its
 detail pane and its highlighted causal chain are in the shot (the region above
 the target screenshots blank — a headless repaint artifact, not a page bug).

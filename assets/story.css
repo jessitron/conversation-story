@@ -175,8 +175,11 @@ main.timeline {
 /* ============================================================
    Event cards — shared anatomy
    ------------------------------------------------------------
-   One <a class="card k-KIND" id="event-N" href="#event-N"> per event: an
+   One <a class="card k-KIND" id="<ref>" href="#<ref>"> per event: an
    anchor, so each event is deep-linkable AND keyboard-focusable for free.
+   (Generated pages use the event's ref, `<example>:<line>`, as the id; the
+   prototype below just numbers its sample cards. Nothing here selects on id —
+   keep it that way, since a colon needs escaping in a CSS selector.)
    In the ERB build this whole block is the event-card partial, and the
    <template class="detail"> it carries is the drill-in partial. Per-kind
    color lives in the kind→color table below; per-kind treatment (layout,
@@ -493,8 +496,8 @@ pre.code {
 .copy-ref.copied .copy-hint { opacity: 1; color: var(--olive); }
 
 /* "Related events" detail section — buttons to the rest of an event's causal
-   chain (a tool call <-> its result, a queue enqueue <-> dequeue/notification).
-   Plain link styling since these are real <a href="#event-N"> anchors. */
+   chain (a tool call <-> its result, a queue enqueue <-> the message it delivers).
+   Plain link styling since these are real <a href="#<ref>"> anchors. */
 .related-links { display: flex; flex-direction: column; gap: 6px; }
 .related-link {
   display: flex; align-items: baseline; gap: 10px;

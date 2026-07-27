@@ -5,8 +5,9 @@
 #   bin/screenshot [example-name] [#fragment] [out.png]
 #
 # Defaults to episode-8-before, no fragment, and a png in the scratch dir.
-# The fragment selects a card (the page's selection is fragment-driven), so
-# e.g. '#event-42' screenshots that card selected with its detail pane open.
+# The fragment selects a card (the page's selection is fragment-driven) and is
+# the event's ref, so e.g. '#episode-8-before:174' screenshots that card
+# selected with its detail pane open.
 set -euo pipefail
 
 CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"

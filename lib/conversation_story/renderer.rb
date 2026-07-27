@@ -103,20 +103,32 @@ module ConversationStory
     # Events the page actually shows: harness-bookkeeping events are parsed and
     # kept in the document (so nothing is lost and provenance stays exact) but
     # carry `hidden: true`; the story page is the conversation from Jess's
-    # perspective, so we drop them here. Card numbering runs over the visible
-    # sequence, keeping #event-N anchors dense and 1-based.
+    # perspective, so we drop them here.
     def visible_events
       @visible_events ||= @events.reject { |e| e["hidden"] }
     end
 
-    def cards_html
-      visible_events.each_with_index.map { |event, i| render_card(event, i + 1) }.join("\n")
+    # A card's anchor IS its `ref` — the `<example>:<line>` string Jess already
+    # uses to talk about events ("episode-8-before:174"). Sequential #event-N
+    # numbering was a second, page-only coordinate system: it counted VISIBLE
+    # events, so it drifted from the log's line numbers (line 174 was card 89)
+    # and finding an event's link meant computing that offset. Now a ref pastes
+    # straight after the `#`, and the copy-ref chip in the detail pane copies
+    # exactly the string the URL wants. Refs are unique per page (one line, one
+    # event) and colon-safe: it's a legal HTML id, a legal URL fragment, and
+    # story.js resolves it with getElementById, never a `#id` CSS selector.
+    def anchor_for(event)
+      event["ref"]
     end
 
-    def render_card(event, index)
+    def cards_html
+      visible_events.map { |event| render_card(event) }.join("\n")
+    end
+
+    def render_card(event)
       kind = event["kind"]
       render(card_template,
-             n:            index,
+             anchor:       h(anchor_for(event)),
              css_kind:     CSS_KIND[kind],
              kind_label:   h(KIND_LABEL.fetch(kind, kind)),
              who:          h(WHO[kind]),
@@ -124,7 +136,7 @@ module ConversationStory
              link_attr:    link_attr(event),
              summary_html: summary_html(event),
              badges_html:  badges_html(event),
-             detail_html:  detail_html(event, index))
+             detail_html:  detail_html(event))
     end
 
     # A related-events highlight hook (items 3 & 10): the parser already
@@ -140,25 +152,27 @@ module ConversationStory
       %( data-link="#{h ids.join(" ")}")
     end
 
-    # link_id token -> [[card index, event], ...], built once over the visible
+    # link_id token -> [[position, event], ...], built once over the visible
     # sequence so detail sections can turn an event's own link_ids into
-    # jump-to-anchor buttons for the rest of its causal chain.
+    # jump-to-anchor buttons for the rest of its causal chain. The position is
+    # only a sort key (chain buttons read in page order); the button's href
+    # comes from the event's ref.
     def link_index
       @link_index ||= Hash.new { |h, k| h[k] = [] }.tap do |idx|
-        visible_events.each_with_index { |e, i| (e["link_ids"] || []).each { |tok| idx[tok] << [i + 1, e] } }
+        visible_events.each_with_index { |e, i| (e["link_ids"] || []).each { |tok| idx[tok] << [i, e] } }
       end
     end
 
     # Every OTHER visible event that shares a link_id token with this one
     # (deduped, in card order) — the data the "Related events" detail section
     # renders as buttons.
-    def related_events(event, self_n)
+    def related_events(event)
       ids = event["link_ids"]
       return [] if ids.nil? || ids.empty?
 
       found = {}
-      ids.each { |tok| link_index[tok].each { |n, e| found[n] ||= e unless n == self_n } }
-      found.sort.map { |n, e| [n, e] }
+      ids.each { |tok| link_index[tok].each { |i, e| found[i] ||= e unless e["ref"] == event["ref"] } }
+      found.sort.map(&:last)
     end
 
     # ---- summary (card face) --------------------------------------------------
@@ -206,9 +220,9 @@ module ConversationStory
 
     # ---- detail (drill-in) markup -------------------------------------------
 
-    def detail_html(event, n)
+    def detail_html(event)
       sections = kind_sections(event)
-      sections << related_events_section(event, n)
+      sections << related_events_section(event)
       sections << section("Provenance", provenance_dl(event))
       # The copyable event id goes last and understated — it's a debugging aid.
       sections << event_id_footer(event) if event["ref"]
@@ -216,22 +230,22 @@ module ConversationStory
     end
 
     # Buttons for every other event in this one's causal chain (item: "show
-    # linked events on the details tab"). Plain <a href="#event-N"> anchors —
+    # linked events on the details tab"). Plain <a href="#<ref>"> anchors —
     # clicking one changes location.hash, and assets/story.js's hashchange
     # listener (already wired for deep links) picks it up and selects that
     # card; no new JS needed.
-    def related_events_section(event, n)
-      related = related_events(event, n)
+    def related_events_section(event)
+      related = related_events(event)
       return "" if related.empty?
 
-      links = related.map { |m, e| related_link_html(m, e) }.join
+      links = related.map { |e| related_link_html(e) }.join
       section("Related events", %(<div class="related-links">#{links}</div>))
     end
 
-    def related_link_html(n, event)
+    def related_link_html(event)
       kind = h(KIND_LABEL.fetch(event["kind"], event["kind"]))
       summary = event["kind"] == "tool_call" ? tool_call_summary_html(event) : h(event["summary"])
-      %(<a class="related-link" href="#event-#{n}">) +
+      %(<a class="related-link" href="##{h anchor_for(event)}">) +
         %(<span class="kind-tag">#{kind}</span><span class="summary">#{summary}</span></a>)
     end
 

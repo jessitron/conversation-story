@@ -10,9 +10,12 @@
    owns a <template class="detail">); this script just wires up selection,
    collapse/reopen, and drag-to-resize.
 
-   Selection is driven by the URL fragment (#event-N), so every event is
-   deep-linkable and shareable. Cards are <a href="#event-N"> anchors, which
-   also makes them keyboard-focusable and Enter-activatable for free.
+   Selection is driven by the URL fragment, so every event is deep-linkable and
+   shareable. A generated card's id is the event's ref — `<example>:<line>`, e.g.
+   #episode-8-before:174 — so a ref pastes straight into the URL. NOTE the colon:
+   resolve fragments with getElementById (below), never querySelector('#'+id),
+   which would read the colon as a pseudo-class. Cards are <a href="#..."> anchors,
+   which also makes them keyboard-focusable and Enter-activatable for free.
 ------------------------------------------------------------------ */
 const body    = document.body;
 const sidebar = document.getElementById('sidebar');
@@ -157,7 +160,7 @@ focusToggle.addEventListener('click', () => {
 /* ---- collapse / reopen / clear ---- */
 document.getElementById('d-close').addEventListener('click', () => body.classList.add('sidebar-collapsed'));
 document.getElementById('d-clear').addEventListener('click', () => {
-  setFragment(location.pathname + location.search);   // drop the #event-N
+  setFragment(location.pathname + location.search);   // drop the #<ref>
   clearSelection();
 });
 document.getElementById('reopen').addEventListener('click', () => body.classList.remove('sidebar-collapsed'));
