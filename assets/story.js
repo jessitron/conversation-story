@@ -28,12 +28,13 @@ const DEFAULT_CARD = document.querySelector('.card.k-assistant');  // so the pag
 /* the empty-state markup that ships in the sidebar; restored on clear */
 const EMPTY_HTML = dBody.innerHTML;
 
-/* update the URL fragment without scrolling or firing hashchange.
-   Wrapped because some browsers block history writes on file:// URLs —
-   selection must still work even when the URL can't be updated. */
-function setFragment(frag) {
-  try { history.replaceState(null, '', frag); } catch (_) { /* file:// */ }
+/* Write path+query+fragment without scrolling or firing hashchange. Wrapped
+   because some browsers block history writes on file:// URLs — selection and
+   mode must still work when the URL can't be updated. */
+function setUrl(url) {
+  try { history.replaceState(null, '', url); } catch (_) { /* file:// */ }
 }
+function setFragment(frag) { setUrl(frag); }
 
 /* The sidebar's open/collapsed state is Jess's, not selection's. Only an
    explicit open (clicking a card) or an explicit collapse (clicking the active
@@ -154,16 +155,52 @@ dBody.addEventListener('click', e => {
   copyText(btn.dataset.copy).then(() => flashCopied(btn)).catch(() => {});
 });
 
-/* ---- focus mode: hide the background-machinery cards (thinking, tool calls
-   and results, system/queue chatter) so only the actual back-and-forth with
-   Jess shows. A CSS class toggle — no data is removed, so switching back
-   loses nothing and deep links into a hidden card still work (the click
-   listener and #cards still see it; only its box is display:none). ---- */
-const focusToggle = document.getElementById('focus-toggle');
-focusToggle.addEventListener('click', () => {
-  const on = body.classList.toggle('focus-mode');
-  focusToggle.textContent = on ? 'Show everything' : 'Just the conversation';
-  focusToggle.setAttribute('aria-pressed', String(on));
+/* ============================================================
+   Modes — explore / edit / narrate.
+
+   Exactly one body.mode-* class at a time. The mode is in the URL as
+   ?mode=narrate so "the talk tab" is bookmarkable alongside the #ref that says
+   which card; explore is the default and stays out of the URL, so ordinary
+   links look untouched.
+
+   Edit depends on the local authoring server. Its button ships hidden and
+   un-hides only when GET /api/health answers, so ?mode=edit on the published
+   site quietly falls back to explore.
+   ============================================================ */
+const MODES = ['explore', 'edit', 'narrate'];
+const modeSwitch = document.getElementById('mode-switch');
+const modeButtons = Array.from(modeSwitch.querySelectorAll('button'));
+let mode = 'explore';
+let editingAvailable = false;
+
+function setMode(next) {
+  if (!MODES.includes(next)) return;
+  if (next === 'edit' && !editingAvailable) return;
+  if (next === mode) return;
+  const prev = mode;
+  mode = next;
+
+  MODES.forEach(m => body.classList.toggle('mode-' + m, m === mode));
+  modeButtons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+
+  const q = new URLSearchParams(location.search);
+  if (mode === 'explore') q.delete('mode'); else q.set('mode', mode);
+  const qs = q.toString();
+  setUrl(location.pathname + (qs ? '?' + qs : '') + location.hash);
+
+  onModeChange(prev, mode);
+}
+
+/* Per-mode entry/exit work. Task 4 fills in the narrate half; keeping it in one
+   function means setMode never grows a chain of special cases. */
+function onModeChange(prev, next) {
+  const active = document.querySelector('.card.active');
+  if (active) selectCard(active);   // rebuild the detail: the editor is edit-only
+}
+
+modeSwitch.addEventListener('click', e => {
+  const btn = e.target.closest('button[data-mode]');
+  if (btn) setMode(btn.dataset.mode);
 });
 
 /* ---- collapse / reopen / clear ---- */
@@ -215,12 +252,11 @@ window.addEventListener('mouseup', () => { dragging = false; body.classList.remo
    agrees with it. Clearing the text reverts to the parser's own summary.
    ============================================================ */
 const STORY = body.dataset.story;
-let editing = false;
 
 /* Rebuild the editor for `card` at the top of the detail pane. Called from
    selectCard, so it runs on every selection; a no-op until the probe succeeds. */
 function showSummaryEditor(card) {
-  if (!editing) return;
+  if (!editingAvailable || mode !== 'edit') return;
   const summaryEl = card.querySelector('.summary');
 
   const sec = document.createElement('div');
@@ -330,12 +366,17 @@ fetch('/api/health')
   .then(r => (r.ok ? r.json() : Promise.reject(new Error('static'))))
   .then(info => {
     if (!info.editing) return;
-    editing = true;
-    body.classList.add('editable');
-    const active = document.querySelector('.card.active');
-    if (active) showSummaryEditor(active);   // the probe lost the race with the first paint
+    editingAvailable = true;
+    modeButtons.find(b => b.dataset.mode === 'edit').hidden = false;
+    if (wantedMode === 'edit') setMode('edit');
   })
-  .catch(() => { /* published site: no write path, no editor */ });
+  .catch(() => { /* published site: no write path, no edit mode */ });
 
 /* initial paint: honor a deep link if present, else open the default card */
 syncFromHash();
+
+/* ...then the mode. `wantedMode` is remembered because ?mode=edit can't be
+   honored until the health probe answers, which is after this runs. */
+const wantedMode = new URLSearchParams(location.search).get('mode');
+body.classList.add('mode-explore');
+if (wantedMode && wantedMode !== 'edit') setMode(wantedMode);

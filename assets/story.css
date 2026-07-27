@@ -63,7 +63,7 @@
      the close button uses line-height:1 (glyph centering, not a text measure). */
   --fs-small:   12px;  /* everything glanceable, not read: badges, keys, chips, gutter,
                           section headings, subtitle, timestamps, code, kv rows,
-                          quiet-card summaries, refs, focus toggle, reopen tab */
+                          quiet-card summaries, refs, mode switch */
   --fs-body:    15px;  /* default reading size: prose, detail text */
   --fs-summary: 18px;  /* the loud lines: the conversation itself (user + assistant summaries), token values */
   --fs-title:   22px;  /* the page title */
@@ -130,16 +130,21 @@ header.site .meta {
   margin-left: auto; display: flex; gap: 26px;
   text-align: right;
 }
-header.site .focus-toggle {
+header.site .mode-switch {
   margin-left: 22px; flex: 0 0 auto;
-  background: transparent; border: 1px solid rgba(247,243,234,.35);
-  color: var(--paper); border-radius: 2px;
+  display: flex; border: 1px solid rgba(247,243,234,.35); border-radius: 2px;
+  overflow: hidden;
+}
+header.site .mode-switch button {
+  background: transparent; border: none; color: var(--paper);
+  font-family: inherit;
   font-size: var(--fs-small); letter-spacing: var(--ls-wide);
   padding: 7px 12px; cursor: pointer;
 }
-header.site .focus-toggle:hover,
-header.site .focus-toggle[aria-pressed="true"] {
-  background: rgba(247,243,234,.14); border-color: var(--yellow); color: var(--yellow);
+header.site .mode-switch button + button { border-left: 1px solid rgba(247,243,234,.35); }
+header.site .mode-switch button:hover { background: rgba(247,243,234,.14); }
+header.site .mode-switch button[aria-pressed="true"] {
+  background: rgba(247,243,234,.14); color: var(--yellow);
 }
 header.site .meta .stat { display: flex; flex-direction: column; }
 header.site .meta .stat .k {
@@ -221,9 +226,6 @@ main.timeline {
   outline: 2px solid var(--kind, var(--gold));
   outline-offset: 3px;
 }
-
-/* ---- focus mode: hide everything but the direct back-and-forth with Jess --- */
-body.focus-mode .card:not(.k-user):not(.k-assistant) { display: none; }
 
 /* Leader line to the detail pane: an in-flow pseudo-element anchored to the
    card, so it scrolls (and rubber-band bounces) together with the card.
@@ -527,8 +529,9 @@ pre.code {
    Mount Malleable — the summary editor (local authoring only)
    ============================================================
    None of this shows on the published site. assets/story.js probes the local
-   authoring server (bin/serve) and only adds body.editable when it answers, so
-   on GitHub Pages the editor is never built and the ✎ marker never paints.
+   authoring server (bin/serve) and only offers Edit mode when it answers, so on
+   GitHub Pages the editor is never built. (The ✎ marker is NOT part of this —
+   it paints everywhere; see the rule at the end of this section.)
    The editor is a d-section like any other, first in the detail pane. */
 .summary-edit .summary-input {
   width: 100%; box-sizing: border-box; resize: vertical;
@@ -566,8 +569,9 @@ pre.code {
 }
 .summary-status .undo:hover { color: var(--red); }
 
-/* Which cards carry Jess's words instead of the parser's. A quiet authoring
-   affordance, not part of the story — hence body.editable only. */
-body.editable .card[data-edited] .summary::after {
+/* Which cards carry Jess's words instead of the parser's. Shown in every mode
+   and on the published site: whose sentence this is belongs to the story, not
+   to the authoring UI. */
+.card[data-edited] .summary::after {
   content: "✎"; margin-left: 8px; color: var(--gold); font-size: var(--fs-small);
 }
