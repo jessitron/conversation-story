@@ -41,7 +41,9 @@ this change are dead links; nothing aliases them.) Two things follow:
   `getElementById`, never `querySelector('#' + id)`, and don't add id-based CSS
   selectors. `bin/check-anchors [example] [line]` drives a real headless browser
   to assert a ref fragment still selects its own card (and reports how much of
-  the causal chain lit up); run it after touching selection code.
+  the causal chain lit up); run it after touching selection code. `bin/check-modes`
+  is the same headless-Chrome pattern applied to modes and keyboard navigation —
+  run it too after touching `story.js`'s selection, mode, or narrate logic.
 
 ## Conventions
 
@@ -61,7 +63,11 @@ this change are dead links; nothing aliases them.) Two things follow:
   reaching for a gem. `notes/2026-07-27-session-12-ruby-4-and-gemfile.md` has
   the default-vs-bundled-vs-dropped gem taxonomy, why `.gitignore` carries a
   `!.tool-versions` negation, and how to tell a hand-installed gem from one that
-  shipped with Ruby.
+  shipped with Ruby. The Gemfile's `:test` group exists because of **`ferrum`**
+  (Mount Interactive): `bin/check-modes` drives real Chrome over the DevTools
+  Protocol to test keyboard/mode behavior no Ruby-side test can see, and pure
+  Ruby with no Node/Selenium/driver binary is exactly the "stay boring" shape
+  this project wants for a test dependency.
 - **The schema is the contract.** Known event kinds store only _named_ fields —
   no raw source-JSON blob, and the renderer reads the schema, never the original
   log. Only the `unknown` fallback kind keeps `raw`, so
@@ -136,9 +142,14 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   edge to its content, accent border included; `.card` derives `--card-pad` from
   it and `--card-accent`. A card wanting a heavier accent redefines
   **`--card-accent`** (see `.k-assistant`) — never `--card-pad`.
-- **Focus mode**: a header toggle (`#focus-toggle`) adds `body.focus-mode`,
-  which hides every card that isn't `k-user`/`k-assistant` — pure CSS/JS, no
-  data changes.
+- **Three modes** (session 12): `body.mode-explore|edit|narrate`, a header
+  switch (`#mode-switch`), and `?mode=` in the URL — explore is the default and
+  stays out of the URL. Edit un-hides only when the `/api/health` probe answers.
+  Focus mode is gone. Keyboard: unshifted arrows move one card, shifted move one
+  user/assistant message; `n`/`p` are shift-arrow aliases in narrate; `x`/`e`/`N`
+  switch modes; Escape peels sidebar → selection → mode. In narrate,
+  `.revealed` is a prefix of the cards and the newest one is the selection.
+  `bin/check-modes` drives all of it with real keystrokes in headless Chrome.
 
 Run things with `rake parse` / `render` / `site` / `build` / `serve` / `test`
 (all examples by default; `LOG=`/`PORT=` env vars to scope). See README.md.

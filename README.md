@@ -114,6 +114,43 @@ Because refs are line numbers, editing a log orphans its edits — `bin/parse`
 warns on stderr about overrides that match no event rather than dropping them
 silently.
 
+## Modes and keyboard (Mount Interactive)
+
+The header carries a three-way switch — **Explore / Edit / Narrate** — with
+exactly one live at a time as `body.mode-explore|edit|narrate`. Explore is the
+default and stays out of the URL; entering another mode writes it as
+`?mode=edit` or `?mode=narrate`, so a link can say both which mode and which
+card. Edit un-hides only once `bin/serve` answers `GET /api/health` — on the
+published site `?mode=edit` quietly falls back to explore.
+
+**Narrate** starts the timeline empty and fills it a **beat** at a time — a run
+of cards ending at the next user/assistant message, inclusive, so the flurry of
+tool calls in between is visible on the way. The newest revealed card is always
+the selection, so the URL fragment tracks where you are and a reload resumes
+rather than restarting. Entering narrate on a deep link (`#<ref>` already in the
+URL) reveals everything up to that card instead of starting empty.
+
+| key | explore / edit | narrate |
+|---|---|---|
+| `→` | select next visible card | reveal **one** card |
+| `←` | select previous visible card | un-reveal **one** card |
+| `shift+→` | next **user/assistant** card, scrolled into view | reveal one **beat** |
+| `shift+←` | previous **user/assistant** card, scrolled into view | un-reveal one **beat** |
+| `n` | enter narrate | reveal one beat (same as `shift+→`) |
+| `p` | — | un-reveal one beat (same as `shift+←`) |
+| `x` / `e` / `N` | switch to explore / edit / narrate | same |
+| `Esc` | collapse sidebar → else clear selection | collapse sidebar → else exit to explore |
+
+Unshifted moves one card, shifted moves one message — the same shape in both
+modes, and `n`/`p` are the easier-to-press aliases for shift-arrow. The sidebar
+is sticky state Jess owns: clicking a card opens it, clicking the active card
+closes it, and advancing a narration beat closes it too, so drilling into a
+card mid-narration is a deliberate, self-clearing detour.
+
+```sh
+bin/check-modes    # drives all of it with real keystrokes in headless Chrome
+```
+
 ## Published site
 
 The examples are live at **https://jessitron.github.io/conversation-story/**.
@@ -142,8 +179,6 @@ Mountains have names, not numbers — we climb them in whatever order the work
 wants, and several are underway at once. `TODO.md` is the working list, grouped
 by mountain.
 
-- **Mount Interactive** — I can step through the story in a clear way. I can
-  make events visible in progression, and zoom in to details when I want to.
 - **Mount Complete** — everything recorded in the conversation log is
   intelligible on the web page.
 - **Mount Beautiful** — I enjoy looking at it. The drill-into-detail feels like
@@ -153,7 +188,9 @@ by mountain.
   shaping — which events show, what order they read in — is still open.
 
 *(Climbed: **Mount Minimal** — every event in the main conversation shows as a
-card, all looking the same.)*
+card, all looking the same. **Mount Interactive** — three modes, a keyboard
+map, and a narrate mode that reveals the conversation a beat at a time; see
+"Modes and keyboard" above.)*
 
 ## Constraints
 

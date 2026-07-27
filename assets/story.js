@@ -191,9 +191,11 @@ function setMode(next) {
   onModeChange(prev, mode);
 }
 
-/* Per-mode entry/exit work. Task 4 fills in the narrate half; keeping it in one
-   function means setMode never grows a chain of special cases. */
+/* Per-mode entry/exit work. Keeping it in one function means setMode never
+   grows a chain of special cases. */
 function onModeChange(prev, next) {
+  if (next === 'narrate') enterNarrate();
+  else if (prev === 'narrate') exitNarrate();
   const active = document.querySelector('.card.active');
   if (active) selectCard(active);   // rebuild the detail: the editor is edit-only
 }
@@ -202,6 +204,91 @@ modeSwitch.addEventListener('click', e => {
   const btn = e.target.closest('button[data-mode]');
   if (btn) setMode(btn.dataset.mode);
 });
+
+/* ============================================================
+   Narrate — reveal the conversation a beat at a time.
+
+   `revealed` is a COUNT: cards 0..revealed-1 are shown, and the newest one is
+   the selection. Keeping it a prefix count (rather than a set) makes stepping
+   back the same operation as stepping forward, and makes "start from this
+   card" just an index lookup.
+
+   A BEAT is a run of cards ending at the next user/assistant message,
+   inclusive — one press per conversational turn, with the tool-call flurry
+   visible on the way. The last beat may have no message at its end; it runs to
+   the end of the timeline.
+   ============================================================ */
+const BEAT_MS = 80;
+let revealed = 0;
+let pending = [];
+
+function clearPending() { pending.forEach(clearTimeout); pending = []; }
+function renderReveal() { CARDS.forEach((c, i) => c.classList.toggle('revealed', i < revealed)); }
+
+/* count of cards revealed after advancing one beat from `from` */
+function beatForwardTo(from) {
+  for (let i = from; i < CARDS.length; i++) if (isMessage(CARDS[i])) return i + 1;
+  return CARDS.length;
+}
+/* count of cards revealed after backing up one beat from `from`; always
+   un-reveals at least one card, so a half-finished beat backs up to the
+   previous message rather than sitting still. */
+function beatBackTo(from) {
+  for (let i = from - 2; i >= 0; i--) if (isMessage(CARDS[i])) return i + 1;
+  return 0;
+}
+
+/* Reveal (or hide) up to `target` cards. Going forward the new cards appear one
+   after another so the flurry reads as a flurry; going back is immediate. */
+function revealTo(target) {
+  target = Math.min(CARDS.length, Math.max(0, target));
+  clearPending();
+  renderReveal();          // resync the DOM if a previous flurry was cut short
+  collapseSidebar();       // the stage stays clear unless Jess clicks a card
+  const from = revealed;
+  if (target === from) return;
+  revealed = target;
+  if (target < from) { renderReveal(); landOn(); return; }
+
+  for (let i = from; i < target; i++) {
+    const card = CARDS[i], last = i === target - 1;
+    pending.push(setTimeout(() => {
+      card.classList.add('revealed');
+      card.scrollIntoView({ block: 'nearest' });
+      if (last) landOn();
+    }, (i - from) * BEAT_MS));
+  }
+}
+
+/* The newest revealed card is the selection — whatever its kind. That keeps the
+   URL fragment pointing at where Jess actually is, so a reload resumes. */
+function landOn() {
+  if (!revealed) { setFragment(location.pathname + location.search); clearSelection(); return; }
+  const card = CARDS[revealed - 1];
+  setFragment('#' + card.id);
+  selectCard(card);
+  card.scrollIntoView({ block: 'center', behavior: 'smooth' });
+}
+
+/* Start from the URL fragment if there is one, else from an empty stage.
+   syncFromHash auto-selects a default card when there's no fragment, so "a card
+   is active" is NOT the same as "Jess chose a card" — only a real fragment
+   counts as "start here". */
+function enterNarrate() {
+  const frag = decodeURIComponent(location.hash.slice(1));
+  const at = frag ? CARDS.findIndex(c => c.id === frag) : -1;
+  clearPending();
+  revealed = at >= 0 ? at + 1 : 0;
+  renderReveal();
+  collapseSidebar();
+  if (revealed) selectCard(CARDS[revealed - 1]); else clearSelection();
+}
+
+function exitNarrate() {
+  clearPending();
+  revealed = 0;
+  CARDS.forEach(c => c.classList.remove('revealed'));
+}
 
 /* ---- collapse / reopen / clear ---- */
 document.getElementById('d-close').addEventListener('click', () => body.classList.add('sidebar-collapsed'));
@@ -261,12 +348,20 @@ window.addEventListener('keydown', e => {
     case 'Escape': return act(escapeKey);
   }
 
-  if (mode === 'narrate') return;   // Task 4 owns narrate's arrows
+  if (mode === 'narrate') {
+    switch (key) {   // `key` is the case-folded e.key from Task 3
+      case 'ArrowRight': return act(() => revealTo(e.shiftKey ? beatForwardTo(revealed) : revealed + 1));
+      case 'ArrowLeft':  return act(() => revealTo(e.shiftKey ? beatBackTo(revealed) : revealed - 1));
+      case 'n':          return act(() => revealTo(beatForwardTo(revealed)));
+      case 'p':          return act(() => revealTo(beatBackTo(revealed)));
+    }
+    return;
+  }
 
   switch (key) {
     /* 'n' and 'N' are the same key here: from explore or edit, both mean
-       "start narrating". They only diverge inside narrate, where Task 4 gives
-       'n' the beat-forward job. */
+       "start narrating". They only diverge inside narrate, where 'n' gets the
+       beat-forward job above. */
     case 'n':          return act(() => setMode('narrate'));
     case 'ArrowRight': return act(() => moveSelection(1, e.shiftKey));
     case 'ArrowLeft':  return act(() => moveSelection(-1, e.shiftKey));
@@ -274,7 +369,7 @@ window.addEventListener('keydown', e => {
 });
 
 /* Escape peels one layer at a time: an open sidebar first, then the selection
-   (or, in narrate, the mode itself — see Task 4's exit). */
+   (or, in narrate, the mode itself — see exitNarrate above). */
 function escapeKey() {
   if (!body.classList.contains('sidebar-collapsed')) { collapseSidebar(); return; }
   if (mode === 'narrate') { setMode('explore'); return; }

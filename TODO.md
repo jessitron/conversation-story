@@ -1,25 +1,7 @@
 # TODO
 
 The mountains are named in `README.md`. This is the working list, grouped by
-which mountain each item climbs. Order within a group is roughly "what I'd pick
-up next" — nothing here is scheduled.
-
-## Mount Interactive
-
-- **Step-through navigation.** The North Star says "I can step through it," and
-  right now the only way forward is clicking the next card and scrolling.
-  Wanted: keyboard next/prev over the visible cards, and a way to reveal events
-  in progression while narrating (a presenter mode) rather than showing the
-  whole timeline at once. Selection is fragment-driven, so "next" is
-  "`getElementById` the next `.card` and set the hash."
-- **Edit is a mode** in interactive, step-through mode, that's different from edit mode where I can change the summaries. The summaries still display in every mode, and there is a subtle indication of whether they have been edited.
-- There is a mode switch in the header. explore/edit/narrate or hotkeys x/e/N
-- The cards are selectable; clicking them opens the detail. Clicking the card again should close the detail
-- Escape should close the detail sidebar
-- don't show 'DETAILS' as the closed sidebar. It can be invisible. That keeps it clean for narration.
-- right arrow should go to the next card (and left previous)
-- shift+right arrow should go to the next assistant/user card. It should scroll to it as well.
-- **Narration mode** is an interactive, step-through mode. It starts with no cards displayed. Right-arrow or 'n' causes the first message to appear, a user message. 'n' again causes subsequent cards to appear one at a time until the next assistant/user message appears, then pauses. This scrolls down as necessary so the appearing card is on the screen. It also selects that assistant/user message. Escape exits narration mode; 'N' enters it. If you enter narration mode with a card selected, then narration starts from there.
+which mountain each item climbs.
 
 ## Mount Complete
 

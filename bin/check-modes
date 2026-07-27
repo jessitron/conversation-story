@@ -277,6 +277,75 @@ scenario "shift+right scrolls the target into view" do |s|
   nil
 end
 
+scenario "narrate starts on an empty stage", query: "?mode=narrate" do |s|
+  next "#{s.revealed_ids.size} cards revealed on entry" unless s.revealed_ids.empty?
+  next "#{s.shown_ids.size} cards still laid out" unless s.shown_ids.empty?
+  next "sidebar is open" unless s.collapsed?
+  nil
+end
+
+scenario "n reveals exactly through the next message; p puts it back",
+         query: "?mode=narrate" do |s|
+  s.key("n").wait_stable
+  shown = s.revealed_ids
+  next "n revealed nothing" if shown.empty?
+  next "beat did not end on a message (#{shown.last})" unless s.message?(shown.last)
+  early = shown[0..-2].select { |id| s.message?(id) }
+  next "beat ran past a message: #{early.inspect}" unless early.empty?
+  next "did not select the landing message (active=#{s.active_id.inspect})" unless s.active_id == shown.last
+
+  s.key("p").settle(300)
+  after = s.revealed_ids.size
+  # This is the FIRST beat (started from the empty stage), so there is no
+  # earlier message to back up to -- beatBackTo has nowhere to land but 0.
+  next "p did not return to zero revealed (#{shown.size} -> #{after}, expected 0)" unless after.zero?
+  nil
+end
+
+scenario "right arrow in narrate reveals one card at a time", query: "?mode=narrate" do |s|
+  ids = s.card_ids
+  s.key(:Right).settle(300)
+  s.key(:Right).settle(300)
+  next "expected 2 revealed, got #{s.revealed_ids.size}" unless s.revealed_ids.size == 2
+  next "newest revealed card is not selected (active=#{s.active_id.inspect})" unless s.active_id == ids[1]
+  s.key(:Left).settle(300)
+  next "left did not un-reveal one (#{s.revealed_ids.size} revealed)" unless s.revealed_ids.size == 1
+  nil
+end
+
+scenario "narrate entered on a deep link starts from that card" do |s|
+  target = s.card_ids[5]
+  s.set_hash(target)
+  s.key("N").settle(300)
+  next "expected 6 revealed, got #{s.revealed_ids.size}" unless s.revealed_ids.size == 6
+  next "last revealed is #{s.revealed_ids.last}, not #{target}" unless s.revealed_ids.last == target
+  next "did not select the deep-linked card (active=#{s.active_id.inspect})" unless s.active_id == target
+  nil
+end
+
+scenario "advancing a beat closes a sidebar opened by clicking", query: "?mode=narrate" do |s|
+  s.key(:Right).settle(300)
+  s.click_id(s.revealed_ids.first)
+  next "click did not open the sidebar" if s.collapsed?
+  s.key("n").wait_stable
+  next "n left the sidebar open" unless s.collapsed?
+  nil
+end
+
+scenario "leaving narrate shows everything again", query: "?mode=narrate" do |s|
+  s.key(:Right).settle(300)
+  s.key(:Escape)   # already collapsed on entry, so this exits the mode
+  next "Escape did not exit narrate (mode=#{s.mode.inspect})" unless s.mode == "explore"
+  missing = s.card_ids.size - s.shown_ids.size
+  next "#{missing} cards still hidden in explore" unless missing.zero?
+  # Every card being laid out is also true if exitNarrate() never ran at all --
+  # setMode just un-scopes the display:none rule by dropping mode-narrate. So
+  # also require that exiting actually reset the reveal state itself, not just
+  # that the CSS stopped applying.
+  next "#{s.revealed_ids.size} cards still marked .revealed after exit" unless s.revealed_ids.empty?
+  nil
+end
+
 # ---------------------------------------------------------------- runner
 
 browser = Ferrum::Browser.new(headless: true, window_size: [1400, 900], browser_path: CHROME)

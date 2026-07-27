@@ -575,3 +575,10 @@ pre.code {
 .card[data-edited] .summary::after {
   content: "✎"; margin-left: 8px; color: var(--gold); font-size: var(--fs-small);
 }
+
+/* ---- narrate: the stage starts empty and fills a beat at a time ----
+   Reveal is a class toggle and nothing else: no card leaves the DOM, so a
+   fragment still resolves to a card that has not appeared yet, and leaving
+   narrate brings everything back with no re-render. */
+body.mode-narrate .card { display: none; }
+body.mode-narrate .card.revealed { display: grid; }
