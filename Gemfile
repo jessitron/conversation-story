@@ -26,4 +26,10 @@ gem "rake", "~> 13.3"
 
 group :test do
   gem "minitest", "~> 6.0"
+
+  # Drives a real Chrome over the DevTools Protocol, for the check scripts that
+  # have to answer "what does the PAGE do" rather than "what did Ruby write":
+  # bin/check-modes types at it. Pure Ruby — no Node, no Selenium server, no
+  # driver binary; it talks to the Chrome that's already installed.
+  gem "ferrum", "~> 0.17"
 end

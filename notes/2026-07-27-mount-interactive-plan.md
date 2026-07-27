@@ -10,22 +10,19 @@ conversation one beat at a time.
 (sidebar state, mode, keyboard, narrate) that talk to the DOM through a body
 class and a `.revealed` card class. Nothing is added to the schema and no Ruby
 logic changes — `page.html.erb` swaps one header widget and drops one button.
-Verification is a new `bin/check-modes`: an HTML harness that iframes a built
-page and dispatches real `KeyboardEvent`s into it under headless Chrome.
+Verification is a new `bin/check-modes`, which drives a real headless Chrome
+over the DevTools Protocol with **ferrum** and types at the page.
 
 **Tech Stack:** Vanilla ES2015+ browser JS (no build step, no framework), plain
-CSS, ERB templates, Ruby 4 stdlib for the check script, headless Google Chrome.
+CSS, ERB templates, Ruby 4 + ferrum for the check script, headless Google Chrome.
 
 **Spec:** `notes/2026-07-27-mount-interactive-design.md`. Read it first.
 
 ## Global Constraints
 
-- **Ruby 4, and add no gems.** There is a `Gemfile` as of 7e1b304, but it
-  declares only `webrick` (for `bin/serve`) plus `rake` and `minitest`. This
-  work needs nothing new in it. `bin/check-modes` uses `tmpdir` — a real default
-  gem — and must **not** require `webrick`: it runs against `file://` URLs, not
-  `bin/serve`, so it works without `bundle install`. Commands below are written
-  bare; CI runs them under `bundle exec`, and both must pass.
+- **Ruby 4.** `ferrum ~> 0.17` is already added to the `Gemfile`'s `:test`
+  group and installed. `bin/check-modes` runs under **`bundle exec`**. It drives
+  `file://` URLs — no server, no `bin/serve`, no `webrick`.
 - **`assets/` is the source of truth.** Edit `assets/story.js` and
   `assets/story.css`; the build copies them into `out/assets/`. Never edit
   `out/assets/*` by hand.
@@ -42,7 +39,42 @@ CSS, ERB templates, Ruby 4 stdlib for the check script, headless Google Chrome.
 - **The renderer already emits `data-edited`** on cards whose summary is
   hand-written. No parser or renderer change is needed to un-gate the ✎ marker.
 - Commit messages are tagged `- claude` on their own last line.
-- After every task: `rake build && rake test && bin/check-anchors` must pass.
+- After every task: `rake build && rake test && bin/check-anchors && bundle exec
+  bin/check-modes` must pass.
+
+## Verified facts about driving the page with ferrum
+
+These were all established by experiment before this plan was written. Do not
+re-derive them, and do not "simplify" past them — each one is a trap that
+already cost a debugging round:
+
+1. **`at_css("#episode-8-before:4")` throws `Ferrum::JavaScriptError`.** The
+   colon in a card id is a CSS pseudo-class introducer. In the check script,
+   reach cards by **index** into `browser.css(".card")`, or by
+   `document.getElementById(...)` inside an `evaluate`. Never build a `#id`
+   selector — the same rule the page's own JS follows.
+2. **A real click on a card far down the page silently misses.** Ferrum scrolls
+   the node barely into view and the computed click point lands outside the
+   viewport; the click reports success and nothing happens. Always
+   `scrollIntoView({block:'center'})` via `evaluate` first, then click. The
+   `Story#click` helper below does this — use it rather than clicking nodes
+   directly.
+3. **`keyboard.type([:Shift, "n"])` produces `e.key === "n"` with
+   `shiftKey: true`** — *not* `"N"` the way a real keyboard does. Use
+   `keyboard.type("N")` to get `e.key === "N"`. Because both shapes are
+   reachable, the page's handler normalizes case (see Task 3).
+   `type(:Escape)` → `"Escape"`, `type(:Right)` → `"ArrowRight"`,
+   `type([:Shift, :Right])` → `"ArrowRight"` with `shiftKey` — all correct.
+4. **The page always loads with a card already selected.** `syncFromHash` falls
+   back to `DEFAULT_CARD` (the first `.k-assistant`, which is
+   `episode-8-before:10`). No scenario may assume "nothing is active" on load,
+   and clicking that particular card exercises the *active-card* branch, not
+   the fresh-selection branch.
+5. **`history.replaceState` works on `file://`** in this Chrome, so URL
+   assertions (`location.hash`, `location.search`) are valid without a server.
+6. **Focus is real**: focusing a textarea via `evaluate` makes `e.target` the
+   textarea for subsequently typed keys. The "typing must not reach the page"
+   test is honest, not a synthetic stand-in.
 
 ---
 
@@ -62,20 +94,27 @@ only way to test any of this.
 
 **Interfaces:**
 - Consumes: nothing from earlier tasks.
-- Produces, in `bin/check-modes`, a JS harness whose scenario table later tasks
-  append to. Each scenario is `{ name, run: async (win, doc, h) => string|null }`
-  returning `null` for pass or a failure message. Helpers on `h`:
-  `h.key(win, key, opts)` dispatches a `keydown` on the iframe's `window`;
-  `h.click(el)` dispatches a real `click`; `h.sleep(ms)` awaits a timer;
-  `h.cards(doc)` returns an array of all `.card` elements; `h.active(doc)`
-  returns the `.card.active` element or `null`.
+- Produces, in `bin/check-modes`, a `scenario(name, query:, hash:) { |s| ... }`
+  registry and a `Story` helper class that later tasks write scenarios against.
+  Its full API — every method later tasks call:
+  - reading: `card_ids` → `Array[String]`, `revealed_ids` → `Array[String]`,
+    `shown_ids` → `Array[String]` (cards actually laid out, i.e.
+    `offsetParent != null`), `active_id` → `String|nil`, `mode` → `String|nil`,
+    `collapsed?` → `Boolean`, `search` → `String`, `hash` → `String`,
+    `message?(id)` → `Boolean`, `exists?(dom_id)` → `Boolean`,
+    `hidden_attr?(css)` → `Boolean`, `scroll_y` → `Integer`
+  - acting: `key(*keys)` (ferrum key syntax), `click(index)`,
+    `click_id(id)`, `click_mode(name)`, `focus_new_textarea`, `set_hash(id)`,
+    and `js(expr)` for a one-off assertion with no helper
+  - waiting: `settle(ms = 150)`, `wait_stable` (polls until `revealed_ids`
+    stops growing — for narrate's animated beats)
 - Produces, in `assets/story.js`: `collapseSidebar()`, `openSidebar()`, and a
   `selectCard(card)` that no longer touches `sidebar-collapsed`.
 
 - [ ] **Step 1: Write the harness**
 
-Create `bin/check-modes`, `chmod +x` it. This is the whole file; later tasks
-only add entries to `SCENARIOS`.
+Create `bin/check-modes` and `chmod +x` it. This is the whole file; later tasks
+only add `scenario` blocks to it.
 
 ```ruby
 #!/usr/bin/env ruby
@@ -84,165 +123,216 @@ only add entries to `SCENARIOS`.
 # Drive a built story page with real keystrokes and check what it does
 # (Mount Interactive: modes, keyboard navigation, narrate).
 #
-#   bin/check-modes [example-name]
+#   bundle exec bin/check-modes [example-name]
 #
-# HOW THIS WORKS. Headless Chrome can dump a page's DOM but cannot type into
-# it. So we write a harness page to a temp dir that iframes the built page and
-# dispatches synthetic KeyboardEvents into the iframe's window. Reaching into
-# another file:// document needs --allow-file-access-from-files, which makes
-# Chrome treat all file:// URLs as one origin. Each scenario reloads the iframe,
-# so scenarios never inherit each other's state, and one Chrome launch runs them
-# all. Results are written into the harness DOM and read back with --dump-dom.
+# Uses ferrum to talk to the installed Chrome over the DevTools Protocol, so
+# these are REAL key and mouse events: focus decides what e.target is, and the
+# page's own preventDefault actually applies. Runs against file:// — no server.
 #
-# No server: this runs against file://, so it needs no webrick and no bin/serve.
+# THREE TRAPS, each of which has already bitten (see the plan note):
+#   * Card ids contain a colon, which CSS reads as a pseudo-class. `at_css("#" +
+#     id)` THROWS. Reach cards by index, or getElementById inside evaluate.
+#   * A real click on a card far down the page silently misses unless you
+#     scrollIntoView({block:'center'}) first. Story#click does that for you.
+#   * The page always loads with a card already selected (DEFAULT_CARD, the
+#     first assistant message). "Nothing is active" is never the start state.
 
-require "tmpdir"
+require "ferrum"
 
-CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 REPO   = File.expand_path("..", __dir__)
 STORY  = ARGV[0] || "episode-8-before"
 PAGE   = File.join(REPO, "out", STORY, "index.html")
+CHROME = ENV.fetch("CHROME", "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
 
 abort "no such page: #{PAGE} (run 'rake build')" unless File.exist?(PAGE)
-abort "Chrome not found at #{CHROME}" unless File.exist?(CHROME)
+abort "Chrome not found at #{CHROME} (set CHROME=...)" unless File.exist?(CHROME)
 
-# Each scenario gets a freshly loaded iframe. `query` is appended to the page
-# URL (before the fragment), `hash` is the fragment. Return null to pass, or a
-# string describing what went wrong.
-SCENARIOS = <<~JS
-  const SCENARIOS = [
-    {
-      name: 'clicking a second card opens the sidebar on it',
-      run: async (win, doc, h) => {
-        const cards = h.cards(doc);
-        h.click(cards[2]);
-        await h.sleep(20);
-        if (h.active(doc) !== cards[2]) return 'card 2 is not active';
-        if (doc.body.classList.contains('sidebar-collapsed')) return 'sidebar collapsed';
-        return null;
-      },
-    },
-    {
-      name: 'clicking the active card collapses the sidebar, clicking again reopens',
-      run: async (win, doc, h) => {
-        const cards = h.cards(doc);
-        h.click(cards[2]); await h.sleep(20);
-        h.click(cards[2]); await h.sleep(20);
-        if (!doc.body.classList.contains('sidebar-collapsed')) return 'did not collapse';
-        if (h.active(doc) !== cards[2]) return 'lost the selection on collapse';
-        h.click(cards[2]); await h.sleep(20);
-        if (doc.body.classList.contains('sidebar-collapsed')) return 'did not reopen';
-        return null;
-      },
-    },
-    {
-      name: 'Escape collapses the sidebar, then clears the selection',
-      run: async (win, doc, h) => {
-        const cards = h.cards(doc);
-        h.click(cards[2]); await h.sleep(20);
-        h.key(win, 'Escape'); await h.sleep(20);
-        if (!doc.body.classList.contains('sidebar-collapsed')) return 'first Escape did not collapse';
-        if (h.active(doc) !== cards[2]) return 'first Escape also cleared the selection';
-        h.key(win, 'Escape'); await h.sleep(20);
-        if (h.active(doc)) return 'second Escape did not clear the selection';
-        return null;
-      },
-    },
-    {
-      name: 'the Details reopen tab is gone',
-      run: async (win, doc, h) => (doc.getElementById('reopen') ? 'reopen button still in the DOM' : null),
-    },
-  ];
-JS
+SCENARIOS = []
 
-HARNESS = <<~HTML
-  <!DOCTYPE html><meta charset="utf-8">
-  <body><iframe id="f" width="1200" height="900"></iframe><div id="out"></div>
-  <script>
-  #{SCENARIOS}
-  const frame = document.getElementById('f');
-  const out = document.getElementById('out');
-  const PAGE = new URLSearchParams(location.search).get('page');
-
-  const h = {
-    sleep: ms => new Promise(r => setTimeout(r, ms)),
-    key: (win, key, opts = {}) =>
-      win.dispatchEvent(new win.KeyboardEvent('keydown',
-        Object.assign({ key, bubbles: true, cancelable: true }, opts))),
-    click: el =>
-      el.dispatchEvent(new el.ownerDocument.defaultView.MouseEvent('click',
-        { bubbles: true, cancelable: true })),
-    cards: doc => Array.from(doc.querySelectorAll('.card')),
-    active: doc => doc.querySelector('.card.active'),
-  };
-
-  function load(url) {
-    return new Promise(resolve => {
-      frame.addEventListener('load', () => resolve(), { once: true });
-      frame.src = url;
-    });
-  }
-
-  function report(name, failure) {
-    const div = document.createElement('div');
-    div.className = 'r';
-    div.textContent = 'RESULT\\t' + name + '\\t' + (failure ? 'FAIL\\t' + failure : 'PASS');
-    out.appendChild(div);
-  }
-
-  (async () => {
-    for (const s of SCENARIOS) {
-      await load(PAGE + (s.query || '') + (s.hash || ''));
-      await h.sleep(30);   // let story.js finish its initial paint
-      const win = frame.contentWindow, doc = frame.contentDocument;
-      try { report(s.name, await s.run(win, doc, h)); }
-      catch (e) { report(s.name, 'threw: ' + (e && e.message)); }
-    }
-    document.title = 'DONE';
-  })();
-  </script></body>
-HTML
-
-dom = nil
-Dir.mktmpdir("check-modes") do |dir|
-  harness = File.join(dir, "harness.html")
-  File.write(harness, HARNESS)
-  url = "file://#{harness}?page=file://#{PAGE}"
-  dom = `"#{CHROME}" --headless --disable-gpu --virtual-time-budget=20000 \
-         --allow-file-access-from-files --dump-dom "#{url}" 2>/dev/null`
+# Register a scenario. Each one gets a freshly loaded page, so no scenario can
+# inherit another's state. `query` is appended before the fragment ("?mode=..."),
+# `hash` after it ("#<ref>"). The block gets a Story and returns nil to pass or
+# a string saying what went wrong.
+def scenario(name, query: "", hash: "", &block)
+  SCENARIOS << { name: name, query: query, hash: hash, run: block }
 end
 
-results = dom.to_s.scan(%r{<div class="r">RESULT\t(.*?)</div>}m).flatten
-abort "no results — the harness never ran (is Chrome working?)" if results.empty?
+# The vocabulary the scenarios speak. Everything goes through `evaluate` and
+# returns plain Ruby data rather than Ferrum nodes, because node handles go
+# stale across reloads and ids can't be used as selectors here anyway.
+class Story
+  def initialize(browser) = @b = browser
 
-failed = 0
-results.each do |line|
-  name, verdict, detail = line.split("\t")
-  if verdict == "PASS"
-    puts "OK    #{name}"
-  else
-    failed += 1
-    puts "FAIL  #{name} — #{detail}"
+  def load(query, hash)
+    @b.goto("file://#{PAGE}#{query}#{hash}")
+    settle(250)   # let story.js run its initial paint
+    self
+  end
+
+  # ---- reading ----
+  def js(expr) = @b.evaluate(expr)
+  def card_ids     = js("Array.from(document.querySelectorAll('.card')).map(c => c.id)")
+  def revealed_ids = js("Array.from(document.querySelectorAll('.card.revealed')).map(c => c.id)")
+  def shown_ids    = js("Array.from(document.querySelectorAll('.card')).filter(c => c.offsetParent !== null).map(c => c.id)")
+  def active_id    = js("(document.querySelector('.card.active') || {}).id || null")
+  def mode         = js("(document.body.className.match(/\\bmode-(\\w+)\\b/) || [])[1] || null")
+  def collapsed?   = js("document.body.classList.contains('sidebar-collapsed')")
+  def search       = js("location.search")
+  def hash         = js("location.hash")
+  def scroll_y     = js("Math.round(window.scrollY)")
+  def exists?(dom_id) = js("!!document.getElementById(#{dom_id.inspect})")
+  def hidden_attr?(css) = js("(document.querySelector(#{css.inspect}) || {}).hidden === true")
+
+  def message?(id)
+    js("(() => { const c = document.getElementById(#{id.inspect}); " \
+       "return !!c && (c.classList.contains('k-user') || c.classList.contains('k-assistant')); })()")
+  end
+
+  # ---- acting ----
+  def key(*keys)
+    @b.keyboard.type(*keys)
+    settle
+    self
+  end
+
+  # Real mouse click on the nth card. The scroll is not optional — see the
+  # trap list at the top.
+  def click(index)
+    js("document.querySelectorAll('.card')[#{index}].scrollIntoView({block:'center'})")
+    settle(80)
+    @b.css(".card")[index].click
+    settle
+    self
+  end
+
+  def click_id(id) = click(card_ids.index(id) || raise("no card #{id}"))
+
+  # The header's mode buttons. Plain class/attribute selectors, so at_css is
+  # safe here — it's only card ids that carry a colon.
+  def click_mode(name)
+    node = @b.at_css(%(#mode-switch [data-mode="#{name}"])) or raise("no #{name} button")
+    node.click
+    settle
+    self
+  end
+
+  def set_hash(id)
+    js("location.hash = #{("#" + id).inspect}")
+    settle
+    self
+  end
+
+  # A stand-in for the summary editor's textarea (which needs a server). Focus
+  # is real, so keys typed after this genuinely land on the textarea.
+  def focus_new_textarea
+    js("(() => { const t = document.createElement('textarea'); t.id = 'probe-input'; " \
+       "document.body.appendChild(t); t.focus(); })()")
+    settle
+    self
+  end
+
+  # ---- waiting ----
+  def settle(ms = 150)
+    sleep(ms / 1000.0)
+    self
+  end
+
+  # Narrate reveals a beat's cards ~80ms apart, so "the beat is done" is "the
+  # revealed count stopped growing". Beats the alternative of a long fixed sleep.
+  def wait_stable(timeout: 5)
+    deadline = Time.now + timeout
+    last = -1
+    while Time.now < deadline
+      now = revealed_ids.size
+      return self if now == last && now.positive?
+      last = now
+      sleep 0.12
+    end
+    self
   end
 end
 
-puts "#{results.length - failed}/#{results.length} scenarios passed"
-exit(failed.zero? ? 0 : 1)
+# ---------------------------------------------------------------- scenarios
+
+scenario "clicking an unselected card selects it and opens the sidebar" do |s|
+  target = s.card_ids.find { |id| id != s.active_id }
+  s.click_id(target)
+  next "expected #{target} active, got #{s.active_id.inspect}" unless s.active_id == target
+  next "sidebar is collapsed" if s.collapsed?
+  next "URL fragment is #{s.hash.inspect}" unless s.hash == "##{target}"
+  nil
+end
+
+scenario "clicking the active card collapses the sidebar; clicking again reopens" do |s|
+  target = s.card_ids.find { |id| id != s.active_id }
+  s.click_id(target)
+  s.click_id(target)
+  next "did not collapse" unless s.collapsed?
+  next "lost the selection on collapse (active=#{s.active_id.inspect})" unless s.active_id == target
+  s.click_id(target)
+  next "did not reopen" if s.collapsed?
+  nil
+end
+
+scenario "Escape collapses the sidebar, then clears the selection" do |s|
+  target = s.card_ids.find { |id| id != s.active_id }
+  s.click_id(target)
+  s.key(:Escape)
+  next "first Escape did not collapse" unless s.collapsed?
+  next "first Escape also cleared the selection" unless s.active_id == target
+  s.key(:Escape)
+  next "second Escape did not clear the selection (active=#{s.active_id.inspect})" if s.active_id
+  nil
+end
+
+scenario "the Details reopen tab is gone" do |s|
+  s.exists?("reopen") ? "reopen button still in the DOM" : nil
+end
+
+# ---------------------------------------------------------------- runner
+
+browser = Ferrum::Browser.new(headless: true, window_size: [1400, 900], browser_path: CHROME)
+failures = 0
+
+begin
+  SCENARIOS.each do |sc|
+    story = Story.new(browser).load(sc[:query], sc[:hash])
+    failure =
+      begin
+        sc[:run].call(story)
+      rescue StandardError => e
+        "raised #{e.class}: #{e.message.lines.first.to_s.strip}"
+      end
+
+    if failure
+      failures += 1
+      puts "FAIL  #{sc[:name]} — #{failure}"
+    else
+      puts "OK    #{sc[:name]}"
+    end
+  end
+ensure
+  browser.quit
+end
+
+puts "#{SCENARIOS.size - failures}/#{SCENARIOS.size} scenarios passed"
+exit(failures.zero? ? 0 : 1)
 ```
 
 - [ ] **Step 2: Run it to watch the sidebar scenarios fail**
 
 ```sh
-rake build && bin/check-modes
+rake build && bundle exec bin/check-modes
 ```
 
-Expected: the harness runs and reports failures — `clicking the active card
-collapses…` fails ("did not collapse", since the current click handler
-early-returns on the active card), `Escape collapses…` fails (no keyboard
-handler exists yet), and `the Details reopen tab is gone` fails. The first
-scenario should already PASS. If you get "no results", fix the harness before
-touching `story.js` — every later task depends on it.
+Expected: four scenarios run. The first ("clicking an unselected card…") should
+already PASS against today's code. The other three FAIL: "did not collapse"
+(the click handler currently early-returns on the active card), "first Escape
+did not collapse" (no keyboard handler exists yet), and "reopen button still in
+the DOM".
 
+If instead you get a Ferrum error or zero scenarios, fix the harness before
+touching `story.js` — every later task depends on it.
 - [ ] **Step 3: Make the sidebar sticky in `assets/story.js`**
 
 Add these two helpers next to `selectCard`:
@@ -340,8 +430,10 @@ clear' is a reachable state. Clicking the active card toggles it; Escape peels
 the sidebar first and the selection second. The Details reopen tab is gone --
 clicking any card brings the sidebar back.
 
-bin/check-modes is new: headless Chrome cannot type, so it loads a harness page
-that iframes the built page and dispatches real KeyboardEvents into it.
+bin/check-modes is new: ferrum drives the installed Chrome over the DevTools
+Protocol, so the tests use real key and mouse events against the built page --
+focus decides what e.target is, which is the only honest way to check that
+typing in the summary box does not trigger a hotkey.
 
 - claude"
 ```
@@ -372,62 +464,55 @@ the ✎ marker un-gated.
 
 - [ ] **Step 1: Add the failing scenarios to `bin/check-modes`**
 
-Append to the `SCENARIOS` array (inside the heredoc), before the closing `];`:
+Append these below Task 1's scenarios, above the `# ---- runner` comment:
 
-```js
-    {
-      name: 'the page starts in explore mode',
-      run: async (win, doc, h) => (doc.body.classList.contains('mode-explore')
-        ? null : 'body classes: ' + doc.body.className),
-    },
-    {
-      name: 'N switches to narrate, x back to explore',
-      run: async (win, doc, h) => {
-        h.key(win, 'N', { shiftKey: true }); await h.sleep(20);
-        if (!doc.body.classList.contains('mode-narrate')) return 'N did not enter narrate';
-        if (!win.location.search.includes('mode=narrate')) return 'URL is ' + win.location.search;
-        h.key(win, 'x'); await h.sleep(20);
-        if (!doc.body.classList.contains('mode-explore')) return 'x did not return to explore';
-        if (win.location.search.includes('mode=')) return 'explore left mode= in the URL';
-        return null;
-      },
-    },
-    {
-      name: '?mode=narrate loads straight into narrate',
-      query: '?mode=narrate',
-      run: async (win, doc, h) => (doc.body.classList.contains('mode-narrate')
-        ? null : 'body classes: ' + doc.body.className),
-    },
-    {
-      name: 'edit mode is unavailable with no server: button hidden, ?mode=edit degrades',
-      query: '?mode=edit',
-      run: async (win, doc, h) => {
-        await h.sleep(60);   // let the /api/health probe fail
-        if (!doc.body.classList.contains('mode-explore')) return 'did not degrade to explore';
-        const btn = doc.querySelector('#mode-switch [data-mode="edit"]');
-        if (!btn) return 'no edit button in the switch';
-        if (!btn.hidden) return 'edit button is visible with no server';
-        h.key(win, 'e'); await h.sleep(20);
-        if (doc.body.classList.contains('mode-edit')) return 'e entered edit with no server';
-        return null;
-      },
-    },
-    {
-      name: 'focus mode is gone',
-      run: async (win, doc, h) => (doc.getElementById('focus-toggle')
-        ? 'focus-toggle still in the DOM' : null),
-    },
+```ruby
+scenario "the page starts in explore mode" do |s|
+  s.mode == "explore" ? nil : "mode is #{s.mode.inspect}"
+end
+
+# NOTE: this clicks the switch rather than pressing a hotkey. The hotkeys don't
+# exist until Task 3 — a scenario for them lives there.
+scenario "the switch enters narrate and writes ?mode=; explore clears it" do |s|
+  s.click_mode("narrate")
+  next "did not enter narrate (mode=#{s.mode.inspect})" unless s.mode == "narrate"
+  next "URL is #{s.search.inspect}" unless s.search.include?("mode=narrate")
+  next "aria-pressed not moved" unless s.js(
+    %(document.querySelector('#mode-switch [data-mode="narrate"]').getAttribute('aria-pressed') === 'true')
+  )
+  s.click_mode("explore")
+  next "did not return to explore (mode=#{s.mode.inspect})" unless s.mode == "explore"
+  next "explore left mode= in the URL (#{s.search.inspect})" if s.search.include?("mode=")
+  nil
+end
+
+scenario "?mode=narrate loads straight into narrate", query: "?mode=narrate" do |s|
+  s.mode == "narrate" ? nil : "mode is #{s.mode.inspect}"
+end
+
+scenario "with no server, the Edit button is hidden and ?mode=edit degrades",
+         query: "?mode=edit" do |s|
+  s.settle(300)   # let the /api/health probe fail
+  next "did not degrade to explore (mode=#{s.mode.inspect})" unless s.mode == "explore"
+  next "no edit button in the switch" unless s.js("!!document.querySelector('#mode-switch [data-mode=\"edit\"]')")
+  next "edit button is visible with no server" unless s.hidden_attr?('#mode-switch [data-mode="edit"]')
+  nil
+end
+
+scenario "focus mode is gone" do |s|
+  s.exists?("focus-toggle") ? "focus-toggle still in the DOM" : nil
+end
 ```
 
 - [ ] **Step 2: Run to verify they fail**
 
 ```sh
-bin/check-modes
+rake build && bundle exec bin/check-modes
 ```
 
-Expected: the five new scenarios FAIL (no `mode-explore` class, no
-`#mode-switch`, `focus-toggle still in the DOM`); Task 1's four still pass.
-
+Expected: the five new scenarios FAIL — `mode is nil` (no `body.mode-*` class
+yet), no `#mode-switch` element, and `focus-toggle still in the DOM`. Task 1's
+four still pass.
 - [ ] **Step 3: Replace the header widget in both pages**
 
 In `lib/conversation_story/templates/page.html.erb`, replace the
@@ -666,70 +751,83 @@ jump between user/assistant messages, `x`/`e`/`N`/`n` switch modes.
 
 - [ ] **Step 1: Add the failing scenarios to `bin/check-modes`**
 
-Append to `SCENARIOS`:
+```ruby
+scenario "right arrow moves the selection one card, left arrow moves it back" do |s|
+  ids = s.card_ids
+  start = ids[3]
+  s.click_id(start)
+  s.key(:Right)
+  next "right did not land on #{ids[4]} (got #{s.active_id.inspect})" unless s.active_id == ids[4]
+  s.key(:Left)
+  next "left did not return to #{start} (got #{s.active_id.inspect})" unless s.active_id == start
+  nil
+end
 
-```js
-    {
-      name: 'right arrow moves the selection one card, left arrow back',
-      run: async (win, doc, h) => {
-        const cards = h.cards(doc);
-        h.click(cards[3]); await h.sleep(20);
-        h.key(win, 'ArrowRight'); await h.sleep(20);
-        if (h.active(doc) !== cards[4]) return 'right did not land on card 4';
-        h.key(win, 'ArrowLeft'); await h.sleep(20);
-        if (h.active(doc) !== cards[3]) return 'left did not return to card 3';
-        return null;
-      },
-    },
-    {
-      name: 'shift+right jumps to the next user/assistant card',
-      run: async (win, doc, h) => {
-        const cards = h.cards(doc);
-        const isMsg = c => c.classList.contains('k-user') || c.classList.contains('k-assistant');
-        h.click(cards[0]); await h.sleep(20);
-        h.key(win, 'ArrowRight', { shiftKey: true }); await h.sleep(20);
-        const landed = h.active(doc);
-        if (!isMsg(landed)) return 'landed on a ' + landed.className;
-        const expected = cards.slice(1).find(isMsg);
-        if (landed !== expected) return 'skipped past the first message';
-        return null;
-      },
-    },
-    {
-      name: 'arrow navigation leaves a collapsed sidebar collapsed',
-      run: async (win, doc, h) => {
-        const cards = h.cards(doc);
-        h.click(cards[2]); await h.sleep(20);
-        h.key(win, 'Escape'); await h.sleep(20);   // collapse
-        h.key(win, 'ArrowRight'); await h.sleep(20);
-        if (!doc.body.classList.contains('sidebar-collapsed')) return 'arrow popped the sidebar open';
-        if (h.active(doc) !== cards[3]) return 'arrow did not move the selection';
-        return null;
-      },
-    },
-    {
-      name: 'keys typed in the summary box do not reach the page',
-      run: async (win, doc, h) => {
-        const ta = doc.createElement('textarea');   // stand-in: no server, so no real editor
-        doc.body.appendChild(ta);
-        const before = doc.body.className;
-        ta.dispatchEvent(new win.KeyboardEvent('keydown', { key: 'N', shiftKey: true, bubbles: true }));
-        await h.sleep(20);
-        return doc.body.className === before ? null : 'typing changed the mode';
-      },
-    },
+scenario "shift+right jumps to the next user/assistant card" do |s|
+  ids = s.card_ids
+  s.click_id(ids[0])
+  s.key([:Shift, :Right])
+  landed = s.active_id
+  next "landed on nothing" unless landed
+  next "#{landed} is not a message card" unless s.message?(landed)
+  expected = ids.drop(1).find { |id| s.message?(id) }
+  next "skipped past #{expected} to #{landed}" unless landed == expected
+  nil
+end
+
+scenario "arrow navigation leaves a collapsed sidebar collapsed" do |s|
+  ids = s.card_ids
+  s.click_id(ids[2])
+  s.key(:Escape)          # collapse, keeping the selection
+  s.key(:Right)
+  next "arrow popped the sidebar open" unless s.collapsed?
+  next "arrow did not move the selection (active=#{s.active_id.inspect})" unless s.active_id == ids[3]
+  nil
+end
+
+scenario "keys typed into a focused text box do not reach the page" do |s|
+  before_mode = s.mode
+  before_active = s.active_id
+  s.focus_new_textarea
+  s.key("N")
+  s.key(:Right)
+  next "typing changed the mode to #{s.mode.inspect}" unless s.mode == before_mode
+  next "typing moved the selection to #{s.active_id.inspect}" unless s.active_id == before_active
+  nil
+end
+
+scenario "the x / e / N hotkeys switch modes" do |s|
+  s.key("N")   # type("N") gives e.key === 'N'; [:Shift,'n'] would give 'n' + shiftKey
+  next "N did not enter narrate (mode=#{s.mode.inspect})" unless s.mode == "narrate"
+  s.key("x")
+  next "x did not return to explore (mode=#{s.mode.inspect})" unless s.mode == "explore"
+  s.key("n")   # lowercase is the forgiving alias from explore
+  next "n did not enter narrate (mode=#{s.mode.inspect})" unless s.mode == "narrate"
+  s.key("x")
+  s.key("e")   # no server here, so edit must stay unavailable
+  next "e entered edit mode with no server" if s.mode == "edit"
+  nil
+end
+
+scenario "shift+right scrolls the target into view" do |s|
+  s.click_id(s.card_ids[0])
+  before = s.scroll_y
+  8.times { s.key([:Shift, :Right]) }
+  next "page never scrolled (still at #{before})" unless s.scroll_y > before
+  nil
+end
 ```
 
 - [ ] **Step 2: Run to verify they fail**
 
 ```sh
-bin/check-modes
+rake build && bundle exec bin/check-modes
 ```
 
-Expected: the four new scenarios FAIL ("right did not land on card 4" etc.);
-the previous nine still pass. The typing scenario may pass already — Task 1's
-`TYPING` guard covers it — that's fine; it's there so Task 3 can't regress it.
-
+Expected: the arrow scenarios FAIL ("right did not land on …") and the scroll
+scenario FAILs; the previous nine pass (Task 3 adds six). "keys typed into a focused text box"
+may already pass — Task 1's `TYPING` guard covers it — which is fine; it is
+here so Task 3 cannot regress it.
 - [ ] **Step 3: Extend the keyboard handler in `assets/story.js`**
 
 Just above the keydown listener, add:
@@ -771,18 +869,26 @@ window.addEventListener('keydown', e => {
   if (e.target.closest && e.target.closest(TYPING)) return;
   if (e.metaKey || e.ctrlKey || e.altKey) return;
 
+  /* Letter keys are matched case-insensitively. Shift+N arrives as 'N' from a
+     real keyboard but as 'n' + shiftKey from CDP-synthesized input, and caps
+     lock is a third way to get the same intent — folding case means one case
+     label covers all of them. Named keys ('ArrowRight', 'Escape') are longer
+     than one character and pass through untouched. */
+  const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
   const act = fn => { e.preventDefault(); fn(); };
 
-  switch (e.key) {
+  switch (key) {
     case 'x': return act(() => setMode('explore'));
     case 'e': return act(() => setMode('edit'));
-    case 'N': return act(() => setMode('narrate'));
     case 'Escape': return act(escapeKey);
   }
 
   if (mode === 'narrate') return;   // Task 4 owns narrate's arrows
 
-  switch (e.key) {
+  switch (key) {
+    /* 'n' and 'N' are the same key here: from explore or edit, both mean
+       "start narrating". They only diverge inside narrate, where Task 4 gives
+       'n' the beat-forward job. */
     case 'n':          return act(() => setMode('narrate'));
     case 'ArrowRight': return act(() => moveSelection(1, e.shiftKey));
     case 'ArrowLeft':  return act(() => moveSelection(-1, e.shiftKey));
@@ -808,7 +914,7 @@ they don't collide, but don't rename either one.
 rake build && bin/check-modes && bin/check-anchors && rake test
 ```
 
-Expected: all thirteen scenarios OK.
+Expected: all fifteen scenarios OK.
 
 - [ ] **Step 5: Commit**
 
@@ -844,107 +950,80 @@ fragment or an empty stage.
 
 - [ ] **Step 1: Add the failing scenarios to `bin/check-modes`**
 
-Append to `SCENARIOS`:
+```ruby
+scenario "narrate starts on an empty stage", query: "?mode=narrate" do |s|
+  next "#{s.revealed_ids.size} cards revealed on entry" unless s.revealed_ids.empty?
+  next "#{s.shown_ids.size} cards still laid out" unless s.shown_ids.empty?
+  next "sidebar is open" unless s.collapsed?
+  nil
+end
 
-```js
-    {
-      name: 'narrate starts on an empty stage',
-      query: '?mode=narrate',
-      run: async (win, doc, h) => {
-        const shown = h.cards(doc).filter(c => c.classList.contains('revealed'));
-        if (shown.length) return shown.length + ' cards revealed on entry';
-        if (!doc.body.classList.contains('sidebar-collapsed')) return 'sidebar is open';
-        return null;
-      },
-    },
-    {
-      name: 'n reveals exactly through the next message; p puts it back',
-      query: '?mode=narrate',
-      run: async (win, doc, h) => {
-        const cards = h.cards(doc);
-        const isMsg = c => c.classList.contains('k-user') || c.classList.contains('k-assistant');
-        h.key(win, 'n'); await h.sleep(2000);   // the beat animates ~80ms per card
-        const shown = cards.filter(c => c.classList.contains('revealed'));
-        if (!shown.length) return 'n revealed nothing';
-        if (!isMsg(shown[shown.length - 1])) return 'beat did not end on a message';
-        if (shown.slice(0, -1).some(isMsg)) return 'beat ran past a message';
-        if (h.active(doc) !== shown[shown.length - 1]) return 'did not select the landing message';
-        const n = shown.length;
-        h.key(win, 'p'); await h.sleep(200);
-        const after = cards.filter(c => c.classList.contains('revealed')).length;
-        if (after >= n) return 'p did not un-reveal (' + n + ' -> ' + after + ')';
-        return null;
-      },
-    },
-    {
-      name: 'right arrow in narrate reveals one card at a time',
-      query: '?mode=narrate',
-      run: async (win, doc, h) => {
-        const cards = h.cards(doc);
-        h.key(win, 'ArrowRight'); await h.sleep(200);
-        h.key(win, 'ArrowRight'); await h.sleep(200);
-        const shown = cards.filter(c => c.classList.contains('revealed'));
-        if (shown.length !== 2) return 'expected 2 revealed, got ' + shown.length;
-        if (h.active(doc) !== cards[1]) return 'newest revealed card is not selected';
-        h.key(win, 'ArrowLeft'); await h.sleep(200);
-        if (cards.filter(c => c.classList.contains('revealed')).length !== 1) return 'left did not un-reveal one';
-        return null;
-      },
-    },
-    {
-      name: 'narrate entered on a deep link starts from that card',
-      query: '?mode=narrate',
-      run: async (win, doc, h) => {
-        const cards = h.cards(doc);
-        const target = cards[5];
-        win.location.hash = '#' + target.id;
-        await h.sleep(50);
-        h.key(win, 'x'); await h.sleep(20);          // leave narrate
-        h.key(win, 'N', { shiftKey: true }); await h.sleep(50);   // re-enter on that card
-        const shown = cards.filter(c => c.classList.contains('revealed'));
-        if (shown.length !== 6) return 'expected 6 revealed, got ' + shown.length;
-        if (h.active(doc) !== target) return 'did not select the deep-linked card';
-        return null;
-      },
-    },
-    {
-      name: 'advancing a beat closes an opened sidebar',
-      query: '?mode=narrate',
-      run: async (win, doc, h) => {
-        h.key(win, 'ArrowRight'); await h.sleep(200);
-        h.click(h.cards(doc)[0]); await h.sleep(20);
-        if (doc.body.classList.contains('sidebar-collapsed')) return 'click did not open the sidebar';
-        h.key(win, 'n'); await h.sleep(2000);
-        if (!doc.body.classList.contains('sidebar-collapsed')) return 'n left the sidebar open';
-        return null;
-      },
-    },
-    {
-      name: 'leaving narrate shows everything again',
-      query: '?mode=narrate',
-      run: async (win, doc, h) => {
-        h.key(win, 'ArrowRight'); await h.sleep(200);
-        h.key(win, 'Escape'); await h.sleep(20);   // collapsed already -> exits narrate
-        if (!doc.body.classList.contains('mode-explore')) return 'Escape did not exit narrate';
-        const hidden = h.cards(doc).filter(c => c.offsetParent === null);
-        if (hidden.length) return hidden.length + ' cards still hidden in explore';
-        return null;
-      },
-    },
+scenario "n reveals exactly through the next message; p puts it back",
+         query: "?mode=narrate" do |s|
+  s.key("n").wait_stable
+  shown = s.revealed_ids
+  next "n revealed nothing" if shown.empty?
+  next "beat did not end on a message (#{shown.last})" unless s.message?(shown.last)
+  early = shown[0..-2].select { |id| s.message?(id) }
+  next "beat ran past a message: #{early.inspect}" unless early.empty?
+  next "did not select the landing message (active=#{s.active_id.inspect})" unless s.active_id == shown.last
+
+  s.key("p").settle(300)
+  after = s.revealed_ids.size
+  next "p did not un-reveal (#{shown.size} -> #{after})" unless after < shown.size
+  nil
+end
+
+scenario "right arrow in narrate reveals one card at a time", query: "?mode=narrate" do |s|
+  ids = s.card_ids
+  s.key(:Right).settle(300)
+  s.key(:Right).settle(300)
+  next "expected 2 revealed, got #{s.revealed_ids.size}" unless s.revealed_ids.size == 2
+  next "newest revealed card is not selected (active=#{s.active_id.inspect})" unless s.active_id == ids[1]
+  s.key(:Left).settle(300)
+  next "left did not un-reveal one (#{s.revealed_ids.size} revealed)" unless s.revealed_ids.size == 1
+  nil
+end
+
+scenario "narrate entered on a deep link starts from that card" do |s|
+  target = s.card_ids[5]
+  s.set_hash(target)
+  s.key("N").settle(300)
+  next "expected 6 revealed, got #{s.revealed_ids.size}" unless s.revealed_ids.size == 6
+  next "last revealed is #{s.revealed_ids.last}, not #{target}" unless s.revealed_ids.last == target
+  next "did not select the deep-linked card (active=#{s.active_id.inspect})" unless s.active_id == target
+  nil
+end
+
+scenario "advancing a beat closes a sidebar opened by clicking", query: "?mode=narrate" do |s|
+  s.key(:Right).settle(300)
+  s.click_id(s.revealed_ids.first)
+  next "click did not open the sidebar" if s.collapsed?
+  s.key("n").wait_stable
+  next "n left the sidebar open" unless s.collapsed?
+  nil
+end
+
+scenario "leaving narrate shows everything again", query: "?mode=narrate" do |s|
+  s.key(:Right).settle(300)
+  s.key(:Escape)   # already collapsed on entry, so this exits the mode
+  next "Escape did not exit narrate (mode=#{s.mode.inspect})" unless s.mode == "explore"
+  missing = s.card_ids.size - s.shown_ids.size
+  next "#{missing} cards still hidden in explore" unless missing.zero?
+  nil
+end
 ```
 
 - [ ] **Step 2: Run to verify they fail**
 
 ```sh
-rake build && bin/check-modes
+rake build && bundle exec bin/check-modes
 ```
 
-Expected: the six new scenarios FAIL; the previous thirteen pass. Nothing sets
-`.revealed` yet, so "narrate starts on an empty stage" passes for the wrong
-reason (zero revealed cards, but also every card still visible) while the rest
-fail with "n revealed nothing" and friends. That's the expected shape — the
-reveal rule in the next step is what makes the first one meaningful.
-
+Expected: the six new scenarios FAIL; the previous fifteen pass. Nothing sets
+`.revealed` yet and no CSS hides cards, so expect "narrate starts on an empty
+stage" to fail with "109 cards still laid out", and the rest with "n revealed
+nothing" and friends.
 - [ ] **Step 3: Add the reveal rule to `assets/story.css`**
 
 Put this where the deleted focus-mode rule was:
@@ -1068,7 +1147,7 @@ the keydown handler with:
 
 ```js
   if (mode === 'narrate') {
-    switch (e.key) {
+    switch (key) {   // `key` is the case-folded e.key from Task 3
       case 'ArrowRight': return act(() => revealTo(e.shiftKey ? beatForwardTo(revealed) : revealed + 1));
       case 'ArrowLeft':  return act(() => revealTo(e.shiftKey ? beatBackTo(revealed) : revealed - 1));
       case 'n':          return act(() => revealTo(beatForwardTo(revealed)));
@@ -1084,7 +1163,7 @@ the keydown handler with:
 rake build && bin/check-modes && bin/check-anchors && bin/check-edit-api && rake test
 ```
 
-Expected: all nineteen scenarios OK, and both other check scripts green.
+Expected: all twenty-one scenarios OK, and both other check scripts green.
 `bin/check-edit-api` matters here because Task 2 changed how the editor is
 gated — it must still save and revert.
 
@@ -1128,9 +1207,11 @@ Also update the `bin/check-anchors` paragraph to mention `bin/check-modes`
 alongside it, and drop the "Focus mode" mention from the last bullet list.
 
 Write `notes/2026-07-27-session-12-mount-interactive.md` covering what shipped,
-why the sidebar became sticky state, and the harness trick
-(`--allow-file-access-from-files` + iframe, because headless Chrome can dump a
-DOM but can't type).
+why the sidebar became sticky state, and what the ferrum harness taught us —
+including the four traps in the "Verified facts" section of this plan (colon
+ids break `at_css`, far clicks miss without an explicit center-scroll,
+`[:Shift,'n']` is not `"N"`, and the page always loads with a card selected).
+Also note in `CLAUDE.md` that `ferrum` is why there is now a `:test` group.
 
 - [ ] **Step 8: Commit**
 
@@ -1167,10 +1248,18 @@ Checked against the design note:
 - §5 staging, prototype parity, `bin/check-modes` assertions → each task's
   file list and check step.
 
-**One deliberate deviation from the design note:** §3's table says shift-arrow
-scrolls the target into view and is silent about plain arrows. `moveSelection`
-scrolls on both, with `block: 'nearest'` — a selection you can't see is a bug
-either way, and `nearest` does nothing when the card is already on screen.
+**Two deliberate deviations from the design note:**
+
+1. §3's table says shift-arrow scrolls the target into view and is silent about
+   plain arrows. `moveSelection` scrolls on both, with `block: 'nearest'` — a
+   selection you can't see is a bug either way, and `nearest` does nothing when
+   the card is already on screen.
+2. §3 distinguishes `n` from `N`. The handler folds letter case instead, so they
+   are the same key. This costs nothing: the design already made lowercase `n`
+   a forgiving alias for entering narrate, so the two only ever differed inside
+   narrate, where `N` would have meant "enter the mode you are already in". It
+   buys correctness under caps lock and under CDP-synthesized input, which
+   delivers shift+n as `'n'` rather than `'N'`.
 
 **Edge cases from the design that the code covers:** `revealTo` clamps to
 `[0, CARDS.length]`, so `→` at the end and `←` at the start are no-ops;
