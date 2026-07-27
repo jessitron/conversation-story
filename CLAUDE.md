@@ -58,7 +58,10 @@ this change are dead links; nothing aliases them.) Two things follow:
   Jess's machines resolve identically. No Rails. Adding a gem should stay a
   deliberate act — this Gemfile is a portability fix, not an invitation, so
   check that anything new in a `require` is actually stdlib on Ruby 4 before
-  reaching for a gem.
+  reaching for a gem. `notes/2026-07-27-session-12-ruby-4-and-gemfile.md` has
+  the default-vs-bundled-vs-dropped gem taxonomy, why `.gitignore` carries a
+  `!.tool-versions` negation, and how to tell a hand-installed gem from one that
+  shipped with Ruby.
 - **The schema is the contract.** Known event kinds store only _named_ fields —
   no raw source-JSON blob, and the renderer reads the schema, never the original
   log. Only the `unknown` fallback kind keeps `raw`, so
