@@ -35,12 +35,17 @@ function setFragment(frag) {
   try { history.replaceState(null, '', frag); } catch (_) { /* file:// */ }
 }
 
+/* The sidebar's open/collapsed state is Jess's, not selection's. Only an
+   explicit open (clicking a card) or an explicit collapse (clicking the active
+   card, Escape, ×, or advancing a narration beat) moves it. */
+function collapseSidebar() { body.classList.add('sidebar-collapsed'); }
+function openSidebar()     { body.classList.remove('sidebar-collapsed'); }
+
 /* show a card's detail in the sidebar (pure UI — does not touch the URL) */
 function selectCard(card) {
   cards.forEach(c => c.classList.remove('active'));
   card.classList.add('active');
 
-  body.classList.remove('sidebar-collapsed');
   dKind.textContent = card.querySelector('.gutter .kind').textContent;
   dTime.textContent = card.dataset.time + ' UTC';
   sidebar.style.setProperty('--kind', getComputedStyle(card).getPropertyValue('--kind'));
@@ -72,7 +77,6 @@ function updateRelated(activeCard) {
 /* deselect any card but keep the sidebar open and empty */
 function clearSelection() {
   cards.forEach(c => c.classList.remove('active', 'related'));
-  body.classList.remove('sidebar-collapsed');
   dKind.textContent = 'Detail';
   dTime.textContent = '';
   sidebar.style.setProperty('--kind', 'var(--line-strong)');
@@ -99,9 +103,13 @@ document.getElementById('cards').addEventListener('click', e => {
   const card = e.target.closest('.card');
   if (!card) return;
   e.preventDefault();
-  if (card.classList.contains('active')) return;   // already showing; nothing to do
+  if (card.classList.contains('active')) {          // clicking the open card closes it
+    body.classList.toggle('sidebar-collapsed');
+    return;
+  }
   setFragment('#' + card.id);
   selectCard(card);
+  openSidebar();
 });
 
 /* deep links, back/forward, and hand-edited fragments */
@@ -164,7 +172,21 @@ document.getElementById('d-clear').addEventListener('click', () => {
   setFragment(location.pathname + location.search);   // drop the #<ref>
   clearSelection();
 });
-document.getElementById('reopen').addEventListener('click', () => body.classList.remove('sidebar-collapsed'));
+/* ---- keyboard ----
+   Escape peels one layer at a time: an open sidebar first, then the selection.
+   Ignored while typing, so Escape in the summary box still means "revert the
+   box" (see showSummaryEditor). */
+const TYPING = 'input, textarea, select, [contenteditable]';
+
+window.addEventListener('keydown', e => {
+  if (e.target.closest && e.target.closest(TYPING)) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key !== 'Escape') return;
+  e.preventDefault();
+  if (!body.classList.contains('sidebar-collapsed')) { collapseSidebar(); return; }
+  setFragment(location.pathname + location.search);
+  clearSelection();
+});
 
 /* ---- drag to resize ---- */
 const resizer = document.getElementById('resizer');

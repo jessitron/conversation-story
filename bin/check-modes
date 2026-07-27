@@ -1,0 +1,200 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# Drive a built story page with real keystrokes and check what it does
+# (Mount Interactive: modes, keyboard navigation, narrate).
+#
+#   bundle exec bin/check-modes [example-name]
+#
+# Uses ferrum to talk to the installed Chrome over the DevTools Protocol, so
+# these are REAL key and mouse events: focus decides what e.target is, and the
+# page's own preventDefault actually applies. Runs against file:// — no server.
+#
+# THREE TRAPS, each of which has already bitten (see the plan note):
+#   * Card ids contain a colon, which CSS reads as a pseudo-class. `at_css("#" +
+#     id)` THROWS. Reach cards by index, or getElementById inside evaluate.
+#   * A real click on a card far down the page silently misses unless you
+#     scrollIntoView({block:'center'}) first. Story#click does that for you.
+#   * The page always loads with a card already selected (DEFAULT_CARD, the
+#     first assistant message). "Nothing is active" is never the start state.
+
+require "ferrum"
+
+REPO   = File.expand_path("..", __dir__)
+STORY  = ARGV[0] || "episode-8-before"
+PAGE   = File.join(REPO, "out", STORY, "index.html")
+CHROME = ENV.fetch("CHROME", "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
+
+abort "no such page: #{PAGE} (run 'rake build')" unless File.exist?(PAGE)
+abort "Chrome not found at #{CHROME} (set CHROME=...)" unless File.exist?(CHROME)
+
+SCENARIOS = []
+
+# Register a scenario. Each one gets a freshly loaded page, so no scenario can
+# inherit another's state. `query` is appended before the fragment ("?mode=..."),
+# `hash` after it ("#<ref>"). The block gets a Story and returns nil to pass or
+# a string saying what went wrong.
+def scenario(name, query: "", hash: "", &block)
+  SCENARIOS << { name: name, query: query, hash: hash, run: block }
+end
+
+# The vocabulary the scenarios speak. Everything goes through `evaluate` and
+# returns plain Ruby data rather than Ferrum nodes, because node handles go
+# stale across reloads and ids can't be used as selectors here anyway.
+class Story
+  def initialize(browser) = @b = browser
+
+  def load(query, hash)
+    @b.goto("file://#{PAGE}#{query}#{hash}")
+    settle(250)   # let story.js run its initial paint
+    self
+  end
+
+  # ---- reading ----
+  def js(expr) = @b.evaluate(expr)
+  def card_ids     = js("Array.from(document.querySelectorAll('.card')).map(c => c.id)")
+  def revealed_ids = js("Array.from(document.querySelectorAll('.card.revealed')).map(c => c.id)")
+  def shown_ids    = js("Array.from(document.querySelectorAll('.card')).filter(c => c.offsetParent !== null).map(c => c.id)")
+  def active_id    = js("(document.querySelector('.card.active') || {}).id || null")
+  def mode         = js("(document.body.className.match(/\\bmode-(\\w+)\\b/) || [])[1] || null")
+  def collapsed?   = js("document.body.classList.contains('sidebar-collapsed')")
+  def search       = js("location.search")
+  def hash         = js("location.hash")
+  def scroll_y     = js("Math.round(window.scrollY)")
+  def exists?(dom_id) = js("!!document.getElementById(#{dom_id.inspect})")
+  def hidden_attr?(css) = js("(document.querySelector(#{css.inspect}) || {}).hidden === true")
+
+  def message?(id)
+    js("(() => { const c = document.getElementById(#{id.inspect}); " \
+       "return !!c && (c.classList.contains('k-user') || c.classList.contains('k-assistant')); })()")
+  end
+
+  # ---- acting ----
+  def key(*keys)
+    @b.keyboard.type(*keys)
+    settle
+    self
+  end
+
+  # Real mouse click on the nth card. The scroll is not optional — see the
+  # trap list at the top.
+  def click(index)
+    js("document.querySelectorAll('.card')[#{index}].scrollIntoView({block:'center'})")
+    settle(80)
+    @b.css(".card")[index].click
+    settle
+    self
+  end
+
+  def click_id(id) = click(card_ids.index(id) || raise("no card #{id}"))
+
+  # The header's mode buttons. Plain class/attribute selectors, so at_css is
+  # safe here — it's only card ids that carry a colon.
+  def click_mode(name)
+    node = @b.at_css(%(#mode-switch [data-mode="#{name}"])) or raise("no #{name} button")
+    node.click
+    settle
+    self
+  end
+
+  def set_hash(id)
+    js("location.hash = #{("#" + id).inspect}")
+    settle
+    self
+  end
+
+  # A stand-in for the summary editor's textarea (which needs a server). Focus
+  # is real, so keys typed after this genuinely land on the textarea.
+  def focus_new_textarea
+    js("(() => { const t = document.createElement('textarea'); t.id = 'probe-input'; " \
+       "document.body.appendChild(t); t.focus(); })()")
+    settle
+    self
+  end
+
+  # ---- waiting ----
+  def settle(ms = 150)
+    sleep(ms / 1000.0)
+    self
+  end
+
+  # Narrate reveals a beat's cards ~80ms apart, so "the beat is done" is "the
+  # revealed count stopped growing". Beats the alternative of a long fixed sleep.
+  def wait_stable(timeout: 5)
+    deadline = Time.now + timeout
+    last = -1
+    while Time.now < deadline
+      now = revealed_ids.size
+      return self if now == last && now.positive?
+      last = now
+      sleep 0.12
+    end
+    self
+  end
+end
+
+# ---------------------------------------------------------------- scenarios
+
+scenario "clicking an unselected card selects it and opens the sidebar" do |s|
+  target = s.card_ids.find { |id| id != s.active_id }
+  s.click_id(target)
+  next "expected #{target} active, got #{s.active_id.inspect}" unless s.active_id == target
+  next "sidebar is collapsed" if s.collapsed?
+  next "URL fragment is #{s.hash.inspect}" unless s.hash == "##{target}"
+  nil
+end
+
+scenario "clicking the active card collapses the sidebar; clicking again reopens" do |s|
+  target = s.card_ids.find { |id| id != s.active_id }
+  s.click_id(target)
+  s.click_id(target)
+  next "did not collapse" unless s.collapsed?
+  next "lost the selection on collapse (active=#{s.active_id.inspect})" unless s.active_id == target
+  s.click_id(target)
+  next "did not reopen" if s.collapsed?
+  nil
+end
+
+scenario "Escape collapses the sidebar, then clears the selection" do |s|
+  target = s.card_ids.find { |id| id != s.active_id }
+  s.click_id(target)
+  s.key(:Escape)
+  next "first Escape did not collapse" unless s.collapsed?
+  next "first Escape also cleared the selection" unless s.active_id == target
+  s.key(:Escape)
+  next "second Escape did not clear the selection (active=#{s.active_id.inspect})" if s.active_id
+  nil
+end
+
+scenario "the Details reopen tab is gone" do |s|
+  s.exists?("reopen") ? "reopen button still in the DOM" : nil
+end
+
+# ---------------------------------------------------------------- runner
+
+browser = Ferrum::Browser.new(headless: true, window_size: [1400, 900], browser_path: CHROME)
+failures = 0
+
+begin
+  SCENARIOS.each do |sc|
+    story = Story.new(browser).load(sc[:query], sc[:hash])
+    failure =
+      begin
+        sc[:run].call(story)
+      rescue StandardError => e
+        "raised #{e.class}: #{e.message.lines.first.to_s.strip}"
+      end
+
+    if failure
+      failures += 1
+      puts "FAIL  #{sc[:name]} — #{failure}"
+    else
+      puts "OK    #{sc[:name]}"
+    end
+  end
+ensure
+  browser.quit
+end
+
+puts "#{SCENARIOS.size - failures}/#{SCENARIOS.size} scenarios passed"
+exit(failures.zero? ? 0 : 1)

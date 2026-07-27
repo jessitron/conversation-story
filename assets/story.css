@@ -523,18 +523,6 @@ pre.code {
 }
 .empty-detail .mark { font-size: var(--fs-display); opacity: .4; }
 
-/* Floating re-open tab when collapsed */
-.reopen {
-  position: fixed; right: 0; top: 50%; transform: translateY(-50%);
-  display: none; z-index: 25;
-  writing-mode: vertical-rl;
-  background: var(--navy); color: var(--paper);
-  padding: 14px 8px; border: none; border-radius: 3px 0 0 3px;
-  letter-spacing: var(--ls-wider);
-  font-size: var(--fs-small); cursor: pointer;
-}
-body.sidebar-collapsed .reopen { display: block; }
-
 /* ============================================================
    Mount Malleable — the summary editor (local authoring only)
    ============================================================
