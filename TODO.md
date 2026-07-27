@@ -56,12 +56,6 @@ up next" — nothing here is scheduled.
   Rake's mtime rule already skips re-parsing when the story is newer than its
   log, but that's not an explicit "leave this alone" signal — we want one.
 
-## Not on a mountain (infrastructure)
-
-- The deterministic **HTML well-formedness check** (`notes/plan.md` TODO). A
-  mismatched closing tag in one card silently breaks the rest of the page, and
-  this is checkable in `rake test`.
-
 ## Maybe later
 
 - **Hooks.** The logs carry a lot of hook detail we currently leave as
