@@ -11,7 +11,7 @@ meta:
   ended_at: '2026-04-14T02:33:35.650Z'
   timezone: UTC
   event_count: 224
-  final_context: 45195
+  total_tokens: 1212680
   agents:
   - id: main
   - id: agent-ae20659fd0f63295e

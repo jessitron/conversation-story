@@ -69,15 +69,17 @@ class RendererTest < Minitest::Test
                    "#{name}: every estimate needs its caveat (#{estimates} estimates, #{notes} notes)"
     end
 
-    # The header stat comes from meta, so it can't disagree with the last
-    # turn's card the way a separately-computed number could.
-    define_method("test_#{name}_header_shows_the_final_context") do
+    # The header stat comes from meta, so it can't drift from the per-turn
+    # numbers the way a separately-computed one could. It is whole-conversation
+    # token USE, so it runs to millions — hence the M suffix.
+    define_method("test_#{name}_header_shows_total_token_use") do
       doc = YAML.safe_load_file(path)
       html = ConversationStory::Renderer.new(doc).to_html
-      expected = format("%.1fk", doc["meta"]["final_context"] / 1000.0)
+      total = doc["meta"]["total_tokens"]
+      expected = total < 1_000_000 ? format("%.1fk", total / 1000.0) : format("%.2fM", total / 1_000_000.0)
 
-      assert_includes html, %(<span class="k">Context</span><span class="v">#{expected}</span>),
-                      "#{name}: header CONTEXT stat missing or not derived from meta.final_context"
+      assert_includes html, %(<span class="k">Tokens</span><span class="v">#{expected}</span>),
+                      "#{name}: header TOKENS stat missing or not derived from meta.total_tokens"
     end
   end
 end

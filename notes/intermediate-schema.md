@@ -28,7 +28,9 @@ meta:
   ended_at:   "2026-04-14T02:35:...Z"
   timezone: UTC                         # timestamps are UTC 'Z'
   event_count: 224
-  final_context: 45195                  # last turn's context + its output
+  total_tokens: 1212680                 # whole-conversation token USE: every
+                                        #   turn's context + output, each turn
+                                        #   counted once (NOT a context size)
   agents:                               # every conversation represented
     - id: main                          # the primary conversation
     - id: agent-ae20659fd0f63295e       # a subagent (from subagents/)
@@ -179,6 +181,12 @@ derived `context` / `added` / `cumulative_context`. The fallback is not
 hypothetical: 7 of 33 turns in episode-8-before and 11 of 28 in episode-8-after
 are bare `tool_use` with no text block, and without it their tokens — and the
 jump they cause in the running total — would appear on no card at all.
+
+The header's **Tokens** stat is `meta.total_tokens` — every turn's context plus
+its output, each turn counted once. It is token *use*, which is why the stat
+isn't called Context: most of that 1.21M is the same context re-sent each turn
+and mostly served from cache. A conversation's largest context is far smaller
+(45k here); the per-turn `context` field is where you read that.
 
 `message_id` deliberately does **not** go into `link_ids`. That token drives the
 board-wide causal highlight, and lighting a whole turn on every selection would

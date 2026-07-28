@@ -139,8 +139,12 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   `Parser::CHARS_PER_TOKEN`, 3.5), because `usage` exists only on assistant
   records and 0 of 32 inter-turn gaps hold a result by itself. It is not named
   `input` on purpose, and the renderer always prints the `≈` and the caveat.
-  `meta.final_context` (last turn's context + output) is the header CONTEXT
-  stat. Details in `notes/intermediate-schema.md`.
+  `meta.total_tokens` — every turn's context + output, each turn counted once —
+  is the header **Tokens** stat (1.21M for episode-8-before). It's token *use*,
+  not a context size, which is why the stat isn't labelled Context: most of it
+  is the same context re-sent and cache-read each turn, and the biggest context
+  the conversation ever held was 45k. Details in
+  `notes/intermediate-schema.md`.
 - A background task's result delivered mid-conversation as a `<task-notification>`
   XML blob gets its own kind, `task_notification` (not `user_message` — it's
   not something Jess typed); its summary is the extracted `<summary>` field.

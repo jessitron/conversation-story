@@ -98,7 +98,7 @@ module ConversationStory
              subtitle:      h(subtitle),
              events_stat:   h(visible_events.size),
              duration_stat: h(duration),
-             context_stat:  h(context_label(@meta["final_context"])),
+             tokens_stat:   h(token_label(@meta["total_tokens"])),
              model_stat:    h(model_label(@meta["model"])),
              branch_stat:   h(@meta["git_branch"] || "—"),
              cards_html:    cards_html)
@@ -500,12 +500,14 @@ module ConversationStory
       "#{h}h #{m}m"
     end
 
-    # 45195 -> "45.2k". A header stat is for scale; the exact count sits on the
-    # last turn's card.
-    def context_label(tokens)
+    # 1212680 -> "1.21M", 45195 -> "45.2k". A header stat is for scale; the
+    # exact running count is in each turn's Tokens section.
+    def token_label(tokens)
       return "—" unless tokens
+      return tokens.to_s if tokens < 1000
+      return format("%.1fk", tokens / 1000.0) if tokens < 1_000_000
 
-      tokens < 1000 ? tokens.to_s : format("%.1fk", tokens / 1000.0)
+      format("%.2fM", tokens / 1_000_000.0)
     end
 
     # "claude-opus-4-6" -> "Opus 4.6"; unknown shapes pass through unchanged.

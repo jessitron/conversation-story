@@ -228,7 +228,7 @@ class ParserTest < Minitest::Test
 
       seen = {}
       expected_sum = 0
-      expected_final = nil
+      expected_total = 0
       File.foreach(log) do |line|
         next if line.strip.empty?
 
@@ -244,7 +244,7 @@ class ParserTest < Minitest::Test
                   usage["cache_creation_input_tokens"].to_i +
                   usage["cache_read_input_tokens"].to_i
         expected_sum += context
-        expected_final = context + usage["output_tokens"].to_i
+        expected_total += context + usage["output_tokens"].to_i
       end
 
       leaders = doc["events"].select { |e| e["turn_leader"] && e["tokens"] }
@@ -252,8 +252,9 @@ class ParserTest < Minitest::Test
 
       assert_equal expected_sum, running,
                    "cumulative_context should sum each TURN's context exactly once"
-      assert_equal expected_final, doc["meta"]["final_context"],
-                   "meta.final_context should be the last turn's context plus its output"
+      assert_equal expected_total, doc["meta"]["total_tokens"],
+                   "meta.total_tokens should sum every turn's context plus its output, " \
+                   "counting each turn once"
     end
 
     # `estimated_input` is our arithmetic, not the API's. The name has to stay

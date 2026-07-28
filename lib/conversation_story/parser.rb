@@ -643,19 +643,25 @@ module ConversationStory
         "ended_at"    => events.map { |e| e["at"] }.compact.last,
         "timezone"    => "UTC",
         "event_count" => events.size,
-        "final_context" => final_context(events),
+        "total_tokens" => total_tokens(events),
         "agents"      => build_agents,
       }
     end
 
-    # Where the context ended up: the last turn's whole input plus what that
-    # turn generated. One number for the whole story — the page header's
-    # CONTEXT stat. nil when the log has no assistant turn with usage.
-    def final_context(events)
-      last = events.reverse.find { |e| e["turn_leader"] && e["tokens"] }
-      return nil unless last
+    # What the whole conversation cost: every turn's full input context plus
+    # everything that turn generated. One number for the story — the page
+    # header's TOKENS stat. nil when no assistant turn carries usage.
+    #
+    # Counted once per TURN, which is the only reason this sum means anything:
+    # the several records of one response each repeat its usage, so summing
+    # records would multiply the total (see mark_turns!). Note this is token
+    # USE, not a context size — most of it is the same context re-sent and
+    # mostly cache-read each turn, which is why the header calls it Tokens.
+    def total_tokens(events)
+      leaders = events.select { |e| e["turn_leader"] && e["tokens"] }
+      return nil if leaders.empty?
 
-      last["tokens"]["context"].to_i + last["tokens"]["output"].to_i
+      leaders.sum { |e| e["tokens"]["context"].to_i + e["tokens"]["output"].to_i }
     end
 
     def first_present(recs, key)
