@@ -25,8 +25,11 @@ module ConversationStory
       "system"                => "system",
       "attachment"            => "attachment",
       "file-history-snapshot" => "file_snapshot",
+      "file-history-delta"    => "file_snapshot",
       "permission-mode"       => "permission_mode",
+      "mode"                  => "permission_mode",
       "queue-operation"       => "queue_operation",
+      "ai-title"              => "ai_title",
     }.freeze
 
     # Harness bookkeeping — records that are not part of the conversation "from
@@ -36,7 +39,7 @@ module ConversationStory
     # rationale (which types, and why the ones we KEEP are worth keeping).
     #
     # Whole kinds that are always hidden:
-    HIDDEN_KINDS = %w[system file_snapshot permission_mode].freeze
+    HIDDEN_KINDS = %w[system file_snapshot permission_mode ai_title].freeze
     # Attachment subtypes that are pure context-loading / hook plumbing. The two
     # conversation-relevant attachments stay visible: `queued_command` (delivered
     # queued input AND background <task-notification>s — "the agent being nudged")
@@ -208,7 +211,10 @@ module ConversationStory
       when "system"            then system_summary(rec)
       when "attachment"        then attachment_summary(rec)
       when "file_snapshot"     then "File history snapshot"
-      when "permission_mode"   then "Permission mode: #{rec["permissionMode"]}"
+      # two record types land here: `permission-mode` names the field
+      # permissionMode, the per-prompt `mode` record just calls it mode.
+      when "permission_mode"   then "Mode: #{rec["permissionMode"] || rec["mode"]}"
+      when "ai_title"          then "Title: #{rec["aiTitle"]}"
       when "queue_operation"   then queue_summary(rec)
       else                          "#{rec["type"]} record"
       end
@@ -328,6 +334,10 @@ module ConversationStory
       when "attachment"
         text = attachment_detail_text(rec)
         event["detail"] = { "text" => text } unless text.strip.empty?
+      when "ai_title"
+        # hidden, but the generated title is the record's whole content — keeping
+        # it named means the kind loses nothing by not being `unknown`.
+        event["detail"] = { "text" => rec["aiTitle"].to_s }
       when "unknown"
         event["detail"] = { "raw" => rec }
       end
