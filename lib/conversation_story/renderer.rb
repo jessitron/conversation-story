@@ -317,15 +317,10 @@ module ConversationStory
     # A prompt's mode reaches the card face ONLY when it moved — "Jess switched
     # to plan mode" is a story beat; "still in normal mode, for the 44th time" is
     # not. The steady-state value is in the detail pane's Mode section.
-    # Deduped by VALUE: switching into plan mode moves `mode` and
-    # `permission_mode` together, and two badges both reading PLAN says nothing
-    # the one says. When they genuinely differ (plan / acceptEdits) the two words
-    # come from different vocabularies, so both are worth showing.
     def mode_badges(event)
-      %w[mode permission_mode]
-        .filter_map { |field| event[field] if event["#{field}_changed"] }
-        .uniq
-        .map { |value| %(<span class="badge mode">#{h value}</span>) }
+      return [] unless event["mode_changed"]
+
+      [%(<span class="badge mode">#{h event["mode"]}</span>)]
     end
 
     def tool_call_badges(event)
@@ -532,18 +527,13 @@ module ConversationStory
       sections
     end
 
-    # The mode a prompt was sent in — state the harness stamps at submission, so
-    # it's a field on the message, not an event of its own. Quiet by design: the
-    # value shows here for every prompt, and only a CHANGE reaches the card face
-    # (see mode_badges). The episode-8 logs predate the `mode` record and carry
-    # permissions only, so each row appears only if that log recorded it.
+    # The mode a prompt was sent in — a field the prompt record carries, not an
+    # event of its own. Quiet by design: the value shows here for every prompt,
+    # and only a CHANGE reaches the card face (see mode_badges).
     def mode_section(event)
-      rows = []
-      rows << ["Mode", event["mode"]] if event["mode"]
-      rows << ["Permissions", event["permission_mode"]] if event["permission_mode"]
-      return "" if rows.empty?
+      return "" unless event["mode"]
 
-      section("Mode", kv_dl(rows))
+      section("Mode", kv_dl([["Mode", event["mode"]]]))
     end
 
     # Conversational kinds (user/assistant messages, reasoning) render their text

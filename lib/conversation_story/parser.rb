@@ -488,57 +488,33 @@ module ConversationStory
 
     # ---- the mode a prompt was sent in ---------------------------------------
     #
-    # Mode is not something that happens, it's state stamped at submission. The
-    # harness writes a {last-prompt, mode, permission-mode} trio — no timestamps,
-    # pure bookkeeping — right AFTER each prompt, and the `last-prompt` record
-    # holds that prompt's own text. So the trio describes the prompt it FOLLOWS,
-    # and each user_message carries its mode as a field rather than earning a
-    # card of its own (44 stamps in one example, all saying `normal`).
+    # The prompt record CARRIES its mode: a `user` record that is a real prompt
+    # has `permissionMode` on it ("auto", "plan", "acceptEdits", …) next to its
+    # `promptId`. That is the only trustworthy source, and it needs no scanning —
+    # one field, read off the record the event was built from.
     #
-    # The direction matters exactly when the mode changes: the stamp *before* a
-    # prompt still holds the previous submission's mode, so reading backwards
-    # would report a switch one prompt too late. Backwards is only the fallback,
-    # for a prompt with no stamp after it — the session's last prompt, or a log
-    # snapshotted mid-session.
-    MODE_STAMP_TYPES = { "mode" => "mode", "permission-mode" => "permission_mode" }.freeze
-
+    # Do NOT read the standalone `mode` / `permission-mode` bookkeeping records
+    # for this. They hold the CURRENT UI state at the moment they happen to be
+    # written, which is not when the prompt was sent — they land long after a
+    # submission, so switching back before the turn ends overwrites the value.
+    # Measured in mode-switches: one prompt there was genuinely sent in plan
+    # mode, and all 22 `mode` records in that log still say `normal` — including
+    # the one written after it, whose companion `last-prompt` record holds that
+    # very prompt's text. `last-prompt` is the up-arrow recall buffer, not a
+    # binding to the prompt. The trio stays hidden and nothing derives from it.
     def stamp_modes!(records, events)
-      previous = {}
-      events.each_with_index do |event, i|
+      previous = nil
+      events.zip(records).each do |event, (_lineno, rec)|
         next unless event["kind"] == "user_message"
 
-        stamps = mode_stamps_for(records, events, i)
-        MODE_STAMP_TYPES.each_value do |field|
-          value = stamps[field] || previous[field]
-          next unless value
+        mode = rec["permissionMode"]
+        next unless mode
 
-          event[field] = value
-          # the opening state is not a switch: only flag a value that MOVED.
-          event["#{field}_changed"] = true if previous[field] && previous[field] != value
-          previous[field] = value
-        end
+        event["mode"] = mode
+        # the opening state is not a switch: only flag a value that MOVED.
+        event["mode_changed"] = true if previous && previous != mode
+        previous = mode
       end
-    end
-
-    # The stamp values belonging to the prompt at `index`: scan forward to the
-    # next user_message (that prompt's stamps are its own), then backward.
-    def mode_stamps_for(records, events, index)
-      found = {}
-      scan = lambda do |range|
-        range.each do |j|
-          break if j != index && events[j]["kind"] == "user_message"
-
-          field = MODE_STAMP_TYPES[records[j][1]["type"]]
-          next unless field
-
-          value = records[j][1]["mode"] || records[j][1]["permissionMode"]
-          found[field] ||= value if value
-        end
-      end
-
-      scan.call(index...events.size)
-      scan.call(index.downto(0))
-      found
     end
 
     # ---- assistant turns -----------------------------------------------------

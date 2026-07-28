@@ -75,7 +75,7 @@ events:
     text: |-
       I’ve used this app and enjoyed the live replay. The events go in a list and stay in the list and I can scroll the list but there's a little timeline across the top that is live.
       Is there a way to rewind the timeline?
-  permission_mode: acceptEdits
+  mode: acceptEdits
 - id: e534103e-d5be-45a2-a83f-2e11f03c1b6e
   ref: episode-8-after:5
   agent: main
@@ -3210,7 +3210,7 @@ events:
     text: |-
       first, let's verify that we can test it. Can you make a small change, like add 'jess was here' to the header?
       Then run it on a different port for me, so I can compare with my regular install
-  permission_mode: acceptEdits
+  mode: acceptEdits
 - id: 4023e6b9-d839-41b9-8130-73077b09cdfd
   ref: episode-8-after:21
   agent: main
@@ -5401,7 +5401,7 @@ events:
     text: ok. that was kind of a lot of steps. Is there something we could do better
       in CLAUDE.md to help you get oriented and know whether you need to do installations
       before runnign?
-  permission_mode: acceptEdits
+  mode: acceptEdits
 - id: 216289f5-5bec-4935-9208-14c665ef75d0
   ref: episode-8-after:103
   agent: main
@@ -5530,7 +5530,7 @@ events:
     line: 109
   detail:
     text: that's a great idea! make it self-bootstrapping
-  permission_mode: acceptEdits
+  mode: acceptEdits
 - id: 2ced6fe0-b9c5-48cc-bb1c-16b169ca4afb
   ref: episode-8-after:110
   agent: main

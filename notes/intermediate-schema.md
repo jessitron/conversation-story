@@ -307,43 +307,43 @@ prose-tuned 4 — 3.5 splits the difference.
 
 ## Mode is a field on the prompt, not an event
 
-The harness records the mode as **state stamped at submission**, not as a switch
-that happens. After each prompt it writes a timestamp-less trio:
+**The prompt record carries its own mode.** A `user` record that is a real
+prompt has `permissionMode` on it, next to its `promptId`:
 
-```
-  7  16:28:29  user             Can you find conversation f9f81f1e-…
- 12            last-prompt      ← lastPrompt = the text of the prompt above
- 13            mode             normal
- 14            permission-mode  auto
+```json
+{"type":"user","promptId":"…","permissionMode":"plan",
+ "message":{"role":"user","content":"this is a prompt in plan mode"}}
 ```
 
-`last-prompt` holding *that* prompt's own text is what identifies the trio as
-belonging to the prompt it **follows**. So a `user_message` carries:
+So a `user_message` carries:
 
 ```yaml
-mode: plan                     # normal | plan  (the `mode` record)
-permission_mode: auto          # auto | acceptEdits | …  (`permission-mode`)
-mode_changed: true             # only when it MOVED from the previous prompt
-permission_mode_changed: true
+mode: plan            # auto | plan | acceptEdits | …  (from permissionMode)
+mode_changed: true    # only when it MOVED from the previous prompt
 ```
 
-**The direction matters exactly when the mode changes.** The stamp *before* a
-prompt still holds the previous submission's mode, so reading backwards credits
-a switch to the following prompt — one too late. Backwards is only the fallback,
-for a prompt with no stamp after it (the session's last prompt, or a log
-snapshotted mid-session).
+Read it off the record and nothing else. `mode_changed` is what lets the renderer
+stay quiet: the value shows in a **Mode** section for every prompt, and only a
+change badges the card face. The opening state is not a switch, so the first
+prompt is never flagged. A record with no `permissionMode` (every `tool_result`,
+and some prompts in older logs) simply gets no mode — no guessing from
+neighbours.
 
-The `*_changed` flags exist because the stamps are repeated, not eventful:
-`inlining-subagents` has 44 `mode` records and every one says `normal`. The
-opening state is not a switch, so the first prompt is never flagged. The
-renderer shows the values in a **Mode** section for every prompt and puts a
-badge on the card face only for a change — deduped by value, since switching
-into plan mode moves both dimensions at once.
+### The trap: the `mode` / `permission-mode` records lie about this
 
-Not every log has both: the episode-8 pair predates the `mode` record and
-carries `permission_mode` only. **No example log contains an actual switch**, so
-the direction and the badge are covered by hand-built logs in `parser_test.rb`
-rather than a golden fixture.
+The harness also writes standalone `mode` and `permission-mode` records, in a
+timestamp-less trio with `last-prompt`. **They are not a record of the mode a
+prompt was sent in, and nothing derives from them.** They hold whatever the UI
+state was *when they happened to be written*, which is well after a submission —
+so a mode switched back before the turn ends never appears in them at all.
+
+Measured, in `mode-switches`: `mode-switches:374` was genuinely sent in plan
+mode, and **all 22 `mode` records in that log say `normal`** — including the one
+written 18 lines later whose companion `last-prompt` record holds that very
+prompt's text. `last-prompt` is the up-arrow recall buffer, not a binding to the
+prompt; a trio *following* a prompt is not a trio *about* it. `parser_test.rb`
+pins this with a test that fails if the field is ever re-derived from those
+records.
 
 ## Event `kind`s (initial set + fallback)
 

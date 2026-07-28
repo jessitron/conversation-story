@@ -375,74 +375,71 @@ class ParserTest < Minitest::Test
   end
 
   # ---- the mode a prompt was sent in ----------------------------------------
-  #
-  # Every real example log was recorded in one mode start to finish (44 stamps
-  # saying `normal`, and not one switch), so the case the feature EXISTS for is
-  # unreachable from examples/. These two tests build the log by hand instead.
 
-  # A prompt's mode comes from the stamp written AFTER it — the harness writes
-  # {last-prompt, mode, permission-mode} at submission, and `last-prompt` holds
-  # that prompt's own text. Reading the stamp before the prompt would credit the
-  # switch to the following prompt, one too late.
-  def test_a_mode_switch_lands_on_the_prompt_it_applies_to
-    doc = parse_records([
-                          { "type" => "mode", "mode" => "normal" },
-                          { "type" => "permission-mode", "permissionMode" => "auto" },
-                          user_record("first, in normal mode"),
-                          { "type" => "last-prompt", "lastPrompt" => "first, in normal mode" },
-                          { "type" => "mode", "mode" => "normal" },
-                          user_record("second — sent after shift-tabbing to plan"),
-                          { "type" => "last-prompt", "lastPrompt" => "second" },
-                          { "type" => "mode", "mode" => "plan" },
-                          user_record("third, still in plan"),
-                          { "type" => "mode", "mode" => "plan" },
-                        ])
-    prompts = doc["events"].select { |e| e["kind"] == "user_message" }
-    assert_equal %w[normal plan plan], prompts.map { |e| e["mode"] }
-    # only the one that MOVED is flagged — the opening state is not a switch,
-    # and neither is staying put.
-    assert_equal [nil, true, nil], prompts.map { |e| e["mode_changed"] }
-    # permissions never moved, so they ride along on every prompt unflagged
-    assert_equal %w[auto auto auto], prompts.map { |e| e["permission_mode"] }
-    assert_nil prompts[1]["permission_mode_changed"]
+  # mode-switches:374 was sent in plan mode, and the prompt record says so.
+  # Every real switch in examples/ is this one, so it gets a named test.
+  def test_a_real_plan_mode_prompt_is_read_off_the_prompt_record
+    log = File.expand_path("../examples/mode-switches.jsonl", __dir__)
+    doc = ConversationStory::Parser.new(log).to_document
+    prompts = doc["events"].select { |e| e["kind"] == "user_message" && e["mode"] }
+
+    plan = prompts.select { |e| e["mode"] == "plan" }
+    refute_empty plan, "expected a prompt sent in plan mode"
+    plan.each { |e| assert e["mode_changed"], "#{e["ref"]}: entering plan mode is a switch" }
+    # every prompt before it was `auto`, and none of those is flagged — the
+    # opening state is not a switch, and neither is staying put.
+    before = prompts.take_while { |e| e["mode"] != "plan" }
+    assert_equal ["auto"], before.map { |e| e["mode"] }.uniq
+    assert_empty before.select { |e| e["mode_changed"] }
+  end
+
+  # THE TRAP. The standalone `mode` records hold the CURRENT UI state whenever
+  # they get written, which is long after the prompt they appear to follow — so a
+  # mode switched back before the turn ends is gone from them. In
+  # mode-switches, one prompt was genuinely sent in plan mode and every single
+  # `mode` record still says `normal`. Deriving the field from those records
+  # instead of from `permissionMode` on the prompt would silently lose the only
+  # real switch we have.
+  def test_the_mode_bookkeeping_records_disagree_with_the_prompt_and_are_not_used
+    log = File.expand_path("../examples/mode-switches.jsonl", __dir__)
+    stamps = File.readlines(log).filter_map do |line|
+      rec = JSON.parse(line)
+      rec["mode"] if rec["type"] == "mode"
+    end
+
+    refute_empty stamps
+    assert_equal ["normal"], stamps.uniq,
+                 "if this log ever grows a `plan` stamp, re-check the comment in stamp_modes!"
+
+    doc = ConversationStory::Parser.new(log).to_document
+    assert_includes doc["events"].map { |e| e["mode"] }, "plan",
+                    "the prompt record knows what the bookkeeping records forgot"
   end
 
   # Only a change reaches the card face; the value itself lives in the pane.
   def test_only_a_changed_mode_badges_the_card
     doc = parse_records([
-                          { "type" => "mode", "mode" => "normal" },
-                          user_record("no badge on this one"),
-                          { "type" => "mode", "mode" => "normal" },
-                          user_record("this one switched"),
-                          { "type" => "mode", "mode" => "plan" },
+                          user_record("no badge on this one", "auto"),
+                          user_record("still auto, still no badge", "auto"),
+                          user_record("this one switched", "plan"),
                         ])
     html = ConversationStory::Renderer.new(doc).to_html
 
     assert_equal 1, html.scan(/badge mode/).size, "exactly one prompt changed mode"
     assert_includes html, %(<span class="badge mode">plan</span>)
-    # ...while both prompts report their mode in the detail pane
-    assert_equal 2, html.scan(%r{<dt>Mode</dt>}).size
+    # ...while all three report their mode in the detail pane
+    assert_equal 3, html.scan(%r{<dt>Mode</dt>}).size
   end
 
-  # Switching into plan mode moves both dimensions at once, and two badges
-  # reading PLAN say nothing the one says.
-  def test_a_switch_that_moves_both_dimensions_badges_once
-    doc = parse_records([
-                          { "type" => "mode", "mode" => "normal" },
-                          { "type" => "permission-mode", "permissionMode" => "auto" },
-                          user_record("normal to start"),
-                          { "type" => "mode", "mode" => "normal" },
-                          { "type" => "permission-mode", "permissionMode" => "auto" },
-                          user_record("into plan, both dimensions"),
-                          { "type" => "mode", "mode" => "plan" },
-                          { "type" => "permission-mode", "permissionMode" => "plan" },
-                        ])
-    prompt = doc["events"].select { |e| e["kind"] == "user_message" }.last
-    assert prompt["mode_changed"]
-    assert prompt["permission_mode_changed"]
+  # A prompt record with no permissionMode (older logs, and every tool_result)
+  # simply has no mode — no guessing from neighbours.
+  def test_a_prompt_without_a_recorded_mode_gets_no_field
+    doc = parse_records([user_record("in plan", "plan"), user_record("no mode recorded", nil)])
+    prompts = doc["events"].select { |e| e["kind"] == "user_message" }
 
-    html = ConversationStory::Renderer.new(doc).to_html
-    assert_equal 1, html.scan(/badge mode/).size, "one badge, not two saying `plan`"
+    assert_equal "plan", prompts.first["mode"]
+    assert_nil prompts.last["mode"]
+    refute_includes ConversationStory::Renderer.new(doc).to_html, "<dt>Mode</dt>\n"
   end
 
   # Writes records to a temp log and parses it, so a hand-built conversation goes
@@ -455,13 +452,16 @@ class ParserTest < Minitest::Test
     end
   end
 
-  def user_record(text)
+  # A real prompt record carries `permissionMode` next to its `promptId`.
+  def user_record(text, mode = "auto")
     @seq = (@seq || 0) + 1
-    {
+    rec = {
       "type" => "user", "uuid" => "u#{@seq}", "sessionId" => "test-session",
       "timestamp" => "2026-07-28T1#{@seq}:00:00.000Z", "gitBranch" => "main",
-      "cwd" => "/tmp", "version" => "2.1.220",
+      "cwd" => "/tmp", "version" => "2.1.220", "promptId" => "p#{@seq}",
       "message" => { "role" => "user", "content" => text },
     }
+    rec["permissionMode"] = mode if mode
+    rec
   end
 end
