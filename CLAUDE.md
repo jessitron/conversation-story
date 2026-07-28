@@ -181,6 +181,19 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   `notes/2026-07-28-session-16-examples-and-prompt-mode.md` has how we found out
   the hard way (plus two gotchas: self-referential fixtures inflate string greps,
   and `bin/screenshot` shoots blank for a card deep in a long page).
+- Inside a **subagent's own log**, a `SendMessage` delivery from the
+  orchestrating agent arrives as a plain `role: user` record too — same shape
+  as a real prompt, but it isn't Jess. The harness prefixes it with a literal
+  `"The coordinator sent a message while you were working:"`, which is the
+  only signal distinguishing it; `Parser::COORDINATOR_MESSAGE_PREFIX` matches
+  it into its own kind, `coordinator_message`. Styled like the conversation
+  kinds (paper background, summary-size text) but in its own gray and
+  right-aligned like `k-user` — arriving from outside the subagent's own
+  thread — and always attributed to "Claude" via `who_for`'s early return
+  (never the subagent's own name). `mtg-tabletop-plan` is the example that has
+  these; `notes/2026-07-28-session-17-coordinator-message.md` has the rest,
+  including the background/async-subagent (`status: async_launched`) and
+  `SendMessage` mechanics that make coordinator messages possible.
 - **`ConversationStory::Markdown`** (`lib/conversation_story/markdown.rb`) is a
   small, safe markdown-subset renderer used for prose detail text
   (user/assistant messages, reasoning). Escapes raw text before any markdown
