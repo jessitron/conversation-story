@@ -55,6 +55,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 3
+  mode: auto
   hidden: true
 - id: f49c2748-5dce-4982-bb53-cd50f9b65b12
   ref: mode-switches:4
@@ -173,10 +174,10 @@ events:
   source:
     file: mode-switches.jsonl
     line: 7
+  mode: auto
   detail:
     text: Can you find conversation f9f81f1e-8c86-4821-ad48-4aa4cd1f211d from just
       now in this project, and bring it into the examples?
-  mode: auto
 - id: 18d18f03-d421-4471-ad5f-09436291f267
   ref: mode-switches:8
   agent: main
@@ -299,6 +300,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 14
+  mode: auto
   hidden: true
 - id: line-15
   ref: mode-switches:15
@@ -1006,6 +1008,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 32
+  mode: auto
   hidden: true
 - id: line-33
   ref: mode-switches:33
@@ -1842,6 +1845,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 57
+  mode: auto
   hidden: true
 - id: bca18934-d684-482c-8493-f51955a17525
   ref: mode-switches:58
@@ -2472,6 +2476,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 71
+  mode: auto
   hidden: true
 - id: 4b2ee715-7251-4fa6-a000-77b28ed3d2e2
   ref: mode-switches:72
@@ -3203,6 +3208,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 90
+  mode: auto
   hidden: true
 - id: 60f678e5-2096-448e-a898-542cfb0e49e9
   ref: mode-switches:91
@@ -3758,6 +3764,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 108
+  mode: auto
   hidden: true
 - id: b1e7c0e7-a3db-47f7-ac46-4dfdd93cd0b2
   ref: mode-switches:109
@@ -4523,6 +4530,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 127
+  mode: auto
   hidden: true
 - id: e5c618ac-e753-415c-8a2b-c1c280a47971
   ref: mode-switches:128
@@ -4843,10 +4851,10 @@ events:
   source:
     file: mode-switches.jsonl
     line: 136
+  mode: auto
   detail:
     text: ok, hold on, another tool was fighting you for the updates. I paused you,
       now it's done, continue with your testing
-  mode: auto
 - id: 01d3850d-d913-411a-a6b4-a0b2664781b6
   ref: mode-switches:137
   agent: main
@@ -5166,6 +5174,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 148
+  mode: auto
   hidden: true
 - id: ae77fdce-c1df-4d81-bf4f-fc290f4e2eca
   ref: mode-switches:149
@@ -5793,10 +5802,10 @@ events:
   source:
     file: mode-switches.jsonl
     line: 168
+  mode: auto
   detail:
     text: I would like mode switches to show up in the conversation log. that's a
       user action, right? It should be right-aligned
-  mode: auto
 - id: line-169
   ref: mode-switches:169
   agent: main
@@ -5853,6 +5862,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 172
+  mode: auto
   hidden: true
 - id: 415dc51e-514d-4cfd-99b5-f9cad15675ac
   ref: mode-switches:173
@@ -6472,6 +6482,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 192
+  mode: auto
   hidden: true
 - id: bbb204b2-50c6-48f4-a8c2-5cec60157d77
   ref: mode-switches:193
@@ -6528,10 +6539,10 @@ events:
   source:
     file: mode-switches.jsonl
     line: 195
+  mode: auto
   detail:
     text: then I need to make an example with a script. Can you grab the log of this
       conversation?
-  mode: auto
 - id: line-196
   ref: mode-switches:196
   agent: main
@@ -7144,6 +7155,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 212
+  mode: auto
   hidden: true
 - id: e6382571-f204-415e-b072-35eb5202c116
   ref: mode-switches:213
@@ -7611,10 +7623,10 @@ events:
   source:
     file: mode-switches.jsonl
     line: 227
+  mode: auto
   detail:
     text: oh, so it's just a field on the user prompt? Then shall we display it as
       a field?
-  mode: auto
 - id: line-228
   ref: mode-switches:228
   agent: main
@@ -7959,6 +7971,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 239
+  mode: auto
   hidden: true
 - id: 0db57c92-8821-4413-afcc-e0fc2ec0f399
   ref: mode-switches:240
@@ -8592,6 +8605,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 257
+  mode: auto
   hidden: true
 - id: 8c07bf83-fd71-4d1d-956d-951c550f758d
   ref: mode-switches:258
@@ -9338,6 +9352,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 271
+  mode: auto
   hidden: true
 - id: 1cb6f8b5-6ad1-465b-b90d-374de51409c4
   ref: mode-switches:272
@@ -10160,6 +10175,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 293
+  mode: auto
   hidden: true
 - id: d1b079cc-f3aa-4581-838d-c2b84b48e39a
   ref: mode-switches:294
@@ -10695,6 +10711,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 305
+  mode: auto
   hidden: true
 - id: bc43ba12-a2e4-4955-aeda-52154fad07a9
   ref: mode-switches:306
@@ -11301,6 +11318,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 324
+  mode: auto
   hidden: true
 - id: 8afb8c28-acce-41ab-bef6-95860b1c77c5
   ref: mode-switches:325
@@ -11818,6 +11836,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 339
+  mode: auto
   hidden: true
 - id: 58c7b93b-3298-47ec-9429-80e5a36f97da
   ref: mode-switches:340
@@ -11957,6 +11976,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 346
+  mode: auto
   hidden: true
 - id: 5821d2ca-dd5b-43e4-8e84-cd1a8dfd6f10
   ref: mode-switches:347
@@ -12711,6 +12731,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 367
+  mode: auto
   hidden: true
 - id: 7e73c3f1-ec5d-4c16-8152-d4922dc9553e
   ref: mode-switches:368
@@ -12959,10 +12980,9 @@ events:
   source:
     file: mode-switches.jsonl
     line: 374
+  mode: plan
   detail:
     text: this is a prompt in plan mode
-  mode: plan
-  mode_changed: true
 - id: abb2c9e8-de21-4fac-997a-bbed57cd441f
   ref: mode-switches:375
   agent: main
@@ -13444,6 +13464,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 395
+  mode: auto
   hidden: true
 - id: e0a9e2cd-c637-41e4-88d7-89929005f107
   ref: mode-switches:396
@@ -14073,6 +14094,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 415
+  mode: auto
   hidden: true
 - id: e07c8df3-72ba-4d93-a46c-9acba7edfcbd
   ref: mode-switches:416
@@ -14857,6 +14879,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 430
+  mode: auto
   hidden: true
 - id: ed337f58-ec65-40ad-9dd2-549171cbd064
   ref: mode-switches:431
@@ -15675,4 +15698,5 @@ events:
   source:
     file: mode-switches.jsonl
     line: 443
+  mode: auto
   hidden: true

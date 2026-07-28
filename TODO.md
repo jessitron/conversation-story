@@ -7,6 +7,7 @@ which mountain each item climbs.
 
 - **model name** put the model name in every LLM-call-representing card.
 - **notice title generation** The ai_title events are kinda neat, and it would be cool if they showed up. And as we scrolled past them, the title at the top changed!
+- **mode changes in the stream** Each prompt now carries the mode it was sent in (a `Mode` row in its detail pane). It may be possible to notice permission mode changes and mark it in the conversation stream.
 
 ### Subagents
 

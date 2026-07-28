@@ -21,6 +21,17 @@ module ConversationStory
     # top-level record `type` -> schema kind, for types with a fixed kind.
     # `user` and `assistant` are refined by content shape (see user_kind /
     # assistant_kind). Any type not listed here falls through to `unknown`.
+    #
+    # THE `mode` / `permission-mode` RECORDS LIE about the mode a prompt was sent
+    # in. Both are hidden bookkeeping, written in a timestamp-less trio with
+    # `last-prompt`, and they hold whatever the UI state was WHENEVER THE TRIO
+    # GOT WRITTEN — which is long after the submission. Switch back before the
+    # turn ends and the switch is simply gone. Measured in mode-switches:
+    # `:374` was genuinely sent in plan mode, the trio 18 lines later pairs that
+    # prompt's own text (in `last-prompt`, the up-arrow recall buffer — not a
+    # binding) with `mode: normal`, and all 22 `mode` records in the log say
+    # `normal`. A prompt's mode comes from `permissionMode` ON THE PROMPT RECORD;
+    # nothing derives from these. A test in parser_test.rb fails if that changes.
     TYPE_TO_KIND = {
       "system"                => "system",
       "attachment"            => "attachment",
@@ -110,7 +121,6 @@ module ConversationStory
       events  = records.map { |lineno, rec| build_event(lineno, rec) }
       link_related_events!(events)
       mark_turns!(events)
-      stamp_modes!(records, events)
       document = { "meta" => build_meta(records, events), "events" => events }
       attach_subagents!(events)
       document
@@ -148,6 +158,11 @@ module ConversationStory
         "source"  => { "file" => @log_file, "line" => lineno },
       }
       event["operation"] = rec["operation"] if kind == "queue_operation"
+      # The mode a prompt was sent in is a FIELD THE PROMPT RECORD CARRIES:
+      # `permissionMode` ("auto" / "plan" / "acceptEdits" / …), next to its
+      # `promptId`. Read it here and nowhere else — never from the standalone
+      # `mode` records, which lie about it (see TYPE_TO_KIND's `mode` entry).
+      event["mode"] = rec["permissionMode"] if rec["permissionMode"]
       add_detail(event, kind, rec)
       add_assistant_fields(event, rec) if rec["type"] == "assistant"
       event["hidden"] = true if hidden?(kind, rec)
@@ -484,37 +499,6 @@ module ConversationStory
         "ephemeral_5m"   => usage.dig("cache_creation", "ephemeral_5m_input_tokens"),
         "service_tier"   => usage["service_tier"],
       }
-    end
-
-    # ---- the mode a prompt was sent in ---------------------------------------
-    #
-    # The prompt record CARRIES its mode: a `user` record that is a real prompt
-    # has `permissionMode` on it ("auto", "plan", "acceptEdits", …) next to its
-    # `promptId`. That is the only trustworthy source, and it needs no scanning —
-    # one field, read off the record the event was built from.
-    #
-    # Do NOT read the standalone `mode` / `permission-mode` bookkeeping records
-    # for this. They hold the CURRENT UI state at the moment they happen to be
-    # written, which is not when the prompt was sent — they land long after a
-    # submission, so switching back before the turn ends overwrites the value.
-    # Measured in mode-switches: one prompt there was genuinely sent in plan
-    # mode, and all 22 `mode` records in that log still say `normal` — including
-    # the one written after it, whose companion `last-prompt` record holds that
-    # very prompt's text. `last-prompt` is the up-arrow recall buffer, not a
-    # binding to the prompt. The trio stays hidden and nothing derives from it.
-    def stamp_modes!(records, events)
-      previous = nil
-      events.zip(records).each do |event, (_lineno, rec)|
-        next unless event["kind"] == "user_message"
-
-        mode = rec["permissionMode"]
-        next unless mode
-
-        event["mode"] = mode
-        # the opening state is not a switch: only flag a value that MOVED.
-        event["mode_changed"] = true if previous && previous != mode
-        previous = mode
-      end
     end
 
     # ---- assistant turns -----------------------------------------------------

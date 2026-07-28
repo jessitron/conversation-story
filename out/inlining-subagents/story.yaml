@@ -55,6 +55,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 3
+  mode: auto
   hidden: true
 - id: b68ffc56-7483-423b-8045-0fc07495f0e0
   ref: inlining-subagents:4
@@ -233,9 +234,9 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 11
+  mode: auto
   detail:
     text: implement subagents under Mount Complete. See the prototype for design
-  mode: auto
 - id: e8fe954b-6488-4158-92be-3fd45a8e2efe
   ref: inlining-subagents:12
   agent: main
@@ -358,6 +359,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 18
+  mode: auto
   hidden: true
 - id: line-19
   ref: inlining-subagents:19
@@ -947,6 +949,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 33
+  mode: auto
   hidden: true
 - id: 57e56bd7-dedd-4762-946c-4de7fe6cb58f
   ref: inlining-subagents:34
@@ -1675,6 +1678,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 46
+  mode: auto
   hidden: true
 - id: 3f36aab2-d9f7-416b-be5c-91bceb93aa7f
   ref: inlining-subagents:47
@@ -2267,6 +2271,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 54
+  mode: auto
   hidden: true
 - id: 050e23b2-f715-42df-add2-764a1ff05b64
   ref: inlining-subagents:55
@@ -2714,6 +2719,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 61
+  mode: auto
   hidden: true
 - id: dc097d09-c17f-4a4a-a3cb-5b6ec4fb37d7
   ref: inlining-subagents:62
@@ -3414,6 +3420,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 75
+  mode: auto
   hidden: true
 - id: e00af66c-9d28-4d01-a3c3-35f62feec899
   ref: inlining-subagents:76
@@ -4002,6 +4009,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 83
+  mode: auto
   hidden: true
 - id: dcb541d5-3361-4a30-9deb-9c1be7edf81e
   ref: inlining-subagents:84
@@ -4378,6 +4386,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 91
+  mode: auto
   hidden: true
 - id: 6cce125f-04c9-4540-b777-9d0c8e56ca28
   ref: inlining-subagents:92
@@ -5006,6 +5015,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 99
+  mode: auto
   hidden: true
 - id: '034189cf-2346-474a-89d5-88d17537b25e'
   ref: inlining-subagents:100
@@ -5815,6 +5825,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 112
+  mode: auto
   hidden: true
 - id: 7335e90a-837a-44ff-806f-0fb5d03d263f
   ref: inlining-subagents:113
@@ -6195,6 +6206,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 120
+  mode: auto
   hidden: true
 - id: line-121
   ref: inlining-subagents:121
@@ -6864,6 +6876,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 136
+  mode: auto
   hidden: true
 - id: e85a73b4-8aab-4d0e-9374-e9a2393d743c
   ref: inlining-subagents:137
@@ -7582,6 +7595,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 152
+  mode: auto
   hidden: true
 - id: ac16be6d-96f3-4245-8c6a-7cd24e1e284a
   ref: inlining-subagents:153
@@ -8276,6 +8290,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 174
+  mode: auto
   hidden: true
 - id: 925c5b34-fd18-4472-a785-786409c8c001
   ref: inlining-subagents:175
@@ -9076,6 +9091,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 191
+  mode: auto
   hidden: true
 - id: 8f0b81ad-f6bc-4035-8202-2156110bbee0
   ref: inlining-subagents:192
@@ -9764,6 +9780,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 208
+  mode: auto
   hidden: true
 - id: b53903bb-20ea-4a41-be6d-ff1c0c764de3
   ref: inlining-subagents:209
@@ -10563,6 +10580,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 228
+  mode: auto
   hidden: true
 - id: 516f1f6b-dd40-4f47-b538-2e946b3548dd
   ref: inlining-subagents:229
@@ -11324,6 +11342,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 250
+  mode: auto
   hidden: true
 - id: 11bf94ce-11c7-4c7e-a581-0be69c1b3d59
   ref: inlining-subagents:251
@@ -12369,6 +12388,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 275
+  mode: auto
   hidden: true
 - id: b3f3c390-7fa3-4354-bbf7-9a8a37efa600
   ref: inlining-subagents:276
@@ -12898,6 +12918,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 293
+  mode: auto
   hidden: true
 - id: 3902a667-a833-483d-a41f-3bb121f22ef2
   ref: inlining-subagents:294
@@ -13211,6 +13232,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 304
+  mode: auto
   hidden: true
 - id: 22ebc3bf-77c2-42bf-a11f-7fc6d1a22169
   ref: inlining-subagents:305
@@ -14148,6 +14170,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 322
+  mode: auto
   hidden: true
 - id: 6517f39b-97f5-4a73-abcb-08460cd317e5
   ref: inlining-subagents:323
@@ -14907,6 +14930,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 339
+  mode: auto
   hidden: true
 - id: line-340
   ref: inlining-subagents:340
@@ -15442,6 +15466,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 354
+  mode: auto
   hidden: true
 - id: cdca6f64-36db-4023-8fa4-9f68bb181690
   ref: inlining-subagents:355
@@ -16180,6 +16205,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 374
+  mode: auto
   hidden: true
 - id: 8faab652-cdda-4974-aca9-c775fbb4d374
   ref: inlining-subagents:375
@@ -16683,6 +16709,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 387
+  mode: auto
   hidden: true
 - id: 909326bb-38d2-4663-88e0-04b6b25b24b9
   ref: inlining-subagents:388
@@ -17551,6 +17578,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 409
+  mode: auto
   hidden: true
 - id: line-410
   ref: inlining-subagents:410
@@ -18201,6 +18229,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 427
+  mode: auto
   hidden: true
 - id: c59615c7-cda8-4b19-b5a2-d89a857fd61e
   ref: inlining-subagents:428
@@ -18448,11 +18477,11 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 435
+  mode: auto
   detail:
     text: I want them open by default, because I want to see the work that's being
       done. In particular, in narrate mode, I want it to be evident that the agent
       is doing a bunch of things.
-  mode: auto
 - id: line-436
   ref: inlining-subagents:436
   agent: main
@@ -18878,6 +18907,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 449
+  mode: auto
   hidden: true
 - id: dae25ade-3ca5-4781-a841-693c36a79290
   ref: inlining-subagents:450
@@ -19674,6 +19704,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 467
+  mode: auto
   hidden: true
 - id: 2c6139f7-70b3-406f-a309-94dabf409a51
   ref: inlining-subagents:468
@@ -20384,6 +20415,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 484
+  mode: auto
   hidden: true
 - id: 20fccd5b-7644-4a42-86ca-2bbe1e9003a1
   ref: inlining-subagents:485
@@ -21000,6 +21032,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 500
+  mode: auto
   hidden: true
 - id: d7bd3d60-5b9a-435b-85f6-58b04e3e2aea
   ref: inlining-subagents:501
@@ -21321,6 +21354,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 511
+  mode: auto
   hidden: true
 - id: fc3f3f21-bc14-42d8-b7d7-1ad2b32e2d29
   ref: inlining-subagents:512
@@ -21506,10 +21540,10 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 517
+  mode: auto
   detail:
     text: the results card should have an `[AGENT]` tag on it. Maybe that will fix
       how the summary is weirdly far down on the card.
-  mode: auto
 - id: 362fba4c-0c06-488f-8ac2-0282fb7ce903
   ref: inlining-subagents:518
   agent: main
@@ -21938,6 +21972,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 530
+  mode: auto
   hidden: true
 - id: 4fdb97e2-dc67-455c-b2ac-58b178dc4a52
   ref: inlining-subagents:531
@@ -22243,6 +22278,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 540
+  mode: auto
   hidden: true
 - id: line-541
   ref: inlining-subagents:541
@@ -22908,6 +22944,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 562
+  mode: auto
   hidden: true
 - id: 2d9b6377-9d46-446f-9476-a0848e42e487
   ref: inlining-subagents:563
@@ -23133,6 +23170,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 571
+  mode: auto
   hidden: true
 - id: f5cfe0d3-7f08-44f0-b2a3-f619e4adc5c4
   ref: inlining-subagents:572
@@ -23721,6 +23759,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 588
+  mode: auto
   hidden: true
 - id: 8f15b7fa-7a8a-480a-8567-026565f403b1
   ref: inlining-subagents:589
@@ -23802,10 +23841,10 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 591
+  mode: auto
   detail:
     text: The subagent card has a larger font than the other action cards. Make it
       consistent please
-  mode: auto
 - id: line-592
   ref: inlining-subagents:592
   agent: main
@@ -24274,6 +24313,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 606
+  mode: auto
   hidden: true
 - id: bf407a98-e529-4fc5-b06d-8b8f2ce4571a
   ref: inlining-subagents:607
@@ -24592,13 +24632,13 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 616
+  mode: auto
   detail:
     text: The font size for the card summaries and gutter .kind is the same, so how
       about we top-align them instead of baseline?
   dequeued: true
   link_ids:
   - queue:line-612
-  mode: auto
 - id: b02c9e13-bdd3-429f-8ea9-d23960f17864
   ref: inlining-subagents:617
   agent: main
@@ -24840,6 +24880,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 626
+  mode: auto
   hidden: true
 - id: 1440320d-af3a-4524-89f7-844e2c06401d
   ref: inlining-subagents:627
@@ -25128,6 +25169,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 637
+  mode: auto
   hidden: true
 - id: 86afeb60-098c-40db-bc06-5215092864cc
   ref: inlining-subagents:638
@@ -25871,6 +25913,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 658
+  mode: auto
   hidden: true
 - id: 1e850323-8ba6-429e-821c-83457aaf24ed
   ref: inlining-subagents:659
@@ -26052,6 +26095,7 @@ events:
   source:
     file: inlining-subagents.jsonl
     line: 666
+  mode: auto
   hidden: true
 - id: 3085448d-2219-4528-a673-2792bcaa6268
   ref: inlining-subagents:667

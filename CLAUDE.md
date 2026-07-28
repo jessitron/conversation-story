@@ -166,19 +166,10 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
 - A background task's result delivered mid-conversation as a `<task-notification>`
   XML blob gets its own kind, `task_notification` (not `user_message` — it's
   not something Jess typed); its summary is the extracted `<summary>` field.
-- **Mode is a field on the prompt, not an event** (session 17). A real prompt
-  record carries **`permissionMode`** next to its `promptId`, so `stamp_modes!`
-  reads it straight off the record into `mode` (+ `mode_changed` when it moved
-  from the previous prompt). The pane shows a Mode section on every prompt; only
-  a *change* badges the card face. No `permissionMode` → no mode, no guessing.
-  **The standalone `mode` / `permission-mode` records are a trap**: they hold the
-  UI state at the moment they were written, which is long after the submission,
-  so a mode switched back before the turn ends vanishes from them. Proven in
-  `mode-switches` — `:374` was sent in plan mode and all 22 `mode` records in
-  that log say `normal`, including the one whose companion `last-prompt` holds
-  that prompt's own text (`last-prompt` is the up-arrow buffer, not a binding).
-  They stay hidden and nothing derives from them; a test fails if that changes.
-  See the Mode section of `notes/intermediate-schema.md`.
+- A prompt's **mode** is a field the prompt record carries (`permissionMode`,
+  next to `promptId`) — read it there, never from the standalone `mode` records,
+  which hold the UI state at write time and lose a switch that was undone before
+  the turn ended. The comment on `Parser::TYPE_TO_KIND` has the measurement.
 - **`ConversationStory::Markdown`** (`lib/conversation_story/markdown.rb`) is a
   small, safe markdown-subset renderer used for prose detail text
   (user/assistant messages, reasoning). Escapes raw text before any markdown

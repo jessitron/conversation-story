@@ -306,21 +306,11 @@ module ConversationStory
                  [%(<span class="badge agent">Agent</span>)]
                else []
                end
-      badges.concat(mode_badges(event))
       badges << %(<span class="badge queue">Dequeued</span>) if event["dequeued"]
       badges << %(<span class="badge queue">Removed from queue</span>) if event["removed_from_queue"]
       return "" if badges.empty?
 
       %(<div class="badges">#{badges.join}</div>)
-    end
-
-    # A prompt's mode reaches the card face ONLY when it moved — "Jess switched
-    # to plan mode" is a story beat; "still in normal mode, for the 44th time" is
-    # not. The steady-state value is in the detail pane's Mode section.
-    def mode_badges(event)
-      return [] unless event["mode_changed"]
-
-      [%(<span class="badge mode">#{h event["mode"]}</span>)]
     end
 
     def tool_call_badges(event)
@@ -527,9 +517,7 @@ module ConversationStory
       sections
     end
 
-    # The mode a prompt was sent in — a field the prompt record carries, not an
-    # event of its own. Quiet by design: the value shows here for every prompt,
-    # and only a CHANGE reaches the card face (see mode_badges).
+    # The mode a prompt was sent in — a field the prompt record carries.
     def mode_section(event)
       return "" unless event["mode"]
 

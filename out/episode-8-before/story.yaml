@@ -29,6 +29,7 @@ events:
   source:
     file: episode-8-before.jsonl
     line: 1
+  mode: acceptEdits
   hidden: true
 - id: c53a6e09-b082-4df4-99f0-c32ed64916fa
   ref: episode-8-before:2
@@ -70,11 +71,11 @@ events:
   source:
     file: episode-8-before.jsonl
     line: 4
+  mode: acceptEdits
   detail:
     text: |-
       I’ve used this app and enjoyed the live replay. The events go in a list and stay in the list and I can scroll the list but there's a little timeline across the top that is live.
       Is there a way to rewind the timeline?
-  mode: acceptEdits
   summary_edited: true
 - id: 0b4057eb-e19a-4bd0-9663-dea446f3ce49
   ref: episode-8-before:5
@@ -3624,11 +3625,11 @@ events:
   source:
     file: episode-8-before.jsonl
     line: 20
+  mode: acceptEdits
   detail:
     text: |-
       yes, but first, let's verify that we can test it. Can you make a small change, like add 'jess was here' to the header?
       Then run it on a different port for me, so I can compare with my regular install
-  mode: acceptEdits
   summary_edited: true
 - id: 22a5fad3-46f0-4f3a-aa21-91e7a359ca79
   ref: episode-8-before:21
@@ -4721,6 +4722,7 @@ events:
   source:
     file: episode-8-before.jsonl
     line: 63
+  mode: acceptEdits
   detail:
     text: |-
       <task-notification>
@@ -7154,10 +7156,10 @@ events:
   source:
     file: episode-8-before.jsonl
     line: 159
+  mode: acceptEdits
   detail:
     text: ok, that was a lot of work. Why didn't you do 'just install' first? what
       could have helped you know to create the data/ directory?
-  mode: acceptEdits
 - id: 68ed00dc-32f5-46c1-8464-841058736254
   ref: episode-8-before:160
   agent: main
@@ -7611,13 +7613,13 @@ events:
   source:
     file: episode-8-before.jsonl
     line: 179
+  mode: acceptEdits
   detail:
     text: no! I'm sorry. I mean, what could we change about the context here that
       would have told you these things?
   dequeued: true
   link_ids:
   - queue:line-174
-  mode: acceptEdits
 - id: a9ff92aa-78b6-4550-86e5-a6a8e7147f73
   ref: episode-8-before:180
   agent: main
@@ -7742,9 +7744,9 @@ events:
   source:
     file: episode-8-before.jsonl
     line: 186
+  mode: acceptEdits
   detail:
     text: great idea. Please add it
-  mode: acceptEdits
 - id: 8107bc5f-ba3b-434d-b382-6b9aec4df448
   ref: episode-8-before:187
   agent: main
@@ -8222,10 +8224,10 @@ events:
   source:
     file: episode-8-before.jsonl
     line: 206
+  mode: acceptEdits
   detail:
     text: yes. Also, please clear the memories you added so that I can test the new
       CLAUDE.md
-  mode: acceptEdits
 - id: 57d41132-dbe5-4b02-bdc1-12cc97280863
   ref: episode-8-before:207
   agent: main
@@ -8615,4 +8617,5 @@ events:
   source:
     file: episode-8-before.jsonl
     line: 224
+  mode: acceptEdits
   hidden: true

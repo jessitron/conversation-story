@@ -305,46 +305,6 @@ prose-tuned 4 — 3.5 splits the difference.
   `tool.result` fields (content, stdout/stderr, structured_patch, …); and
   `tool.subagent_tokens`. These were previously in the log but not in the schema.
 
-## Mode is a field on the prompt, not an event
-
-**The prompt record carries its own mode.** A `user` record that is a real
-prompt has `permissionMode` on it, next to its `promptId`:
-
-```json
-{"type":"user","promptId":"…","permissionMode":"plan",
- "message":{"role":"user","content":"this is a prompt in plan mode"}}
-```
-
-So a `user_message` carries:
-
-```yaml
-mode: plan            # auto | plan | acceptEdits | …  (from permissionMode)
-mode_changed: true    # only when it MOVED from the previous prompt
-```
-
-Read it off the record and nothing else. `mode_changed` is what lets the renderer
-stay quiet: the value shows in a **Mode** section for every prompt, and only a
-change badges the card face. The opening state is not a switch, so the first
-prompt is never flagged. A record with no `permissionMode` (every `tool_result`,
-and some prompts in older logs) simply gets no mode — no guessing from
-neighbours.
-
-### The trap: the `mode` / `permission-mode` records lie about this
-
-The harness also writes standalone `mode` and `permission-mode` records, in a
-timestamp-less trio with `last-prompt`. **They are not a record of the mode a
-prompt was sent in, and nothing derives from them.** They hold whatever the UI
-state was *when they happened to be written*, which is well after a submission —
-so a mode switched back before the turn ends never appears in them at all.
-
-Measured, in `mode-switches`: `mode-switches:374` was genuinely sent in plan
-mode, and **all 22 `mode` records in that log say `normal`** — including the one
-written 18 lines later whose companion `last-prompt` record holds that very
-prompt's text. `last-prompt` is the up-arrow recall buffer, not a binding to the
-prompt; a trio *following* a prompt is not a trio *about* it. `parser_test.rb`
-pins this with a test that fails if the field is ever re-derived from those
-records.
-
 ## Event `kind`s (initial set + fallback)
 
 - `user_message`, `assistant_message` (text)
