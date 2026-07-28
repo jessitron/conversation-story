@@ -476,6 +476,22 @@ scenario "one beat reveals a subagent's whole story as a flurry", query: "?mode=
   nil
 end
 
+# The detail pane leads with the card's summary as plain, copyable text in
+# every mode but edit (edit swaps in the textarea instead — not reachable here,
+# since these scenarios run with no authoring server).
+scenario "the detail pane shows the summary as copyable text" do |s|
+  target = s.card_ids.find { |id| id != s.active_id }
+  s.click_id(target)
+  shown = s.js("(document.querySelector('#d-body .summary-view .d-text') || {}).textContent || null")
+  next "no summary section in the detail pane" unless shown
+  face = s.js(%(document.getElementById(#{target.inspect}).querySelector('.summary').textContent.trim()))
+  next "detail says #{shown.inspect}, card face says #{face.inspect}" unless shown == face
+  next "the copy chip carries no text" unless s.js(
+    "(document.querySelector('#d-body .summary-view .copy-ref') || {}).dataset?.copy === #{face.inspect}"
+  )
+  nil
+end
+
 # ---------------------------------------------------------------- runner
 
 browser = Ferrum::Browser.new(headless: true, window_size: [1400, 900], browser_path: CHROME)

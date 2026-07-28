@@ -520,6 +520,15 @@ aside.detail .d-body { overflow-y: auto; padding: 16px; }
   color: var(--ink-faint); margin: 0 0 8px;
   padding-bottom: 5px; border-bottom: 1px solid var(--line);
 }
+/* The read-only summary (every mode but edit — story.js's showSummary). Its
+   copy chip rides in the section heading, so unlike the footer's copy-ref it
+   shows its hint without waiting for a hover: it's an offer, not a debugging
+   aid tucked out of the way. */
+.summary-view > h4 { display: flex; align-items: baseline; gap: 10px; }
+.summary-view > h4 .copy-ref { margin-left: auto; }
+.summary-view > h4 .copy-hint { opacity: .6; }
+.summary-view .d-text { user-select: text; }
+
 /* ---- the two voices inside a detail pane ----
    PROSE (.d-text literal, .d-markdown rendered): something a person wrote —
    a message, some reasoning. Body font on a light paper surface.

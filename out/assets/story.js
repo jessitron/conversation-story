@@ -62,7 +62,30 @@ function selectCard(card) {
   dBody.replaceChildren(card.querySelector('template.detail').content.cloneNode(true));
   dBody.scrollTop = 0;
   updateRelated(card);
-  showSummaryEditor(card);   // no-op unless the authoring server answered
+  showSummary(card);
+}
+
+/* The summary at the top of the detail pane. Edit mode gets the editable
+   version (a textarea, only when the authoring server answered); every other
+   mode gets the same line as plain, selectable prose — the card face has it
+   too, but a card is an <a>, so dragging across it starts a link drag instead
+   of a text selection. This is where you copy a summary from. */
+function showSummary(card) {
+  if (mode === 'edit' && editingAvailable) { showSummaryEditor(card); return; }
+  const text = card.querySelector('.summary').textContent.trim();
+  if (!text) return;
+
+  const sec = document.createElement('div');
+  sec.className = 'd-section summary-view';
+  sec.innerHTML =
+    '<h4 class="deco">Summary' +
+      '<button type="button" class="copy-ref" title="Copy summary to clipboard">' +
+        '<span class="copy-hint">copy</span></button>' +
+    '</h4>' +
+    '<p class="d-text"></p>';
+  sec.querySelector('.copy-ref').dataset.copy = text;   // never through innerHTML
+  sec.querySelector('.d-text').textContent = text;
+  dBody.prepend(sec);
 }
 
 /* ---- causal-chain highlight ----

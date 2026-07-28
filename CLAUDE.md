@@ -287,6 +287,13 @@ won't notice it changed.
   the body: `.who::after` normally ("Claude ✎"), `.who::before` for the
   right-aligned kinds `k-user`/`k-coordinator` ("✎ Jess"). A new right-aligned
   kind needs adding to both of those rules.
+- **The detail pane always leads with the summary.** `showSummary` (story.js)
+  puts the editable box there in edit mode and, in every other mode, the same
+  line as plain selectable text plus a copy chip — one or the other, never both.
+  The card face shows it too, but a card is an `<a>`, so dragging across it
+  starts a link drag instead of a text selection; the detail pane is where Jess
+  copies a summary from. `bin/check-modes` asserts the read-only version matches
+  the card face.
 - **Every write goes through one `submit(text)`** inside `showSummaryEditor` —
   Save, Revert and undo are all the same request, differing only in the text.
   `submit` captures the outgoing hand-written line first and, if the response
