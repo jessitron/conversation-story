@@ -360,11 +360,14 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 }
 
 /* ---- subagent subactions (design prototype only, session 14) ----
-   A Subagent card can expand into its own nested story: the subaction cards
-   that follow it in DOM order, indented and threaded on a vertical rail so
-   they read as "belonging to" the subagent above them, not siblings of it on
-   the main board. Subaction cards keep their real k-* kind color — a
-   condensed echo of the same card, not a separate flat look. */
+   A Subagent card can expand into its own nested story: the events the
+   subagent itself produced, indented and threaded on a vertical rail so they
+   read as "belonging to" the subagent above them, not siblings of it on the
+   main board. Deliberately NOT a condensed/miniature card — a subaction is a
+   full .card with its own real k-* kind class, same size, same detail
+   template, same click-to-select behavior as a top-level event. Indentation
+   and the rail are the ONLY difference; .subactions supplies both and
+   otherwise gets out of the way. */
 .card.k-subagent .gutter .caret {
   display: inline-block; margin-right: 4px; color: var(--kind);
   transition: transform .12s ease;
@@ -373,47 +376,20 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 
 .subactions {
   position: relative;
-  margin: -4px 0 10px calc(var(--gutter-w) + 16px + var(--card-pad));
+  margin-left: calc(var(--gutter-w) + 16px);
   padding-left: 18px;
-  display: flex; flex-direction: column; gap: 6px;
 }
 .subactions::before {
-  content: ""; position: absolute; top: 2px; bottom: 14px; left: 0;
+  content: ""; position: absolute; top: 2px; bottom: 24px; left: 0;
   border-left: 2px solid var(--red); opacity: .35;
 }
 /* the rail's closing tick — reads as "the subagent's story ends here",
    so the line doesn't dangle unbounded into the next top-level card */
 .subactions::after {
-  content: ""; position: absolute; bottom: 14px; left: 0; width: 10px;
+  content: ""; position: absolute; bottom: 24px; left: 0; width: 10px;
   border-bottom: 2px solid var(--red); opacity: .35;
 }
 .card.k-subagent.collapsed + .subactions { display: none; }
-
-.subaction {
-  position: relative;
-  display: grid;
-  grid-template-columns: 90px 1fr;
-  gap: 10px; align-items: baseline;
-  padding: 5px 12px 5px 14px;
-  border-left: 3px solid var(--kind, var(--ink-faint));
-  border-radius: var(--card-radius);
-  background: var(--paper-2);
-  opacity: .85;
-}
-.subaction:hover { opacity: 1; }
-.subaction .kind {
-  font-size: var(--fs-small); letter-spacing: var(--ls-tight);
-  color: var(--kind, var(--ink-soft));
-}
-.subaction .summary { font-size: var(--fs-small); color: var(--ink-soft); }
-.subaction .summary code {
-  font-family: var(--font-mono); font-size: .9em;
-  background: var(--code-bg); padding: 0 4px; border-radius: 3px; color: var(--red);
-}
-.subaction.k-thinking    { --kind: var(--orange); }
-.subaction.k-tool_call   { --kind: var(--gold); }
-.subaction.k-tool_result { --kind: var(--olive); }
-.subaction.k-assistant   { --kind: var(--navy); }
 
 /* ============================================================
    Sidebar (detail) — collapsible + drag-resizable
