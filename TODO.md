@@ -6,6 +6,9 @@ which mountain each item climbs.
 ## Mount Complete
 
 - **model name** put the model name in every LLM-call-representing card.
+- **notice title generation** The ai_title events are kinda neat, and it would be cool if they showed up. And as we scrolled past them, the title at the top changed!
+
+### Subagents
 
 Done: **subagents** inline a spawned Agent's own story (session 15) — a
 `subagent` card expands into it in place, and the answer comes back as a
@@ -64,9 +67,9 @@ Output tokens:    4,233
 
 ## Mount Beautiful
 
-- **edit mode marker** Currently this shows up appended to the summary. It distracts me there, looks like it's part of the text. Instead, put it in the .who section, to the right of "Claude" or the left of "Jess"
-- **enqueue tag** Instead of `Queue enqueue: Background command "Start Vite dev client on port 5175" failed with exit code 1` let's say `Background command "Start Vite dev client on port 5175" failed with exit code 1` and have an `[ENQUEUE]` tag. Also, let's give it an [ERROR] tag when it failed (for instance, it contains "command .\* failed")
-- Instead of `[REMOVED FROM QUEUE]` let's shorten to `[FROM QUEUE]`
+- NOW: **edit mode marker** Currently this shows up appended to the summary. It distracts me there, looks like it's part of the text. Instead, put it in the .who section, to the right of "Claude" or the left of "Jess"
+- NOW: **enqueue tag** Instead of `Queue enqueue: Background command "Start Vite dev client on port 5175" failed with exit code 1` let's say `Background command "Start Vite dev client on port 5175" failed with exit code 1` and have an `[ENQUEUE]` tag. Also, let's give it an [ERROR] tag when it failed (for instance, it contains "command .\* failed")
+- NOW: Instead of `[REMOVED FROM QUEUE]` let's shorten to `[FROM QUEUE]`
 - **subagent detail tweaks** Move the 'log' field to 'Provenenance'. Give it a button near the top to expand/collapse its cards in the conversation.
 - Self-host the fonts (Tenor Sans / Sen / Cascadia Code) into `assets/fonts/`
   with `@font-face` in `story.css`, replacing the CDN `<link>`.
@@ -108,12 +111,3 @@ correctness bug that needs fixing right now._
   `hashchange`, and `syncFromHash` selects a card that's still hidden and
   outside the revealed prefix. No error, and it self-heals on the next beat,
   but mid-talk it's a spoiler.
-
-## Maybe later
-
-- **Hooks.** The logs carry a lot of hook detail we currently leave as
-  summary-only: `system` events (`stop_hook_summary`, `turn_duration`,
-  `hookInfos`, `hookErrors`) and the ~157 `attachment` records that are really
-  hook-execution records (`hookName`, `hookEvent`, `command`, `stdout`/`stderr`/
-  `exitCode`/`durationMs`). Interesting, not urgent — if we do it, they get
-  named schema fields like everything else.
