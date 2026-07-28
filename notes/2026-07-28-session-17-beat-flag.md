@@ -61,6 +61,20 @@ true" and "override to false" want the same absent-key representation, or you
 end up with two ways to mean the same thing and a renderer that has to check
 both.
 
+## 3. The ▸ marker isn't in the gutter — it couldn't be
+
+The design doc's first attempt anchored the edit-mode ▸ marker to `.gutter` at
+a negative offset (the brief's own numbers). That lands exactly on the card's
+own accent border — same pixel, same `var(--kind)` color — so the rule fires
+(confirmed via `--dump-dom`) but is completely invisible. The version that
+shipped anchors to `.card` instead, sitting just inside the border in the
+padding strip before the gutter's text, in `--gold` so it reads against every
+kind's border. See the comment above `body.mode-edit .card[data-beat]::before`
+in `assets/story.css`, and the correction added inline in
+`notes/2026-07-28-beat-flag-design.md`. Say "the ▸ marker", not "the gutter
+marker" — a future session told to look in the gutter will go hunting for (or
+worse, re-add) the rule that already failed.
+
 ## Smaller things
 
 - **A stale `bin/serve` on port 8080 burned time for three separate

@@ -175,6 +175,21 @@ class EditsTest < Minitest::Test
     end
   end
 
+  # A hand-edited file has no HTTP-side validation to catch a typo, so the
+  # loader itself has to be strict: neither the JSON-flavored string "false"
+  # nor the YAML word `no` (which Psych reads as the STRING "no", not a
+  # boolean) may coerce to a boolean at all — under `!!`, both are truthy,
+  # which would silently turn an intended "off" ON.
+  def test_a_non_boolean_beat_value_in_the_file_raises_naming_the_ref
+    in_tmp_dir do |dir|
+      path = File.join(dir, "demo.yaml")
+      File.write(path, "beats:\n  demo:1: 'false'\n")
+
+      error = assert_raises(ArgumentError) { Edits.for_story("demo", dir: dir) }
+      assert_includes error.message, "demo:1"
+    end
+  end
+
   def test_set_beat_nil_clears_the_override_and_an_empty_file_is_removed
     in_tmp_dir do |dir|
       path = File.join(dir, "demo.yaml")

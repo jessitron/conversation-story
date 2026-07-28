@@ -174,8 +174,13 @@ beats:
 `beats:` entry overrides where narration stops (see `beat`, below the `hidden`
 field): `true` sets `event["beat"] = true`; `false` **deletes** the `beat` key
 rather than storing `false`, so an override and the parser's own "not a beat"
-converge on one shape (`event.key?("beat")` is the only test anywhere, never a
-boolean check). So the story is derived from *the log plus the sidecar*, and a
+converge on one shape — the key is `true` or absent, never `false`. `story.js`'s
+`isBeat` reads it strictly (`c.dataset.beat === 'true'`); the renderer
+(`renderer.rb`) and `bin/serve`'s response both do a plain truthiness check
+(`event["beat"] ? … : …`, `!!event["beat"]`), which is safe only because the
+value is never anything but `true` or missing — a genuine `false` would read
+the same as absent either way, so nothing anywhere needs to, or does, tell them
+apart. So the story is derived from *the log plus the sidecar*, and a
 parser improvement still reaches every event Jess hasn't touched. Nothing
 needs a "don't overwrite me" lock.
 

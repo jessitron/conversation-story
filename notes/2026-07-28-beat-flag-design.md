@@ -62,6 +62,14 @@ Plus a marker in the gutter of every beat card, **in edit mode only**:
 body.mode-edit .card[data-beat] .gutter::before { content: '▸'; }
 ```
 
+[Correction, written after implementation: this doesn't work. `.gutter` at a
+negative offset lands exactly on the card's own accent border — same pixel,
+same color as `var(--kind)` — so it fires (confirmed via `--dump-dom`) but is
+invisible. The rule that actually ships anchors to `.card` instead; see the
+comment above `body.mode-edit .card[data-beat]::before` in `assets/story.css`,
+and `notes/2026-07-28-session-17-beat-flag.md`. Left as-written above since
+it's what was designed and tried, not what shipped.]
+
 Edit mode is where Jess can change it, so that's where seeing the rhythm of
 stops across the whole board pays for the ink. Explore and narrate stay clean —
 in narrate especially, the board is the story and a row of authoring marks would

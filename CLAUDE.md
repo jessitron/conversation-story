@@ -191,8 +191,11 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   way to override it. Jess overrides per card in edit mode (a checkbox that
   saves on toggle, `PUT /api/beat`), stored in `edits/<name>.yaml`'s `beats:`
   section; `false` **deletes** the key, so "not a beat" has one shape. The
-  detail pane shows a 🥁 cue in every mode; the ▸ gutter marker paints only in
-  edit mode. See `notes/2026-07-28-beat-flag-design.md`.
+  detail pane shows a 🥁 cue in every mode; the ▸ marker paints only in edit
+  mode, on `.card::before` — **not** the gutter (a `.gutter::before` version at
+  the design's own negative offset landed exactly on the accent border, same
+  pixel and same color, and fired invisibly; see `story.css`'s comment above the
+  rule). See `notes/2026-07-28-beat-flag-design.md`.
 - **`ConversationStory::Markdown`** (`lib/conversation_story/markdown.rb`) is a
   small, safe markdown-subset renderer used for prose detail text
   (user/assistant messages, reasoning). Escapes raw text before any markdown

@@ -75,10 +75,13 @@ module ConversationStory
       self
     end
 
-    # nil clears the override; anything else is coerced to a real boolean, so a
-    # JSON "false" string can't sneak in as truthy.
+    # nil clears the override; true/false is stored as-is. Callers here are
+    # trusted to pass a real boolean or nil — `bin/serve` validates the wire
+    # value against exactly `[true, false, nil]` before this is ever called.
+    # A hand-edited file is a different path with no such gate; that one goes
+    # through `beats_map` below, which is where a stray non-boolean gets caught.
     def set_beat(ref, value)
-      value.nil? ? @beats.delete(ref) : @beats[ref] = !!value
+      value.nil? ? @beats.delete(ref) : @beats[ref] = value
       self
     end
 
@@ -160,7 +163,7 @@ module ConversationStory
 
       {
         "summaries" => string_map(loaded["summaries"]) { |v| v.to_s },
-        "beats"     => string_map(loaded["beats"])     { |v| !!v },
+        "beats"     => beats_map(loaded["beats"]),
       }
     end
 
@@ -168,6 +171,27 @@ module ConversationStory
       return {} unless raw.is_a?(Hash)
 
       raw.transform_keys(&:to_s).transform_values(&coerce)
+    end
+
+    # Strict, on purpose. A summary happily coerces anything to a string, but a
+    # beat is a boolean this sidecar hand-edits, and a YAML typo reads as a
+    # DIFFERENT boolean rather than an error: the JSON string `'false'` (a
+    # quoted value someone pasted from an API response) is truthy under `!!`,
+    # and the bare word `no` parses as the STRING "no" under Psych, not a
+    # boolean, so it's truthy too — both would flip an intended "off" to ON,
+    # the opposite of what was typed. Coercing here would guess; raising says
+    # so out loud, naming the ref, which is what a hand-edited file deserves.
+    def beats_map(raw)
+      return {} unless raw.is_a?(Hash)
+
+      raw.each_with_object({}) do |(ref, value), out|
+        unless value == true || value == false
+          raise ArgumentError,
+                "#{@path}: beats[#{ref.to_s.inspect}] must be true or false, got #{value.inspect}"
+        end
+
+        out[ref.to_s] = value
+      end
     end
   end
 end

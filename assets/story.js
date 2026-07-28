@@ -59,7 +59,7 @@ function selectCard(card) {
   /* The beat cue rides along in every mode — it's for Jess's eye, on the
      published site too, like the ✎ marker. Read-only; the checkbox that CHANGES
      it is edit-mode only (see showBeatEditor). */
-  dTime.textContent = card.dataset.time + ' UTC' + (card.dataset.beat ? ' · 🥁' : '');
+  dTime.textContent = card.dataset.time + ' UTC' + (card.dataset.beat === 'true' ? ' · 🥁' : '');
   sidebar.style.setProperty('--kind', getComputedStyle(card).getPropertyValue('--kind'));
 
   dBody.replaceChildren(card.querySelector('template.detail').content.cloneNode(true));
