@@ -7191,10 +7191,7 @@ events:
   at: '2026-04-14T02:32:08.419Z'
   summary: "\U0001F955 Good questions, and fair criticism. Why didn't I run just install
     first? I should have checked whether node_modules existed before trying to start
-    anything. I saw the justfile had an install recipe and skipped right past it.
-    I assumed deps were already installed because it's a working project on your machine
-    -- but of course, your regular install runs via Docker, which has its own deps.
-    Lesson…"
+    anything...."
   source:
     file: episode-8-before.jsonl
     line: 161
@@ -7230,6 +7227,7 @@ events:
     added: 157
     cumulative_context: 813585
   turn_leader: true
+  summary_edited: true
 - id: ee59a600-34ee-4486-ac5c-6f57c3fff20e
   ref: episode-8-before:162
   agent: main
@@ -7663,9 +7661,8 @@ events:
   at: '2026-04-14T02:32:32.625Z'
   summary: "\U0001F955 Oh! You're asking about improving the project's developer experience
     documentation, not about my personal learning. That's a much better question.
-    A CLAUDE.md file in the project root would be the right place. It's loaded automatically
-    at the start of every conversation. If it said something like: Local Development
-    Prerequisites before running just dev: just install (installs npm deps for serve…"
+    \nA CLAUDE.md file in the project root would be the right place. It's loaded automatically
+    at the start of every conversation...."
   source:
     file: episode-8-before.jsonl
     line: 182
@@ -7699,6 +7696,7 @@ events:
     added: 270
     cumulative_context: 984544
   turn_leader: true
+  summary_edited: true
 - id: 7d44c803-d7b3-4ffa-92dc-70551ec4cdf9
   ref: episode-8-before:183
   agent: main

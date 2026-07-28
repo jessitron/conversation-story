@@ -13,3 +13,10 @@ episode-8-before:53: Let me start it on different ports so it won't conflict wit
 episode-8-before:59: That's starting up in the background. It should be available
   at http://localhost:5175 in a moment...
 episode-8-before:154: Both are running now.... Let me know if it looks good!
+episode-8-before:161: "\U0001F955 Good questions, and fair criticism. Why didn't I
+  run just install first? I should have checked whether node_modules existed before
+  trying to start anything...."
+episode-8-before:182: "\U0001F955 Oh! You're asking about improving the project's
+  developer experience documentation, not about my personal learning. That's a much
+  better question. \nA CLAUDE.md file in the project root would be the right place.
+  It's loaded automatically at the start of every conversation...."
