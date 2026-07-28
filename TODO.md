@@ -5,7 +5,7 @@ which mountain each item climbs.
 
 ## Mount Complete
 
-- **model name** put the model name in
+- **model name** put the model name in every LLM-call-representing card.
 
 Done: **subagents** inline a spawned Agent's own story (session 15) — a
 `subagent` card expands into it in place, and the answer comes back as a
@@ -25,8 +25,7 @@ Open follow-ons from that work:
 
 ### Token Counts
 
-- **token details**
-  Rearrange the token count sections.
+Rearrange the token count sections.
 
 In an assistant card:
 

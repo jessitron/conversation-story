@@ -199,7 +199,14 @@ main.timeline {
   position: relative;
   display: grid;
   grid-template-columns: var(--gutter-w) 1fr;
-  gap: 16px; align-items: baseline;
+  /* TOP-aligned, not baseline. On an action card the gutter label and the summary
+     are both --fs-small, so a shared baseline and a shared top would land in the
+     same place anyway — except baseline alignment made the row depend on how the
+     label's LAST line laid out, which silently pushed one card's summary 18px
+     down the day "Subagent Result" wrapped to two lines. Top alignment can't do
+     that. (The two conversation kinds opt back into baseline — see k-user /
+     k-assistant below, where the summary IS a different size.) */
+  gap: 16px; align-items: start;
   background: var(--paper-2);
   border: 1px solid var(--line);
   border-left: var(--card-accent) solid var(--kind, var(--ink-faint));
@@ -247,13 +254,13 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
   white-space: nowrap; padding-top: 2px;
 }
 .card .gutter .kind {
-  /* BLOCK, not inline-block, and that matters: the card grid is
-     align-items:baseline, and an inline-block reports its LAST line's baseline.
-     So the one label that wraps ("Subagent Result") dragged the whole row's
-     first baseline down to its second line, and that card's summary sat ~20px
-     lower than every other card's for no visible reason. As a block, the
-     gutter's first baseline is its first line, where it belongs. The caret is an
-     inline child, so it still sits beside the label. */
+  /* BLOCK, not inline-block. This mattered acutely while the card grid was
+     align-items:baseline — an inline-block reports its LAST line's baseline, so
+     the one label that wraps ("Subagent Result") dragged the whole row's first
+     baseline to its second line and pushed that card's summary 18px down. The
+     grid is top-aligned now, which immunizes the row against that, but a block
+     is still the honest thing for a full-width line of the gutter. The caret is
+     an inline child, so it sits beside the label either way. */
   display: block;
   letter-spacing: var(--ls-wide);
   font-size: var(--fs-small); color: var(--kind, var(--ink-soft));
@@ -333,6 +340,16 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
   box-shadow: -2px 3px 0 rgba(var(--navy-rgb), .06), 0 5px 18px rgba(var(--navy-rgb), .09);
 }
 .card.k-assistant .gutter .kind { color: var(--navy); }
+/* The two exceptions to the card grid's top alignment. These are the only cards
+   whose summary is a different size from its gutter label (--fs-summary vs
+   --fs-small), and top-aligning two different sizes leaves the small label
+   floating above the big text's cap. A shared baseline is what makes "ASSISTANT"
+   sit level with the words it labels. Safe here precisely where it wasn't safe
+   generally: "User" and "Assistant" are one word, so the label can't wrap and
+   move the row's baseline out from under the summary. */
+.card.k-user,
+.card.k-assistant { align-items: baseline; }
+
 /* Both sides of the actual conversation share one text treatment, so a user
    message and an assistant message always read at the same size/prominence.
    (User-only tweaks like right-alignment stay in the .k-user block above.) */

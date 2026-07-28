@@ -183,6 +183,13 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   — body font on paper) vs MACHINE (`pre.code` — mono on navy, and it *wraps*).
   Tool INPUT, tool RESULT, notification blobs and raw records all go through
   `Renderer#machine_html` so they look the same. Don't reintroduce a third look.
+- **Card alignment, vertically**: the card grid is **`align-items: start`**, and
+  `.k-user`/`.k-assistant` are the only kinds that opt back into `baseline` —
+  they're the only ones whose summary size differs from the gutter label's, and
+  their one-word labels can't wrap. Don't make baseline the general rule again: a
+  wrapping label moves the row's baseline (an `inline-block` `.kind` reports its
+  *last* line's), which is how "Subagent Result" pushed one card's summary 18px
+  down in session 15.
 - **Card alignment**: `--card-inset` (`:root`) is the distance from a card's outer
   edge to its content, accent border included; `.card` derives `--card-pad` from
   it and `--card-accent`. A card wanting a heavier accent redefines

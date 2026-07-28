@@ -64,8 +64,17 @@ session wired it to real data: parser, renderer, JS, and the write path.
   summary sat 18px lower than every other card's. `display: block` fixes it (the
   caret is an inline child, so it still sits beside the label). Measured, not
   eyeballed: forcing `inline-block` back in a live page moves the skew 0 → 18 on
-  `subagent_result` and leaves every single-line label at 0. Watch for this again
-  the next time a kind label grows past one line.
+  `subagent_result` and leaves every single-line label at 0.
+
+  Jess then took the fix a level deeper: **the card grid is `align-items: start`
+  now**, with `k-user`/`k-assistant` opting back into `baseline`. That's the right
+  split, not a compromise — an action card's label and summary are both
+  `--fs-small`, so top and baseline land in the same place *and* top can't be
+  moved by a wrapping label; the two conversation kinds are the only ones whose
+  summary is a different size (`--fs-summary`), where a shared baseline is what
+  makes "ASSISTANT" sit level with the words it labels, and their labels are one
+  word so they can't wrap. Measured: skew is now a uniform −2 on every action
+  card and −6 on the two message kinds.
 - **Anything that counts or finds cards has to walk the tree now.** Four places
   did it over the flat list and every one of them was wrong the moment the first
   subagent inlined: `Renderer#link_index`/`#turn_index` (so a causal chain can
