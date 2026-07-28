@@ -107,9 +107,22 @@ module ConversationStory
     # than the "background machinery" kinds (tool calls, thinking, etc).
     MESSAGE_SUMMARY_LIMIT = 400
 
+    # Where narration stops by default: `beat` is true on these kinds in the
+    # MAIN log, and assets/story.js's isBeat steps between them (n / p /
+    # shift+arrow). Jess overrides it per card via the edits sidecar — this is
+    # only the guess. These two kinds are exactly what CSS_KIND maps to
+    # k-user / k-assistant, which is what story.js used to sniff for.
+    BEAT_KINDS = %w[user_message assistant_message].freeze
+
     # @param log_path [String] path to the top-level conversation .jsonl.
-    def initialize(log_path)
+    # @param nested [Boolean] true when this is a SUBAGENT's log, parsed
+    #   recursively by subagent_story. A nested parser sets no `beat`: narration
+    #   stops in Jess's conversation, and a subagent's own messages are that
+    #   agent talking to itself. Riding the constructor means a subagent that
+    #   spawns a subagent is correct for free.
+    def initialize(log_path, nested: false)
       @log_path = log_path
+      @nested   = nested
       @log_file = File.basename(log_path)            # source.file (with .jsonl)
       @log_name = File.basename(log_path, ".jsonl")  # the `ref` prefix (no ext)
     end
@@ -166,6 +179,7 @@ module ConversationStory
       add_detail(event, kind, rec)
       add_assistant_fields(event, rec) if rec["type"] == "assistant"
       event["hidden"] = true if hidden?(kind, rec)
+      event["beat"] = true if !@nested && BEAT_KINDS.include?(kind)
       event
     end
 
@@ -614,7 +628,7 @@ module ConversationStory
       path = subagent_log_path(agent_id)
       return story.merge("log" => nil, "meta" => {}, "events" => []) unless path
 
-      nested = self.class.new(path).to_document
+      nested = self.class.new(path, nested: true).to_document
       hide_prompt_echo!(nested["events"], call)
       story.merge("log" => File.basename(path), "meta" => nested["meta"],
                   "events" => nested["events"])

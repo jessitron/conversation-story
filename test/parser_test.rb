@@ -60,6 +60,31 @@ class ParserTest < Minitest::Test
       assert_equal refs.uniq.size, refs.size, "event refs must be unique"
     end
 
+    # `beat` is where narration stops (n / p / shift+arrow). The default has to
+    # reproduce what story.js used to hard-code from CSS classes: exactly the
+    # main log's user and assistant messages.
+    define_method("test_#{name}_beats_are_exactly_the_main_thread_messages") do
+      doc = ConversationStory::Parser.new(log).to_document
+      beats, rest = doc["events"].partition { |e| e["beat"] }
+
+      assert_equal %w[assistant_message user_message],
+                   beats.map { |e| e["kind"] }.uniq.sort,
+                   "beats should be exactly the two conversation kinds"
+      refute_empty beats
+      assert(beats.all? { |e| e["beat"] == true }, "beat is only ever true")
+      assert(rest.none? { |e| e.key?("beat") }, "a non-beat carries no beat key")
+    end
+
+    # A beat never stops inside a subagent: its log is parsed by the same class
+    # recursively, so without the `nested:` guard a 70-event agent story would
+    # become 70 beats and shatter one beat of Jess's conversation.
+    define_method("test_#{name}_no_event_inside_a_subagent_is_a_beat") do
+      doc = ConversationStory::Parser.new(log).to_document
+      nested = doc["events"].flat_map { |e| e.dig("subagent", "events") || [] }
+      assert(nested.none? { |e| e.key?("beat") },
+             "subagent events must carry no beat key")
+    end
+
     define_method("test_#{name}_renders_copyable_event_id") do
       doc  = ConversationStory::Parser.new(log).to_document
       html = ConversationStory::Renderer.new(doc).to_html
