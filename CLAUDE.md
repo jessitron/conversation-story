@@ -79,6 +79,14 @@ this change are dead links; nothing aliases them.) Two things follow:
   log. Only the `unknown` fallback kind keeps `raw`, so
   unrecognized record types aren't silently lost (a README constraint).
 - **`examples/` are golden fixtures.** Test the parser against every conversation log in there.
+  **`bin/grab-example <session-id> <name>`** brings a new one in (`--list` shows
+  this repo's sessions with each one's first prompt, so you can recognize them);
+  it copies the main log plus any `subagents/` sidecars. Grabbing the session
+  you're in copies a *live* file, so the fixture stops mid-session — re-run to
+  re-snapshot. Every example is ~1–7 MB and its built page is committed too, so
+  they're not free. Tests glob `examples/*.jsonl`, so a new log runs the whole
+  golden suite immediately — expect newer logs to carry record types the older
+  fixtures never had.
 - **`out/` is committed** (not gitignored); examples ship with the repo and can
   be pushed to `gh-pages` when Jess chooses.
 - **`notes/`** holds design docs and session notes, tracked in git so they follow
@@ -169,7 +177,10 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
 - A prompt's **mode** is a field the prompt record carries (`permissionMode`,
   next to `promptId`) — read it there, never from the standalone `mode` records,
   which hold the UI state at write time and lose a switch that was undone before
-  the turn ended. The comment on `Parser::TYPE_TO_KIND` has the measurement.
+  the turn ended. The comment on `Parser::TYPE_TO_KIND` has the measurement, and
+  `notes/2026-07-28-session-16-examples-and-prompt-mode.md` has how we found out
+  the hard way (plus two gotchas: self-referential fixtures inflate string greps,
+  and `bin/screenshot` shoots blank for a card deep in a long page).
 - **`ConversationStory::Markdown`** (`lib/conversation_story/markdown.rb`) is a
   small, safe markdown-subset renderer used for prose detail text
   (user/assistant messages, reasoning). Escapes raw text before any markdown
