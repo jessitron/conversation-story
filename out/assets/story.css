@@ -295,6 +295,9 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 .badge.err   { border-color: var(--red); color: #fff; background: var(--red); }
 .badge.agent { border-color: var(--red); color: var(--red); }
 .badge.queue { border-color: var(--olive); color: var(--olive); }
+/* only worn by a prompt whose mode CHANGED, so it can afford to be emphatic:
+   filled in the user card's blue, the way .err fills in red. */
+.badge.mode  { border-color: var(--blue); color: #fff; background: var(--blue); }
 
 /* ---- kind → color table ----
    The single place to recolor a kind. Every card reads var(--kind); these
@@ -331,6 +334,23 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 /* accent is on the right here, so the highlight shadow leans the other way */
 .card.k-user.active, .card.k-user.related { box-shadow: 3px 4px 0 var(--kind); }
 
+/* A coordinator_message is Claude, but arriving into a SUBAGENT from outside
+   its own thread — the same "other side" logic as k-user above, just kept in
+   the subagent's own gray rather than the human's blue (see who_for). */
+.card.k-coordinator {
+  grid-template-columns: 1fr var(--gutter-w);
+  margin-left: 15%;
+  border-left: 1px solid var(--line);
+  border-right: var(--card-accent) solid var(--kind);
+  padding-right: var(--card-pad);
+  text-align: right;
+}
+.card.k-coordinator .gutter { order: 2; }
+.card.k-coordinator .body   { order: 1; }
+.card.k-coordinator .gutter .kind { color: var(--kind); }
+.card.k-coordinator .body .summary { text-align: right; }
+.card.k-coordinator .body .badges { justify-content: flex-end; }
+
 /* Assistant → the user: the headline of the conversation. Make it stand out.
    A coordinator_message (a SendMessage delivery INTO a subagent, attributed to
    Claude — see who_for) reads the same way: real prose, not background
@@ -366,9 +386,13 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 }
 /* keep the kind-colored active shadow (its own resting shadow would otherwise
    win on specificity/order), layered over its soft elevation */
-.card.k-assistant.active, .card.k-assistant.related,
-.card.k-coordinator.active, .card.k-coordinator.related {
+.card.k-assistant.active, .card.k-assistant.related {
   box-shadow: -3px 4px 0 var(--kind), 0 5px 18px rgba(var(--navy-rgb), .09);
+}
+/* accent is on the right here (see k-coordinator above), so the highlight
+   shadow leans the other way, same as k-user's */
+.card.k-coordinator.active, .card.k-coordinator.related {
+  box-shadow: 3px 4px 0 var(--kind), 0 5px 18px rgba(var(--navy-rgb), .09);
 }
 
 /* Background machinery: present, but quieter than the conversation. */

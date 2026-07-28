@@ -306,11 +306,26 @@ module ConversationStory
                  [%(<span class="badge agent">Agent</span>)]
                else []
                end
+      badges.concat(mode_badges(event))
       badges << %(<span class="badge queue">Dequeued</span>) if event["dequeued"]
       badges << %(<span class="badge queue">Removed from queue</span>) if event["removed_from_queue"]
       return "" if badges.empty?
 
       %(<div class="badges">#{badges.join}</div>)
+    end
+
+    # A prompt's mode reaches the card face ONLY when it moved — "Jess switched
+    # to plan mode" is a story beat; "still in normal mode, for the 44th time" is
+    # not. The steady-state value is in the detail pane's Mode section.
+    # Deduped by VALUE: switching into plan mode moves `mode` and
+    # `permission_mode` together, and two badges both reading PLAN says nothing
+    # the one says. When they genuinely differ (plan / acceptEdits) the two words
+    # come from different vocabularies, so both are worth showing.
+    def mode_badges(event)
+      %w[mode permission_mode]
+        .filter_map { |field| event[field] if event["#{field}_changed"] }
+        .uniq
+        .map { |value| %(<span class="badge mode">#{h value}</span>) }
     end
 
     def tool_call_badges(event)
@@ -510,10 +525,25 @@ module ConversationStory
 
     def generic_sections(event)
       sections = [text_section(event)]
+      sections << mode_section(event)
       if (raw = event.dig("detail", "raw"))
         sections << section("Raw record", machine_html(JSON.pretty_generate(raw)))
       end
       sections
+    end
+
+    # The mode a prompt was sent in — state the harness stamps at submission, so
+    # it's a field on the message, not an event of its own. Quiet by design: the
+    # value shows here for every prompt, and only a CHANGE reaches the card face
+    # (see mode_badges). The episode-8 logs predate the `mode` record and carry
+    # permissions only, so each row appears only if that log recorded it.
+    def mode_section(event)
+      rows = []
+      rows << ["Mode", event["mode"]] if event["mode"]
+      rows << ["Permissions", event["permission_mode"]] if event["permission_mode"]
+      return "" if rows.empty?
+
+      section("Mode", kv_dl(rows))
     end
 
     # Conversational kinds (user/assistant messages, reasoning) render their text
