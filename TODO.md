@@ -13,6 +13,28 @@ which mountain each item climbs.
 
 - **model name** put the model name in every LLM-call-representing card.
 - **notice title generation** The ai_title events are kinda neat, and it would be cool if they showed up. And as we scrolled past them, the title at the top changed!
+- **attachments that carry real content** (session 19) — `hook_additional_context`
+  is the good one: its `content` array holds the text a hook actually injected
+  (`mode-switches:5` = 3,276 chars of the SessionStart superpowers block), and it
+  already renders. Show it off — it's the *only* place the log reveals
+  instructions the agent was operating under; the system prompt and CLAUDE.md are
+  never logged at all. See
+  `notes/2026-07-28-session-19-what-the-log-cannot-tell-you.md`.
+  While in there, the sibling subtypes are broken: `attachment_detail_text` reads
+  only `prompt` and `content`, so every other visible subtype renders a **raw
+  subtype string as its summary over an empty detail pane** — 8 such cards on
+  `mode-switches` alone (`agent_listing_delta` → payload is in `addedLines`;
+  `edited_text_file` ×4 → `filename` + `snippet`; `plan_mode_exit` ×2 and
+  `plan_mode` → `planFilePath`, `reminderType`; plus `command_permissions` →
+  `allowedTools` in `mtg-tabletop-plan`). Each needs either a real summary +
+  detail or a place in `HIDDEN_ATTACHMENT_TYPES`. Two notes on deciding:
+  - `edited_text_file` is worth *keeping* — it fires when Jess edits a file
+    mid-session (4× in `mode-switches`, once in session 19 when Jess edited
+    `CLAUDE.md` mid-turn). "Jess changed the instructions underneath me" is a
+    story beat, and today it's a blank card.
+  - the hidden list is **inverted** on one pair: `skill_listing` is hidden
+    despite carrying 8,185 chars of content, while `agent_listing_delta` is
+    visible with nothing to show. Decide those two together.
 - **mode changes in the stream** Each prompt now carries the mode it was sent in (a `Mode` row in its detail pane). It may be possible to notice permission mode changes and mark it in the conversation stream.
 
 ### Subagents
@@ -122,4 +144,8 @@ correctness bug that needs fixing right now._
   outside the revealed prefix. No error, and it self-heals on the next beat,
   but mid-talk it's a spoiler.
 
+- **collapsing sections** It would be nice to collapse by beat as well as by subagents. I also want hotkeys for this, including collapse/expand all and collapse/expand selected.
+
 - **show live conversations** figure out what it would take, and how it would look, to show conversations that are active, like based on the growing files in .claude. Then I could read what's happening in a format that doesn't hurt my eyes.
+
+- **summarize a section** It would be helpful to be able to select a
