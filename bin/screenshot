@@ -1,42 +1,148 @@
-#!/usr/bin/env bash
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
 # Screenshot a generated story page with headless Chrome — a quick visual check
 # that a CSS change landed the way it reads on paper.
 #
-#   bin/screenshot [example-name | http://…] [#fragment] [out.png]
+#   bin/screenshot [example-name | http://… | .] ['#fragment'] [out.png]
 #
-# Defaults to episode-8-before, no fragment, and a png in the scratch dir.
-# The fragment selects a card (the page's selection is fragment-driven) and is
-# the event's ref, so e.g. '#episode-8-before:174' screenshots that card
-# selected with its detail pane open.
+# Defaults to episode-8-before, no fragment, and a png in /tmp. `.` shoots the
+# landing page (out/./index.html resolves). The fragment is an event ref, so
+# '#episode-8-before:174' shoots that card selected, detail pane open, with its
+# causal chain highlighted. Quote it — '#' starts a comment in most shells.
 #
 # Pass a full http:// URL to shoot the page as SERVED rather than from disk —
 # that's the only way to see the summary editor, which appears only when
-# bin/serve answers the /api/health probe AND the page is in edit mode (see
-# the Mount Malleable block in assets/story.js). So the URL needs ?mode=edit
-# too — explore mode never builds the box, even with a server behind it. E.g.:
+# bin/serve answers the /api/health probe AND the page is in edit mode (see the
+# Mount Malleable block in assets/story.js). So the URL needs ?mode=edit too —
+# explore mode never builds the box. E.g.:
 #
 #   rake serve &
 #   bin/screenshot 'http://localhost:8080/episode-8-after/?mode=edit' '#episode-8-after:4'
-set -euo pipefail
+#
+# WHY THIS IS RUBY + FERRUM AND NOT `chrome --screenshot` (session 18):
+# It used to be four lines of bash around `--screenshot`, and it shot a blank
+# sheet of paper for any card that wasn't near the top — which is most cards, on
+# pages 180,000px tall. That was blamed for sessions on "a headless repaint
+# artifact above the target". It isn't. Measured: with a fragment deep in the
+# page the DOM is perfect (right card `.active`, scrolled to it, card sitting at
+# y=911 in the viewport) and the capture is STILL blank — and blank from
+# scrollY=10_000 on, not just far down. Headless Chrome never rasterizes the
+# tiles a programmatic scroll exposes, so a viewport capture of a scrolled page
+# has nothing in it. Switching capture paths doesn't help (`--headless=new` and
+# CDP Page.captureScreenshot are both blank); scrolling less doesn't help.
+#
+# What DOES work is not scrolling at all: ask for an explicit clip rectangle in
+# PAGE coordinates, which goes down Chrome's capture-beyond-viewport path and
+# rasterizes the region on demand. So this script computes the target card's
+# page-space rect and clips a viewport-sized window around it. Ferrum's
+# `area:` is that clip, and it's why a gem beats the CLI flag here.
+#
+# It also now SAYS SO when a fragment doesn't resolve, instead of silently
+# shooting the default card: hidden events have no card by design, and a ref
+# that's off by a line looks exactly like "my CSS change did nothing".
 
-CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-example="${1:-episode-8-before}"
-fragment="${2:-}"
+ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../Gemfile", __dir__)
+require "bundler/setup"
+require "ferrum"
 
-if [[ "$example" == http* ]]; then
-  url="$example"
-  out="${3:-/tmp/story-served.png}"
+REPO   = File.expand_path("..", __dir__)
+CHROME = ENV.fetch("CHROME", "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
+WIDTH  = Integer(ENV.fetch("WIDTH", 1400))
+HEIGHT = Integer(ENV.fetch("HEIGHT", 1600))
+
+target = ARGV[0] || "episode-8-before"
+args   = ARGV[1..] || []
+# The fragment is positional but usually skipped, so "bin/screenshot ex out.png"
+# used to silently treat out.png as the ref and shoot the default card. Sort the
+# two trailing arguments by shape instead: a .png is the destination, anything
+# else is the ref.
+outfile  = args.find { |a| a.end_with?(".png") }
+fragment = (args.find { |a| a != outfile } || "").sub(/\A#/, "")
+served   = target.start_with?("http")
+
+if served
+  url, hash = target.split("#", 2)
+  fragment = fragment.empty? ? (hash || "") : fragment
+  out = outfile || "/tmp/story-served.png"
 else
-  out="${3:-/tmp/story-$example.png}"
-  repo="$(cd "$(dirname "$0")/.." && pwd)"
-  page="$repo/out/$example/index.html"
-  [ -f "$page" ] || { echo "no such page: $page (run 'rake build')" >&2; exit 1; }
-  url="file://$page"
-fi
+  page = File.join(REPO, "out", target, "index.html")
+  abort "no such page: #{page} (run 'rake build')" unless File.exist?(page)
+  url = "file://#{page}"
+  name = target.tr("./", "-").gsub(/\A-+|-+\z/, "")
+  out = outfile || "/tmp/story-#{name.empty? ? "index" : name}.png"
+end
+abort "Chrome not found at #{CHROME} (set CHROME=...)" unless File.exist?(CHROME)
 
-"$CHROME" --headless --disable-gpu --hide-scrollbars \
-  --window-size=1400,1600 --screenshot="$out" \
-  --virtual-time-budget=2000 \
-  "$url$fragment" >/dev/null 2>&1
+browser = Ferrum::Browser.new(headless: true, window_size: [WIDTH, HEIGHT],
+                              browser_path: CHROME, timeout: 30)
+begin
+  browser.goto(fragment.empty? ? url : "#{url}##{fragment}")
 
-echo "$out"
+  # Condition-based settle: wait for fonts and, when a fragment was given, for
+  # story.js to have made that card .active. Cheaper and more reliable than the
+  # old fixed --virtual-time-budget guess.
+  deadline = Time.now + 5
+  loop do
+    state = browser.evaluate(<<~JS)
+      (() => {
+        const id = #{fragment.inspect};
+        const c = id ? document.getElementById(id) : null;
+        return {
+          fonts: document.fonts.status === 'loaded',
+          cards: document.querySelectorAll('.card').length,
+          found: !!c,
+          active: !!(c && c.classList.contains('active')),
+        };
+      })()
+    JS
+    @state = state
+    break if state["fonts"] && state["cards"].to_i.positive? &&
+             (fragment.empty? || !state["found"] || state["active"])
+    break if Time.now > deadline
+
+    sleep 0.1
+  end
+
+  if !fragment.empty? && !@state["found"]
+    warn "warning: ##{fragment} is not a card on this page — hidden events have " \
+         "no card by design, so story.js fell back to the default selection. " \
+         "Shooting the top of the page."
+    fragment = ""
+  end
+
+  area =
+    if fragment.empty?
+      nil # top of the page: an unscrolled viewport capture is fine
+    else
+      # THE CLIP MUST OVERLAP THE CURRENT VIEWPORT. Only the tiles around where
+      # the page is actually scrolled get rasterized, so a clip reaching far
+      # above the viewport comes back as blank paper — that's why scrolling to
+      # the top and clipping deep is blank, and why the static header (84px up,
+      # off-screen) went missing from an otherwise good shot. So: position the
+      # page, then clip EXACTLY the viewport.
+      #
+      # A card on the first screenful gets the page put back to the top, which
+      # keeps the header and its stats in frame. Anything deeper is centred,
+      # and then the header is legitimately out of shot — that's what a browser
+      # scrolled to that card shows too.
+      r = browser.evaluate(<<~JS)
+        (() => {
+          const c = document.getElementById(#{fragment.inspect});
+          const b = c.getBoundingClientRect();
+          const top = b.top + window.scrollY;
+          if (top + b.height < window.innerHeight) window.scrollTo(0, 0);
+          else c.scrollIntoView({ block: 'center' });
+          return { y: window.scrollY, h: window.innerHeight };
+        })()
+      JS
+      sleep 0.3 # let the scroll commit and its tiles rasterize
+      { x: 0, y: r["y"].to_i, width: WIDTH, height: r["h"].to_i }
+    end
+
+  area ? browser.screenshot(path: out, area: area) : browser.screenshot(path: out)
+ensure
+  browser.quit
+end
+
+puts out

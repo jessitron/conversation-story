@@ -190,7 +190,8 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   the turn ended. The comment on `Parser::TYPE_TO_KIND` has the measurement, and
   `notes/2026-07-28-session-16-examples-and-prompt-mode.md` has how we found out
   the hard way (plus two gotchas: self-referential fixtures inflate string greps,
-  and `bin/screenshot` shoots blank for a card deep in a long page).
+  and `bin/screenshot` shot blank for a card deep in a long page — fixed in
+  session 18, see the screenshot paragraph below).
 - Inside a **subagent's own log**, a `SendMessage` delivery from the
   orchestrating agent arrives as a plain `role: user` record too — same shape
   as a real prompt, but it isn't Jess. The harness prefixes it with a literal
@@ -315,9 +316,34 @@ won't notice it changed.
 
 To *see* a CSS change: `bin/screenshot [example] ['#<ref>'] [out.png]` shoots a
 built page with headless Chrome. Passing a fragment selects that card, so its
-detail pane and its highlighted causal chain are in the shot (the region above
-the target screenshots blank — a headless repaint artifact, not a page bug).
+detail pane and its highlighted causal chain are in the shot.
 `bin/screenshot .` shoots the landing page (`out/./index.html` resolves).
+Arguments after the first are sorted by shape, not position — a `.png` is the
+destination, anything else is the ref — so you can skip the fragment.
+
+**It shoots a viewport-sized clip around the target card, and that is the whole
+point of the design** (session 18). It used to be bash around
+`chrome --screenshot`, and it returned a blank sheet of paper for any card that
+wasn't near the top — which was written off for several sessions as "a headless
+repaint artifact above the target". It was not: with a deep fragment the DOM is
+perfect (right card `.active`, scrolled to it, card at y=911 in the viewport)
+and the capture is still blank, from scrollY=10,000 on. **Headless Chrome only
+rasterizes tiles around the current scroll position**, so a viewport capture of
+a programmatically scrolled page has nothing in it, and neither
+`--headless=new` nor CDP `Page.captureScreenshot` changes that. What works is
+an explicit clip rectangle in page coordinates (ferrum's `area:`) — but **the
+clip must overlap the current viewport**: clip deep while scrolled to the top
+and it's blank again, and that same rule is why the static header vanished from
+a shot taken 150px down. Hence: position the page (top of page if the card fits
+on the first screen, so the header and its stats stay in frame; otherwise
+`scrollIntoView({block:'center'})`), then clip *exactly* the viewport. Don't
+"simplify" this back to a plain screenshot call.
+A fragment that resolves to no card now **warns on stderr** instead of quietly
+shooting the default selection — hidden events have no card by design, and a
+ref off by one line looked exactly like a CSS change doing nothing.
+**`bin/check-screenshot`** guards all of it (deep card, mid card, no fragment,
+landing page, unresolvable ref); it detects blankness by file size, since a
+flat-colour PNG is ~9.6 KB where a real shot is 200–450 KB.
 
 **`TODO.md` is the open-threads list**, grouped by mountain. The big ones:
 step-through navigation and a presenter mode (Mount Interactive); showing that

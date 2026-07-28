@@ -1,0 +1,75 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# Guard bin/screenshot against the bug that ate several sessions: shooting a
+# card deep in a long page produced a blank sheet of paper, and the blankness
+# was mistaken for "a headless repaint artifact" rather than a broken script.
+#
+#   bin/check-screenshot
+#
+# HOW BLANKNESS IS DETECTED: a PNG of one flat colour compresses to almost
+# nothing — an empty 1400x1600 sheet of the page's paper is ~9.6 KB, while any
+# shot with cards in it is 200-400 KB. So file size is the assertion, with a
+# threshold (BLANK_MAX) an order of magnitude away from both. Crude, but it
+# needs no image library, and it fails exactly when the bug is back.
+#
+# The deep-card case is the one that matters; the others are here so a rewrite
+# of the argument handling can't quietly break the ordinary uses.
+
+require "tmpdir"
+require "fileutils"
+
+REPO      = File.expand_path("..", __dir__)
+BLANK_MAX = 50_000
+SHOT      = File.join(REPO, "bin", "screenshot")
+TMP       = File.join(Dir.tmpdir, "check-screenshot")
+
+FileUtils.mkdir_p(TMP)
+
+# The last visible card of the tallest example — ~180,000px down the page, which
+# is where the old script gave up. Recomputed rather than hard-coded so a
+# re-parse that shifts line numbers doesn't turn this into a false failure.
+def deepest_ref(example)
+  html = File.read(File.join(REPO, "out", example, "index.html"))
+  html.scan(/id="(#{Regexp.escape(example)}:\d+)"/).flatten.last
+end
+
+failures = []
+
+def shoot(desc, args, expect:, failures:)
+  out = File.join(TMP, "#{desc.tr(" ", "-")}.png")
+  FileUtils.rm_f(out)
+  ok = system(SHOT, *args, out, out: File::NULL, err: File::NULL)
+  size = File.exist?(out) ? File.size(out) : 0
+
+  problem =
+    if !ok || size.zero? then "bin/screenshot failed to write a file"
+    elsif expect == :content && size <= BLANK_MAX
+      "shot is blank (#{size} bytes, need > #{BLANK_MAX})"
+    end
+
+  if problem
+    failures << "#{desc}: #{problem}"
+    puts "FAIL  #{desc} — #{problem}"
+  else
+    puts "OK    #{desc} (#{size} bytes)"
+  end
+end
+
+deep = deepest_ref("mtg-tabletop-plan")
+abort "no built mtg-tabletop-plan page (run 'rake build')" unless deep
+
+shoot("deep card", ["mtg-tabletop-plan", "##{deep}"], expect: :content, failures: failures)
+shoot("mid card", ["episode-8-before", "#episode-8-before:174"], expect: :content, failures: failures)
+shoot("no fragment", ["episode-8-before"], expect: :content, failures: failures)
+shoot("landing page", ["."], expect: :content, failures: failures)
+# A hidden event has no card by design: the shot falls back to the top of the
+# page, which still has content — it must not crash or come back empty.
+shoot("hidden ref", ["mtg-tabletop-plan", "#mtg-tabletop-plan:700"], expect: :content, failures: failures)
+
+if failures.empty?
+  puts "\nall #{5} screenshot cases produced real pixels"
+else
+  warn "\n#{failures.size} failure(s):\n  #{failures.join("\n  ")}"
+  exit 1
+end

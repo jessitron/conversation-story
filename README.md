@@ -68,6 +68,25 @@ LOG=examples/episode-8-before.jsonl rake build   # just this example
 PORT=9000 rake serve                             # serve on a different port
 ```
 
+### Seeing a page
+
+```sh
+bin/screenshot                                            # top of episode-8-before
+bin/screenshot mtg-tabletop-plan '#mtg-tabletop-plan:749'  # that card, selected
+bin/screenshot .                                          # the landing page
+bin/check-screenshot                                      # guard the above
+```
+
+Headless Chrome against a built page. A fragment is an event ref, and it selects
+that card — detail pane open, causal chain highlighted. Quote it; `#` starts a
+comment in most shells. Arguments after the first go by shape, so a `.png` is
+the output file wherever you put it and the fragment is optional.
+
+Under the hood it clips the viewport around the target rather than scrolling and
+shooting, because headless Chrome rasterizes only what's near the current scroll
+position — a plain `chrome --screenshot` of a scrolled page comes back as blank
+paper. `notes/2026-07-28-session-18-screenshot-clip.md` has the measurements.
+
 The intermediate `out/<name>/story.yaml` is readable and tweakable — change it
 and re-run `rake render` to see the difference. But it's a **generated** file:
 the next `rake parse` rebuilds it from the log and your change is gone. For an

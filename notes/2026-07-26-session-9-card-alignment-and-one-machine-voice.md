@@ -99,3 +99,10 @@ Known artifact, **pre-existing** (reproduced against the committed HEAD page):
 when a fragment is given, the area *above* the target card screenshots blank.
 `scrollIntoView` runs and headless doesn't repaint that band. The page itself is
 fine — screenshot without a fragment to see the top.
+
+> **Superseded in session 18.** This diagnosis was wrong in a way that cost
+> several sessions: it isn't a band above the target, it's the *whole* shot, for
+> any card not on the first screen. Headless Chrome rasterizes only the tiles
+> around the current scroll position, so a viewport capture of a scrolled page
+> is empty. `bin/screenshot` is now Ruby + ferrum and clips the viewport
+> explicitly. See `notes/2026-07-28-session-18-screenshot-clip.md`.
