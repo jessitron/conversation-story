@@ -251,6 +251,10 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
   letter-spacing: var(--ls-wide);
   font-size: var(--fs-small); color: var(--kind, var(--ink-soft));
   margin-bottom: 3px;
+  /* .gutter sets nowrap (inherited) so short one/two-word labels stay tight;
+     a two-word label as long as "Subagent Result" needs to wrap within the
+     fixed gutter column instead of spilling into the body column. */
+  white-space: normal;
 }
 .card .gutter .who { display: block; color: var(--ink-soft); font-weight: 500; }
 
@@ -288,6 +292,7 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 .card.k-tool_call  { --kind: var(--gold); }
 .card.k-tool_result{ --kind: var(--olive); }
 .card.k-subagent   { --kind: var(--red); }
+.card.k-subagent_result { --kind: var(--red); }
 .card.k-system     { --kind: var(--ink-faint); }
 
 /* ---- per-kind treatment ---- */
@@ -339,6 +344,7 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 .card.k-thinking,
 .card.k-tool_call,
 .card.k-tool_result,
+.card.k-subagent_result,
 .card.k-system {
   background: transparent;
   padding: 8px 16px 8px var(--card-pad);
@@ -347,6 +353,7 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 .card.k-thinking:hover,
 .card.k-tool_call:hover,
 .card.k-tool_result:hover,
+.card.k-subagent_result:hover,
 .card.k-system:hover { opacity: 1; }
 /* ...and a quiet card that's highlighted (selected, or in the selected chain)
    stops being quiet. Must live AFTER the opacity: 0.7 above — same specificity,
@@ -355,6 +362,7 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 .card.k-thinking .body .summary,
 .card.k-tool_call .body .summary,
 .card.k-tool_result .body .summary,
+.card.k-subagent_result .body .summary,
 .card.k-system .body .summary {
   font-size: var(--fs-small); color: var(--ink-soft);
 }
@@ -369,7 +377,7 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
    and the rail are the ONLY difference; .subactions supplies both and
    otherwise gets out of the way. */
 .card.k-subagent .gutter .caret {
-  display: inline-block; margin-right: 4px; color: var(--kind);
+  display: inline-block; margin-left: 4px; color: var(--kind);
   transition: transform .12s ease;
 }
 .card.k-subagent.collapsed .gutter .caret { transform: rotate(-90deg); }
