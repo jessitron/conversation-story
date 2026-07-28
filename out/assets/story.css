@@ -359,6 +359,38 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
   font-size: var(--fs-small); color: var(--ink-soft);
 }
 
+/* ---- subagent subactions (design prototype only, session 14) ----
+   A Subagent card can expand into its own nested story: the events the
+   subagent itself produced, indented and threaded on a vertical rail so they
+   read as "belonging to" the subagent above them, not siblings of it on the
+   main board. Deliberately NOT a condensed/miniature card — a subaction is a
+   full .card with its own real k-* kind class, same size, same detail
+   template, same click-to-select behavior as a top-level event. Indentation
+   and the rail are the ONLY difference; .subactions supplies both and
+   otherwise gets out of the way. */
+.card.k-subagent .gutter .caret {
+  display: inline-block; margin-right: 4px; color: var(--kind);
+  transition: transform .12s ease;
+}
+.card.k-subagent.collapsed .gutter .caret { transform: rotate(-90deg); }
+
+.subactions {
+  position: relative;
+  margin-left: calc(var(--gutter-w) + 16px);
+  padding-left: 18px;
+}
+.subactions::before {
+  content: ""; position: absolute; top: 2px; bottom: 24px; left: 0;
+  border-left: 2px solid var(--red); opacity: .35;
+}
+/* the rail's closing tick — reads as "the subagent's story ends here",
+   so the line doesn't dangle unbounded into the next top-level card */
+.subactions::after {
+  content: ""; position: absolute; bottom: 24px; left: 0; width: 10px;
+  border-bottom: 2px solid var(--red); opacity: .35;
+}
+.card.k-subagent.collapsed + .subactions { display: none; }
+
 /* ============================================================
    Sidebar (detail) — collapsible + drag-resizable
    ============================================================ */

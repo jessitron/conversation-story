@@ -65,9 +65,8 @@ events:
   kind: user_message
   role: user
   at: '2026-04-14T02:27:21.472Z'
-  summary: I’ve used this app and enjoyed the live replay. The events go in a list
-    and stay in the list and I can scroll the list but there's a little timeline across
-    the top that is live. Is there a way to rewind the timeline?
+  summary: I’ve used this app and enjoyed the live replay.... Is there a way to rewind
+    the timeline?
   source:
     file: episode-8-before.jsonl
     line: 4
@@ -75,6 +74,7 @@ events:
     text: |-
       I’ve used this app and enjoyed the live replay. The events go in a list and stay in the list and I can scroll the list but there's a little timeline across the top that is live.
       Is there a way to rewind the timeline?
+  summary_edited: true
 - id: 0b4057eb-e19a-4bd0-9663-dea446f3ce49
   ref: episode-8-before:5
   agent: main
@@ -362,8 +362,8 @@ events:
   kind: assistant_message
   role: assistant
   at: '2026-04-14T02:28:43.593Z'
-  summary: Currently, no -- the timeline is live-only with no rewind. Here's how it
-    works today.... A rewind feature would be cool though.
+  summary: Currently, no. Here's how it works today.... A rewind feature would be
+    cool though. Would you like to implement that?
   source:
     file: episode-8-before.jsonl
     line: 15
@@ -456,9 +456,8 @@ events:
   kind: user_message
   role: user
   at: '2026-04-14T02:28:55.885Z'
-  summary: yes, but first, let's verify that we can test it. Can you make a small
-    change, like add 'jess was here' to the header? Then run it on a different port
-    for me, so I can compare with my regular install
+  summary: yes, but first, let's verify that we can test it. Can you add 'jess was
+    here' to the header? Then run it on a different port for me
   source:
     file: episode-8-before.jsonl
     line: 20
@@ -466,6 +465,7 @@ events:
     text: |-
       yes, but first, let's verify that we can test it. Can you make a small change, like add 'jess was here' to the header?
       Then run it on a different port for me, so I can compare with my regular install
+  summary_edited: true
 - id: 22a5fad3-46f0-4f3a-aa21-91e7a359ca79
   ref: episode-8-before:21
   agent: main
@@ -1312,9 +1312,8 @@ events:
   kind: assistant_message
   role: assistant
   at: '2026-04-14T02:29:18.356Z'
-  summary: The justfile shows the default ports are 4981 (server) and 5174 (client
-    dev). You can override them with env vars. Let me start it on different ports
-    so it won't conflict with your regular install.
+  summary: Let me start it on different ports so it won't conflict with your regular
+    install.
   source:
     file: episode-8-before.jsonl
     line: 53
@@ -1340,6 +1339,7 @@ events:
     added: 2207
     cumulative_context: 216145
   turn_leader: true
+  summary_edited: true
 - id: 498b1c71-cca4-472c-b647-bc8e911c6c93
   ref: episode-8-before:54
   agent: main

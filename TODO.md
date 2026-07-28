@@ -13,8 +13,6 @@ which mountain each item climbs.
 
 ### Token Counts
 
-- **headline token count** The token count in the conversation header should represent total input tokens + output tokens of all LLM requests, including subagents.
-
 - **token details**
   Rearrange the token count sections.
 

@@ -311,20 +311,20 @@ end</pre>
         </template>
       </a>
 
-      <!-- subagent -->
-      <a class="card k-subagent" id="event-8" href="#event-8" data-time="02:31:40">
+      <!-- subagent (expanded by default; .collapsed + the caret shows the other state) -->
+      <a class="card k-subagent" id="event-8" href="#event-8" data-time="02:27:30">
         <div class="gutter">
-          <span class="kind deco">Subagent</span>
+          <span class="kind deco"><span class="caret">▾</span>Subagent</span>
           <span class="who">Explore</span>
         </div>
         <div class="body">
-          <div class="summary"><b>Agent</b> spawned <code>Explore</code> — “find every top-level event type in the example logs.”</div>
-          <div class="badges"><span class="badge agent">Subagent</span><span class="badge tok">45,231 tok</span><span class="badge tok">12 tools</span></div>
+          <div class="summary"><b>Agent</b> spawned <code>Explore</code> — “explore this codebase to understand the timeline feature… how it works, whether rewind/pause/scrub exists, and the key files involved.”</div>
+          <div class="badges"><span class="badge agent">Subagent</span><span class="badge tok">45,231 tok</span><span class="badge tool">12 tools</span></div>
         </div>
         <template class="detail">
           <div class="d-section">
             <h4 class="deco">Subagent — Explore</h4>
-            <div class="d-text">Description: “Explore the example logs and enumerate every distinct top-level event `type` value, with counts.”
+            <div class="d-text">Description: “Explore this codebase to understand the timeline feature… how the timeline works, whether rewind/pause/scrub exists, and the key files involved.”
 
 → opens its own nested story (same document shape, recursively).</div>
           </div>
@@ -351,6 +351,216 @@ end</pre>
           </div>
         </template>
       </a>
+      <div class="subactions">
+        <!-- subagent assistant_message (planning text) -->
+        <a class="card k-assistant" id="event-8-sub-1" href="#event-8-sub-1" data-time="02:27:31">
+          <div class="gutter">
+            <span class="kind deco">Assistant</span>
+            <span class="who">Explore</span>
+          </div>
+          <div class="body">
+            <div class="summary">I'll explore this codebase to understand the timeline feature. Let me start by getting an overview of the project structure and then searching for timeline-related code.</div>
+          </div>
+          <template class="detail">
+            <div class="d-section">
+              <h4 class="deco">Message</h4>
+              <div class="d-text">I'll explore this codebase to understand the timeline feature. Let me start by getting an overview of the project structure and then searching for timeline-related code.</div>
+            </div>
+            <div class="d-section">
+              <h4 class="deco">Provenance</h4>
+              <dl class="kv">
+                <dt>source.file</dt><dd><code>agent-ae20659fd0f63295e.jsonl</code></dd>
+                <dt>source.line</dt><dd><code>2</code></dd>
+                <dt>agent</dt><dd><code>agent-ae2065…95e</code></dd>
+              </dl>
+            </div>
+            <div class="d-footer">
+              <button type="button" class="copy-ref" data-copy="agent-ae20659fd0f63295e:2" title="Copy event id to clipboard"><code>agent-ae20659fd0f63295e:2</code><span class="copy-hint">copy</span></button>
+            </div>
+          </template>
+        </a>
+
+        <!-- subagent tool_call — Bash -->
+        <a class="card k-tool_call" id="event-8-sub-2" href="#event-8-sub-2" data-time="02:27:32">
+          <div class="gutter">
+            <span class="kind deco">Tool Call</span>
+            <span class="who">Explore</span>
+          </div>
+          <div class="body">
+            <div class="summary"><b>Bash</b> <code>find … -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" | head -20</code></div>
+            <div class="badges"><span class="badge tool">Bash</span></div>
+          </div>
+          <template class="detail">
+            <div class="d-section">
+              <h4 class="deco">Tool call — Bash</h4>
+            </div>
+            <div class="d-section">
+              <h4 class="deco">Fields</h4>
+              <dl class="kv">
+                <dt>Tool</dt><dd><code>Bash</code></dd>
+                <dt>use_id</dt><dd><code>toolu_01PX…Jbr</code></dd>
+              </dl>
+            </div>
+            <div class="d-section">
+              <h4 class="deco">Input</h4>
+              <pre class="code">find /…/agents-observe -type f -name "*.ts" \
+  -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" | head -20</pre>
+            </div>
+            <div class="d-section">
+              <h4 class="deco">Provenance</h4>
+              <dl class="kv">
+                <dt>source.file</dt><dd><code>agent-ae20659fd0f63295e.jsonl</code></dd>
+                <dt>source.line</dt><dd><code>3</code></dd>
+                <dt>agent</dt><dd><code>agent-ae2065…95e</code></dd>
+              </dl>
+            </div>
+            <div class="d-footer">
+              <button type="button" class="copy-ref" data-copy="agent-ae20659fd0f63295e:3" title="Copy event id to clipboard"><code>agent-ae20659fd0f63295e:3</code><span class="copy-hint">copy</span></button>
+            </div>
+          </template>
+        </a>
+
+        <!-- subagent tool_result -->
+        <a class="card k-tool_result" id="event-8-sub-3" href="#event-8-sub-3" data-time="02:27:32">
+          <div class="gutter">
+            <span class="kind deco">Tool Result</span>
+            <span class="who">system</span>
+          </div>
+          <div class="body">
+            <div class="summary">20 files found: <code>vitest.config.ts</code>, <code>ui-store.ts</code>, …</div>
+          </div>
+          <template class="detail">
+            <div class="d-section">
+              <h4 class="deco">Tool result</h4>
+            </div>
+            <div class="d-section">
+              <h4 class="deco">Fields</h4>
+              <dl class="kv">
+                <dt>For</dt><dd><code>toolu_01PX…Jbr</code></dd>
+                <dt>Error</dt><dd><code>false</code></dd>
+              </dl>
+            </div>
+            <div class="d-section">
+              <h4 class="deco">Provenance</h4>
+              <dl class="kv">
+                <dt>source.file</dt><dd><code>agent-ae20659fd0f63295e.jsonl</code></dd>
+                <dt>source.line</dt><dd><code>4</code></dd>
+                <dt>agent</dt><dd><code>agent-ae2065…95e</code></dd>
+              </dl>
+            </div>
+            <div class="d-footer">
+              <button type="button" class="copy-ref" data-copy="agent-ae20659fd0f63295e:4" title="Copy event id to clipboard"><code>agent-ae20659fd0f63295e:4</code><span class="copy-hint">copy</span></button>
+            </div>
+          </template>
+        </a>
+
+        <!-- subagent tool_call — Grep -->
+        <a class="card k-tool_call" id="event-8-sub-4" href="#event-8-sub-4" data-time="02:27:36">
+          <div class="gutter">
+            <span class="kind deco">Tool Call</span>
+            <span class="who">Explore</span>
+          </div>
+          <div class="body">
+            <div class="summary"><b>Grep</b> <code>timeline|Timeline</code> in <code>*.ts</code></div>
+            <div class="badges"><span class="badge tool">Grep</span></div>
+          </div>
+          <template class="detail">
+            <div class="d-section">
+              <h4 class="deco">Tool call — Grep</h4>
+            </div>
+            <div class="d-section">
+              <h4 class="deco">Fields</h4>
+              <dl class="kv">
+                <dt>Tool</dt><dd><code>Grep</code></dd>
+                <dt>use_id</dt><dd><code>toolu_016d…Qnm</code></dd>
+                <dt>pattern</dt><dd><code>timeline|Timeline</code></dd>
+                <dt>type</dt><dd><code>ts</code></dd>
+              </dl>
+            </div>
+            <div class="d-section">
+              <h4 class="deco">Provenance</h4>
+              <dl class="kv">
+                <dt>source.file</dt><dd><code>agent-ae20659fd0f63295e.jsonl</code></dd>
+                <dt>source.line</dt><dd><code>6</code></dd>
+                <dt>agent</dt><dd><code>agent-ae2065…95e</code></dd>
+              </dl>
+            </div>
+            <div class="d-footer">
+              <button type="button" class="copy-ref" data-copy="agent-ae20659fd0f63295e:6" title="Copy event id to clipboard"><code>agent-ae20659fd0f63295e:6</code><span class="copy-hint">copy</span></button>
+            </div>
+          </template>
+        </a>
+
+        <!-- subagent tool_result -->
+        <a class="card k-tool_result" id="event-8-sub-5" href="#event-8-sub-5" data-time="02:27:37">
+          <div class="gutter">
+            <span class="kind deco">Tool Result</span>
+            <span class="who">system</span>
+          </div>
+          <div class="body">
+            <div class="summary">Found 8 files: <code>ui-store.ts</code>, <code>ui-store.test.ts</code>, …</div>
+          </div>
+          <template class="detail">
+            <div class="d-section">
+              <h4 class="deco">Tool result</h4>
+            </div>
+            <div class="d-section">
+              <h4 class="deco">Fields</h4>
+              <dl class="kv">
+                <dt>For</dt><dd><code>toolu_016d…Qnm</code></dd>
+                <dt>Error</dt><dd><code>false</code></dd>
+              </dl>
+            </div>
+            <div class="d-section">
+              <h4 class="deco">Provenance</h4>
+              <dl class="kv">
+                <dt>source.file</dt><dd><code>agent-ae20659fd0f63295e.jsonl</code></dd>
+                <dt>source.line</dt><dd><code>8</code></dd>
+                <dt>agent</dt><dd><code>agent-ae2065…95e</code></dd>
+              </dl>
+            </div>
+            <div class="d-footer">
+              <button type="button" class="copy-ref" data-copy="agent-ae20659fd0f63295e:8" title="Copy event id to clipboard"><code>agent-ae20659fd0f63295e:8</code><span class="copy-hint">copy</span></button>
+            </div>
+          </template>
+        </a>
+
+        <!-- subagent assistant_message (final reply) -->
+        <a class="card k-assistant" id="event-8-sub-6" href="#event-8-sub-6" data-time="02:31:38">
+          <div class="gutter">
+            <span class="kind deco">Assistant</span>
+            <span class="who">Explore</span>
+          </div>
+          <div class="body">
+            <div class="summary">Perfect! Now I have a complete picture. The timeline is exclusively a live replay mode with no rewind, pause, or scrub functionality. Key files: <code>ui-store.ts</code>, <code>Timeline.tsx</code>, <code>agent-lane.tsx</code>.</div>
+          </div>
+          <template class="detail">
+            <div class="d-section">
+              <h4 class="deco">Message</h4>
+              <div class="d-text">Perfect! Now I have a complete picture. Let me compile my findings.
+
+## Summary
+
+I've thoroughly explored the codebase and understand how the timeline feature works.
+
+### 1. Timeline Architecture — Always Live, No Rewind/Scrub
+
+The timeline is exclusively a live replay mode with NO rewind, pause, or scrub functionality…</div>
+            </div>
+            <div class="d-section">
+              <h4 class="deco">Provenance</h4>
+              <dl class="kv">
+                <dt>source.file</dt><dd><code>agent-ae20659fd0f63295e.jsonl</code></dd>
+                <dt>source.line</dt><dd><code>71</code></dd>
+                <dt>agent</dt><dd><code>agent-ae2065…95e</code></dd>
+              </dl>
+            </div>
+            <div class="d-footer">
+              <button type="button" class="copy-ref" data-copy="agent-ae20659fd0f63295e:71" title="Copy event id to clipboard"><code>agent-ae20659fd0f63295e:71</code><span class="copy-hint">copy</span></button>
+            </div>
+          </template>
+        </a>
+      </div>
 
       <!-- system -->
       <a class="card k-system" id="event-9" href="#event-9" data-time="02:35:02">
