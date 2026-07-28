@@ -1,0 +1,107 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# grab-example — copy a Claude session log out of ~/.claude/projects and into
+# examples/ as a golden fixture, under a name that says what the session did.
+#
+#   bin/grab-example <session-id> <name>
+#   bin/grab-example --list                 # what sessions are available
+#
+# A fixture is a main log plus, if the session delegated, its subagent sidecars:
+#
+#   examples/<name>.jsonl
+#   examples/<name>/subagents/agent-<id>.jsonl + .meta.json
+#
+# The parser finds the sidecars by that layout (agent ids are in the filenames),
+# so this is a straight copy — no rewriting. Nothing else is needed: the tests
+# glob examples/*.jsonl, and `rake build` renders whatever it finds.
+#
+# CAVEAT — grabbing the session you are sitting in copies a LIVE file. The
+# harness appends to it continuously, so the fixture ends wherever the log
+# happened to be, and everything after (including the copy itself) is missing.
+# Re-run to re-snapshot; the script warns when it notices.
+
+require "fileutils"
+require "json"
+
+REPO     = File.expand_path("..", __dir__)
+EXAMPLES = File.join(REPO, "examples")
+
+# ~/.claude/projects encodes a project's path by replacing every "/" with "-",
+# so /Users/jess/code/foo lives in -Users-jess-code-foo.
+def project_dir(repo)
+  File.join(Dir.home, ".claude", "projects", repo.tr("/", "-"))
+end
+
+def die(msg)
+  warn "grab-example: #{msg}"
+  exit 1
+end
+
+# One line per session log: id, size, last write, and the first thing the human
+# typed — enough to recognize a session without opening it.
+def list(dir)
+  Dir.glob(File.join(dir, "*.jsonl")).sort_by { |f| -File.mtime(f).to_i }.each do |f|
+    puts format("%-38s %7s  %s  %s",
+                File.basename(f, ".jsonl"),
+                "#{(File.size(f) / 1024.0 / 1024).round(1)}M",
+                File.mtime(f).strftime("%Y-%m-%d %H:%M"),
+                first_prompt(f))
+  end
+end
+
+def first_prompt(log)
+  File.foreach(log) do |line|
+    rec = JSON.parse(line) rescue next
+    next unless rec["type"] == "user"
+
+    content = rec.dig("message", "content")
+    text = content.is_a?(String) ? content : ""
+    next if text.strip.empty? || text.start_with?("<")
+
+    return text.gsub(/\s+/, " ")[0, 60]
+  end
+  "(no prompt found)"
+end
+
+dir = project_dir(REPO)
+die "no session logs for this repo at #{dir}" unless Dir.exist?(dir)
+
+if ARGV.first == "--list"
+  list(dir)
+  exit
+end
+
+session, name = ARGV
+unless session && name
+  warn "usage: bin/grab-example <session-id> <name>   (or --list)"
+  exit 1
+end
+die "name should be a slug like `mode-switches`, got #{name.inspect}" unless name.match?(/\A[a-z0-9]+(-[a-z0-9]+)*\z/)
+
+log = File.join(dir, "#{session}.jsonl")
+die "no such session log: #{log}" unless File.exist?(log)
+
+dest = File.join(EXAMPLES, "#{name}.jsonl")
+if File.exist?(dest) && File.size(dest) == File.size(log)
+  puts "examples/#{name}.jsonl is already this snapshot — nothing to do"
+  exit
+end
+
+FileUtils.cp(log, dest)
+lines = File.foreach(dest).count
+puts "examples/#{name}.jsonl  #{lines} lines, #{(File.size(dest) / 1024.0 / 1024).round(1)}M"
+
+sidecars = File.join(dir, session, "subagents")
+if Dir.exist?(sidecars)
+  target = File.join(EXAMPLES, name, "subagents")
+  FileUtils.mkdir_p(target)
+  FileUtils.cp_r(Dir.glob(File.join(sidecars, "*")), target)
+  puts "examples/#{name}/subagents/  #{Dir.glob(File.join(target, '*.jsonl')).size} subagent log(s)"
+end
+
+if ENV["CLAUDE_SESSION_ID"] == session || File.mtime(log) > Time.now - 120
+  puts "NOTE: that log was written to seconds ago — this is a mid-session snapshot."
+end
+
+puts "next: rake build, then rake test"
