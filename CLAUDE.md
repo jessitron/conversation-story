@@ -105,10 +105,14 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   `events` list (which stays one-per-line of the main log). The hinge is
   `toolUseResult.agentId`, not the tool's name. The renderer draws the nested
   events as full cards in a `.subactions` block right after the subagent card,
-  **collapsed by default** (70 and 55 subactions in the real logs would bury the
-  conversation); `story.js`'s caret toggles it, `NAV()` is the "cards Jess can
-  step through" list that excludes collapsed ones, and a link to a nested ref
-  expands what it needs. **Anything that counts or looks up cards must walk the
+  **expanded by default** — seeing the work an agent did is the point, and
+  shipping it collapsed to "protect the main narrative" was corrected;
+  the caret is for quieting a subagent down. `story.js`'s caret toggles it,
+  `NAV()` is the "cards Jess can step through" list that excludes collapsed ones,
+  and a link to a nested ref expands what it needs. **A beat never stops inside a
+  subagent**: `isMessage` (narrate beats and shift+arrow) means "a message in the
+  conversation with Jess", so a subagent's whole story reveals as one flurry
+  within the beat that spawned it. **Anything that counts or looks up cards must walk the
   tree**: `Renderer#all_visible_events`, `test/story_events.rb`, `Edits#apply`,
   `bin/serve`'s `event_for`. `notes/2026-07-28-session-15-subagents.md` and the
   Subagents section of `notes/intermediate-schema.md` have the rest.

@@ -92,9 +92,13 @@ class Story
   def exists?(dom_id) = js("!!document.getElementById(#{dom_id.inspect})")
   def hidden_attr?(css) = js("(document.querySelector(#{css.inspect}) || {}).hidden === true")
 
+  # "A message" means a message in the conversation with Jess — the same test
+  # story.js's isMessage makes, subagents' internal messages excluded, because
+  # that's what a beat and a shift+arrow land on.
   def message?(id)
     js("(() => { const c = document.getElementById(#{id.inspect}); " \
-       "return !!c && (c.classList.contains('k-user') || c.classList.contains('k-assistant')); })()")
+       "return !!c && (c.classList.contains('k-user') || c.classList.contains('k-assistant')) " \
+       "&& !c.closest('.subactions'); })()")
   end
 
   # ---- acting ----
@@ -402,33 +406,73 @@ end
 
 # ---- subagent subactions --------------------------------------------------
 
-scenario "the caret expands a subagent's story, and collapses it again" do |s|
-  next nil if s.subaction_ids.empty?   # a story with no subagents has nothing to check
+scenario "subagents ship expanded, so the work they did is on the page" do |s|
+  subactions = s.subaction_ids
+  next nil if subactions.empty?   # a story with no subagents has nothing to check
+
+  hidden = subactions - s.shown_ids
+  next "#{hidden.size} of #{subactions.size} subactions are not laid out on load" unless hidden.empty?
+  # ...and they're steppable, not just visible
+  next "subactions are missing from the navigable list" unless (subactions - s.card_ids).empty?
+  nil
+end
+
+scenario "the caret collapses a subagent's story, and expands it again" do |s|
+  next nil if s.subaction_ids.empty?
 
   shown_before = s.shown_ids.size
   active = s.active_id
   s.click_caret
-  next "the caret revealed no subactions (#{shown_before} cards shown, still #{s.shown_ids.size})" unless
-    s.shown_ids.size > shown_before
+  next "the caret hid no subactions (#{shown_before} cards shown, still #{s.shown_ids.size})" unless
+    s.shown_ids.size < shown_before
   # The caret is inside an <a class="card"> whose every other pixel selects the
   # card. If this ever fails, the delegated click handler stopped checking for
   # the caret before doing its own thing.
   next "clicking the caret also moved the selection to #{s.active_id}" unless s.active_id == active
 
   s.click_caret
-  next "the caret did not collapse the story again (#{s.shown_ids.size} shown)" unless
+  next "the caret did not reopen the story (#{s.shown_ids.size} shown)" unless
     s.shown_ids.size == shown_before
   nil
 end
 
-scenario "a link to a card inside a subagent's story opens the block" do |s|
+scenario "a link to a card inside a collapsed subagent reopens the block" do |s|
   target = s.subaction_ids.first
   next nil unless target
 
-  next "#{target} is laid out before anything opened its block" if s.shown_ids.include?(target)
+  s.click_caret     # close it first: expanded is the shipped state
+  next "#{target} is still laid out after collapsing its block" if s.shown_ids.include?(target)
   s.set_hash(target)     # the same syncFromHash path a deep link takes on load
   next "#{target} is still hidden after linking to it" unless s.shown_ids.include?(target)
   next "#{target} did not become the selection (got #{s.active_id.inspect})" unless s.active_id == target
+  nil
+end
+
+# The reason Jess wants them open: a subagent's tool calls are the busiest
+# stretch of the conversation, and a beat should SHOW that busyness. So a beat
+# never stops inside a subagent — the whole story flurries past within the beat
+# of Jess's conversation that spawned it.
+scenario "one beat reveals a subagent's whole story as a flurry", query: "?mode=narrate" do |s|
+  inside = s.subaction_ids
+  next nil if inside.empty?
+
+  # Walk beats until any of the subagent's story is showing.
+  # A 70-card flurry at BEAT_MS apart takes ~6s, so this beat needs a longer
+  # leash than wait_stable's default before "the count stopped growing" is true.
+  20.times do
+    break if s.revealed_ids.intersect?(inside)
+
+    s.key("n").wait_stable(timeout: 20)
+  end
+  revealed = s.revealed_ids
+  next "narrate never reached the subagent's story" unless revealed.intersect?(inside)
+
+  missing = inside - revealed
+  next "a beat stopped part-way through the subagent (#{missing.size} of #{inside.size} unrevealed)" unless
+    missing.empty?
+  # ...and the beat ended on a message to Jess, not on a subaction
+  last = revealed.last
+  next "the beat ended inside the subagent, on #{last}" unless s.message?(last)
   nil
 end
 

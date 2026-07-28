@@ -357,7 +357,15 @@ const TYPING = 'input, textarea, select, [contenteditable]';
 
 /* Every card in document order, materialized once. */
 const CARDS = Array.from(cards);
-const isMessage = c => c.classList.contains('k-user') || c.classList.contains('k-assistant');
+/* A "message" for stepping purposes is a message in the conversation with JESS —
+   so a beat (and shift+arrow) lands on what was said TO her. A subagent's own
+   assistant messages are cards of the same kind, but they're that agent talking
+   to itself; stopping on them would break one beat of Jess's conversation into
+   sixteen. So a whole subagent story rides along inside the beat that spawned it,
+   and reveals as the flurry it was. */
+const isMessage = c =>
+  (c.classList.contains('k-user') || c.classList.contains('k-assistant')) &&
+  !c.closest('.subactions');
 
 /* ---- subagent subactions ----
    A `subagent` card is followed by a .subactions block holding cards for the

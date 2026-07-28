@@ -377,10 +377,11 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
    and the rail are the ONLY difference; .subactions supplies both and
    otherwise gets out of the way.
 
-   Generated pages ship every subagent COLLAPSED: the real logs run to 70
-   subactions, and expanded by default they bury the conversation they belong to.
-   The caret is the only click inside a card that doesn't select it (see
-   assets/story.js), so it gets its own hit area and cursor. */
+   Generated pages ship every subagent EXPANDED — showing the work being done is
+   the point, and in narrate a subagent's flurry of tool calls reveals a beat at
+   a time like any other. The caret quiets one down; it is the only click inside
+   a card that doesn't select the card (see assets/story.js), so it gets its own
+   hit area and cursor. */
 .card.k-subagent .gutter .caret {
   display: inline-block; margin-left: 4px; padding: 0 4px; color: var(--kind);
   cursor: pointer;

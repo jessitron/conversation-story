@@ -167,10 +167,12 @@ module ConversationStory
       end.join("\n")
     end
 
-    # Collapsed by default. In the mock a subagent had six subactions; the real
-    # logs have 70 and 55, which expanded would bury the conversation they belong
-    # to — so the caret starts closed and expanding is a deliberate act ("Subagent
-    # tool calls should be EXPANDABLE into the whole story of the subagent").
+    # EXPANDED by default, all 70 subactions of it. The point of the page is to
+    # show the work being done, and a subagent doing 27 tool calls in the middle
+    # of the conversation IS the work — in narrate especially, where each beat
+    # reveals the flurry a card at a time and the agent's busyness is the thing
+    # Jess is narrating. The caret is there to quiet a subagent down, not to
+    # keep it hidden until asked.
     def subactions_html(event)
       sub = event["subagent"] || {}
       nested = (sub["events"] || []).reject { |e| e["hidden"] }
@@ -184,7 +186,6 @@ module ConversationStory
       render(card_template,
              anchor:       h(anchor_for(event)),
              css_kind:     CSS_KIND[kind],
-             extra_class:  kind == "subagent" ? " collapsed" : "",
              kind_html:    kind_html(event),
              who:          h(who_for(event, agent_label)),
              data_time:    h(time_of_day(event["at"])),

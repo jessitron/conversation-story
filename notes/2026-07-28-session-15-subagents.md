@@ -23,11 +23,21 @@ session wired it to real data: parser, renderer, JS, and the write path.
 - **Nested events do NOT join the flat `events` list.** That list is
   one-event-per-line of the main log (`event_count == line count`, a golden
   test). Nesting keeps that true and matches how the cards nest.
-- **Collapsed by default**, against session 14's "expanded by default" — that
-  decision was made against a six-subaction mock; the real logs have **70 and
-  55**, which expanded put a 70-card block in the middle of a 109-card story.
-  TODO's own wording ("subagent tool calls should be *expandable* into the whole
-  story") reads the same way.
+- **Expanded by default**, as session 14 decided. I shipped it collapsed first,
+  reasoning from size (70 and 55 subactions inside a 109-card story) — wrong
+  reason. Jess: *"I want to see the work that's being done. In particular, in
+  narrate mode, I want it to be evident that the agent is doing a bunch of
+  things."* Volume isn't clutter here; it's the content. The caret is for
+  quieting a subagent down, not for hiding it until asked.
+- **A beat never stops inside a subagent.** `isMessage` — which drives both
+  narrate beats and shift+arrow — now means "a message in the conversation with
+  Jess", so it excludes cards inside `.subactions`. A subagent's own assistant
+  messages are that agent talking to itself; stopping on them split one beat of
+  Jess's conversation into sixteen. Now the whole subagent story rides inside the
+  beat that spawned it and reveals as the flurry it was, which is exactly the
+  "the agent is doing a bunch of things" moment. (Note: 70 cards at `BEAT_MS`
+  = 80ms is a ~6-second beat. It reads as a real flurry; if it ever feels long,
+  that's the knob.)
 - The subagent's first log record is **the prompt it was handed** — the same
   string the parent's Agent call already shows on the card and in its Prompt
   section — so it's `hidden: true`.
@@ -48,6 +58,11 @@ session wired it to real data: parser, renderer, JS, and the write path.
 - **The header's Events stat deliberately did NOT change.** It's the size of the
   conversation being told (109), not the number of cards drawn (179) — and
   `bin/site-index` counts the same way, so the landing page can't drift.
+- **"Too much on the page" was my instinct, not Jess's requirement.** The first
+  cut hid 70 real events behind a caret to protect the main narrative — from a
+  page whose entire purpose is showing what happened. When the honest answer to
+  "should this be visible?" is "it's a lot", that's a reason to look at the
+  reveal PACING, not to hide the content.
 - **`bin/check-modes` now has two index spaces**, and mixing them silently
   breaks: `card_ids` is what Jess can step through (mirrors story.js's `NAV()`),
   `all_card_ids` is every `.card` in the DOM. `click()` indexes the DOM; a

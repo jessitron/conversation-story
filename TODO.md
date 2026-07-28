@@ -12,9 +12,13 @@ Done: **subagents** inline a spawned Agent's own story (session 15) — a
 top-level `subagent_result`. See `notes/2026-07-28-session-15-subagents.md`.
 Open follow-ons from that work:
 
-- **Remember which subagents are open.** They ship collapsed and the caret is
-  session-only state — a reload closes everything again. Narrate mode probably
-  wants a way to expand as a beat, too.
+- **Remember which subagents are closed.** They ship expanded and the caret is
+  session-only state — a reload reopens everything.
+- **Flurry pacing for a long subagent.** One beat now reveals a subagent's whole
+  story, 70 cards at `BEAT_MS` (80ms) = about 6 seconds. Deliberate — that's the
+  "look how much work" moment — but if it drags mid-talk, the fix is pacing (cap
+  the beat's total duration, or ease the interval down as the run gets longer),
+  not hiding cards.
 - **A subagent's own tokens have nowhere to live in the header.** The story's
   Tokens stat is the parent's; a subagent's 2.05M of its own use shows only in
   its card's Fields. The 'where are we' map below is where that belongs.
