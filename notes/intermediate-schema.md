@@ -290,7 +290,18 @@ prose-tuned 4 — 3.5 splits the difference.
   content — a `task_notification` by `task-id`, or a plain queued Jess message
   by exact text match — and sets `dequeued: true` there, so the renderer can
   flag "this arrived via the queue, not as an ordinary turn" on the event that
-  has something to show.
+  has something to show. The enqueue's `summary` is that payload verbatim, with
+  no "Queue enqueue:" prefix: the card's gutter already says Queue and the
+  renderer badges `operation`, so the prefix only pushed the words that matter
+  past the two-line clamp.
+- **`status`**: how a background job ended, lifted from `<status>…</status>`
+  inside a `<task-notification>` blob. Present on the three kinds that can carry
+  one — a delivered `task_notification`, a queue `enqueue` of one, and the
+  `queued_command` attachment that redelivers it — and absent everywhere else,
+  including an enqueue of text Jess typed. Read the tag, never the phrasing of
+  `<summary>` ("… failed with exit code 1"): the tag is the harness's own word
+  for it and doesn't vary. The renderer draws `status: failed` as the same Error
+  badge a failed `tool_result` wears.
 - **Approval**: these example logs contain **no per-tool approve/deny record**
   (only global `permission-mode` change events and `stop_hook_summary` hooks), so
   we emit no approval field. Newer Claude logs may include real approval data; we

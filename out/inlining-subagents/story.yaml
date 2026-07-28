@@ -19458,8 +19458,8 @@ events:
   kind: queue_operation
   role:
   at: '2026-07-28T16:02:29.925Z'
-  summary: 'Queue enqueue: In narrate mode, when I push ''n'' it should still navigate
-    to the next assistant message to me so not inside subagents'
+  summary: In narrate mode, when I push 'n' it should still navigate to the next assistant
+    message to me so not inside subagents
   source:
     file: inlining-subagents.jsonl
     line: 458
@@ -19541,8 +19541,8 @@ events:
   kind: queue_operation
   role:
   at: '2026-07-28T16:02:34.100Z'
-  summary: 'Queue remove: In narrate mode, when I push ''n'' it should still navigate
-    to the next assistant message to me so not inside subagents'
+  summary: In narrate mode, when I push 'n' it should still navigate to the next assistant
+    message to me so not inside subagents
   source:
     file: inlining-subagents.jsonl
     line: 461
@@ -24539,8 +24539,8 @@ events:
   kind: queue_operation
   role:
   at: '2026-07-28T16:16:28.540Z'
-  summary: 'Queue enqueue: The font size for the card summaries and gutter .kind is
-    the same, so how about we top-align them instead of baseline?'
+  summary: The font size for the card summaries and gutter .kind is the same, so how
+    about we top-align them instead of baseline?
   source:
     file: inlining-subagents.jsonl
     line: 612
@@ -25366,8 +25366,8 @@ events:
   kind: queue_operation
   role:
   at: '2026-07-28T16:18:00.107Z'
-  summary: 'Queue enqueue: make the assistant/user be the exception and align on baseline.
-    We don''t have the linebreak problem there.'
+  summary: make the assistant/user be the exception and align on baseline. We don't
+    have the linebreak problem there.
   source:
     file: inlining-subagents.jsonl
     line: 642
@@ -25384,8 +25384,8 @@ events:
   kind: queue_operation
   role:
   at: '2026-07-28T16:18:17.916Z'
-  summary: 'Queue remove: make the assistant/user be the exception and align on baseline.
-    We don''t have the linebreak problem there.'
+  summary: make the assistant/user be the exception and align on baseline. We don't
+    have the linebreak problem there.
   source:
     file: inlining-subagents.jsonl
     line: 643

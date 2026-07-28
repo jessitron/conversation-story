@@ -158,6 +158,8 @@ module ConversationStory
         "source"  => { "file" => @log_file, "line" => lineno },
       }
       event["operation"] = rec["operation"] if kind == "queue_operation"
+      status = notification_status(kind, rec)
+      event["status"] = status if status
       # The mode a prompt was sent in is a FIELD THE PROMPT RECORD CARRIES:
       # `permissionMode` ("auto" / "plan" / "acceptEdits" / …), next to its
       # `promptId`. Read it here and nowhere else — never from the standalone
@@ -167,6 +169,23 @@ module ConversationStory
       add_assistant_fields(event, rec) if rec["type"] == "assistant"
       event["hidden"] = true if hidden?(kind, rec)
       event
+    end
+
+    # How a background job ended, per `<status>failed</status>` inside a
+    # `<task-notification>` blob. The harness's own word for it, which is why we
+    # read the tag instead of pattern-matching the human-readable `<summary>`
+    # ("… failed with exit code 1") — the phrasing varies, the tag doesn't.
+    # Three kinds can carry such a blob: the delivered `task_notification`, a
+    # queue `enqueue` of one, and the `queued_command` attachment that
+    # redelivers it. nil everywhere else, including an enqueue of text Jess
+    # typed — no blob, no status, no Error badge.
+    def notification_status(kind, rec)
+      text = case kind
+             when "task_notification" then rec.dig("message", "content")
+             when "queue_operation"   then rec["content"]
+             when "attachment"        then rec.dig("attachment", "prompt")
+             end
+      text.to_s[%r{<status>(.*?)</status>}m, 1]
     end
 
     # Is this record harness bookkeeping the renderer should skip? See the
@@ -308,13 +327,14 @@ module ConversationStory
 
     # An `enqueue` carries the payload it is queueing (a message Jess typed while
     # the agent was busy, or a background <task-notification>) — that payload is
-    # the interesting part, so the summary says WHAT got queued, not just that
-    # something did. `dequeue`/`remove` are bare markers with nothing to show
-    # (and are hidden anyway), so they keep the short verb.
+    # the interesting part, so the summary IS the payload and nothing else. No
+    # "Queue enqueue:" in front of it: the gutter already says Queue and the
+    # renderer badges the operation, so the prefix only pushed the words that
+    # matter past the card's two-line clamp. `dequeue`/`remove` are bare markers
+    # with nothing to show (and are hidden anyway), so they keep the short verb.
     def queue_summary(rec)
-      op = rec["operation"] || "queue"
       payload = queued_payload_summary(rec["content"].to_s)
-      payload.empty? ? "Queue #{op}" : truncate("Queue #{op}: #{payload}")
+      payload.empty? ? "Queue #{rec["operation"] || "operation"}" : payload
     end
 
     # The same payload shapes a `queued_command` attachment carries: either a

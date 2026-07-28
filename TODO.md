@@ -3,6 +3,12 @@
 The mountains are named in `README.md`. This is the working list, grouped by
 which mountain each item climbs.
 
+## Metawork
+
+(work about the work)
+
+- **design feature owner** I really need a feature owner for the CSS, a designer who is invoked any time the UI is updated.
+
 ## Mount Complete
 
 - **model name** put the model name in every LLM-call-representing card.
@@ -68,9 +74,12 @@ Output tokens:    4,233
 
 ## Mount Beautiful
 
-- NOW: **edit mode marker** Currently this shows up appended to the summary. It distracts me there, looks like it's part of the text. Instead, put it in the .who section, to the right of "Claude" or the left of "Jess"
-- NOW: **enqueue tag** Instead of `Queue enqueue: Background command "Start Vite dev client on port 5175" failed with exit code 1` let's say `Background command "Start Vite dev client on port 5175" failed with exit code 1` and have an `[ENQUEUE]` tag. Also, let's give it an [ERROR] tag when it failed (for instance, it contains "command .\* failed")
-- NOW: Instead of `[REMOVED FROM QUEUE]` let's shorten to `[FROM QUEUE]`
+Done in session 17: the ✎ edited marker moved into the gutter beside the actor;
+an enqueue's summary is the payload alone with the operation as a badge, plus an
+Error badge driven by a new `status` field (read from the notification's
+`<status>` tag, not a regex on its wording); `[REMOVED FROM QUEUE]` shortened to
+`[FROM QUEUE]`.
+
 - **subagent detail tweaks** Move the 'log' field to 'Provenenance'. Give it a button near the top to expand/collapse its cards in the conversation.
 - Self-host the fonts (Tenor Sans / Sen / Cascadia Code) into `assets/fonts/`
   with `@font-face` in `story.css`, replacing the CDN `<link>`.
@@ -112,3 +121,5 @@ correctness bug that needs fixing right now._
   `hashchange`, and `syncFromHash` selects a card that's still hidden and
   outside the revealed prefix. No error, and it self-heals on the next beat,
   but mid-talk it's a spoiler.
+
+- **show live conversations** figure out what it would take, and how it would look, to show conversations that are active, like based on the growing files in .claude. Then I could read what's happening in a format that doesn't hurt my eyes.

@@ -143,6 +143,16 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   the event each one delivers is stamped `dequeued: true` / `removed_from_queue:
   true` instead, which the renderer draws as a badge. So a queued message is two
   cards, the enqueue and the delivered message, sharing a `queue:` link token.
+  An enqueue's **summary is the payload alone** — the operation is a badge
+  (`enqueue`) and the gutter already says Queue, so a "Queue enqueue:" prefix
+  only pushed the interesting words past the card's two-line clamp.
+- **`status`** is how a background job ended, read from `<status>…</status>`
+  inside a `<task-notification>` blob (so: a delivered `task_notification`, a
+  queue `enqueue` of one, the `queued_command` attachment that redelivers it).
+  Read the tag, not the wording of `<summary>` — the tag is the harness's own
+  word for it and doesn't vary. `status: failed` renders as the same Error badge
+  a failed `tool_result` wears, so "this didn't work" looks the same wherever
+  the news arrives.
 - **Assistant records are classified by their one content block**, not always
   `assistant_message`: `tool_use` → `tool_call` (with named `tool.name`,
   `tool.use_id`, `tool.input`, `tool.primary_arg`), `thinking` → `thinking`,
@@ -271,6 +281,11 @@ won't notice it changed.
   published site too, by design ("this line is Jess's, not the parser's" is
   part of the story, not an authoring affordance). The published Pages site
   runs the same JS with nothing to write to. Don't add a build flag.
+  It sits in the **gutter beside the actor**, not appended to `.summary` where it
+  read as the sentence's last character. Always on the card's inner edge, facing
+  the body: `.who::after` normally ("Claude ✎"), `.who::before` for the
+  right-aligned kinds `k-user`/`k-coordinator` ("✎ Jess"). A new right-aligned
+  kind needs adding to both of those rules.
 - **Every write goes through one `submit(text)`** inside `showSummaryEditor` —
   Save, Revert and undo are all the same request, differing only in the text.
   `submit` captures the outgoing hand-written line first and, if the response

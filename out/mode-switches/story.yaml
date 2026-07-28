@@ -1017,7 +1017,7 @@ events:
   kind: queue_operation
   role:
   at: '2026-07-28T16:28:52.474Z'
-  summary: 'Queue enqueue: Give it a good name based on what it did'
+  summary: Give it a good name based on what it did
   source:
     file: mode-switches.jsonl
     line: 33
@@ -1033,7 +1033,7 @@ events:
   kind: queue_operation
   role:
   at: '2026-07-28T16:28:54.978Z'
-  summary: 'Queue remove: Give it a good name based on what it did'
+  summary: Give it a good name based on what it did
   source:
     file: mode-switches.jsonl
     line: 34
@@ -13148,7 +13148,7 @@ events:
   kind: queue_operation
   role:
   at: '2026-07-28T18:21:32.157Z'
-  summary: 'Queue enqueue: ok, now you''re in auto mode again'
+  summary: ok, now you're in auto mode again
   source:
     file: mode-switches.jsonl
     line: 381
@@ -13164,7 +13164,7 @@ events:
   kind: queue_operation
   role:
   at: '2026-07-28T18:21:36.923Z'
-  summary: 'Queue remove: ok, now you''re in auto mode again'
+  summary: ok, now you're in auto mode again
   source:
     file: mode-switches.jsonl
     line: 382

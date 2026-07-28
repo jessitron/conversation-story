@@ -685,9 +685,22 @@ pre.code {
 
 /* Which cards carry Jess's words instead of the parser's. Shown in every mode
    and on the published site: whose sentence this is belongs to the story, not
-   to the authoring UI. */
-.card[data-edited] .summary::after {
-  content: "✎"; margin-left: 8px; color: var(--gold); font-size: var(--fs-small);
+   to the authoring UI.
+
+   It lives in the GUTTER, beside the actor — not appended to the summary, where
+   it read as the last character of the sentence. Which side depends on which way
+   the card faces: the marker always sits on the inner edge, next to the body, so
+   it points at the text it's vouching for. Gutter-left cards get it after the
+   name ("Claude ✎"); the right-aligned kinds (k-user, k-coordinator — see their
+   `order: 2` rules above) get it before ("✎ Jess"). */
+.card[data-edited] .gutter .who::after {
+  content: "✎"; margin-left: 6px; color: var(--gold);
+}
+.card.k-user[data-edited] .gutter .who::after,
+.card.k-coordinator[data-edited] .gutter .who::after { content: none; }
+.card.k-user[data-edited] .gutter .who::before,
+.card.k-coordinator[data-edited] .gutter .who::before {
+  content: "✎"; margin-right: 6px; color: var(--gold);
 }
 
 /* ---- narrate: the stage starts empty and fills a beat at a time ----

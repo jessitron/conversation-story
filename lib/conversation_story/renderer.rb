@@ -304,13 +304,26 @@ module ConversationStory
                # headline.
                when "subagent", "subagent_result"
                  [%(<span class="badge agent">Agent</span>)]
+               when "queue_operation" then queue_operation_badges(event)
                else []
                end
       badges << %(<span class="badge queue">Dequeued</span>) if event["dequeued"]
-      badges << %(<span class="badge queue">Removed from queue</span>) if event["removed_from_queue"]
+      badges << %(<span class="badge queue">From queue</span>) if event["removed_from_queue"]
+      # A background job the harness itself marked failed (parser: status, read
+      # off the <task-notification> blob). Same Error badge a failed tool_result
+      # wears — one look for "this didn't work", wherever the news arrives.
+      badges << %(<span class="badge err">Error</span>) if event["status"] == "failed"
       return "" if badges.empty?
 
       %(<div class="badges">#{badges.join}</div>)
+    end
+
+    # The gutter says "Queue"; the badge says WHICH operation — in practice
+    # always `enqueue`, since the bare dequeue/remove markers are hidden and the
+    # detour shows up as a badge on the message they deliver instead.
+    def queue_operation_badges(event)
+      op = event["operation"]
+      op ? [%(<span class="badge queue">#{h op}</span>)] : []
     end
 
     def tool_call_badges(event)

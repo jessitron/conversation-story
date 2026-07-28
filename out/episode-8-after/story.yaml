@@ -4365,12 +4365,13 @@ events:
   kind: queue_operation
   role:
   at: '2026-04-14T02:39:12.064Z'
-  summary: 'Queue enqueue: Background command "Start dev server on alternate ports"
-    completed (exit code 0)'
+  summary: Background command "Start dev server on alternate ports" completed (exit
+    code 0)
   source:
     file: episode-8-after.jsonl
     line: 64
   operation: enqueue
+  status: completed
   detail:
     text: |-
       <task-notification>
@@ -4507,6 +4508,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 70
+  status: completed
   detail:
     text: |-
       <task-notification>
