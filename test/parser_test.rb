@@ -223,7 +223,11 @@ class ParserTest < Minitest::Test
 
     # The result of an Agent call is not an ordinary tool result: it's the
     # subagent's answer arriving back in the parent conversation, and it carries
-    # the subagent's own totals.
+    # the subagent's own totals — EXCEPT when the agent was launched to run in
+    # the background (`tool.status == "async_launched"`): that result is just
+    # the launch acknowledgment, not the answer, so it has no totals yet. The
+    # real completion arrives later as a `task_notification`, same as any other
+    # background task.
     define_method("test_#{name}_agent_results_become_subagent_result_events") do
       doc = ConversationStory::Parser.new(log).to_document
       results = doc["events"].select { |e| e["kind"] == "subagent_result" }
@@ -232,7 +236,12 @@ class ParserTest < Minitest::Test
       assert_equal subagents.size, results.size, "one result per subagent call"
       results.each do |e|
         assert e.dig("tool", "agent_id"), "#{e["ref"]}: missing tool.agent_id"
-        assert e.dig("tool", "subagent_tokens", "total_tokens")
+        if e.dig("tool", "status") == "async_launched"
+          assert_nil e.dig("tool", "subagent_tokens"),
+                     "#{e["ref"]}: an async launch shouldn't report totals yet"
+        else
+          assert e.dig("tool", "subagent_tokens", "total_tokens")
+        end
         # still linked to the call it answers, like any tool pair
         call = subagents.find { |s| s.dig("tool", "use_id") == e.dig("tool", "use_id") }
         refute_nil call, "#{e["ref"]}: no subagent call with a matching use_id"

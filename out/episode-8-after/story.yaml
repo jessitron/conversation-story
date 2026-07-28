@@ -25,7 +25,7 @@ events:
   kind: permission_mode
   role:
   at:
-  summary: 'Permission mode: acceptEdits'
+  summary: 'Mode: acceptEdits'
   source:
     file: episode-8-after.jsonl
     line: 1
@@ -6758,7 +6758,7 @@ events:
   kind: permission_mode
   role:
   at:
-  summary: 'Permission mode: acceptEdits'
+  summary: 'Mode: acceptEdits'
   source:
     file: episode-8-after.jsonl
     line: 154
