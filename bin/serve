@@ -86,9 +86,22 @@ def story_paths(name)
   paths
 end
 
+# Any event that has a card on the page, so an edit to a subagent's own event
+# resolves too — those live nested under the `subagent` event that spawned them
+# (`subagent.events`, the same document shape recursively), not in the top-level
+# list, and every one of them is a card Jess can select and rewrite.
 def event_for(story_path, ref)
-  document = YAML.safe_load_file(story_path)
-  (document["events"] || []).find { |e| e["ref"] == ref }
+  find_event(YAML.safe_load_file(story_path)["events"], ref)
+end
+
+def find_event(events, ref)
+  Array(events).each do |event|
+    return event if event["ref"] == ref
+
+    found = find_event(event.dig("subagent", "events"), ref)
+    return found if found
+  end
+  nil
 end
 
 def run!(*command)

@@ -10,7 +10,13 @@
 # these are REAL key and mouse events: focus decides what e.target is, and the
 # page's own preventDefault actually applies. Runs against file:// — no server.
 #
-# THREE TRAPS, each of which has already bitten (see the plan note):
+# FOUR TRAPS, each of which has already bitten (see the plan note):
+#   * TWO INDEX SPACES. `card_ids` is what Jess can step through (story.js's
+#     NAV()); `all_card_ids` is every .card in the DOM. They differ by the
+#     subaction cards inside collapsed subagent blocks, which ship collapsed on
+#     every page — so click(), which indexes the DOM, must be fed an
+#     all_card_ids index, while any navigation expectation must come from
+#     card_ids.
 #   * Card ids contain a colon, which CSS reads as a pseudo-class. `at_css("#" +
 #     id)` THROWS. Reach cards by index, or getElementById inside evaluate.
 #   * A real click on a card far down the page silently misses unless you
@@ -52,7 +58,29 @@ class Story
 
   # ---- reading ----
   def js(expr) = @b.evaluate(expr)
-  def card_ids     = js("Array.from(document.querySelectorAll('.card')).map(c => c.id)")
+
+  # The cards Jess can actually step through — everything EXCEPT cards buried in
+  # a collapsed subagent block. Those ship collapsed on every generated page, are
+  # display:none, and story.js's NAV() leaves them out of arrow navigation and
+  # narrate beats for exactly that reason; a checker that counted them would
+  # "expect" the selection to land on a card nobody can see.
+  NAVIGABLE = <<~JS
+    (() => {
+      const buried = c => {
+        for (let w = c.closest('.subactions'); w; w = w.parentElement.closest('.subactions')) {
+          const owner = w.previousElementSibling;
+          if (owner && owner.classList.contains('collapsed')) return true;
+        }
+        return false;
+      };
+      return Array.from(document.querySelectorAll('.card')).filter(c => !buried(c)).map(c => c.id);
+    })()
+  JS
+
+  def card_ids     = js(NAVIGABLE)
+  # every card in the DOM, collapsed subactions included — the index space
+  # click() works in, which is NOT the same as card_ids's.
+  def all_card_ids = js("Array.from(document.querySelectorAll('.card')).map(c => c.id)")
   def revealed_ids = js("Array.from(document.querySelectorAll('.card.revealed')).map(c => c.id)")
   def shown_ids    = js("Array.from(document.querySelectorAll('.card')).filter(c => c.offsetParent !== null).map(c => c.id)")
   def active_id    = js("(document.querySelector('.card.active') || {}).id || null")
@@ -86,7 +114,21 @@ class Story
     self
   end
 
-  def click_id(id) = click(card_ids.index(id) || raise("no card #{id}"))
+  # NB: all_card_ids, not card_ids — click() indexes every .card in the DOM.
+  def click_id(id) = click(all_card_ids.index(id) || raise("no card #{id}"))
+
+  # Click the caret in the nth subagent card. It's the one click inside a card
+  # that does NOT select the card: it expands the subagent's own story.
+  def click_caret(index = 0)
+    js("document.querySelectorAll('.card.k-subagent')[#{index}].scrollIntoView({block:'center'})")
+    settle(80)
+    node = @b.css(".card.k-subagent .caret")[index] or raise("no subagent caret")
+    node.click
+    settle
+    self
+  end
+
+  def subaction_ids = js("Array.from(document.querySelectorAll('.subactions .card')).map(c => c.id)")
 
   # The header's mode buttons. Plain class/attribute selectors, so at_css is
   # safe here — it's only card ids that carry a colon.
@@ -355,6 +397,38 @@ scenario "leaving narrate shows everything again", query: "?mode=narrate" do |s|
   # also require that exiting actually reset the reveal state itself, not just
   # that the CSS stopped applying.
   next "#{s.revealed_ids.size} cards still marked .revealed after exit" unless s.revealed_ids.empty?
+  nil
+end
+
+# ---- subagent subactions --------------------------------------------------
+
+scenario "the caret expands a subagent's story, and collapses it again" do |s|
+  next nil if s.subaction_ids.empty?   # a story with no subagents has nothing to check
+
+  shown_before = s.shown_ids.size
+  active = s.active_id
+  s.click_caret
+  next "the caret revealed no subactions (#{shown_before} cards shown, still #{s.shown_ids.size})" unless
+    s.shown_ids.size > shown_before
+  # The caret is inside an <a class="card"> whose every other pixel selects the
+  # card. If this ever fails, the delegated click handler stopped checking for
+  # the caret before doing its own thing.
+  next "clicking the caret also moved the selection to #{s.active_id}" unless s.active_id == active
+
+  s.click_caret
+  next "the caret did not collapse the story again (#{s.shown_ids.size} shown)" unless
+    s.shown_ids.size == shown_before
+  nil
+end
+
+scenario "a link to a card inside a subagent's story opens the block" do |s|
+  target = s.subaction_ids.first
+  next nil unless target
+
+  next "#{target} is laid out before anything opened its block" if s.shown_ids.include?(target)
+  s.set_hash(target)     # the same syncFromHash path a deep link takes on load
+  next "#{target} is still hidden after linking to it" unless s.shown_ids.include?(target)
+  next "#{target} did not become the selection (got #{s.active_id.inspect})" unless s.active_id == target
   nil
 end
 

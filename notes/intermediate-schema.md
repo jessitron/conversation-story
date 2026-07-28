@@ -116,15 +116,24 @@ events:
         structured_patch: [ ... ]    #   Edit/Write diffs
         num_files: 3                 #   Glob/Grep
       subagent_tokens:               # (b) for Agent calls — subagent's own totals
-        total_tokens: 45231
-        total_tool_use_count: 12
+        total_tokens: 124053
+        total_tool_use_count: 27
         tool_stats: { ... }
+      # on an Agent call's RESULT, from toolUseResult — which subagent answered:
+      agent_id: agent-ae20659fd0f63295e
+      agent_type: Explore
+      status: completed
       # NOTE: no `approval:` field — these logs carry no per-tool approve/deny.
       # Add it later if a newer example log includes real approval data.
-    # Agent tool events also link to the nested story:
+
+    # --- an Agent call OWNS a whole other conversation (kind: subagent) ---
     subagent:
       agent_id: agent-ae20659fd0f63295e   # matches meta.agents[].id
-      story: subagents/agent-ae20659fd0f63295e   # its events are in this doc too
+      agent_type: Explore
+      description: "Explore timeline/replay features"
+      log: agent-ae20659fd0f63295e.jsonl  # under <example>/subagents/
+      meta: { ... }                # that story's OWN meta, same shape as above
+      events: [ ... ]              # that story's OWN events, same shape, nested
 
   - id: ...
     agent: main
@@ -165,6 +174,48 @@ Keying by `ref` ties an edit to a line number, so editing a log orphans its
 edits. `Edits#apply` returns the refs that matched nothing and `bin/parse` warns
 about them — deliberately noisy, since the alternative is losing Jess's words in
 silence.
+
+## Subagents: a nested document, not more entries in the list
+
+An `Agent` tool call isn't really a tool call — it's another whole conversation,
+logged in its own file under `<example>/subagents/`. So the two records the main
+log holds get reclassified:
+
+| main-log record | kind | what it is |
+|---|---|---|
+| the `tool_use` | `subagent` | the job handed over, plus the nested story |
+| its `tool_result` | `subagent_result` | the answer coming back to the caller |
+
+and the subagent's log is parsed **by the same `Parser`, recursively**, landing
+under the call as `subagent.meta` + `subagent.events`. That recursion is the
+whole design: the nested story gets its own refs (`agent-ae2065…:2`, from *that*
+file's name and line numbers), its own turn election, its own token running
+total, and its own `tool_call`↔`tool_result` links — none of which can collide
+with or leak into the parent's, because none of it is derived from the parent.
+
+The hinge is `toolUseResult.agentId`, not the tool's name: the name has changed
+across Claude versions (`Task`, now `Agent`), that field hasn't, and it appears
+only on a real subagent result. A missing log file is fine — the card renders
+with nothing to expand into.
+
+Nested events deliberately do **not** join the parent's flat `events` list:
+that list is one-event-per-line of the main log (`event_count` == line count).
+Two consequences worth knowing:
+
+- **Anything that counts cards has to walk the tree**, not the list (the
+  renderer's `all_visible_events`, `test/story_events.rb`, `bin/serve`'s ref
+  lookup, `Edits#apply`). The header's *Events* stat is the exception on
+  purpose: it stays the size of the conversation being told, top-level and
+  visible, which is also what `bin/site-index` counts.
+- **`meta.total_tokens` stays the parent's own token use.** A subagent's context
+  is its own — reported by `subagent.meta.total_tokens` (its whole run's use, in
+  the millions) and by the Agent result's `tool.subagent_tokens.total_tokens`
+  (what the harness reports for the run, ~124k here). Two different measures of
+  two different things; the page labels them apart.
+
+The subagent log's **first record is the prompt it was handed** — the same string
+the parent's Agent call already shows — so it's marked `hidden: true` (still in
+the document, like every other hidden record).
 
 ## Turns: one API response, several records, one set of numbers
 
@@ -259,7 +310,8 @@ prose-tuned 4 — 3.5 splits the difference.
 - `user_message`, `assistant_message` (text)
 - `thinking` (assistant reasoning block)
 - `tool_call` (from `tool_use`) and `tool_result` — paired via `use_id`
-- `subagent` (an `Agent` tool_call that owns a nested story)
+- `subagent` (an `Agent` tool_call that owns a nested story) and
+  `subagent_result` (that story's answer arriving back in the parent)
 - `system`, `permission_mode`, `file_snapshot`, `attachment`, `queue_operation`
 - `unknown` — **the fallback**; keeps `detail.raw` verbatim so Mountain 1 can
   still render a card and we never lose data (satisfies the "good fallbacks"

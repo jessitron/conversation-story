@@ -100,7 +100,9 @@ module ConversationStory
       events  = records.map { |lineno, rec| build_event(lineno, rec) }
       link_related_events!(events)
       mark_turns!(events)
-      { "meta" => build_meta(records, events), "events" => events }
+      document = { "meta" => build_meta(records, events), "events" => events }
+      attach_subagents!(events)
+      document
     end
 
     private
@@ -393,6 +395,17 @@ module ConversationStory
             "total_tool_use_count"  => tur["totalToolUseCount"],
           }
         end
+
+        # An Agent call's result is the one place the log says WHICH subagent ran
+        # — `agentId` names the sibling subagents/agent-<id>.jsonl file. That's
+        # the hinge attach_subagents! turns on, in preference to the tool's name:
+        # the name has changed across Claude versions ("Task", now "Agent"), this
+        # field has not, and it is only ever present on a real subagent result.
+        if tur["agentId"]
+          tool["agent_id"]   = "agent-#{tur["agentId"]}"
+          tool["agent_type"] = tur["agentType"]
+          tool["status"]     = tur["status"]
+        end
       end
       event["tool"] = tool
       add_result_token_estimate(event)
@@ -493,6 +506,98 @@ module ConversationStory
         id = e.dig("links", "message_id") || "line-#{e.dig("source", "line")}"
         (acc[id] ||= []) << e
       end
+    end
+
+    # ---- subagents: a nested story under the call that spawned it ------------
+    #
+    # An `Agent` tool call is not really a tool call — it is a whole other
+    # conversation, logged in its own file under <example>/subagents/. So the
+    # pair of records the MAIN log holds gets reclassified:
+    #
+    #   the tool_call   -> kind `subagent`, carrying the nested story
+    #   its tool_result -> kind `subagent_result`, the answer coming back
+    #
+    # and the subagent's log is parsed by THIS SAME CLASS, recursively. That's
+    # what makes the nested story "the same document shape" the schema promises:
+    # its events get their own refs (`agent-ae2065…:2`, from that file's name and
+    # line numbers), its own turn election, its own token running total, and its
+    # own tool_call<->tool_result links — none of which can collide with or leak
+    # into the parent's, because none of it is derived from the parent at all.
+    #
+    # Nested events deliberately do NOT join the parent's flat `events` list:
+    # that list is one-event-per-line of the main log (`event_count` == line
+    # count), and the renderer nests the cards to match.
+    #
+    # Runs after build_meta on purpose. meta.total_tokens is the PARENT's token
+    # use; a subagent's context is its own, reported separately by the Agent
+    # result's `tool.subagent_tokens` and by the nested meta.
+    def attach_subagents!(events)
+      calls_by_use_id = events.select { |e| e["kind"] == "tool_call" }
+                              .to_h { |e| [e.dig("tool", "use_id"), e] }
+
+      events.each do |result|
+        agent_id = result.dig("tool", "agent_id")
+        next unless result["kind"] == "tool_result" && agent_id
+
+        call = calls_by_use_id[result.dig("tool", "use_id")]
+        next unless call
+
+        result["kind"] = "subagent_result"
+        call["kind"]   = "subagent"
+        call["subagent"] = subagent_story(agent_id, call)
+        resummarize_subagent_pair!(call, result)
+      end
+    end
+
+    # What each of the two cards says on its face. The call shows the JOB — the
+    # prompt it handed over, which is the interesting part and gets a message's
+    # longer leash, since it is one agent talking to another. The result shows
+    # the ANSWER, attributed: "Explore reports: …", because on the board it sits
+    # among the parent's own events and would otherwise read as Claude's words.
+    def resummarize_subagent_pair!(call, result)
+      prompt = call.dig("tool", "input", "prompt").to_s
+      call["summary"] = truncate(strip_markdown(prompt), MESSAGE_SUMMARY_LIMIT) unless prompt.empty?
+
+      who = call.dig("subagent", "agent_type") || "Subagent"
+      text = result.dig("detail", "text").to_s
+      result["summary"] = truncate("#{who} reports: #{text.empty? ? "no answer" : strip_markdown(text)}")
+    end
+
+    # The nested document for one subagent, plus the identity fields the card
+    # face and detail pane need. `events` is empty when the log file is missing
+    # (a conversation can be shared without its subagent logs) — the card still
+    # renders, it just has nothing to expand into.
+    def subagent_story(agent_id, call)
+      story = {
+        "agent_id"    => agent_id,
+        "agent_type"  => call.dig("tool", "input", "subagent_type"),
+        "description" => call.dig("tool", "input", "description"),
+      }
+      path = subagent_log_path(agent_id)
+      return story.merge("log" => nil, "meta" => {}, "events" => []) unless path
+
+      nested = self.class.new(path).to_document
+      hide_prompt_echo!(nested["events"], call)
+      story.merge("log" => File.basename(path), "meta" => nested["meta"],
+                  "events" => nested["events"])
+    end
+
+    def subagent_log_path(agent_id)
+      path = File.join(File.dirname(@log_path), @log_name, "subagents", "#{agent_id}.jsonl")
+      File.exist?(path) ? path : nil
+    end
+
+    # A subagent log opens with the prompt it was given — the very same string
+    # the parent's Agent call carries as its `prompt` argument, already shown on
+    # the subagent card. Rendering it again as the subagent's own first "user
+    # message" says nothing new, so hide it (the event stays in the document, as
+    # with every other hidden record).
+    def hide_prompt_echo!(events, call)
+      first = events.first
+      return unless first && first["kind"] == "user_message"
+      return unless first.dig("detail", "text") == call.dig("tool", "input", "prompt")
+
+      first["hidden"] = true
     end
 
     # ---- cross-event linking (item 3/10: light up the causal chain together) -

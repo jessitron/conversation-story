@@ -51,8 +51,13 @@ LOGS.each do |log|
   # the story's hand-written summaries change. The edits file is a prerequisite
   # only when it exists — an absent one has no mtime to compare against, and
   # the first one is written by bin/serve, which re-runs the pipeline itself.
+  # A subagent's own log is an input too — bin/parse inlines those events as the
+  # nested story under the Agent call that spawned them — so the story is stale
+  # if any of them changes, not just the main log.
   edits = File.join("edits", "#{name_for(log)}.yaml")
-  file story => [log, out_dir, *PARSE_SRC, *(File.exist?(edits) ? [edits] : [])] do
+  subagent_logs = FileList[File.join("examples", name_for(log), "subagents", "*.jsonl")]
+  file story => [log, out_dir, *subagent_logs, *PARSE_SRC,
+                 *(File.exist?(edits) ? [edits] : [])] do
     sh "ruby", "bin/parse", log, "-o", story
   end
 

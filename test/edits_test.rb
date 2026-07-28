@@ -21,6 +21,11 @@ class EditsTest < Minitest::Test
         { "ref" => "demo:1", "kind" => "user_message", "summary" => "generated one" },
         { "ref" => "demo:2", "kind" => "tool_call", "summary" => "Bash", "at" => nil,
           "tool" => { "name" => "Bash", "primary_arg" => "ls" } },
+        { "ref" => "demo:3", "kind" => "subagent", "summary" => "go look",
+          "tool" => { "name" => "Agent", "use_id" => "toolu_1" },
+          "subagent" => { "agent_id" => "agent-abc", "agent_type" => "Explore",
+                          "events" => [{ "ref" => "agent-abc:2", "kind" => "assistant_message",
+                                         "summary" => "generated, nested" }] } },
       ],
     }
   end
@@ -40,6 +45,21 @@ class EditsTest < Minitest::Test
       # untouched events stay exactly as the parser made them
       assert_equal "Bash", doc["events"][1]["summary"]
       refute doc["events"][1]["summary_edited"]
+    end
+  end
+
+  # A subagent's own events get cards on the page, so the editor is offered on
+  # them — which means a ref inside a nested story has to resolve, or a save
+  # would come back "matches no event" from a card Jess is looking at.
+  def test_apply_reaches_events_inside_a_nested_subagent_story
+    in_tmp_dir do |dir|
+      edits = Edits.for_story("demo", dir: dir).set("agent-abc:2", "the subagent gets its bearings")
+      stale = edits.apply(doc = document)
+
+      assert_empty stale
+      nested = doc["events"][2]["subagent"]["events"][0]
+      assert_equal "the subagent gets its bearings", nested["summary"]
+      assert nested["summary_edited"]
     end
   end
 

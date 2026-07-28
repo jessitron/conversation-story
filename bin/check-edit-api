@@ -27,6 +27,7 @@ REPO   = File.expand_path("..", __dir__)
 STORY  = ARGV[0] || "episode-8-after"
 PORT   = 8123
 MARKER = "check-edit-api rewrote this line"
+NESTED_MARKER = "check-edit-api rewrote this subaction"
 
 failures = []
 
@@ -47,8 +48,33 @@ def story_events
   YAML.safe_load_file(File.join(REPO, "out", STORY, "story.yaml"))["events"]
 end
 
-def summary_in_story
-  story_events.find { |e| e["ref"] == REF }
+def summary_in_story(ref = REF)
+  find_ref(story_events, ref)
+end
+
+# Walks nested subagent stories too: their events have cards on the page and are
+# editable, but they live under the `subagent` event that spawned them rather
+# than in the top-level list.
+def find_ref(events, ref)
+  Array(events).each do |event|
+    return event if event["ref"] == ref
+
+    found = find_ref(event.dig("subagent", "events"), ref)
+    return found if found
+  end
+  nil
+end
+
+# The first visible event inside some subagent's own story, if this story spawned
+# one — the nested-ref case, which resolves through a different code path in
+# bin/serve and Edits#apply than an ordinary top-level ref.
+def first_subaction
+  story_events.each do |event|
+    nested = event.dig("subagent", "events") || []
+    found = nested.find { |e| !e["hidden"] }
+    return found if found
+  end
+  nil
 end
 
 Dir.chdir(REPO)
@@ -122,6 +148,22 @@ Dir.mktmpdir("conversation-story-edits") do |edits_dir|
     if ON_PAGE
       failures << "page reverted" unless check("the page no longer shows the edit",
                                                !File.read("out/#{STORY}/index.html").include?(MARKER))
+    end
+
+    # ---- a card inside a subagent's own story ------------------------------
+    if (sub = first_subaction)
+      sub_ref = sub["ref"]
+      code, body = put_summary(story: STORY, ref: sub_ref, summary: NESTED_MARKER)
+      failures << "nested save" unless check("PUT accepts an edit for the nested #{sub_ref}",
+                                             code == 200 && body["summary"] == NESTED_MARKER, "#{code} #{body}")
+      failures << "nested story.yaml" unless check("the nested event carries it in story.yaml",
+                                                   summary_in_story(sub_ref)["summary_edited"] == true)
+      failures << "nested page" unless check("the subaction card on the page shows it",
+                                             File.read("out/#{STORY}/index.html").include?(NESTED_MARKER))
+
+      put_summary(story: STORY, ref: sub_ref, summary: "")
+      failures << "nested reverted" unless check("reverting the nested edit clears the page",
+                                                 !File.read("out/#{STORY}/index.html").include?(NESTED_MARKER))
     end
   ensure
     Process.kill("TERM", pid)

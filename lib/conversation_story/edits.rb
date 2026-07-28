@@ -63,7 +63,7 @@ module ConversationStory
     # Overlay onto a freshly parsed document, in place.
     # @return [Array<String>] refs that matched no event (stale — the log moved).
     def apply(document)
-      by_ref = (document["events"] || []).to_h { |e| [e["ref"], e] }
+      by_ref = events_by_ref(document["events"])
       @summaries.filter_map do |ref, text|
         event = by_ref[ref]
         next ref unless event
@@ -89,9 +89,23 @@ module ConversationStory
 
     private
 
-    # By line number, so the file reads in story order rather than edit order.
+    # Every event that can carry a hand-written summary, keyed by ref — the
+    # subagents' nested stories included, since their events get cards on the
+    # page too and the editor is offered on any card Jess selects. Their refs are
+    # namespaced by their own log's name (`agent-ae2065…:3`), so they can't
+    # collide with the main log's.
+    def events_by_ref(events, into = {})
+      Array(events).each do |event|
+        into[event["ref"]] = event
+        events_by_ref(event.dig("subagent", "events"), into)
+      end
+      into
+    end
+
+    # Grouped by log, then by line number, so the file reads in story order
+    # rather than edit order (and a subagent's edits stay together).
     def sorted
-      @summaries.sort_by { |ref, _| [ref.to_s[/:(\d+)\z/, 1].to_i, ref.to_s] }.to_h
+      @summaries.sort_by { |ref, _| [ref.to_s.sub(/:\d+\z/, ""), ref.to_s[/:(\d+)\z/, 1].to_i] }.to_h
     end
 
     def load_file

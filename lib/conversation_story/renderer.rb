@@ -26,6 +26,7 @@ module ConversationStory
       "tool_call"         => "tool_call",
       "tool_result"       => "tool_result",
       "subagent"          => "subagent",
+      "subagent_result"   => "subagent_result",
       "system"            => "system",
       "attachment"        => "system",
       "file_snapshot"     => "system",
@@ -42,6 +43,7 @@ module ConversationStory
       "tool_call"          => "Tool Call",
       "tool_result"        => "Tool Result",
       "subagent"           => "Subagent",
+      "subagent_result"    => "Subagent Result",
       "system"             => "System",
       "attachment"         => "Attachment",
       "file_snapshot"      => "Snapshot",
@@ -54,11 +56,15 @@ module ConversationStory
     # the actor shown in the card gutter (by kind, not role: a tool_result is a
     # user-role record but comes from the system, not the human — and so is a
     # task_notification, a background result delivered mid-conversation).
+    # A subagent's own cards say the AGENT's name here, not "Claude" — inside a
+    # .subactions block, "who is acting" is the whole point of the indent (see
+    # who_for). These are the kinds that get that substitution.
     WHO = Hash.new("system").merge(
       "user_message"      => "Jess",
       "assistant_message" => "Claude",
       "thinking"          => "Claude",
       "tool_call"         => "Claude",
+      "subagent"          => "Claude",
     ).freeze
 
     DETAIL_HEADING = Hash.new("Detail").merge(
@@ -82,7 +88,7 @@ module ConversationStory
     # Kinds whose detail pane ends in an arbitrarily long machine-text section.
     # They position their own Tokens section rather than letting detail_html
     # append it after the blob.
-    BLOB_KINDS = %w[tool_call tool_result].freeze
+    BLOB_KINDS = %w[tool_call tool_result subagent subagent_result].freeze
 
     # @param document [Hash] the intermediate document (from YAML).
     def initialize(document)
@@ -114,6 +120,25 @@ module ConversationStory
       @visible_events ||= @events.reject { |e| e["hidden"] }
     end
 
+    # Every event that gets a card, subagents' nested stories included, in card
+    # order. The lookups that answer "what else on this page relates to this?" —
+    # causal chains and turn grouping — work over THIS list, so a subaction can
+    # link to a main-log event and back.
+    #
+    # The header's "Events" stat deliberately stays on visible_events: that's the
+    # size of the conversation being told, not the number of cards drawn (and
+    # bin/site-index counts the same way, so the landing page can't drift).
+    def all_visible_events
+      @all_visible_events ||= flatten_visible(visible_events)
+    end
+
+    def flatten_visible(events)
+      events.flat_map do |event|
+        nested = (event.dig("subagent", "events") || []).reject { |e| e["hidden"] }
+        [event, *flatten_visible(nested)]
+      end
+    end
+
     # A card's anchor IS its `ref` — the `<example>:<line>` string Jess already
     # uses to talk about events ("episode-8-before:174"). Sequential #event-N
     # numbering was a second, page-only coordinate system: it counted VISIBLE
@@ -128,22 +153,66 @@ module ConversationStory
     end
 
     def cards_html
-      visible_events.map { |event| render_card(event) }.join("\n")
+      cards_for(visible_events)
     end
 
-    def render_card(event)
+    # A `subagent` card is followed by its own story: the events that subagent
+    # produced, as FULL cards (same size, same detail template, same
+    # click-to-select) inside a `.subactions` wrapper that supplies the indent
+    # and the rail. Recursive, because a subagent can spawn one too.
+    def cards_for(events, agent_label = nil)
+      events.map do |event|
+        card = render_card(event, agent_label)
+        event["kind"] == "subagent" ? card + subactions_html(event) : card
+      end.join("\n")
+    end
+
+    # Collapsed by default. In the mock a subagent had six subactions; the real
+    # logs have 70 and 55, which expanded would bury the conversation they belong
+    # to — so the caret starts closed and expanding is a deliberate act ("Subagent
+    # tool calls should be EXPANDABLE into the whole story of the subagent").
+    def subactions_html(event)
+      sub = event["subagent"] || {}
+      nested = (sub["events"] || []).reject { |e| e["hidden"] }
+      return "" if nested.empty?
+
+      %(\n<div class="subactions">\n#{cards_for(nested, sub["agent_type"])}\n</div>)
+    end
+
+    def render_card(event, agent_label = nil)
       kind = event["kind"]
       render(card_template,
              anchor:       h(anchor_for(event)),
              css_kind:     CSS_KIND[kind],
-             kind_label:   h(KIND_LABEL.fetch(kind, kind)),
-             who:          h(WHO[kind]),
+             extra_class:  kind == "subagent" ? " collapsed" : "",
+             kind_html:    kind_html(event),
+             who:          h(who_for(event, agent_label)),
              data_time:    h(time_of_day(event["at"])),
              link_attr:    link_attr(event),
              edited_attr:  event["summary_edited"] ? %( data-edited="true") : "",
              summary_html: summary_html(event),
              badges_html:  badges_html(event),
              detail_html:  detail_html(event))
+    end
+
+    # The gutter's kind label — plus, on a subagent, the caret that collapses its
+    # subactions (assets/story.js toggles `.collapsed` on the card; the CSS hides
+    # the adjacent wrapper).
+    def kind_html(event)
+      label = h(KIND_LABEL.fetch(event["kind"], event["kind"]))
+      return label unless event["kind"] == "subagent"
+
+      %(#{label}<span class="caret">▾</span>)
+    end
+
+    # Inside a subagent's block, the actor is that agent — "Explore", not
+    # "Claude". Only the kinds WHO calls Claude change; a tool_result still comes
+    # from the system. A `subagent` card names the agent it spawned, at any depth.
+    def who_for(event, agent_label)
+      return event.dig("subagent", "agent_type") || "Claude" if event["kind"] == "subagent"
+
+      who = WHO[event["kind"]]
+      agent_label && who == "Claude" ? agent_label : who
     end
 
     # A related-events highlight hook (items 3 & 10): the parser already
@@ -166,7 +235,7 @@ module ConversationStory
     # comes from the event's ref.
     def link_index
       @link_index ||= Hash.new { |h, k| h[k] = [] }.tap do |idx|
-        visible_events.each_with_index { |e, i| (e["link_ids"] || []).each { |tok| idx[tok] << [i, e] } }
+        all_visible_events.each_with_index { |e, i| (e["link_ids"] || []).each { |tok| idx[tok] << [i, e] } }
       end
     end
 
@@ -189,9 +258,20 @@ module ConversationStory
     # rewrote the line, her line is what shows.
     def summary_html(event)
       return h(event["summary"]) if event["summary_edited"]
-      return tool_call_summary_html(event) if event["kind"] == "tool_call"
 
-      h(event["summary"])
+      case event["kind"]
+      when "tool_call" then tool_call_summary_html(event)
+      when "subagent"  then subagent_summary_html(event)
+      else h(event["summary"])
+      end
+    end
+
+    # Same shape as a tool call's face — bold WHO, then WHAT. For a subagent the
+    # who is the agent type and the what is the job it was handed.
+    def subagent_summary_html(event)
+      type = event.dig("subagent", "agent_type")
+      name = type ? %(<b>#{h type}</b> ) : ""
+      "#{name}#{h event["summary"]}"
     end
 
     # Matches the prototype's tool-call look: bold tool name, the primary
@@ -208,6 +288,10 @@ module ConversationStory
       badges = case event["kind"]
                when "tool_call"   then tool_call_badges(event)
                when "tool_result" then tool_result_badges(event)
+               # An Agent badge, the way a tool_call badges its tool name. No
+               # token or tool-count badges: those are detail, and they're in the
+               # Fields section already — a card face is a headline.
+               when "subagent"    then [%(<span class="badge agent">Agent</span>)]
                else []
                end
       badges << %(<span class="badge queue">Dequeued</span>) if event["dequeued"]
@@ -297,7 +381,7 @@ module ConversationStory
     # message_id -> its visible events, in card order.
     def turn_index
       @turn_index ||= Hash.new { |h, k| h[k] = [] }.tap do |idx|
-        visible_events.each do |e|
+        all_visible_events.each do |e|
           id = e.dig("links", "message_id")
           idx[id] << e if id
         end
@@ -346,10 +430,70 @@ module ConversationStory
 
     def kind_sections(event)
       case event["kind"]
-      when "tool_call"   then tool_call_sections(event)
-      when "tool_result" then tool_result_sections(event)
+      when "tool_call"        then tool_call_sections(event)
+      when "tool_result"      then tool_result_sections(event)
+      when "subagent"         then subagent_sections(event)
+      when "subagent_result"  then subagent_result_sections(event)
       else generic_sections(event)
       end
+    end
+
+    # The pane for a spawned agent: who it was, what it was told, what it cost
+    # the PARENT to make the call. What the subagent then did is on the board
+    # itself, behind the caret — not duplicated here.
+    def subagent_sections(event)
+      sub = event["subagent"] || {}
+      sections = [section("Subagent — #{sub["agent_type"] || "agent"}", "")]
+      sections << section("Fields", kv_dl(subagent_field_rows(event, sub)))
+      sections << tokens_section(event)
+      prompt = event.dig("tool", "input", "prompt")
+      sections << section("Prompt", machine_html(prompt)) if prompt
+      sections
+    end
+
+    def subagent_field_rows(event, sub)
+      meta = sub["meta"] || {}
+      rows = [["agent_id", sub["agent_id"]], ["agent_type", sub["agent_type"]]]
+      rows << ["description", sub["description"]] if sub["description"]
+      rows << ["spawned_by", event.dig("tool", "use_id")]
+      # its own story's numbers, from its own log — not the parent's. `subactions`
+      # counts the cards behind the caret (so it matches what expanding shows),
+      # and `own token use` is the same measure as the header's Tokens stat: every
+      # turn of the subagent's own conversation, counted once.
+      nested = (sub["events"] || []).reject { |e| e["hidden"] }
+      rows << ["subactions", nested.size] unless nested.empty?
+      rows << ["own token use", comma(meta["total_tokens"])] if meta["total_tokens"]
+      rows << ["log", sub["log"]] if sub["log"]
+      rows
+    end
+
+    # The answer coming back. Same quiet, machine-voiced shape as a tool result
+    # (it IS the Agent tool's result record) — but attributed to the agent, and
+    # carrying the totals the harness reports for the whole subagent run.
+    def subagent_result_sections(event)
+      tool = event["tool"] || {}
+      sections = [section("Subagent result — #{tool["agent_type"] || "agent"}", "")]
+      sections << section("Fields", subagent_result_fields_dl(tool))
+      sections << result_tokens_section(event)
+      # PROSE, not machine voice — the one deliberate exception among tool
+      # results. This text isn't program output; it's one agent's written report
+      # to another, in markdown, and reads as badly in a mono blob as any other
+      # message would. Everything else about the card stays quiet.
+      text = event.dig("detail", "text")
+      sections << section("Answer", %(<div class="d-markdown">#{Markdown.to_html(text)}</div>)) if text && !text.empty?
+      sections
+    end
+
+    def subagent_result_fields_dl(tool)
+      rows = [["For", tool["use_id"]], ["agent_id", tool["agent_id"]]]
+      rows << ["status", tool["status"]] if tool["status"]
+      rows << ["Error", tool["is_error"]] if tool["is_error"]
+      rows << ["Duration", "#{tool["duration_ms"]} ms"] if tool["duration_ms"]
+      if (st = tool["subagent_tokens"])
+        rows << ["total_tokens", comma(st["total_tokens"])]
+        rows << ["tool_uses", st["total_tool_use_count"]]
+      end
+      kv_dl(rows)
     end
 
     def generic_sections(event)

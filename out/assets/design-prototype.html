@@ -314,12 +314,12 @@ end</pre>
       <!-- subagent (expanded by default; .collapsed + the caret shows the other state) -->
       <a class="card k-subagent" id="event-8" href="#event-8" data-time="02:27:30">
         <div class="gutter">
-          <span class="kind deco"><span class="caret">▾</span>Subagent</span>
+          <span class="kind deco">Subagent<span class="caret">▾</span></span>
           <span class="who">Explore</span>
         </div>
         <div class="body">
-          <div class="summary"><b>Agent</b> spawned <code>Explore</code> — “explore this codebase to understand the timeline feature… how it works, whether rewind/pause/scrub exists, and the key files involved.”</div>
-          <div class="badges"><span class="badge agent">Subagent</span><span class="badge tok">45,231 tok</span><span class="badge tool">12 tools</span></div>
+          <div class="summary"><b>Explore</b> Explore this codebase to understand the timeline feature… how it works, whether rewind/pause/scrub exists, and the key files involved.</div>
+          <div class="badges"><span class="badge agent">Agent</span></div>
         </div>
         <template class="detail">
           <div class="d-section">
@@ -561,6 +561,184 @@ The timeline is exclusively a live replay mode with NO rewind, pause, or scrub f
           </template>
         </a>
       </div>
+
+      <!-- subagent result — back at top-level (NOT nested/indented): this is the
+           Task tool_result the main log actually records, delivering the
+           subagent's final answer back to its caller. A distinct kind
+           (k-subagent_result) from a plain tool_result, same red family as
+           the Subagent card it closes out, same quiet treatment. -->
+      <a class="card k-subagent_result" id="event-8-result" href="#event-8-result" data-time="02:31:40">
+        <div class="gutter">
+          <span class="kind deco">Subagent Result</span>
+          <span class="who">system</span>
+        </div>
+        <div class="body">
+          <div class="summary">Explore reports: the timeline is exclusively a live replay mode with no rewind, pause, or scrub functionality. Key files: <code>ui-store.ts</code>, <code>Timeline.tsx</code>, <code>agent-lane.tsx</code>.</div>
+        </div>
+        <template class="detail">
+          <div class="d-section"><h4 class="deco">Subagent result — Explore</h4></div>
+          <div class="d-section">
+            <h4 class="deco">Fields</h4>
+            <dl class="kv">
+              <dt>For</dt><dd><code>toolu_07Qz…b1</code></dd>
+              <dt>agent_id</dt><dd><code>agent-ae2065…95e</code></dd>
+              <dt>total_tokens</dt><dd><code>45,231</code></dd>
+              <dt>tool_uses</dt><dd><code>12</code></dd>
+            </dl>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>174</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+          <div class="d-footer">
+            <button type="button" class="copy-ref" data-copy="episode-8-before:174" title="Copy event id to clipboard"><code>episode-8-before:174</code><span class="copy-hint">copy</span></button>
+          </div>
+        </template>
+      </a>
+
+      <!-- subagent, COLLAPSED — same card, caret rotated, .subactions hidden by
+           the .collapsed + .subactions CSS rule. Shows the other half of the
+           expand/collapse pair (design only; no click wired up yet). -->
+      <a class="card k-subagent collapsed" id="event-8b" href="#event-8b" data-time="02:32:05">
+        <div class="gutter">
+          <span class="kind deco">Subagent<span class="caret">▾</span></span>
+          <span class="who">general-purpose</span>
+        </div>
+        <div class="body">
+          <div class="summary"><b>general-purpose</b> Run the test suite and report any failures with their stack traces.</div>
+          <div class="badges"><span class="badge agent">Agent</span></div>
+        </div>
+        <template class="detail">
+          <div class="d-section">
+            <h4 class="deco">Subagent — general-purpose</h4>
+            <div class="d-text">Description: “Run the test suite and report any failures with their stack traces.”
+
+→ opens its own nested story (same document shape, recursively).</div>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Fields</h4>
+            <dl class="kv">
+              <dt>agent_id</dt><dd><code>agent-b71a04…c2f</code></dd>
+              <dt>agent_type</dt><dd><code>general-purpose</code></dd>
+              <dt>spawned_by</dt><dd><code>toolu_09Km…e4</code></dd>
+              <dt>total_tokens</dt><dd><code>8,904</code></dd>
+              <dt>tool_uses</dt><dd><code>3</code></dd>
+            </dl>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>168</code></dd>
+              <dt>agent</dt><dd><code>agent-b71a04…c2f</code></dd>
+            </dl>
+          </div>
+          <div class="d-footer">
+            <button type="button" class="copy-ref" data-copy="episode-8-before:168" title="Copy event id to clipboard"><code>episode-8-before:168</code><span class="copy-hint">copy</span></button>
+          </div>
+        </template>
+      </a>
+      <div class="subactions">
+        <a class="card k-tool_call" id="event-8b-sub-1" href="#event-8b-sub-1" data-time="02:32:06">
+          <div class="gutter">
+            <span class="kind deco">Tool Call</span>
+            <span class="who">general-purpose</span>
+          </div>
+          <div class="body">
+            <div class="summary"><b>Bash</b> <code>bundle exec rake test</code></div>
+            <div class="badges"><span class="badge tool">Bash</span></div>
+          </div>
+          <template class="detail">
+            <div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
+            <div class="d-section">
+              <h4 class="deco">Fields</h4>
+              <dl class="kv">
+                <dt>Tool</dt><dd><code>Bash</code></dd>
+                <dt>use_id</dt><dd><code>toolu_02Vh…a9</code></dd>
+              </dl>
+            </div>
+            <div class="d-section">
+              <h4 class="deco">Provenance</h4>
+              <dl class="kv">
+                <dt>source.file</dt><dd><code>agent-b71a04…c2f.jsonl</code></dd>
+                <dt>source.line</dt><dd><code>3</code></dd>
+                <dt>agent</dt><dd><code>agent-b71a04…c2f</code></dd>
+              </dl>
+            </div>
+            <div class="d-footer">
+              <button type="button" class="copy-ref" data-copy="agent-b71a04c2f:3" title="Copy event id to clipboard"><code>agent-b71a04c2f:3</code><span class="copy-hint">copy</span></button>
+            </div>
+          </template>
+        </a>
+        <a class="card k-tool_result" id="event-8b-sub-2" href="#event-8b-sub-2" data-time="02:32:19">
+          <div class="gutter">
+            <span class="kind deco">Tool Result</span>
+            <span class="who">system</span>
+          </div>
+          <div class="body">
+            <div class="summary">154 examples, 0 failures.</div>
+          </div>
+          <template class="detail">
+            <div class="d-section"><h4 class="deco">Tool result</h4></div>
+            <div class="d-section">
+              <h4 class="deco">Fields</h4>
+              <dl class="kv">
+                <dt>For</dt><dd><code>toolu_02Vh…a9</code></dd>
+                <dt>Error</dt><dd><code>false</code></dd>
+              </dl>
+            </div>
+            <div class="d-section">
+              <h4 class="deco">Provenance</h4>
+              <dl class="kv">
+                <dt>source.file</dt><dd><code>agent-b71a04…c2f.jsonl</code></dd>
+                <dt>source.line</dt><dd><code>4</code></dd>
+                <dt>agent</dt><dd><code>agent-b71a04…c2f</code></dd>
+              </dl>
+            </div>
+            <div class="d-footer">
+              <button type="button" class="copy-ref" data-copy="agent-b71a04c2f:4" title="Copy event id to clipboard"><code>agent-b71a04c2f:4</code><span class="copy-hint">copy</span></button>
+            </div>
+          </template>
+        </a>
+      </div>
+
+      <!-- subagent result — general-purpose -->
+      <a class="card k-subagent_result" id="event-8b-result" href="#event-8b-result" data-time="02:32:20">
+        <div class="gutter">
+          <span class="kind deco">Subagent Result</span>
+          <span class="who">system</span>
+        </div>
+        <div class="body">
+          <div class="summary">general-purpose reports: test suite passes — 154 examples, 0 failures.</div>
+        </div>
+        <template class="detail">
+          <div class="d-section"><h4 class="deco">Subagent result — general-purpose</h4></div>
+          <div class="d-section">
+            <h4 class="deco">Fields</h4>
+            <dl class="kv">
+              <dt>For</dt><dd><code>toolu_09Km…e4</code></dd>
+              <dt>agent_id</dt><dd><code>agent-b71a04…c2f</code></dd>
+              <dt>total_tokens</dt><dd><code>8,904</code></dd>
+              <dt>tool_uses</dt><dd><code>3</code></dd>
+            </dl>
+          </div>
+          <div class="d-section">
+            <h4 class="deco">Provenance</h4>
+            <dl class="kv">
+              <dt>source.file</dt><dd><code>episode-8-before.jsonl</code></dd>
+              <dt>source.line</dt><dd><code>169</code></dd>
+              <dt>agent</dt><dd><code>main</code></dd>
+            </dl>
+          </div>
+          <div class="d-footer">
+            <button type="button" class="copy-ref" data-copy="episode-8-before:169" title="Copy event id to clipboard"><code>episode-8-before:169</code><span class="copy-hint">copy</span></button>
+          </div>
+        </template>
+      </a>
 
       <!-- system -->
       <a class="card k-system" id="event-9" href="#event-9" data-time="02:35:02">

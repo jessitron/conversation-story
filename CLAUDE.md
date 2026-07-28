@@ -96,8 +96,22 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
 
 - **Granularity: one event per JSONL record** (main log only). The golden test
   asserts `event_count == line count` (224 / 154). Splitting an assistant
-  record's blocks (thinking / text / tool_use) into their own cards, and
-  inlining subagent stories, are **Mount Complete** work.
+  record's blocks (thinking / text / tool_use) into their own cards is still
+  **Mount Complete** work.
+- **Subagents are inlined as a nested document** (session 15). An `Agent`
+  tool_call becomes kind `subagent` and its result kind `subagent_result`; the
+  subagent's log is parsed by the **same `Parser`, recursively**, and hangs off
+  the call as `subagent.meta` + `subagent.events` — NOT spliced into the flat
+  `events` list (which stays one-per-line of the main log). The hinge is
+  `toolUseResult.agentId`, not the tool's name. The renderer draws the nested
+  events as full cards in a `.subactions` block right after the subagent card,
+  **collapsed by default** (70 and 55 subactions in the real logs would bury the
+  conversation); `story.js`'s caret toggles it, `NAV()` is the "cards Jess can
+  step through" list that excludes collapsed ones, and a link to a nested ref
+  expands what it needs. **Anything that counts or looks up cards must walk the
+  tree**: `Renderer#all_visible_events`, `test/story_events.rb`, `Edits#apply`,
+  `bin/serve`'s `event_for`. `notes/2026-07-28-session-15-subagents.md` and the
+  Subagents section of `notes/intermediate-schema.md` have the rest.
 - Parser maps each record `type` → a schema `kind`; `user` splits into
   `user_message` vs `tool_result` by content shape; `last-prompt` intentionally
   hits the `unknown` fallback (keeps `detail.raw`). Renderer maps schema `kind` →

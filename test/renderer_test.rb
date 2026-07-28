@@ -3,11 +3,14 @@
 require "minitest/autorun"
 require "yaml"
 require "conversation_story/renderer"
+require_relative "story_events"
 
 # Whole-page properties of the rendered output, checked against every built
 # story. These are the cheap invariants that catch a template mistake before it
 # reaches a page Jess is presenting from.
 class RendererTest < Minitest::Test
+  include StoryEvents
+
   STORIES = Dir.glob(File.expand_path("../out/*/story.yaml", __dir__)).sort
 
   def self.each_story
@@ -47,7 +50,9 @@ class RendererTest < Minitest::Test
       doc = YAML.safe_load_file(path)
       html = ConversationStory::Renderer.new(doc).to_html
 
-      turns = doc["events"].filter_map { |e| e.dig("links", "message_id") }.uniq.size
+      # Over the cards the page actually draws, subagents' nested turns included
+      # — each of those is a real API response with its own numbers to print.
+      turns = visible_cards(doc).filter_map { |e| e.dig("links", "message_id") }.uniq.size
       printed = html.scan(%r{<h4 class="deco">Tokens</h4>}).size
 
       assert_operator turns, :>, 0, "#{name}: no assistant turns found"
@@ -61,7 +66,7 @@ class RendererTest < Minitest::Test
       doc = YAML.safe_load_file(path)
       html = ConversationStory::Renderer.new(doc).to_html
 
-      estimates = doc["events"].count { |e| e.dig("tokens", "estimated_input") }
+      estimates = visible_cards(doc).count { |e| e.dig("tokens", "estimated_input") }
       notes = html.scan(%r{<p class="d-note">Estimated from}).size
 
       assert_operator estimates, :>, 0, "#{name}: no tool-result estimates found"

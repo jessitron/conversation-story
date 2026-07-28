@@ -5,11 +5,14 @@ require "json"
 require "yaml"
 require "conversation_story/parser"
 require "conversation_story/renderer"
+require_relative "story_events"
 
 # Golden-fixture tests: run the parser against every real example log and assert
 # the one-event-per-record contract holds — no data lost, required fields, YAML
 # round-trips, and the renderer emits exactly one card per event.
 class ParserTest < Minitest::Test
+  include StoryEvents
+
   EXAMPLES = Dir.glob(File.expand_path("../examples/*.jsonl", __dir__)).sort
 
   # `last-prompt` is the one record type we knowingly route to the `unknown`
@@ -59,7 +62,7 @@ class ParserTest < Minitest::Test
     define_method("test_#{name}_renders_copyable_event_id") do
       doc  = ConversationStory::Parser.new(log).to_document
       html = ConversationStory::Renderer.new(doc).to_html
-      visible = doc["events"].reject { |e| e["hidden"] }
+      visible = visible_cards(doc)
       assert_equal visible.size, html.scan(/class="copy-ref"/).size,
                    "expected one copy-ref chip per visible event"
       assert_includes html, %(data-copy="#{visible.first["ref"]}"),
@@ -105,11 +108,13 @@ class ParserTest < Minitest::Test
     define_method("test_#{name}_renders_one_card_per_visible_event") do
       doc  = ConversationStory::Parser.new(log).to_document
       html = ConversationStory::Renderer.new(doc).to_html
-      visible = doc["events"].reject { |e| e["hidden"] }
+      # Nested subagent stories get cards too (inside a .subactions block), so
+      # "every visible event" means walking the tree, not the top-level list.
+      visible = visible_cards(doc)
 
       # Hidden (harness-bookkeeping) events are parsed but not rendered, so the
       # page shows one card per VISIBLE event.
-      assert_operator visible.size, :<, doc["events"].size,
+      assert_operator doc["events"].reject { |e| e["hidden"] }.size, :<, doc["events"].size,
                       "expected some events to be hidden"
       assert_equal visible.size, html.scan(/class="card /).size,
                    "expected one card per visible event"
@@ -181,6 +186,85 @@ class ParserTest < Minitest::Test
 
     shared = (enqueue["link_ids"] || []) & (notification["link_ids"] || [])
     refute_empty shared, "the enqueue and the notification it eventually delivers should share a link token"
+  end
+
+  # ---- subagents ------------------------------------------------------------
+  #
+  # An `Agent` tool call owns a whole other conversation, logged in its own file
+  # under <example>/subagents/. The pair of records in the MAIN log becomes
+  # `subagent` (the call) + `subagent_result` (the answer coming back), and the
+  # subagent's own log is parsed by this same parser and nested under the call.
+
+  EXAMPLES.each do |log|
+    name = File.basename(log, ".jsonl")
+
+    define_method("test_#{name}_agent_calls_become_subagent_events_with_a_nested_story") do
+      doc = ConversationStory::Parser.new(log).to_document
+      subagents = doc["events"].select { |e| e["kind"] == "subagent" }
+
+      refute_empty subagents, "#{name} spawns an Agent; expected a subagent event"
+      subagents.each do |e|
+        sub = e["subagent"]
+        assert sub, "#{e["ref"]}: subagent event missing its nested story"
+        assert_match(/\Aagent-\h+\z/, sub["agent_id"])
+        refute_empty sub["events"], "#{e["ref"]}: nested story has no events"
+        # the nested story is the same document shape, recursively
+        assert_equal sub["events"].size, sub["meta"]["event_count"]
+        # ...and it is a DIFFERENT log file, with its own line numbers
+        sub["events"].each do |nested|
+          assert_equal "#{sub["agent_id"]}:#{nested.dig("source", "line")}", nested["ref"]
+          assert_equal sub["agent_id"], nested["agent"]
+        end
+      end
+    end
+
+    # The result of an Agent call is not an ordinary tool result: it's the
+    # subagent's answer arriving back in the parent conversation, and it carries
+    # the subagent's own totals.
+    define_method("test_#{name}_agent_results_become_subagent_result_events") do
+      doc = ConversationStory::Parser.new(log).to_document
+      results = doc["events"].select { |e| e["kind"] == "subagent_result" }
+      subagents = doc["events"].select { |e| e["kind"] == "subagent" }
+
+      assert_equal subagents.size, results.size, "one result per subagent call"
+      results.each do |e|
+        assert e.dig("tool", "agent_id"), "#{e["ref"]}: missing tool.agent_id"
+        assert e.dig("tool", "subagent_tokens", "total_tokens")
+        # still linked to the call it answers, like any tool pair
+        call = subagents.find { |s| s.dig("tool", "use_id") == e.dig("tool", "use_id") }
+        refute_nil call, "#{e["ref"]}: no subagent call with a matching use_id"
+        refute_empty (call["link_ids"] || []) & (e["link_ids"] || [])
+      end
+    end
+
+    # The first record of a subagent log is the prompt the parent already shows
+    # on the subagent card (it IS the Agent call's `prompt` argument). Showing it
+    # again as the subagent's own opening "user message" says nothing new.
+    define_method("test_#{name}_subagent_prompt_echo_is_hidden") do
+      doc = ConversationStory::Parser.new(log).to_document
+      doc["events"].select { |e| e["kind"] == "subagent" }.each do |e|
+        first = e["subagent"]["events"].first
+        assert_equal "user_message", first["kind"]
+        assert first["hidden"], "#{first["ref"]}: the prompt echo should be hidden"
+        assert_equal e.dig("tool", "input", "prompt"), first.dig("detail", "text")
+      end
+    end
+
+    # Nothing about the subagent's token accounting may leak into the parent's:
+    # the parent's total is what the parent's API calls cost, and a subagent's
+    # context is its own (the Agent tool_result reports the subagent's totals
+    # separately, under tool.subagent_tokens).
+    define_method("test_#{name}_nested_tokens_stay_out_of_the_parent_total") do
+      doc = ConversationStory::Parser.new(log).to_document
+      subagent = doc["events"].find { |e| e["kind"] == "subagent" }
+      nested_total = subagent["subagent"]["meta"]["total_tokens"]
+
+      assert_operator nested_total, :>, 0, "the nested story should have its own total"
+      leaders = doc["events"].select { |e| e["turn_leader"] && e["tokens"] }
+      assert_equal leaders.sum { |e| e["tokens"]["context"].to_i + e["tokens"]["output"].to_i },
+                   doc["meta"]["total_tokens"],
+                   "meta.total_tokens must still count only the parent's own turns"
+    end
   end
 
   # ---- assistant turns and token attribution --------------------------------

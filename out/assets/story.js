@@ -92,6 +92,16 @@ function clearSelection() {
   dBody.innerHTML = EMPTY_HTML;
 }
 
+/* Expand every collapsed subagent block this card is buried in (see the
+   .subactions section below for what those are). Declared here because
+   syncFromHash runs on load, before the narrate/keyboard section. */
+function revealAncestors(card) {
+  for (let w = card.closest('.subactions'); w; w = w.parentElement.closest('.subactions')) {
+    const owner = w.previousElementSibling;
+    if (owner) owner.classList.remove('collapsed');
+  }
+}
+
 /* URL fragment -> selection. Unknown/empty fragment falls back to the default
    card so the page is never empty. Used on load and on hashchange; scrolls the
    target into view only when arriving via a real fragment (deep link). */
@@ -99,6 +109,10 @@ function syncFromHash() {
   const id = decodeURIComponent(location.hash.slice(1));
   const card = id ? document.getElementById(id) : null;
   const target = (card && card.classList.contains('card')) ? card : DEFAULT_CARD;
+  /* A subaction's ref is a linkable ref like any other, so a deep link into a
+     subagent's story opens the blocks it needs to open rather than resolving to
+     a card nobody can see. */
+  revealAncestors(target);
   selectCard(target);
   if (location.hash) target.scrollIntoView({ block: 'center' });
 }
@@ -112,6 +126,10 @@ document.getElementById('cards').addEventListener('click', e => {
   const card = e.target.closest('.card');
   if (!card) return;
   e.preventDefault();
+  /* The caret lives INSIDE the subagent card (it's the gutter's own affordance),
+     so it has to be checked before the card's own select behavior — clicking it
+     expands the subagent's story rather than selecting the card. */
+  if (e.target.closest('.caret')) { toggleSubactions(card); return; }
   if (card.classList.contains('active')) {          // clicking the open card closes it
     body.classList.toggle('sidebar-collapsed');
     return;
@@ -238,25 +256,31 @@ let revealed = 0;
 let pending = [];
 
 function clearPending() { pending.forEach(clearTimeout); pending = []; }
-function renderReveal() { CARDS.forEach((c, i) => c.classList.toggle('revealed', i < revealed)); }
+/* Cards outside NAV() (inside a collapsed subagent) are left alone: the wrapper
+   is display:none, so their `revealed` state can't show, and resyncReveal
+   re-derives the count from whatever is navigable when the caret moves. */
+function renderReveal() { NAV().forEach((c, i) => c.classList.toggle('revealed', i < revealed)); }
 
 /* count of cards revealed after advancing one beat from `from` */
 function beatForwardTo(from) {
-  for (let i = from; i < CARDS.length; i++) if (isMessage(CARDS[i])) return i + 1;
-  return CARDS.length;
+  const nav = NAV();
+  for (let i = from; i < nav.length; i++) if (isMessage(nav[i])) return i + 1;
+  return nav.length;
 }
 /* count of cards revealed after backing up one beat from `from`; always
    un-reveals at least one card, so a half-finished beat backs up to the
    previous message rather than sitting still. */
 function beatBackTo(from) {
-  for (let i = from - 2; i >= 0; i--) if (isMessage(CARDS[i])) return i + 1;
+  const nav = NAV();
+  for (let i = from - 2; i >= 0; i--) if (isMessage(nav[i])) return i + 1;
   return 0;
 }
 
 /* Reveal (or hide) up to `target` cards. Going forward the new cards appear one
    after another so the flurry reads as a flurry; going back is immediate. */
 function revealTo(target) {
-  target = Math.min(CARDS.length, Math.max(0, target));
+  const nav = NAV();
+  target = Math.min(nav.length, Math.max(0, target));
   clearPending();
   renderReveal();          // resync the DOM if a previous flurry was cut short
   const from = revealed;
@@ -266,7 +290,7 @@ function revealTo(target) {
   if (target < from) { renderReveal(); landOn(); return; }
 
   for (let i = from; i < target; i++) {
-    const card = CARDS[i], last = i === target - 1;
+    const card = nav[i], last = i === target - 1;
     pending.push(setTimeout(() => {
       card.classList.add('revealed');
       card.scrollIntoView({ block: 'nearest' });
@@ -279,7 +303,7 @@ function revealTo(target) {
    URL fragment pointing at where Jess actually is, so a reload resumes. */
 function landOn() {
   if (!revealed) { setFragment(location.pathname + location.search); clearSelection(); return; }
-  const card = CARDS[revealed - 1];
+  const card = NAV()[revealed - 1];
   setFragment('#' + card.id);
   selectCard(card);
   card.scrollIntoView({ block: 'center', behavior: 'smooth' });
@@ -290,13 +314,27 @@ function landOn() {
    is active" is NOT the same as "Jess chose a card" — only a real fragment
    counts as "start here". */
 function enterNarrate() {
+  const nav = NAV();
   const frag = decodeURIComponent(location.hash.slice(1));
-  const at = frag ? CARDS.findIndex(c => c.id === frag) : -1;
+  const at = frag ? nav.findIndex(c => c.id === frag) : -1;
   clearPending();
   revealed = at >= 0 ? at + 1 : 0;
   renderReveal();
   collapseSidebar();
-  if (revealed) selectCard(CARDS[revealed - 1]); else clearSelection();
+  if (revealed) selectCard(nav[revealed - 1]); else clearSelection();
+}
+
+/* The nav list just changed length under `revealed` (a count into it), so
+   re-derive the count from the last card that's actually revealed. Expanding a
+   subagent Jess has already narrated past therefore reveals its subactions;
+   expanding the one she's sitting on doesn't — they're the next beat. */
+function resyncReveal() {
+  const nav = NAV();
+  revealed = 0;
+  for (let i = nav.length - 1; i >= 0; i--) {
+    if (nav[i].classList.contains('revealed')) { revealed = i + 1; break; }
+  }
+  renderReveal();
 }
 
 function exitNarrate() {
@@ -321,13 +359,37 @@ const TYPING = 'input, textarea, select, [contenteditable]';
 const CARDS = Array.from(cards);
 const isMessage = c => c.classList.contains('k-user') || c.classList.contains('k-assistant');
 
+/* ---- subagent subactions ----
+   A `subagent` card is followed by a .subactions block holding cards for the
+   story that subagent produced. It ships COLLAPSED — the real subagent logs run
+   to 70 events, which would bury the conversation they belong to — and the caret
+   in the gutter opens it.
+
+   Those cards are display:none while collapsed, so they must drop out of every
+   list that means "cards Jess can step through": arrow navigation and narrate
+   beats alike. NAV() is that list, recomputed on use because the caret changes
+   it. With every subagent collapsed (the initial state) NAV() === CARDS. */
+function inCollapsedBlock(card) {
+  for (let w = card.closest('.subactions'); w; w = w.parentElement.closest('.subactions')) {
+    const owner = w.previousElementSibling;   // the .card.k-subagent it belongs to
+    if (owner && owner.classList.contains('collapsed')) return true;
+  }
+  return false;
+}
+const NAV = () => CARDS.filter(c => !inCollapsedBlock(c));
+
+function toggleSubactions(card) {
+  card.classList.toggle('collapsed');
+  if (mode === 'narrate') resyncReveal();
+}
+
 /* Move the selection by one card, or by one user/assistant message with shift.
    Does NOT open the sidebar — that state is Jess's (see collapseSidebar).
    Only ever called in explore/edit: the keydown handler's narrate branch
    returns before reaching this, so there's no "revealed cards only" case to
    filter for here. */
 function moveSelection(dir, byMessage) {
-  const list = CARDS;
+  const list = NAV();
   if (!list.length) return;
   const active = document.querySelector('.card.active');
   let i = list.indexOf(active);
