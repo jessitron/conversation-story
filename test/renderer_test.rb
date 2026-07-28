@@ -87,4 +87,22 @@ class RendererTest < Minitest::Test
                       "#{name}: header TOKENS stat missing or not derived from meta.total_tokens"
     end
   end
+
+  # The card carries the beat as an attribute so story.js can read it straight
+  # off the DOM (isBeat) instead of re-deriving it from kind and nesting.
+  def test_a_beat_card_carries_data_beat_and_others_do_not
+    doc = {
+      "meta" => { "name" => "demo" },
+      "events" => [
+        { "ref" => "demo:1", "kind" => "user_message", "summary" => "hi", "beat" => true },
+        { "ref" => "demo:2", "kind" => "tool_call", "summary" => "Bash",
+          "tool" => { "name" => "Bash", "primary_arg" => "ls" } },
+      ],
+    }
+    html = ConversationStory::Renderer.new(doc).to_html
+
+    assert_includes html, %(id="demo:1")
+    assert_match(/id="demo:1"[^>]*data-beat="true"/, html)
+    refute_match(/id="demo:2"[^>]*data-beat/, html)
+  end
 end

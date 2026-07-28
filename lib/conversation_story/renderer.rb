@@ -194,6 +194,7 @@ module ConversationStory
              data_time:    h(time_of_day(event["at"])),
              link_attr:    link_attr(event),
              edited_attr:  event["summary_edited"] ? %( data-edited="true") : "",
+             beat_attr:    event["beat"] ? %( data-beat="true") : "",
              summary_html: summary_html(event),
              badges_html:  badges_html(event),
              detail_html:  detail_html(event))

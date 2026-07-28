@@ -178,6 +178,7 @@ events:
   detail:
     text: Can you find conversation f9f81f1e-8c86-4821-ad48-4aa4cd1f211d from just
       now in this project, and bring it into the examples?
+  beat: true
 - id: 18d18f03-d421-4471-ad5f-09436291f267
   ref: mode-switches:8
   agent: main
@@ -371,6 +372,7 @@ events:
     context: 45774
     added: 24681
     cumulative_context: 45774
+  beat: true
   turn_leader: true
 - id: 1f5cf84e-9375-4c51-99a4-7c681258450d
   ref: mode-switches:18
@@ -2957,6 +2959,7 @@ events:
     context: 63503
     added: 1356
     cumulative_context: 928363
+  beat: true
   turn_leader: true
 - id: be41ba97-26f0-41d0-a7d3-17dd4a2e8a9c
   ref: mode-switches:81
@@ -3242,6 +3245,7 @@ events:
     context: 65875
     added: 624
     cumulative_context: 1059491
+  beat: true
   turn_leader: true
 - id: ceff7efe-a0cf-486c-af97-9c3d2df83114
   ref: mode-switches:92
@@ -3501,6 +3505,7 @@ events:
     context: 66853
     added: 449
     cumulative_context: 1192750
+  beat: true
   turn_leader: true
 - id: 3f1b8024-6237-4ee4-91a8-e40a3e3c89ea
   ref: mode-switches:99
@@ -3825,6 +3830,7 @@ events:
     context: 71636
     added: 4048
     cumulative_context: 1331976
+  beat: true
   turn_leader: true
 - id: 73f3714b-e96e-4fe4-8924-d0f32ac76271
   ref: mode-switches:111
@@ -4291,6 +4297,7 @@ events:
     context: 75928
     added: 624
     cumulative_context: 1557892
+  beat: true
   turn_leader: true
 - id: c749f80e-1c7a-41a1-aa2c-6f08e17b349f
   ref: mode-switches:120
@@ -4564,6 +4571,7 @@ events:
     context: 76787
     added: 403
     cumulative_context: 1711065
+  beat: true
   turn_leader: true
 - id: b38be8fe-db0c-4cc2-9f2d-a5a47d14180d
   ref: mode-switches:129
@@ -4855,6 +4863,7 @@ events:
   detail:
     text: ok, hold on, another tool was fighting you for the updates. I paused you,
       now it's done, continue with your testing
+  beat: true
 - id: 01d3850d-d913-411a-a6b4-a0b2664781b6
   ref: mode-switches:137
   agent: main
@@ -5753,6 +5762,7 @@ events:
     context: 84881
     added: 322
     cumulative_context: 2531625
+  beat: true
   turn_leader: true
 - id: 0b741214-3b88-43c3-b7df-7b0064fea3bc
   ref: mode-switches:165
@@ -5806,6 +5816,7 @@ events:
   detail:
     text: I would like mode switches to show up in the conversation log. that's a
       user action, right? It should be right-aligned
+  beat: true
 - id: line-169
   ref: mode-switches:169
   agent: main
@@ -5921,6 +5932,7 @@ events:
     context: 86297
     added: 37
     cumulative_context: 2617922
+  beat: true
   turn_leader: true
 - id: 3812978d-6832-44af-b89a-1437f5293bfd
   ref: mode-switches:175
@@ -6317,6 +6329,7 @@ events:
     context: 89750
     added: 1173
     cumulative_context: 2883768
+  beat: true
   turn_leader: true
 - id: 1ff02093-6f4a-49a6-8766-0a8b8511293c
   ref: mode-switches:186
@@ -6514,6 +6527,7 @@ events:
     context: 91062
     added: 1314
     cumulative_context: 2974830
+  beat: true
   turn_leader: true
 - id: 61f24f8d-7de9-410b-a7ef-2ef0fabf48fe
   ref: mode-switches:194
@@ -6543,6 +6557,7 @@ events:
   detail:
     text: then I need to make an example with a script. Can you grab the log of this
       conversation?
+  beat: true
 - id: line-196
   ref: mode-switches:196
   agent: main
@@ -6832,6 +6847,7 @@ events:
     context: 93500
     added: 1504
     cumulative_context: 3251427
+  beat: true
   turn_leader: true
 - id: 06fc7be1-6152-437d-9f88-f505273f7d00
   ref: mode-switches:204
@@ -7586,6 +7602,7 @@ events:
     context: 97750
     added: 525
     cumulative_context: 3830481
+  beat: true
   turn_leader: true
 - id: '008e80ab-e29d-4f8c-b315-1a0172f764fd'
   ref: mode-switches:225
@@ -7627,6 +7644,7 @@ events:
   detail:
     text: oh, so it's just a field on the user prompt? Then shall we display it as
       a field?
+  beat: true
 - id: line-228
   ref: mode-switches:228
   agent: main
@@ -7819,6 +7837,7 @@ events:
     context: 99548
     added: 1071
     cumulative_context: 4028508
+  beat: true
   turn_leader: true
 - id: 3e2ba0e2-b29c-4e04-92f9-53af17e95ce6
   ref: mode-switches:234
@@ -8185,6 +8204,7 @@ events:
     context: 103309
     added: 1425
     cumulative_context: 4233703
+  beat: true
   turn_leader: true
 - id: bea78b7e-2c0f-41be-92b7-17f52d76533a
   ref: mode-switches:244
@@ -8454,6 +8474,7 @@ events:
     context: 105629
     added: 988
     cumulative_context: 4443975
+  beat: true
   turn_leader: true
 - id: 53246da4-bbf6-45a1-be66-941264e7e29a
   ref: mode-switches:251
@@ -8999,6 +9020,7 @@ events:
     context: 109599
     added: 1374
     cumulative_context: 4768973
+  beat: true
   turn_leader: true
 - id: '0955bc20-1a4b-4c3d-8872-954d2a24244a'
   ref: mode-switches:264
@@ -9923,6 +9945,7 @@ events:
     context: 114061
     added: 542
     cumulative_context: 5556657
+  beat: true
   turn_leader: true
 - id: 99e15274-5344-4924-a7c5-1f43813bd834
   ref: mode-switches:285
@@ -11377,6 +11400,7 @@ events:
     context: 127262
     added: 2291
     cumulative_context: 6762274
+  beat: true
   turn_leader: true
 - id: 4bfabe3d-d885-46e2-b7a0-efed4aa42ed9
   ref: mode-switches:327
@@ -12033,6 +12057,7 @@ events:
     context: 135401
     added: 2292
     cumulative_context: 7424407
+  beat: true
   turn_leader: true
 - id: 3a571586-6c9c-4126-9562-bc8b439702f8
   ref: mode-switches:349
@@ -12956,6 +12981,7 @@ events:
     context: 139018
     added: 536
     cumulative_context: 8524340
+  beat: true
   turn_leader: true
 - id: 9bed11b7-f4be-47af-8924-2409c903ff90
   ref: mode-switches:373
@@ -12983,6 +13009,7 @@ events:
   mode: plan
   detail:
     text: this is a prompt in plan mode
+  beat: true
 - id: abb2c9e8-de21-4fac-997a-bbed57cd441f
   ref: mode-switches:375
   agent: main
@@ -13063,6 +13090,7 @@ events:
     context: 141520
     added: 1778
     cumulative_context: 8665860
+  beat: true
   turn_leader: true
 - id: cd35e402-5f3a-4b0a-8418-e507fe613299
   ref: mode-switches:379
@@ -13366,6 +13394,7 @@ events:
     context: 144284
     added: 1736
     cumulative_context: 8952694
+  beat: true
   turn_leader: true
 - id: 5dc8aa2d-4cea-4975-b768-350a1aef2499
   ref: mode-switches:391
@@ -13661,6 +13690,7 @@ events:
     context: 146992
     added: 1725
     cumulative_context: 9244955
+  beat: true
   turn_leader: true
 - id: bc88f75f-535c-4d96-bc1e-4d908e24f4b5
   ref: mode-switches:402
@@ -13800,6 +13830,7 @@ events:
     context: 148067
     added: 1077
     cumulative_context: 9393022
+  beat: true
   turn_leader: true
 - id: 17e1f555-4a6c-444b-931b-10079ec5c952
   ref: mode-switches:406
@@ -13948,6 +13979,7 @@ events:
     context: 149028
     added: 963
     cumulative_context: 9542050
+  beat: true
   turn_leader: true
 - id: fbf5b9fb-4e24-4453-b413-44f92a286c40
   ref: mode-switches:410
@@ -14702,6 +14734,7 @@ events:
     context: 155611
     added: 457
     cumulative_context: 10157856
+  beat: true
   turn_leader: true
 - id: e428112b-e523-4cb6-ae15-a51076ff73e9
   ref: mode-switches:425
@@ -15024,6 +15057,7 @@ events:
     context: 156701
     added: 474
     cumulative_context: 10470786
+  beat: true
   turn_leader: true
 - id: 248d607a-ed9a-4053-a4e2-33d2b45cb592
   ref: mode-switches:434
