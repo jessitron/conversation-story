@@ -35,11 +35,11 @@ Tokens
 ------
 Model: sonnet-4.5
 
-    Input tokens: 24,342
-          cached: 22,345 (98%)
-  added to cache:  1,998
+  Input tokens: 24,342
+        cached: 22,345 (98%)
+added to cache:  1,998
 
-    Output tokens:   233
+  Output tokens:   233
 ```
 
 In a tool result card, move it to the top as one line (instead of a whole section)
@@ -50,14 +50,28 @@ Tool Result -- [tool]
 Result size:  4.5 KB ~= 1,308 tokens
 ```
 
+In a subagent card:
+
+```
+Tokens
+------
+Model: sonnet-4.5
+
+Input tokens: 1,024,342
+      cached:   998,345 (98%)
+
+Output tokens:    4,233
+```
+
 ## Mount Beautiful
 
 - **edit mode marker** Currently this shows up appended to the summary. It distracts me there, looks like it's part of the text. Instead, put it in the .who section, to the right of "Claude" or the left of "Jess"
 - **enqueue tag** Instead of `Queue enqueue: Background command "Start Vite dev client on port 5175" failed with exit code 1` let's say `Background command "Start Vite dev client on port 5175" failed with exit code 1` and have an `[ENQUEUE]` tag. Also, let's give it an [ERROR] tag when it failed (for instance, it contains "command .\* failed")
 - Instead of `[REMOVED FROM QUEUE]` let's shorten to `[FROM QUEUE]`
+- **subagent detail tweaks** Move the 'log' field to 'Provenenance'. Give it a button near the top to expand/collapse its cards in the conversation.
 - Self-host the fonts (Tenor Sans / Sen / Cascadia Code) into `assets/fonts/`
   with `@font-face` in `story.css`, replacing the CDN `<link>`.
-- A subagent whose job is to guard the CSS and keep it consistent. Two things it
+- A capability owner whose job is to guard the CSS and keep it consistent. Two things it
   would have caught in session 9: a `var()` on a token that no longer exists
   (fails silently), and a rule whose `opacity` override lost to a
   same-specificity rule later in the file.

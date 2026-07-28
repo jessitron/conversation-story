@@ -45,8 +45,22 @@ session wired it to real data: parser, renderer, JS, and the write path.
   deliberate exception to session 9's "tool results are machine voice". It isn't
   program output; it's one agent's written report to another.
 
+- Both halves of the pair carry an **`[AGENT]` badge** — a `tool_result` badges
+  its tool, so the answer coming back should badge its agent. Jess asked for it
+  on the result card and guessed it might also fix the summary sitting oddly low
+  there; it didn't (that was the baseline bug below), but both are fixed.
+
 ## Gotchas
 
+- **`inline-block` on `.gutter .kind` broke baseline alignment for the one label
+  that wraps.** The card grid is `align-items: baseline`, and an inline-block
+  reports its **last** line's baseline — so "Subagent Result" wrapping to two
+  lines dragged the row's first baseline down to its second line, and that card's
+  summary sat 18px lower than every other card's. `display: block` fixes it (the
+  caret is an inline child, so it still sits beside the label). Measured, not
+  eyeballed: forcing `inline-block` back in a live page moves the skew 0 → 18 on
+  `subagent_result` and leaves every single-line label at 0. Watch for this again
+  the next time a kind label grows past one line.
 - **Anything that counts or finds cards has to walk the tree now.** Four places
   did it over the flat list and every one of them was wrong the moment the first
   subagent inlined: `Renderer#link_index`/`#turn_index` (so a causal chain can

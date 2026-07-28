@@ -289,10 +289,14 @@ module ConversationStory
       badges = case event["kind"]
                when "tool_call"   then tool_call_badges(event)
                when "tool_result" then tool_result_badges(event)
-               # An Agent badge, the way a tool_call badges its tool name. No
-               # token or tool-count badges: those are detail, and they're in the
-               # Fields section already — a card face is a headline.
-               when "subagent"    then [%(<span class="badge agent">Agent</span>)]
+               # An Agent badge, the way a tool_call badges its tool name — on
+               # BOTH halves of the pair, since a tool_result badges its tool too
+               # and the answer coming back is as much "an agent thing" as the
+               # call. No token or tool-count badges: those are detail, and
+               # they're in the Fields section already — a card face is a
+               # headline.
+               when "subagent", "subagent_result"
+                 [%(<span class="badge agent">Agent</span>)]
                else []
                end
       badges << %(<span class="badge queue">Dequeued</span>) if event["dequeued"]

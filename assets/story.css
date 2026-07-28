@@ -247,7 +247,14 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
   white-space: nowrap; padding-top: 2px;
 }
 .card .gutter .kind {
-  display: inline-block;
+  /* BLOCK, not inline-block, and that matters: the card grid is
+     align-items:baseline, and an inline-block reports its LAST line's baseline.
+     So the one label that wraps ("Subagent Result") dragged the whole row's
+     first baseline down to its second line, and that card's summary sat ~20px
+     lower than every other card's for no visible reason. As a block, the
+     gutter's first baseline is its first line, where it belongs. The caret is an
+     inline child, so it still sits beside the label. */
+  display: block;
   letter-spacing: var(--ls-wide);
   font-size: var(--fs-small); color: var(--kind, var(--ink-soft));
   margin-bottom: 3px;
