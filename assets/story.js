@@ -42,10 +42,18 @@ function setFragment(frag) { setUrl(frag); }
 function collapseSidebar() { body.classList.add('sidebar-collapsed'); }
 function openSidebar()     { body.classList.remove('sidebar-collapsed'); }
 
-/* show a card's detail in the sidebar (pure UI — does not touch the URL) */
+/* show a card's detail in the sidebar (pure UI — does not touch the URL).
+   Also moves real DOM focus to the card: browsers auto-focus whatever element
+   matches the URL fragment on load, and that focus (and its :focus-visible
+   outline) otherwise just sits there forever after — completely decoupled
+   from .active — so narrating past it left a stray outline on the start card
+   while the real (correctly-moving) selection border was elsewhere. preventScroll
+   because every caller already handles its own scrolling (or deliberately
+   doesn't, e.g. the reveal flurry). */
 function selectCard(card) {
   cards.forEach(c => c.classList.remove('active'));
   card.classList.add('active');
+  card.focus({ preventScroll: true });
 
   dKind.textContent = card.querySelector('.gutter .kind').textContent;
   dTime.textContent = card.dataset.time + ' UTC';
