@@ -62,6 +62,13 @@ module ConversationStory
     # record whose string content is this XML blob — NOT something Jess typed.
     TASK_NOTIFICATION_TAG = "<task-notification>"
 
+    # Inside a SUBAGENT's own log, a `SendMessage` from the orchestrating agent
+    # (steering it, or relaying Jess's feedback secondhand) arrives as a plain
+    # `user`-role record too — same shape as the human's own messages, but it
+    # is NOT Jess talking. The harness itself prefixes it with this literal
+    # string, which is the only signal distinguishing it from a real prompt.
+    COORDINATOR_MESSAGE_PREFIX = "The coordinator sent a message while you were working:"
+
     # tool_use `name` -> which input key is worth surfacing as the one-line
     # "primary arg" (in card summaries and the Fields section). Anything not
     # listed here shows no primary arg (just the tool name).
@@ -176,6 +183,8 @@ module ConversationStory
       return "tool_result" if content.is_a?(Array)
       return "task_notification" if content.is_a?(String) &&
                                      content.strip.start_with?(TASK_NOTIFICATION_TAG)
+      return "coordinator_message" if content.is_a?(String) &&
+                                       content.strip.start_with?(COORDINATOR_MESSAGE_PREFIX)
 
       "user_message"
     end
@@ -203,6 +212,7 @@ module ConversationStory
     def summary_for(kind, rec)
       case kind
       when "user_message"      then truncate(strip_markdown(rec.dig("message", "content").to_s), MESSAGE_SUMMARY_LIMIT)
+      when "coordinator_message" then truncate(strip_markdown(rec.dig("message", "content").to_s.sub(COORDINATOR_MESSAGE_PREFIX, "").strip), MESSAGE_SUMMARY_LIMIT)
       when "assistant_message" then assistant_summary(rec)
       when "thinking"          then thinking_summary(rec)
       when "tool_call"         then tool_call_summary(rec)
@@ -308,6 +318,8 @@ module ConversationStory
     def add_detail(event, kind, rec)
       case kind
       when "user_message"
+        event["detail"] = { "text" => rec.dig("message", "content").to_s }
+      when "coordinator_message"
         event["detail"] = { "text" => rec.dig("message", "content").to_s }
       when "assistant_message"
         text = Array(rec.dig("message", "content"))

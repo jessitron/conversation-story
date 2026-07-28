@@ -15108,15 +15108,15 @@ events:
       ref: agent-a574aba0082b4260c:73
       agent: agent-a574aba0082b4260c
       parent: e29549f1-df44-4e8b-a2e9-4660c4734e97
-      kind: user_message
+      kind: coordinator_message
       role: user
       at: '2026-07-27T19:02:45.009Z'
-      summary: 'The coordinator sent a message while you were working: Your plan was
-        saved to notes/PLAN-tabletop-v0.md and Jess has now reviewed it, adding inline
-        comments prefixed with ">" (she also may have edited other text). Read that
-        file fresh. Your task: address every one of her comments. For each, either
-        (a) accept it and state the concrete revision to the plan step it affects,
-        or (b) push back with a s…'
+      summary: 'Your plan was saved to notes/PLAN-tabletop-v0.md and Jess has now
+        reviewed it, adding inline comments prefixed with ">" (she also may have edited
+        other text). Read that file fresh. Your task: address every one of her comments.
+        For each, either (a) accept it and state the concrete revision to the plan
+        step it affects, or (b) push back with a specific reason. Where a comment
+        answers one of your ope…'
       source:
         file: agent-a574aba0082b4260c.jsonl
         line: 73
@@ -79596,15 +79596,15 @@ events:
       ref: agent-ada9fc7259561d8af:35
       agent: agent-ada9fc7259561d8af
       parent: c0069178-cb84-4c79-9699-148ebf96f8b9
-      kind: user_message
+      kind: coordinator_message
       role: user
       at: '2026-07-27T20:25:15.308Z'
-      summary: 'The coordinator sent a message while you were working: You stopped
-        after the library-search feature-owner consultation and returned its findings
-        as if they were your final report. That was step B0 of your brief, not the
-        whole task. Take those consultation findings on board (especially: mint-on-load
-        must be stable across requests — decide explicitly to persist minted instanceIds
-        on next save; neve…'
+      summary: 'You stopped after the library-search feature-owner consultation and
+        returned its findings as if they were your final report. That was step B0
+        of your brief, not the whole task. Take those consultation findings on board
+        (especially: mint-on-load must be stable across requests — decide explicitly
+        to persist minted instanceIds on next save; never rename or repurpose gameCardIndex,
+        it stays internal…'
       source:
         file: agent-ada9fc7259561d8af.jsonl
         line: 35
@@ -80178,15 +80178,15 @@ events:
       ref: agent-ada9fc7259561d8af:47
       agent: agent-ada9fc7259561d8af
       parent: a49d4776-7a63-4b9c-bdb8-b35ded69f578
-      kind: user_message
+      kind: coordinator_message
       role: user
       at: '2026-07-27T20:26:08.272Z'
-      summary: 'The coordinator sent a message while you were working: You''ve stopped
-        again with a feature-owner consultation (two-faced-cards) as your final output.
-        Noted pattern: after each skill consultation you end your turn — don''t. Absorb
-        this consultation''s guidance (send current face on discard too, no face reset
-        on TableLocation, cardInstanceId on GameCard never CardDefinition, mint-on-load
-        must persist…'
+      summary: 'You''ve stopped again with a feature-owner consultation (two-faced-cards)
+        as your final output. Noted pattern: after each skill consultation you end
+        your turn — don''t. Absorb this consultation''s guidance (send current face
+        on discard too, no face reset on TableLocation, cardInstanceId on GameCard
+        never CardDefinition, mint-on-load must persist on next save so the Tabletop''s
+        instanceId dedup holds,…'
       source:
         file: agent-ada9fc7259561d8af.jsonl
         line: 47

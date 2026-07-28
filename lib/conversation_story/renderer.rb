@@ -31,26 +31,28 @@ module ConversationStory
       "attachment"        => "system",
       "file_snapshot"     => "system",
       "permission_mode"   => "system",
-      "queue_operation"   => "system",
-      "task_notification" => "system",
-      "unknown"           => "unknown",
+      "queue_operation"     => "system",
+      "task_notification"   => "system",
+      "coordinator_message" => "system",
+      "unknown"             => "unknown",
     ).freeze
 
     KIND_LABEL = {
-      "user_message"      => "User",
-      "assistant_message" => "Assistant",
-      "thinking"           => "Thinking",
-      "tool_call"          => "Tool Call",
-      "tool_result"        => "Tool Result",
-      "subagent"           => "Subagent",
-      "subagent_result"    => "Subagent Result",
-      "system"             => "System",
-      "attachment"         => "Attachment",
-      "file_snapshot"      => "Snapshot",
-      "permission_mode"    => "Permission",
-      "queue_operation"    => "Queue",
-      "task_notification"  => "Notification",
-      "unknown"            => "Unknown",
+      "user_message"        => "User",
+      "assistant_message"   => "Assistant",
+      "thinking"             => "Thinking",
+      "tool_call"            => "Tool Call",
+      "tool_result"          => "Tool Result",
+      "subagent"             => "Subagent",
+      "subagent_result"      => "Subagent Result",
+      "system"               => "System",
+      "attachment"           => "Attachment",
+      "file_snapshot"        => "Snapshot",
+      "permission_mode"      => "Permission",
+      "queue_operation"      => "Queue",
+      "task_notification"    => "Notification",
+      "coordinator_message"  => "Coordinator",
+      "unknown"              => "Unknown",
     }.freeze
 
     # the actor shown in the card gutter (by kind, not role: a tool_result is a
@@ -68,18 +70,19 @@ module ConversationStory
     ).freeze
 
     DETAIL_HEADING = Hash.new("Detail").merge(
-      "user_message"      => "Message",
-      "assistant_message" => "Message",
-      "thinking"          => "Reasoning",
-      "system"            => "System event",
-      "task_notification" => "Notification",
+      "user_message"        => "Message",
+      "assistant_message"   => "Message",
+      "thinking"            => "Reasoning",
+      "system"              => "System event",
+      "task_notification"   => "Notification",
+      "coordinator_message" => "Message",
     ).freeze
 
     # detail text for these kinds is conversational prose written in markdown;
     # everything else (tool output, XML/system blobs — including
     # task_notification, whose body is the <task-notification> XML, not prose)
     # is shown as literal text.
-    MARKDOWN_KINDS = %w[user_message assistant_message thinking].freeze
+    MARKDOWN_KINDS = %w[user_message assistant_message thinking coordinator_message].freeze
 
     # tool_use input keys big enough that they get their own "Input" section
     # instead of a Fields row.
@@ -209,8 +212,12 @@ module ConversationStory
     # Inside a subagent's block, the actor is that agent — "Explore", not
     # "Claude". Only the kinds WHO calls Claude change; a tool_result still comes
     # from the system. A `subagent` card names the agent it spawned, at any depth.
+    # A `coordinator_message` is the ORCHESTRATOR speaking into this subagent —
+    # always "Claude", never substituted for the subagent's own name (that
+    # would credit the subagent with steering itself).
     def who_for(event, agent_label)
       return event.dig("subagent", "agent_type") || "Claude" if event["kind"] == "subagent"
+      return "Claude" if event["kind"] == "coordinator_message"
 
       who = WHO[event["kind"]]
       agent_label && who == "Claude" ? agent_label : who
