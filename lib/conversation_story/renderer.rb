@@ -33,7 +33,7 @@ module ConversationStory
       "permission_mode"   => "system",
       "queue_operation"     => "system",
       "task_notification"   => "system",
-      "coordinator_message" => "system",
+      "coordinator_message" => "coordinator",
       "unknown"             => "unknown",
     ).freeze
 
