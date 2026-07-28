@@ -156,24 +156,40 @@ the raw record is always one hop away for a human. Therefore:
   discovering the format. When we learn a new type, we give it named fields and
   it stops being `unknown`.
 
-## Hand-written summaries live outside this document
+## Hand edits live outside this document
 
-`story.yaml` is **generated**, and stays that way. A summary Jess rewrites is
-stored in a sidecar, `edits/<name>.yaml` — a flat map of event `ref` to summary
-— and `bin/parse` overlays it onto the freshly parsed document, setting
-`summary` and stamping `summary_edited: true`. So the story is derived from *the
-log plus the sidecar*, and a parser improvement still reaches every event Jess
-hasn't touched. Nothing needs a "don't overwrite me" lock.
+`story.yaml` is **generated**, and stays that way. Hand edits are stored in a
+sidecar, `edits/<name>.yaml`, keyed by event `ref` and split into two named
+sections (session 17 added the second):
 
-`summary_edited` is the one thing the renderer needs from this: it means "print
-this text verbatim", which beats the composed card faces (a `tool_call` normally
-ignores `summary` and draws its tool name plus primary argument). It also gets a
-`data-edited` attribute on the card, which only the local editing UI reacts to.
+```yaml
+summaries:
+  episode-8-before:15: Here's how it works today...
+beats:
+  episode-8-before:35: false
+```
+
+`bin/parse` overlays both onto the freshly parsed document. A rewritten
+`summaries:` entry sets `summary` and stamps `summary_edited: true`. A
+`beats:` entry overrides where narration stops (see `beat`, below the `hidden`
+field): `true` sets `event["beat"] = true`; `false` **deletes** the `beat` key
+rather than storing `false`, so an override and the parser's own "not a beat"
+converge on one shape (`event.key?("beat")` is the only test anywhere, never a
+boolean check). So the story is derived from *the log plus the sidecar*, and a
+parser improvement still reaches every event Jess hasn't touched. Nothing
+needs a "don't overwrite me" lock.
+
+`summary_edited` is the one thing the renderer needs from the summaries side:
+it means "print this text verbatim", which beats the composed card faces (a
+`tool_call` normally ignores `summary` and draws its tool name plus primary
+argument). It also gets a `data-edited` attribute on the card, which only the
+local editing UI reacts to. A beat override gets no such stamp — there's no
+composed card face for a beat to beat, and nothing to mark.
 
 Keying by `ref` ties an edit to a line number, so editing a log orphans its
-edits. `Edits#apply` returns the refs that matched nothing and `bin/parse` warns
-about them — deliberately noisy, since the alternative is losing Jess's words in
-silence.
+edits. `Edits#apply` returns the refs that matched nothing (from either
+section) and `bin/parse` warns about them — deliberately noisy, since the
+alternative is losing Jess's words, or a chosen beat, in silence.
 
 ## Subagents: a nested document, not more entries in the list
 
@@ -291,6 +307,18 @@ prose-tuned 4 — 3.5 splits the difference.
   by exact text match — and sets `dequeued: true` there, so the renderer can
   flag "this arrived via the queue, not as an ordinary turn" on the event that
   has something to show.
+- **Beat** (session 17): `beat: true` marks where narration stops — `n` / `p` /
+  shift+arrow step from one beat to the next. The parser sets it on every
+  main-thread `user_message` and `assistant_message` (`Parser::BEAT_KINDS`),
+  reproducing what `story.js` used to hard-code from CSS classes. Emitted only
+  when true, like `hidden`, and **never set inside a subagent** — a subagent's
+  log is parsed by the same `Parser` recursively
+  (`Parser.new(path, nested: true)`), and a nested parser sets no `beat` at
+  all, because a beat never stops inside a subagent (session 15). Jess can
+  override it per card in edit mode; the override lives in `edits/<name>.yaml`'s
+  `beats:` section (see "Hand edits", above) and can turn a default beat off or
+  add one the parser wouldn't guess — a tool call, or an event inside a
+  subagent.
 - **Approval**: these example logs contain **no per-tool approve/deny record**
   (only global `permission-mode` change events and `stop_hook_summary` hooks), so
   we emit no approval field. Newer Claude logs may include real approval data; we

@@ -103,7 +103,6 @@ deliberately deferred rough edges from the final review — neither is a
 correctness bug that needs fixing right now._
 
 - **change narrate shortcut** I want 'n/p' to work for "move to the next/prev assistant/user message" in any mode, and let's make the "narrate mode" shortcut something else. Maybe 's' for story?
-- **modify when it stops** Currently 'n' or shift-arrow goes to the next Assistant/User message. I want to exempt some messages from this. Let's introduce concept of Pause-here (or come up with a better name), which defaults to true for Assistant/User messages in the main thread and false everwhere else. Let's make it editable in edit mode.
 - A degraded or bogus `?mode=` value stays in the URL while the body is
   `mode-explore`, and pressing `x` won't clear it — `setMode` early-returns on
   a same-mode call. Cosmetic, but it's the one place the URL and the body
