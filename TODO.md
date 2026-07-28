@@ -21,7 +21,7 @@ Open follow-ons from that work:
   not hiding cards.
 - **A subagent's own tokens have nowhere to live in the header.** The story's
   Tokens stat is the parent's; a subagent's 2.05M of its own use shows only in
-  its card's Fields. The 'where are we' map below is where that belongs.
+  its card's Fields. The Tokens stat in the page header SHOULD include the subagent tokens.
 
 ### Token Counts
 
@@ -49,7 +49,7 @@ Tool Result -- [tool]
 Result size:  4.5 KB ~= 1,308 tokens
 ```
 
-In a subagent card:
+In a subagent card (or subagent results, whenever this is available):
 
 ```
 Tokens

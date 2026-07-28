@@ -110,6 +110,7 @@ module ConversationStory
       events  = records.map { |lineno, rec| build_event(lineno, rec) }
       link_related_events!(events)
       mark_turns!(events)
+      stamp_modes!(records, events)
       document = { "meta" => build_meta(records, events), "events" => events }
       attach_subagents!(events)
       document
@@ -483,6 +484,61 @@ module ConversationStory
         "ephemeral_5m"   => usage.dig("cache_creation", "ephemeral_5m_input_tokens"),
         "service_tier"   => usage["service_tier"],
       }
+    end
+
+    # ---- the mode a prompt was sent in ---------------------------------------
+    #
+    # Mode is not something that happens, it's state stamped at submission. The
+    # harness writes a {last-prompt, mode, permission-mode} trio — no timestamps,
+    # pure bookkeeping — right AFTER each prompt, and the `last-prompt` record
+    # holds that prompt's own text. So the trio describes the prompt it FOLLOWS,
+    # and each user_message carries its mode as a field rather than earning a
+    # card of its own (44 stamps in one example, all saying `normal`).
+    #
+    # The direction matters exactly when the mode changes: the stamp *before* a
+    # prompt still holds the previous submission's mode, so reading backwards
+    # would report a switch one prompt too late. Backwards is only the fallback,
+    # for a prompt with no stamp after it — the session's last prompt, or a log
+    # snapshotted mid-session.
+    MODE_STAMP_TYPES = { "mode" => "mode", "permission-mode" => "permission_mode" }.freeze
+
+    def stamp_modes!(records, events)
+      previous = {}
+      events.each_with_index do |event, i|
+        next unless event["kind"] == "user_message"
+
+        stamps = mode_stamps_for(records, events, i)
+        MODE_STAMP_TYPES.each_value do |field|
+          value = stamps[field] || previous[field]
+          next unless value
+
+          event[field] = value
+          # the opening state is not a switch: only flag a value that MOVED.
+          event["#{field}_changed"] = true if previous[field] && previous[field] != value
+          previous[field] = value
+        end
+      end
+    end
+
+    # The stamp values belonging to the prompt at `index`: scan forward to the
+    # next user_message (that prompt's stamps are its own), then backward.
+    def mode_stamps_for(records, events, index)
+      found = {}
+      scan = lambda do |range|
+        range.each do |j|
+          break if j != index && events[j]["kind"] == "user_message"
+
+          field = MODE_STAMP_TYPES[records[j][1]["type"]]
+          next unless field
+
+          value = records[j][1]["mode"] || records[j][1]["permissionMode"]
+          found[field] ||= value if value
+        end
+      end
+
+      scan.call(index...events.size)
+      scan.call(index.downto(0))
+      found
     end
 
     # ---- assistant turns -----------------------------------------------------

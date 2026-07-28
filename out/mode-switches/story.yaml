@@ -176,6 +176,8 @@ events:
   detail:
     text: Can you find conversation f9f81f1e-8c86-4821-ad48-4aa4cd1f211d from just
       now in this project, and bring it into the examples?
+  mode: normal
+  permission_mode: auto
 - id: 18d18f03-d421-4471-ad5f-09436291f267
   ref: mode-switches:8
   agent: main
@@ -4845,6 +4847,8 @@ events:
   detail:
     text: ok, hold on, another tool was fighting you for the updates. I paused you,
       now it's done, continue with your testing
+  mode: normal
+  permission_mode: auto
 - id: 01d3850d-d913-411a-a6b4-a0b2664781b6
   ref: mode-switches:137
   agent: main
@@ -5794,6 +5798,8 @@ events:
   detail:
     text: I would like mode switches to show up in the conversation log. that's a
       user action, right? It should be right-aligned
+  mode: normal
+  permission_mode: auto
 - id: line-169
   ref: mode-switches:169
   agent: main
@@ -6528,6 +6534,8 @@ events:
   detail:
     text: then I need to make an example with a script. Can you grab the log of this
       conversation?
+  mode: normal
+  permission_mode: auto
 - id: line-196
   ref: mode-switches:196
   agent: main

@@ -3,6 +3,7 @@
 require "minitest/autorun"
 require "json"
 require "yaml"
+require "tempfile"
 require "conversation_story/parser"
 require "conversation_story/renderer"
 require_relative "story_events"
@@ -371,5 +372,96 @@ class ParserTest < Minitest::Test
                "#{e["ref"]}: an estimate must not be named like a reported count"
       end
     end
+  end
+
+  # ---- the mode a prompt was sent in ----------------------------------------
+  #
+  # Every real example log was recorded in one mode start to finish (44 stamps
+  # saying `normal`, and not one switch), so the case the feature EXISTS for is
+  # unreachable from examples/. These two tests build the log by hand instead.
+
+  # A prompt's mode comes from the stamp written AFTER it — the harness writes
+  # {last-prompt, mode, permission-mode} at submission, and `last-prompt` holds
+  # that prompt's own text. Reading the stamp before the prompt would credit the
+  # switch to the following prompt, one too late.
+  def test_a_mode_switch_lands_on_the_prompt_it_applies_to
+    doc = parse_records([
+                          { "type" => "mode", "mode" => "normal" },
+                          { "type" => "permission-mode", "permissionMode" => "auto" },
+                          user_record("first, in normal mode"),
+                          { "type" => "last-prompt", "lastPrompt" => "first, in normal mode" },
+                          { "type" => "mode", "mode" => "normal" },
+                          user_record("second — sent after shift-tabbing to plan"),
+                          { "type" => "last-prompt", "lastPrompt" => "second" },
+                          { "type" => "mode", "mode" => "plan" },
+                          user_record("third, still in plan"),
+                          { "type" => "mode", "mode" => "plan" },
+                        ])
+    prompts = doc["events"].select { |e| e["kind"] == "user_message" }
+    assert_equal %w[normal plan plan], prompts.map { |e| e["mode"] }
+    # only the one that MOVED is flagged — the opening state is not a switch,
+    # and neither is staying put.
+    assert_equal [nil, true, nil], prompts.map { |e| e["mode_changed"] }
+    # permissions never moved, so they ride along on every prompt unflagged
+    assert_equal %w[auto auto auto], prompts.map { |e| e["permission_mode"] }
+    assert_nil prompts[1]["permission_mode_changed"]
+  end
+
+  # Only a change reaches the card face; the value itself lives in the pane.
+  def test_only_a_changed_mode_badges_the_card
+    doc = parse_records([
+                          { "type" => "mode", "mode" => "normal" },
+                          user_record("no badge on this one"),
+                          { "type" => "mode", "mode" => "normal" },
+                          user_record("this one switched"),
+                          { "type" => "mode", "mode" => "plan" },
+                        ])
+    html = ConversationStory::Renderer.new(doc).to_html
+
+    assert_equal 1, html.scan(/badge mode/).size, "exactly one prompt changed mode"
+    assert_includes html, %(<span class="badge mode">plan</span>)
+    # ...while both prompts report their mode in the detail pane
+    assert_equal 2, html.scan(%r{<dt>Mode</dt>}).size
+  end
+
+  # Switching into plan mode moves both dimensions at once, and two badges
+  # reading PLAN say nothing the one says.
+  def test_a_switch_that_moves_both_dimensions_badges_once
+    doc = parse_records([
+                          { "type" => "mode", "mode" => "normal" },
+                          { "type" => "permission-mode", "permissionMode" => "auto" },
+                          user_record("normal to start"),
+                          { "type" => "mode", "mode" => "normal" },
+                          { "type" => "permission-mode", "permissionMode" => "auto" },
+                          user_record("into plan, both dimensions"),
+                          { "type" => "mode", "mode" => "plan" },
+                          { "type" => "permission-mode", "permissionMode" => "plan" },
+                        ])
+    prompt = doc["events"].select { |e| e["kind"] == "user_message" }.last
+    assert prompt["mode_changed"]
+    assert prompt["permission_mode_changed"]
+
+    html = ConversationStory::Renderer.new(doc).to_html
+    assert_equal 1, html.scan(/badge mode/).size, "one badge, not two saying `plan`"
+  end
+
+  # Writes records to a temp log and parses it, so a hand-built conversation goes
+  # through the real Parser (and the real renderer) rather than a stub document.
+  def parse_records(records)
+    Tempfile.create(["mode-test", ".jsonl"]) do |f|
+      records.each { |r| f.puts JSON.generate(r) }
+      f.flush
+      return ConversationStory::Parser.new(f.path).to_document
+    end
+  end
+
+  def user_record(text)
+    @seq = (@seq || 0) + 1
+    {
+      "type" => "user", "uuid" => "u#{@seq}", "sessionId" => "test-session",
+      "timestamp" => "2026-07-28T1#{@seq}:00:00.000Z", "gitBranch" => "main",
+      "cwd" => "/tmp", "version" => "2.1.220",
+      "message" => { "role" => "user", "content" => text },
+    }
   end
 end

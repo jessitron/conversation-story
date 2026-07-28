@@ -166,6 +166,20 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
 - A background task's result delivered mid-conversation as a `<task-notification>`
   XML blob gets its own kind, `task_notification` (not `user_message` — it's
   not something Jess typed); its summary is the extracted `<summary>` field.
+- **Mode is a field on the prompt, not an event** (session 17). The harness
+  stamps `{last-prompt, mode, permission-mode}` — timestamp-less bookkeeping —
+  right AFTER each submission, and `last-prompt` holds that prompt's own text,
+  which is what proves the trio describes the prompt it *follows*. So
+  `stamp_modes!` puts `mode` / `permission_mode` (+ `*_changed`) on each
+  `user_message`; the records stay hidden. **Read the stamp AFTER the prompt**:
+  the one before it still holds the previous submission's mode, so reading
+  backwards credits a switch to the next prompt, one too late (backwards is the
+  fallback for a prompt with no stamp after it). The values show in the pane's
+  Mode section for every prompt; only a *change* badges the card face, deduped by
+  value since a switch into plan moves both dimensions. No example log contains a
+  real switch (44 stamps in `inlining-subagents`, all `normal`), so hand-built
+  logs in `parser_test.rb` cover the direction — don't "simplify" it to
+  most-recent-preceding. See the Mode section of `notes/intermediate-schema.md`.
 - **`ConversationStory::Markdown`** (`lib/conversation_story/markdown.rb`) is a
   small, safe markdown-subset renderer used for prose detail text
   (user/assistant messages, reasoning). Escapes raw text before any markdown

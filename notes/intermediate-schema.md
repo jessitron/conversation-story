@@ -305,6 +305,46 @@ prose-tuned 4 — 3.5 splits the difference.
   `tool.result` fields (content, stdout/stderr, structured_patch, …); and
   `tool.subagent_tokens`. These were previously in the log but not in the schema.
 
+## Mode is a field on the prompt, not an event
+
+The harness records the mode as **state stamped at submission**, not as a switch
+that happens. After each prompt it writes a timestamp-less trio:
+
+```
+  7  16:28:29  user             Can you find conversation f9f81f1e-…
+ 12            last-prompt      ← lastPrompt = the text of the prompt above
+ 13            mode             normal
+ 14            permission-mode  auto
+```
+
+`last-prompt` holding *that* prompt's own text is what identifies the trio as
+belonging to the prompt it **follows**. So a `user_message` carries:
+
+```yaml
+mode: plan                     # normal | plan  (the `mode` record)
+permission_mode: auto          # auto | acceptEdits | …  (`permission-mode`)
+mode_changed: true             # only when it MOVED from the previous prompt
+permission_mode_changed: true
+```
+
+**The direction matters exactly when the mode changes.** The stamp *before* a
+prompt still holds the previous submission's mode, so reading backwards credits
+a switch to the following prompt — one too late. Backwards is only the fallback,
+for a prompt with no stamp after it (the session's last prompt, or a log
+snapshotted mid-session).
+
+The `*_changed` flags exist because the stamps are repeated, not eventful:
+`inlining-subagents` has 44 `mode` records and every one says `normal`. The
+opening state is not a switch, so the first prompt is never flagged. The
+renderer shows the values in a **Mode** section for every prompt and puts a
+badge on the card face only for a change — deduped by value, since switching
+into plan mode moves both dimensions at once.
+
+Not every log has both: the episode-8 pair predates the `mode` record and
+carries `permission_mode` only. **No example log contains an actual switch**, so
+the direction and the badge are covered by hand-built logs in `parser_test.rb`
+rather than a golden fixture.
+
 ## Event `kind`s (initial set + fallback)
 
 - `user_message`, `assistant_message` (text)
