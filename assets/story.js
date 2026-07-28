@@ -56,7 +56,10 @@ function selectCard(card) {
   card.focus({ preventScroll: true });
 
   dKind.textContent = card.querySelector('.gutter .kind').textContent;
-  dTime.textContent = card.dataset.time + ' UTC';
+  /* The beat cue rides along in every mode — it's for Jess's eye, on the
+     published site too, like the ✎ marker. Read-only; the checkbox that CHANGES
+     it is edit-mode only (see showBeatEditor). */
+  dTime.textContent = card.dataset.time + ' UTC' + (card.dataset.beat ? ' · 🥁' : '');
   sidebar.style.setProperty('--kind', getComputedStyle(card).getPropertyValue('--kind'));
 
   dBody.replaceChildren(card.querySelector('template.detail').content.cloneNode(true));
@@ -264,7 +267,7 @@ function renderReveal() { NAV().forEach((c, i) => c.classList.toggle('revealed',
 /* count of cards revealed after advancing one beat from `from` */
 function beatForwardTo(from) {
   const nav = NAV();
-  for (let i = from; i < nav.length; i++) if (isMessage(nav[i])) return i + 1;
+  for (let i = from; i < nav.length; i++) if (isBeat(nav[i])) return i + 1;
   return nav.length;
 }
 /* count of cards revealed after backing up one beat from `from`; always
@@ -272,7 +275,7 @@ function beatForwardTo(from) {
    previous message rather than sitting still. */
 function beatBackTo(from) {
   const nav = NAV();
-  for (let i = from - 2; i >= 0; i--) if (isMessage(nav[i])) return i + 1;
+  for (let i = from - 2; i >= 0; i--) if (isBeat(nav[i])) return i + 1;
   return 0;
 }
 
@@ -357,15 +360,13 @@ const TYPING = 'input, textarea, select, [contenteditable]';
 
 /* Every card in document order, materialized once. */
 const CARDS = Array.from(cards);
-/* A "message" for stepping purposes is a message in the conversation with JESS —
-   so a beat (and shift+arrow) lands on what was said TO her. A subagent's own
-   assistant messages are cards of the same kind, but they're that agent talking
-   to itself; stopping on them would break one beat of Jess's conversation into
-   sixteen. So a whole subagent story rides along inside the beat that spawned it,
-   and reveals as the flurry it was. */
-const isMessage = c =>
-  (c.classList.contains('k-user') || c.classList.contains('k-assistant')) &&
-  !c.closest('.subactions');
+/* Does narration stop here? A "beat" is one step of n / p / shift+arrow, and
+   which cards count is now the PARSER's call, carried on the card as data-beat
+   (see BEAT_KINDS in lib/conversation_story/parser.rb) and overridable per card
+   from the edits sidecar. This used to sniff k-user/k-assistant plus "not inside
+   .subactions" — the same set, but re-derived here from CSS classes, so Jess had
+   no way to say "don't stop on that one". */
+const isBeat = c => c.dataset.beat === 'true';
 
 /* ---- subagent subactions ----
    A `subagent` card is followed by a .subactions block holding cards for the
@@ -404,7 +405,7 @@ function moveSelection(dir, byMessage) {
   if (i < 0) i = dir > 0 ? -1 : list.length;
   let next = i + dir;
   if (byMessage) {
-    while (next >= 0 && next < list.length && !isMessage(list[next])) next += dir;
+    while (next >= 0 && next < list.length && !isBeat(list[next])) next += dir;
   }
   if (next < 0 || next >= list.length) return;
   const card = list[next];

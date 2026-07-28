@@ -310,6 +310,19 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 .card.k-system     { --kind: var(--ink-faint); }
 .card.k-coordinator{ --kind: var(--ink-faint); }
 
+/* Where narration stops. Only in edit mode — that's where Jess can change it,
+   and it's where seeing the rhythm of stops across the whole board pays for the
+   ink. Explore and narrate stay clean; in narrate the board IS the story. */
+body.mode-edit .card[data-beat] .gutter::before {
+  content: '\25B8';                /* ▸ */
+  position: absolute;
+  left: calc(var(--card-inset) * -1);
+  color: var(--kind);
+  font-size: 0.8em;
+  line-height: 1.6;
+}
+body.mode-edit .card[data-beat] .gutter { position: relative; }
+
 /* ---- per-kind treatment ---- */
 
 /* User messages come from "the other side" — right-align them like a chat. */
