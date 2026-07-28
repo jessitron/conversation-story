@@ -312,16 +312,39 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 
 /* Where narration stops. Only in edit mode — that's where Jess can change it,
    and it's where seeing the rhythm of stops across the whole board pays for the
-   ink. Explore and narrate stay clean; in narrate the board IS the story. */
-body.mode-edit .card[data-beat] .gutter::before {
+   ink. Explore and narrate stay clean; in narrate the board IS the story.
+   First attempt anchored to .gutter at `left: calc(var(--card-inset) * -1)` in
+   `color: var(--kind)` — the brief's own numbers. The math lands that exactly
+   on the card's own accent border (.card's border-left IS --card-accent wide,
+   and --card-pad is defined so content starts at --card-inset — so "inset
+   before the gutter" walks back precisely to the border, not past it), in the
+   same var(--kind) the border is drawn in. Same pixel, same color: it fired
+   (confirmed via --dump-dom) but nobody could see it. This version anchors to
+   .card instead (already position:relative, above) and sits just INSIDE the
+   border, in the blank padding strip before the gutter's text — --gold, an
+   accent already meaning "look here" elsewhere (the active-card glow, the
+   focus ring), reads against every kind's border rather than disappearing
+   into it. top:50%/translateY centers it on the card's own height, so it
+   doesn't need per-kind tuning of top offsets the way a fixed px would.
+   Absolutely positioned = out of flow = can't repeat the session-15
+   baseline-shift mistake (a marker moving a row's alignment). */
+body.mode-edit .card[data-beat]::before {
   content: '\25B8';                /* ▸ */
   position: absolute;
-  left: calc(var(--card-inset) * -1);
-  color: var(--kind);
+  top: 50%; left: calc(var(--card-accent) + 2px);
+  transform: translateY(-50%);
+  color: var(--gold);
   font-size: 0.8em;
-  line-height: 1.6;
+  line-height: 1;
 }
-body.mode-edit .card[data-beat] .gutter { position: relative; }
+/* Mirrored cards (k-user, k-coordinator: accent border moves to the right,
+   see below) need the marker on that side too, or it lands under the body
+   text instead of beside the border. */
+body.mode-edit .card.k-user[data-beat]::before,
+body.mode-edit .card.k-coordinator[data-beat]::before {
+  left: auto;
+  right: calc(var(--card-accent) + 2px);
+}
 
 /* ---- per-kind treatment ---- */
 
