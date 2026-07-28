@@ -85,8 +85,8 @@ class EditsTest < Minitest::Test
       Edits.for_story("demo", dir: dir).set("demo:20", "later").set("demo:3", "earlier").save
 
       path = File.join(dir, "demo.yaml")
-      assert_match(/^# Hand-written event summaries/, File.read(path))
-      assert_equal %w[demo:3 demo:20], YAML.safe_load_file(path).keys, "sorted by line number"
+      assert_match(/^# Hand edits/, File.read(path))
+      assert_equal %w[demo:3 demo:20], YAML.safe_load_file(path)["summaries"].keys, "sorted by line number"
       assert_equal "later", Edits.for_story("demo", dir: dir)["demo:20"]
     end
   end
@@ -112,6 +112,77 @@ class EditsTest < Minitest::Test
       assert_includes html, "Claude peeks at the directory"
       assert_includes html, %(data-edited="true")
       refute_includes html, "<b>Bash</b>"
+    end
+  end
+
+  def test_apply_turns_a_beat_off_by_removing_the_key
+    in_tmp_dir do |dir|
+      doc = document
+      doc["events"][0]["beat"] = true          # the parser's default
+      edits = Edits.for_story("demo", dir: dir).set_beat("demo:1", false)
+
+      assert_empty edits.apply(doc)
+      refute doc["events"][0].key?("beat"),
+             "beat off means the key is gone, same shape the parser emits"
+    end
+  end
+
+  def test_apply_turns_a_beat_on_for_a_card_the_parser_would_not_stop_at
+    in_tmp_dir do |dir|
+      doc = document
+      edits = Edits.for_story("demo", dir: dir).set_beat("demo:2", true)
+
+      assert_empty edits.apply(doc)
+      assert_equal true, doc["events"][1]["beat"]
+    end
+  end
+
+  # Beats reach nested subagent events too, so Jess can stop on one deliberately.
+  def test_apply_sets_a_beat_inside_a_nested_subagent_story
+    in_tmp_dir do |dir|
+      doc = document
+      edits = Edits.for_story("demo", dir: dir).set_beat("agent-abc:2", true)
+
+      assert_empty edits.apply(doc)
+      assert_equal true, doc["events"][2]["subagent"]["events"][0]["beat"]
+    end
+  end
+
+  def test_a_beat_override_for_a_ref_that_no_longer_exists_is_reported_stale
+    in_tmp_dir do |dir|
+      edits = Edits.for_story("demo", dir: dir).set_beat("demo:999", false)
+      assert_equal ["demo:999"], edits.apply(document)
+    end
+  end
+
+  def test_round_trip_keeps_summaries_and_beats_in_named_sections
+    in_tmp_dir do |dir|
+      Edits.for_story("demo", dir: dir)
+           .set("demo:1", "Jess's line")
+           .set_beat("demo:2", true)
+           .set_beat("demo:1", false)
+           .save
+
+      raw = YAML.safe_load_file(File.join(dir, "demo.yaml"))
+      assert_equal({ "demo:1" => "Jess's line" }, raw["summaries"])
+      assert_equal({ "demo:1" => false, "demo:2" => true }, raw["beats"])
+
+      reloaded = Edits.for_story("demo", dir: dir)
+      assert_equal "Jess's line", reloaded["demo:1"]
+      assert_equal false, reloaded.beat("demo:1")
+      assert_equal true,  reloaded.beat("demo:2")
+      assert_nil reloaded.beat("demo:3")
+    end
+  end
+
+  def test_set_beat_nil_clears_the_override_and_an_empty_file_is_removed
+    in_tmp_dir do |dir|
+      path = File.join(dir, "demo.yaml")
+      Edits.for_story("demo", dir: dir).set_beat("demo:1", false).save
+      assert File.exist?(path)
+
+      Edits.for_story("demo", dir: dir).set_beat("demo:1", nil).save
+      refute File.exist?(path), "no husk left behind when nothing is overridden"
     end
   end
 end
