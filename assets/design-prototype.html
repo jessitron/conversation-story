@@ -311,20 +311,20 @@ end</pre>
         </template>
       </a>
 
-      <!-- subagent -->
-      <a class="card k-subagent" id="event-8" href="#event-8" data-time="02:31:40">
+      <!-- subagent (expanded by default; .collapsed + the caret shows the other state) -->
+      <a class="card k-subagent" id="event-8" href="#event-8" data-time="02:27:30">
         <div class="gutter">
-          <span class="kind deco">Subagent</span>
+          <span class="kind deco"><span class="caret">▾</span>Subagent</span>
           <span class="who">Explore</span>
         </div>
         <div class="body">
-          <div class="summary"><b>Agent</b> spawned <code>Explore</code> — “find every top-level event type in the example logs.”</div>
-          <div class="badges"><span class="badge agent">Subagent</span><span class="badge tok">45,231 tok</span><span class="badge tok">12 tools</span></div>
+          <div class="summary"><b>Agent</b> spawned <code>Explore</code> — “explore this codebase to understand the timeline feature… how it works, whether rewind/pause/scrub exists, and the key files involved.”</div>
+          <div class="badges"><span class="badge agent">Subagent</span><span class="badge tok">45,231 tok</span><span class="badge tool">12 tools</span></div>
         </div>
         <template class="detail">
           <div class="d-section">
             <h4 class="deco">Subagent — Explore</h4>
-            <div class="d-text">Description: “Explore the example logs and enumerate every distinct top-level event `type` value, with counts.”
+            <div class="d-text">Description: “Explore this codebase to understand the timeline feature… how the timeline works, whether rewind/pause/scrub exists, and the key files involved.”
 
 → opens its own nested story (same document shape, recursively).</div>
           </div>
@@ -351,6 +351,32 @@ end</pre>
           </div>
         </template>
       </a>
+      <div class="subactions">
+        <div class="subaction k-thinking">
+          <span class="kind deco">Thinking</span>
+          <span class="summary">“I'll explore this codebase to understand the timeline feature. Let me start by getting an overview of the project structure and then searching for timeline-related code.”</span>
+        </div>
+        <div class="subaction k-tool_call">
+          <span class="kind deco">Bash</span>
+          <span class="summary"><code>find … -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" | head -20</code></span>
+        </div>
+        <div class="subaction k-tool_result">
+          <span class="kind deco">Result</span>
+          <span class="summary">app/server/vitest.config.ts, app/client/src/stores/ui-store.ts, … (20 files)</span>
+        </div>
+        <div class="subaction k-tool_call">
+          <span class="kind deco">Grep</span>
+          <span class="summary"><code>timeline|Timeline</code> across <code>*.ts</code></span>
+        </div>
+        <div class="subaction k-tool_result">
+          <span class="kind deco">Result</span>
+          <span class="summary">Found 8 files: <code>ui-store.ts</code>, <code>ui-store.test.ts</code>, …</span>
+        </div>
+        <div class="subaction k-assistant">
+          <span class="kind deco">Reply</span>
+          <span class="summary">“The timeline is always-live; there's no rewind/pause/scrub today. Key files: <code>ui-store.ts</code>, <code>Timeline.tsx</code>.”</span>
+        </div>
+      </div>
 
       <!-- system -->
       <a class="card k-system" id="event-9" href="#event-9" data-time="02:35:02">
