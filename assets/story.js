@@ -66,6 +66,7 @@ function selectCard(card) {
   dBody.scrollTop = 0;
   updateRelated(card);
   showSummaryEditor(card);   // no-op unless the authoring server answered
+  showBeatEditor(card);      // prepended after, so it sits above the Summary box
 }
 
 /* ---- causal-chain highlight ----
@@ -569,6 +570,53 @@ function showSummaryEditor(card) {
 
   dBody.prepend(sec);
   autogrow(input);   // scrollHeight only reads true once it's in the document
+}
+
+/* The beat toggle: is this where narration stops? Same gate as the summary box —
+   the authoring server must be answering AND the page must be in edit mode — so
+   the published site shows the 🥁 cue (see selectCard) with no way to change it.
+   It SUBMITS ON TOGGLE, with no Save button: a boolean has no draft state to
+   protect the way half-typed prose does, and unchecking it is the undo. */
+function showBeatEditor(card) {
+  if (!editingAvailable || mode !== 'edit') return;
+
+  const sec = document.createElement('div');
+  sec.className = 'd-section beat-edit';
+  sec.innerHTML =
+    '<label class="beat-toggle"><input type="checkbox">' +
+    '<span>Beat stops here</span></label>' +
+    '<span class="summary-status"></span>';
+
+  const box    = sec.querySelector('input');
+  const status = sec.querySelector('.summary-status');
+  box.checked = card.dataset.beat === 'true';
+
+  box.addEventListener('change', () => {
+    const wanted = box.checked;
+    status.className = 'summary-status';
+    status.textContent = 'saving…';
+    fetch('/api/beat', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ story: STORY, ref: card.id, beat: wanted }),
+    })
+      .then(r => r.json().then(j => (r.ok ? j : Promise.reject(new Error(j.error || ('HTTP ' + r.status))))))
+      .then(result => {
+        // Believe the server, not the checkbox: the flag on the page comes from
+        // the rebuilt story.yaml, exactly like a saved summary does.
+        if (result.beat) card.dataset.beat = 'true'; else delete card.dataset.beat;
+        box.checked = result.beat;
+        status.textContent = result.beat ? 'beat on' : 'beat off';
+        status.classList.add('ok');
+      })
+      .catch(err => {
+        box.checked = card.dataset.beat === 'true';
+        status.textContent = err.message;
+        status.classList.add('bad');
+      });
+  });
+
+  dBody.prepend(sec);
 }
 
 /* Fit the box to the summary. A summary is one line of prose but can wrap to

@@ -111,20 +111,37 @@ end
 
 # Write the override, then rebuild this one story through the ordinary programs.
 # Returns what actually landed on disk — never what the client asked for.
-def save_summary(name:, ref:, summary:)
+def save_edit(name:, ref:)
   paths = story_paths(name)
   raise EditError.new("story not built yet: #{name}", status: 409) unless File.exist?(paths[:story])
   raise EditError, "unknown event: #{ref.inspect}" unless event_for(paths[:story], ref)
 
   edits = ConversationStory::Edits.for_story(name, dir: EDITS_DIR[0])
-  edits.set(ref, summary).save
+  yield edits
+  edits.save
 
   run!(RUBY, File.join(REPO_ROOT, "bin", "parse"), paths[:log], "-o", paths[:story],
        "--edits", EDITS_DIR[0])
   run!(RUBY, File.join(REPO_ROOT, "bin", "render"), paths[:story], "-o", paths[:page])
 
-  event = event_for(paths[:story], ref)
+  event_for(paths[:story], ref)
+end
+
+def save_summary(name:, ref:, summary:)
+  event = save_edit(name: name, ref: ref) { |edits| edits.set(ref, summary) }
   { ref: ref, summary: event["summary"], edited: !!event["summary_edited"] }
+end
+
+# `beat` arrives as a real JSON boolean; nil means "drop the override and let the
+# parser's default stand". The answer reports the flag as the rebuilt story.yaml
+# has it, which is the only thing the page should believe.
+def save_beat(name:, ref:, beat:)
+  unless [true, false, nil].include?(beat)
+    raise EditError, "beat must be true, false or null: #{beat.inspect}"
+  end
+
+  event = save_edit(name: name, ref: ref) { |edits| edits.set_beat(ref, beat) }
+  { ref: ref, beat: !!event["beat"] }
 end
 
 def json_response(res, status, payload)
@@ -167,6 +184,26 @@ server.mount_proc("/api/summary") do |req, res|
     body = JSON.parse(req.body.to_s)
     result = save_summary(name: body["story"], ref: body["ref"], summary: body["summary"])
     puts "  #{result[:edited] ? "edited " : "reverted"} #{result[:ref]}  #{result[:summary]}"
+    json_response(res, 200, result)
+  rescue EditError => e
+    json_response(res, e.status, error: e.message)
+  rescue JSON::ParserError => e
+    json_response(res, 400, error: "bad JSON: #{e.message}")
+  rescue StandardError => e
+    warn "#{e.class}: #{e.message}"
+    json_response(res, 500, error: "#{e.class}: #{e.message}")
+  end
+end
+
+server.mount_proc("/api/beat") do |req, res|
+  unless %w[PUT POST].include?(req.request_method)
+    next json_response(res, 405, error: "use PUT")
+  end
+
+  begin
+    body = JSON.parse(req.body.to_s)
+    result = save_beat(name: body["story"], ref: body["ref"], beat: body["beat"])
+    puts "  beat #{result[:beat] ? "on " : "off"} #{result[:ref]}"
     json_response(res, 200, result)
   rescue EditError => e
     json_response(res, e.status, error: e.message)

@@ -719,6 +719,26 @@ pre.code {
 }
 .summary-status .undo:hover { color: var(--red); }
 
+/* The beat toggle sits above the Summary box, quieter than it: one line, no
+   heading — the label IS the question. */
+.d-section.beat-edit {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.beat-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  font-family: var(--font-head);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.beat-toggle input { accent-color: var(--kind); cursor: pointer; }
+
 /* Which cards carry Jess's words instead of the parser's. Shown in every mode
    and on the published site: whose sentence this is belongs to the story, not
    to the authoring UI. */
