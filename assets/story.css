@@ -376,8 +376,11 @@ body.sidebar-collapsed .card.active::after { opacity: 0; }
 
 .subactions {
   position: relative;
-  margin-left: calc(var(--gutter-w) + 16px);
-  padding-left: 18px;
+  /* NOT var(--gutter-w) — a subaction is a full .card and reserves its own
+     gutter column internally. Indenting the wrapper by another gutter-w on
+     top of that pushed subaction bodies a full extra column too far right. */
+  margin-left: 24px;
+  padding-left: 20px;
 }
 .subactions::before {
   content: ""; position: absolute; top: 2px; bottom: 24px; left: 0;
