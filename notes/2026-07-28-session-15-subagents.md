@@ -45,6 +45,11 @@ session wired it to real data: parser, renderer, JS, and the write path.
   deliberate exception to session 9's "tool results are machine voice". It isn't
   program output; it's one agent's written report to another.
 
+- The subagent card's summary is **`--fs-small` like every other action card**
+  (tool calls, results, reasoning, system). It had been inheriting the body size,
+  which read as a conversation message. It keeps its paper background and full
+  opacity, though — a spawned agent is a louder event than a Grep, just not a
+  louder *voice*.
 - Both halves of the pair carry an **`[AGENT]` badge** — a `tool_result` badges
   its tool, so the answer coming back should badge its agent. Jess asked for it
   on the result card and guessed it might also fix the summary sitting oddly low
