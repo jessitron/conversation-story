@@ -4,9 +4,10 @@
 # Exercise the authoring server's write path end to end (Mount Malleable):
 # start bin/serve, save a summary over HTTP, and check that the edit reached
 # the sidecar file, the story.yaml AND the rendered page — then revert and
-# check it all went back. Also checks the two refusals that keep a local write
-# path from being a foot-gun: a story name that tries to climb out of out/, and
-# a ref that names no event.
+# check it all went back. Also exercises the other kind of hand edit in the
+# same sidecar, a beat override, the same three places. Also checks the two
+# refusals that keep a local write path from being a foot-gun: a story name
+# that tries to climb out of out/, and a ref that names no event.
 #
 #   bin/check-edit-api [example-name] [line]
 #
@@ -42,6 +43,19 @@ def put_summary(story:, ref:, summary:)
   req.body = JSON.generate(story: story, ref: ref, summary: summary)
   res = Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(req) }
   [res.code.to_i, JSON.parse(res.body)]
+end
+
+def put_beat(story:, ref:, beat:)
+  uri = URI("http://localhost:#{PORT}/api/beat")
+  req = Net::HTTP::Put.new(uri, "Content-Type" => "application/json")
+  req.body = JSON.generate(story: story, ref: ref, beat: beat)
+  res = Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(req) }
+  [res.code.to_i, JSON.parse(res.body)]
+end
+
+def beat_on_page?(ref)
+  html = File.read(File.join(REPO, "out", STORY, "index.html"))
+  html.match?(/id="#{Regexp.escape(ref)}"[^>]*data-beat="true"/)
 end
 
 def story_events
@@ -121,13 +135,47 @@ Dir.mktmpdir("conversation-story-edits") do |edits_dir|
                                           event.slice("summary", "summary_edited").to_s)
 
     failures << "sidecar" unless check("edits/#{STORY}.yaml holds the override",
-                                       YAML.safe_load_file(File.join(edits_dir, "#{STORY}.yaml"))[REF] == MARKER)
+                                       YAML.safe_load_file(File.join(edits_dir, "#{STORY}.yaml"))
+                                           .dig("summaries", REF) == MARKER)
 
     if ON_PAGE
       page = File.read("out/#{STORY}/index.html")
       failures << "page" unless check("the rendered page shows it, marked data-edited",
                                       page.include?(MARKER) && page.include?(%(data-edited="true")))
     end
+
+    # ---- beats -------------------------------------------------------------
+    # A beat override is the other kind of hand edit in the same sidecar, and it
+    # has to reach all three places a summary does: the file, story.yaml and the
+    # page. Turning one OFF is the interesting direction — that's the TODO this
+    # feature came from.
+    beat_ref = story_events.find { |e| e["beat"] }&.fetch("ref")
+    if beat_ref
+      code, body = put_beat(story: STORY, ref: beat_ref, beat: false)
+      failures << "beat off" unless check("PUT /api/beat turns off the beat at #{beat_ref}",
+                                          code == 200 && body["beat"] == false,
+                                          "#{code} #{body}")
+      failures << "beat off story" unless check("story.yaml drops the beat key",
+                                                !find_ref(story_events, beat_ref).key?("beat"))
+      failures << "beat off page" unless check("the page drops data-beat",
+                                               !beat_on_page?(beat_ref))
+      failures << "beat off sidecar" unless check("the sidecar records beats: false",
+                                                  YAML.safe_load_file(File.join(edits_dir, "#{STORY}.yaml"))
+                                                      .dig("beats", beat_ref) == false)
+
+      code, body = put_beat(story: STORY, ref: beat_ref, beat: nil)
+      failures << "beat cleared" unless check("PUT beat:null restores the parser's default",
+                                              code == 200 && body["beat"] == true,
+                                              "#{code} #{body}")
+      failures << "beat cleared page" unless check("the page has data-beat back",
+                                                   beat_on_page?(beat_ref))
+    else
+      puts "SKIP  #{STORY} has no beats to toggle"
+    end
+
+    code, body = put_beat(story: STORY, ref: beat_ref || REF, beat: "yes")
+    failures << "beat type" unless check("PUT /api/beat refuses a non-boolean",
+                                          code == 400, "#{code} #{body}")
 
     # ---- refusals ---------------------------------------------------------
     code, = put_summary(story: "../../etc", ref: REF, summary: "nope")

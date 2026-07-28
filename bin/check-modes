@@ -92,13 +92,22 @@ class Story
   def exists?(dom_id) = js("!!document.getElementById(#{dom_id.inspect})")
   def hidden_attr?(css) = js("(document.querySelector(#{css.inspect}) || {}).hidden === true")
 
-  # "A message" means a message in the conversation with Jess — the same test
-  # story.js's isMessage makes, subagents' internal messages excluded, because
-  # that's what a beat and a shift+arrow land on.
-  def message?(id)
+  # Does narration stop here? The parser decides and the card carries the answer
+  # as data-beat, so this reads the attribute rather than re-deriving the rule
+  # from CSS classes the way it used to (k-user/k-assistant and not inside
+  # .subactions). The set is the same by default; that the DEFAULT is right is
+  # test/parser_test.rb's job, not this script's.
+  def beat?(id)
     js("(() => { const c = document.getElementById(#{id.inspect}); " \
-       "return !!c && (c.classList.contains('k-user') || c.classList.contains('k-assistant')) " \
-       "&& !c.closest('.subactions'); })()")
+       "return !!c && c.dataset.beat === 'true'; })()")
+  end
+
+  # Turn a card's beat off/on in the live DOM. isBeat reads dataset.beat on every
+  # call, so this exercises the real navigation rule without writing a sidecar
+  # file — no temp edits dir, no rebuild, nothing of Jess's touched.
+  def set_beat(id, on)
+    js("(() => { const c = document.getElementById(#{id.inspect}); " \
+       "if (#{on}) c.dataset.beat = 'true'; else delete c.dataset.beat; })()")
   end
 
   # ---- acting ----
@@ -275,15 +284,35 @@ scenario "right arrow moves the selection one card, left arrow moves it back" do
   nil
 end
 
-scenario "shift+right jumps to the next user/assistant card" do |s|
+scenario "shift+right jumps to the next beat" do |s|
   ids = s.card_ids
   s.click_id(ids[0])
   s.key([:Shift, :Right])
   landed = s.active_id
   next "landed on nothing" unless landed
-  next "#{landed} is not a message card" unless s.message?(landed)
-  expected = ids.drop(1).find { |id| s.message?(id) }
+  next "#{landed} is not a message card" unless s.beat?(landed)
+  expected = ids.drop(1).find { |id| s.beat?(id) }
   next "skipped past #{expected} to #{landed}" unless landed == expected
+  nil
+end
+
+# The whole point of the beat flag: a message Jess exempted is stepped straight
+# past. Flipping data-beat in the DOM is the same switch the edits sidecar
+# throws, minus the file.
+scenario "shift+right skips a message whose beat is turned off" do |s|
+  ids = s.card_ids
+  start = ids.find { |id| id != s.active_id }
+  rest = ids.drop(ids.index(start) + 1)
+  skipped = rest.find { |id| s.beat?(id) }
+  next "no beat after #{start} to skip" unless skipped
+  landing = rest.drop(rest.index(skipped) + 1).find { |id| s.beat?(id) }
+  next "only one beat after #{start}" unless landing
+
+  s.click_id(start)
+  s.set_beat(skipped, false)
+  s.key([:Shift, :Right])
+  next "stopped on #{skipped}, whose beat is off" if s.active_id == skipped
+  next "expected #{landing}, landed on #{s.active_id.inspect}" unless s.active_id == landing
   nil
 end
 
@@ -347,8 +376,8 @@ scenario "n reveals exactly through the next message; p puts it back",
   s.key("n").wait_stable
   shown = s.revealed_ids
   next "n revealed nothing" if shown.empty?
-  next "beat did not end on a message (#{shown.last})" unless s.message?(shown.last)
-  early = shown[0..-2].select { |id| s.message?(id) }
+  next "beat did not end on a message (#{shown.last})" unless s.beat?(shown.last)
+  early = shown[0..-2].select { |id| s.beat?(id) }
   next "beat ran past a message: #{early.inspect}" unless early.empty?
   next "did not select the landing message (active=#{s.active_id.inspect})" unless s.active_id == shown.last
 
@@ -472,7 +501,7 @@ scenario "one beat reveals a subagent's whole story as a flurry", query: "?mode=
     missing.empty?
   # ...and the beat ended on a message to Jess, not on a subaction
   last = revealed.last
-  next "the beat ended inside the subagent, on #{last}" unless s.message?(last)
+  next "the beat ended inside the subagent, on #{last}" unless s.beat?(last)
   nil
 end
 
