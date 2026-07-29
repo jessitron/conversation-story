@@ -16,7 +16,7 @@ which mountain each item climbs.
 - **attachments that carry real content** (session 19) — `hook_additional_context`
   is the good one: its `content` array holds the text a hook actually injected
   (`mode-switches:5` = 3,276 chars of the SessionStart superpowers block), and it
-  already renders. Show it off — it's the *only* place the log reveals
+  already renders. Show it off — it's the _only_ place the log reveals
   instructions the agent was operating under; the system prompt and CLAUDE.md are
   never logged at all. See
   `notes/2026-07-28-session-19-what-the-log-cannot-tell-you.md`.
@@ -28,7 +28,7 @@ which mountain each item climbs.
   `plan_mode` → `planFilePath`, `reminderType`; plus `command_permissions` →
   `allowedTools` in `mtg-tabletop-plan`). Each needs either a real summary +
   detail or a place in `HIDDEN_ATTACHMENT_TYPES`. Two notes on deciding:
-  - `edited_text_file` is worth *keeping* — it fires when Jess edits a file
+  - `edited_text_file` is worth _keeping_ — it fires when Jess edits a file
     mid-session (4× in `mode-switches`, once in session 19 when Jess edited
     `CLAUDE.md` mid-turn). "Jess changed the instructions underneath me" is a
     story beat, and today it's a blank card.
@@ -105,6 +105,7 @@ Error badge driven by a new `status` field (read from the notification's
 - **subagent detail tweaks** Move the 'log' field to 'Provenenance'. Give it a button near the top to expand/collapse its cards in the conversation.
 - Self-host the fonts (Tenor Sans / Sen / Cascadia Code) into `assets/fonts/`
   with `@font-face` in `story.css`, replacing the CDN `<link>`.
+- **less redundancy on tool call cards** I don't want a bash tool call to display **Bash** in the summary, nor a read tool to display **Read** because there's a tag on the card that says this already.
 - A capability owner whose job is to guard the CSS and keep it consistent. Two things it
   would have caught in session 9: a `var()` on a token that no longer exists
   (fails silently), and a rule whose `opacity` override lost to a

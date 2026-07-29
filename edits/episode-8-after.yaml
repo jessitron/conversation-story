@@ -1,0 +1,14 @@
+# Hand-written event summaries — Jess's words, not the parser's.
+# Keyed by event ref (<example>:<line>); bin/parse overlays these onto the
+# freshly parsed story.yaml. Edit here or on the page (rake serve).
+episode-8-after:4: I’ve used this app and enjoyed the live replay.... Is there a way
+  to rewind the timeline?
+episode-8-after:20: first, let's verify that we can test it. Can you add 'jess was
+  here' to the header? Then run it on a different port for me
+episode-8-after:62: 'Command running in background with ID: bpcd7npkf'
+episode-8-after:102: ok. that was kind of a lot of steps. Is there something we could
+  do better to help you get oriented?
+episode-8-after:105: 'Good call. A couple of things that would help: just dev could
+  handle prerequisites itself....'
+episode-8-after:149: Done. ...next time (or next conversation), I can just run just
+  dev and it works first try.
