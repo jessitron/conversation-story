@@ -76,6 +76,7 @@ events:
     text: |-
       I’ve used this app and enjoyed the live replay. The events go in a list and stay in the list and I can scroll the list but there's a little timeline across the top that is live.
       Is there a way to rewind the timeline?
+  beat: true
   summary_edited: true
 - id: 0b4057eb-e19a-4bd0-9663-dea446f3ce49
   ref: episode-8-before:5
@@ -204,6 +205,7 @@ events:
     context: 24456
     added: 10622
     cumulative_context: 24456
+  beat: true
   turn_leader: true
 - id: dc51411e-2a41-48a6-8195-c72a32f1b607
   ref: episode-8-before:11
@@ -3559,6 +3561,7 @@ events:
     context: 26189
     added: 1736
     cumulative_context: 50645
+  beat: true
   turn_leader: true
   summary_edited: true
 - id: 6efddd2e-d89c-45bd-9347-316e95c1d9ca
@@ -3630,6 +3633,7 @@ events:
     text: |-
       yes, but first, let's verify that we can test it. Can you make a small change, like add 'jess was here' to the header?
       Then run it on a different port for me, so I can compare with my regular install
+  beat: true
   summary_edited: true
 - id: 22a5fad3-46f0-4f3a-aa21-91e7a359ca79
   ref: episode-8-before:21
@@ -3677,6 +3681,7 @@ events:
     context: 26516
     added: 328
     cumulative_context: 77161
+  beat: true
   turn_leader: true
 - id: 933fed0b-30ba-4000-9a1a-57a5b8c11d2f
   ref: episode-8-before:23
@@ -4018,6 +4023,7 @@ events:
     context: 27435
     added: 561
     cumulative_context: 158217
+  beat: true
   turn_leader: true
   summary_edited: true
 - id: 570b4ff3-b3d4-499e-bfd9-05b210618702
@@ -4503,6 +4509,7 @@ events:
     context: 30067
     added: 2207
     cumulative_context: 216145
+  beat: true
   turn_leader: true
   summary_edited: true
 - id: 498b1c71-cca4-472c-b647-bc8e911c6c93
@@ -4665,6 +4672,7 @@ events:
     context: 30358
     added: 292
     cumulative_context: 246503
+  beat: true
   turn_leader: true
   summary_edited: true
 - id: line-60
@@ -4786,6 +4794,7 @@ events:
     context: 30671
     added: 314
     cumulative_context: 277174
+  beat: true
   turn_leader: true
 - id: 297b9d61-6b89-4150-9a42-91afa047cdf5
   ref: episode-8-before:66
@@ -4913,6 +4922,7 @@ events:
     context: 30947
     added: 279
     cumulative_context: 308121
+  beat: true
   turn_leader: true
 - id: bc0c50b1-f6c9-4d30-89cc-31da9469a0bc
   ref: episode-8-before:71
@@ -5154,6 +5164,7 @@ events:
     context: 31641
     added: 695
     cumulative_context: 339762
+  beat: true
   turn_leader: true
 - id: 0e8f237a-bfd7-439a-adf7-5f5a9046337f
   ref: episode-8-before:81
@@ -5350,6 +5361,7 @@ events:
     context: 32105
     added: 465
     cumulative_context: 371867
+  beat: true
   turn_leader: true
 - id: 81c9d756-d626-4217-a80f-5a4caeb7c403
   ref: episode-8-before:89
@@ -5518,6 +5530,7 @@ events:
     context: 37630
     added: 5526
     cumulative_context: 409497
+  beat: true
   turn_leader: true
 - id: 79e9ef01-bdee-4d03-9368-2b5ac014daf1
   ref: episode-8-before:94
@@ -5673,6 +5686,7 @@ events:
     context: 37940
     added: 311
     cumulative_context: 447437
+  beat: true
   turn_leader: true
 - id: a51c5cbf-e465-4f17-86ec-f1c5ba578d88
   ref: episode-8-before:100
@@ -5851,6 +5865,7 @@ events:
     context: 38860
     added: 921
     cumulative_context: 486297
+  beat: true
   turn_leader: true
 - id: 2eeed287-92db-487f-b845-03ed1f73cf84
   ref: episode-8-before:107
@@ -6093,6 +6108,7 @@ events:
     context: 39550
     added: 691
     cumulative_context: 525847
+  beat: true
   turn_leader: true
 - id: 60022d7c-c182-467a-b6db-a0f8620aed30
   ref: episode-8-before:117
@@ -6271,6 +6287,7 @@ events:
     context: 39874
     added: 598
     cumulative_context: 565721
+  beat: true
   turn_leader: true
 - id: d19bdb1f-a1aa-4321-a01f-87d86ab18972
   ref: episode-8-before:122
@@ -6498,6 +6515,7 @@ events:
     context: 40427
     added: 554
     cumulative_context: 606148
+  beat: true
   turn_leader: true
 - id: 3be2aa25-edca-4342-9f7c-47818774dd77
   ref: episode-8-before:131
@@ -6721,6 +6739,7 @@ events:
     context: 40712
     added: 286
     cumulative_context: 646860
+  beat: true
   turn_leader: true
 - id: 41098a2a-007e-4a89-aa9f-49c09d354057
   ref: episode-8-before:140
@@ -6862,6 +6881,7 @@ events:
     context: 41330
     added: 619
     cumulative_context: 688190
+  beat: true
   turn_leader: true
 - id: e8474e89-6317-403c-8c67-3f9e9d4b2d50
   ref: episode-8-before:146
@@ -7096,6 +7116,7 @@ events:
     context: 41805
     added: 177
     cumulative_context: 771624
+  beat: true
   turn_leader: true
   summary_edited: true
 - id: 38e41d47-e7d2-49e2-8d7b-d2b5827b9fa4
@@ -7166,6 +7187,7 @@ events:
   detail:
     text: ok, that was a lot of work. Why didn't you do 'just install' first? what
       could have helped you know to create the data/ directory?
+  beat: true
 - id: 68ed00dc-32f5-46c1-8464-841058736254
   ref: episode-8-before:160
   agent: main
@@ -7226,6 +7248,7 @@ events:
     context: 41961
     added: 157
     cumulative_context: 813585
+  beat: true
   turn_leader: true
   summary_edited: true
 - id: ee59a600-34ee-4486-ac5c-6f57c3fff20e
@@ -7561,6 +7584,7 @@ events:
     context: 42841
     added: 182
     cumulative_context: 941615
+  beat: true
   turn_leader: true
 - id: line-176
   ref: episode-8-before:176
@@ -7621,6 +7645,7 @@ events:
   detail:
     text: no! I'm sorry. I mean, what could we change about the context here that
       would have told you these things?
+  beat: true
   dequeued: true
   link_ids:
   - queue:line-174
@@ -7695,6 +7720,7 @@ events:
     context: 42929
     added: 270
     cumulative_context: 984544
+  beat: true
   turn_leader: true
   summary_edited: true
 - id: 7d44c803-d7b3-4ffa-92dc-70551ec4cdf9
@@ -7751,6 +7777,7 @@ events:
   mode: acceptEdits
   detail:
     text: great idea. Please add it
+  beat: true
 - id: 8107bc5f-ba3b-434d-b382-6b9aec4df448
   ref: episode-8-before:187
   agent: main
@@ -7809,6 +7836,7 @@ events:
     context: 43281
     added: 355
     cumulative_context: 1027825
+  beat: true
   turn_leader: true
 - id: be91bd27-883b-4c16-b416-72b3f5f55410
   ref: episode-8-before:190
@@ -8187,6 +8215,7 @@ events:
     context: 44633
     added: 423
     cumulative_context: 1116669
+  beat: true
   turn_leader: true
 - id: d6406179-800e-410e-b25b-a3164f754015
   ref: episode-8-before:204
@@ -8232,6 +8261,7 @@ events:
   detail:
     text: yes. Also, please clear the memories you added so that I can test the new
       CLAUDE.md
+  beat: true
 - id: 57d41132-dbe5-4b02-bdc1-12cc97280863
   ref: episode-8-before:207
   agent: main
@@ -8315,6 +8345,7 @@ events:
     context: 44738
     added: 106
     cumulative_context: 1161407
+  beat: true
   turn_leader: true
 - id: 401c8bc5-b7a6-42d0-926c-0b1ef331e1ce
   ref: episode-8-before:211
@@ -8563,6 +8594,7 @@ events:
     context: 45176
     added: 441
     cumulative_context: 1206583
+  beat: true
   turn_leader: true
 - id: 434fefac-2046-470f-8049-e10552a8784d
   ref: episode-8-before:221

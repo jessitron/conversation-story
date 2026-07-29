@@ -127,6 +127,17 @@ Subagents get their own bar to the right of the main bar! When I click on a suba
 _A local web app for shaping the story — edit on the page, not in YAML._
 
 - **Title is editable**
+- **`bin/check-edit-api` fights a real sidecar.** It starts `bin/serve` against an
+  EMPTY temp edits dir, so every rebuild it triggers strips that story's real
+  hand-written summaries out of `out/<name>/` — and its "an empty summary reverts
+  to the generated one" check FAILS whenever the event it picked already has one
+  of Jess's summaries (it captures that line as "generated", then compares it to
+  the parser's). Surfaced the moment `episode-8-after:4` got a hand-written
+  summary. Both symptoms have one cause: the temp dir doesn't mirror the real one.
+  The fix is probably to seed the temp dir with a copy of `edits/<name>.yaml` —
+  but then "the emptied sidecar file is gone" has to become "my ref is gone from
+  it", since the file legitimately still holds Jess's other entries. Until it's
+  fixed, `rake build` after running the checker restores `out/`.
 
 ## Mount Interactive
 
@@ -135,7 +146,6 @@ deliberately deferred rough edges from the final review — neither is a
 correctness bug that needs fixing right now._
 
 - **change narrate shortcut** I want 'n/p' to work for "move to the next/prev assistant/user message" in any mode, and let's make the "narrate mode" shortcut something else. Maybe 's' for story?
-- **modify when it stops** Currently 'n' or shift-arrow goes to the next Assistant/User message. I want to exempt some messages from this. Let's introduce concept of Pause-here (or come up with a better name), which defaults to true for Assistant/User messages in the main thread and false everwhere else. Let's make it editable in edit mode.
 - A degraded or bogus `?mode=` value stays in the URL while the body is
   `mode-explore`, and pressing `x` won't clear it — `setMode` early-returns on
   a same-mode call. Cosmetic, but it's the one place the URL and the body

@@ -56,13 +56,17 @@ function selectCard(card) {
   card.focus({ preventScroll: true });
 
   dKind.textContent = card.querySelector('.gutter .kind').textContent;
-  dTime.textContent = card.dataset.time + ' UTC';
+  /* The beat cue rides along in every mode — it's for Jess's eye, on the
+     published site too, like the ✎ marker. Read-only; the checkbox that CHANGES
+     it is edit-mode only (see showBeatEditor). */
+  dTime.textContent = card.dataset.time + ' UTC' + (card.dataset.beat === 'true' ? ' · 🥁' : '');
   sidebar.style.setProperty('--kind', getComputedStyle(card).getPropertyValue('--kind'));
 
   dBody.replaceChildren(card.querySelector('template.detail').content.cloneNode(true));
   dBody.scrollTop = 0;
   updateRelated(card);
   showSummary(card);
+  showBeatEditor(card);      // prepended after showSummary, so it sits above it
 }
 
 /* The summary at the top of the detail pane. Edit mode gets the editable
@@ -287,7 +291,7 @@ function renderReveal() { NAV().forEach((c, i) => c.classList.toggle('revealed',
 /* count of cards revealed after advancing one beat from `from` */
 function beatForwardTo(from) {
   const nav = NAV();
-  for (let i = from; i < nav.length; i++) if (isMessage(nav[i])) return i + 1;
+  for (let i = from; i < nav.length; i++) if (isBeat(nav[i])) return i + 1;
   return nav.length;
 }
 /* count of cards revealed after backing up one beat from `from`; always
@@ -295,7 +299,7 @@ function beatForwardTo(from) {
    previous message rather than sitting still. */
 function beatBackTo(from) {
   const nav = NAV();
-  for (let i = from - 2; i >= 0; i--) if (isMessage(nav[i])) return i + 1;
+  for (let i = from - 2; i >= 0; i--) if (isBeat(nav[i])) return i + 1;
   return 0;
 }
 
@@ -380,15 +384,13 @@ const TYPING = 'input, textarea, select, [contenteditable]';
 
 /* Every card in document order, materialized once. */
 const CARDS = Array.from(cards);
-/* A "message" for stepping purposes is a message in the conversation with JESS —
-   so a beat (and shift+arrow) lands on what was said TO her. A subagent's own
-   assistant messages are cards of the same kind, but they're that agent talking
-   to itself; stopping on them would break one beat of Jess's conversation into
-   sixteen. So a whole subagent story rides along inside the beat that spawned it,
-   and reveals as the flurry it was. */
-const isMessage = c =>
-  (c.classList.contains('k-user') || c.classList.contains('k-assistant')) &&
-  !c.closest('.subactions');
+/* Does narration stop here? A "beat" is one step of n / p / shift+arrow, and
+   which cards count is now the PARSER's call, carried on the card as data-beat
+   (see BEAT_KINDS in lib/conversation_story/parser.rb) and overridable per card
+   from the edits sidecar. This used to sniff k-user/k-assistant plus "not inside
+   .subactions" — the same set, but re-derived here from CSS classes, so Jess had
+   no way to say "don't stop on that one". */
+const isBeat = c => c.dataset.beat === 'true';
 
 /* ---- subagent subactions ----
    A `subagent` card is followed by a .subactions block holding cards for the
@@ -427,7 +429,7 @@ function moveSelection(dir, byMessage) {
   if (i < 0) i = dir > 0 ? -1 : list.length;
   let next = i + dir;
   if (byMessage) {
-    while (next >= 0 && next < list.length && !isMessage(list[next])) next += dir;
+    while (next >= 0 && next < list.length && !isBeat(list[next])) next += dir;
   }
   if (next < 0 || next >= list.length) return;
   const card = list[next];
@@ -591,6 +593,53 @@ function showSummaryEditor(card) {
 
   dBody.prepend(sec);
   autogrow(input);   // scrollHeight only reads true once it's in the document
+}
+
+/* The beat toggle: is this where narration stops? Same gate as the summary box —
+   the authoring server must be answering AND the page must be in edit mode — so
+   the published site shows the 🥁 cue (see selectCard) with no way to change it.
+   It SUBMITS ON TOGGLE, with no Save button: a boolean has no draft state to
+   protect the way half-typed prose does, and unchecking it is the undo. */
+function showBeatEditor(card) {
+  if (!editingAvailable || mode !== 'edit') return;
+
+  const sec = document.createElement('div');
+  sec.className = 'd-section beat-edit';
+  sec.innerHTML =
+    '<label class="beat-toggle"><input type="checkbox">' +
+    '<span>Beat stops here</span></label>' +
+    '<span class="summary-status"></span>';
+
+  const box    = sec.querySelector('input');
+  const status = sec.querySelector('.summary-status');
+  box.checked = card.dataset.beat === 'true';
+
+  box.addEventListener('change', () => {
+    const wanted = box.checked;
+    status.className = 'summary-status';
+    status.textContent = 'saving…';
+    fetch('/api/beat', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ story: STORY, ref: card.id, beat: wanted }),
+    })
+      .then(r => r.json().then(j => (r.ok ? j : Promise.reject(new Error(j.error || ('HTTP ' + r.status))))))
+      .then(result => {
+        // Believe the server, not the checkbox: the flag on the page comes from
+        // the rebuilt story.yaml, exactly like a saved summary does.
+        if (result.beat) card.dataset.beat = 'true'; else delete card.dataset.beat;
+        box.checked = result.beat;
+        status.textContent = result.beat ? 'beat on' : 'beat off';
+        status.classList.add('ok');
+      })
+      .catch(err => {
+        box.checked = card.dataset.beat === 'true';
+        status.textContent = err.message;
+        status.classList.add('bad');
+      });
+  });
+
+  dBody.prepend(sec);
 }
 
 /* Fit the box to the summary. A summary is one line of prose but can wrap to

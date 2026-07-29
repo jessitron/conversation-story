@@ -104,12 +104,21 @@ carries an **undo** next to it — one click puts your words back. It lasts unti
 the next save or until you select another card; past that, the sidecar file is
 in git.
 
-The edit is stored **outside** the generated output, in `edits/<name>.yaml` — a
-plain map of event ref to summary, tracked in git:
+The edit is stored **outside** the generated output, in `edits/<name>.yaml`,
+tracked in git. The file has two named sections, one per kind of hand edit —
+`summaries:` (event ref to rewritten line) and `beats:` (event ref to where
+narration should stop, see below):
 
 ```yaml
-episode-8-after:4: "Jess asks: can I rewind the timeline?"
+summaries:
+  episode-8-after:4: "Jess asks: can I rewind the timeline?"
+beats:
+  episode-8-after:35: false
 ```
+
+Only this two-section shape is read — there's no fallback for the older flat
+`ref: summary` map, so a hand-written flat file is silently ignored rather than
+applied.
 
 `bin/parse` re-reads the log from scratch every time and overlays these on top,
 so a parser improvement still reaches every card you haven't rewritten, and
@@ -143,24 +152,28 @@ card. Edit un-hides only once `bin/serve` answers `GET /api/health` — on the
 published site `?mode=edit` quietly falls back to explore.
 
 **Narrate** starts the timeline empty and fills it a **beat** at a time — a run
-of cards ending at the next user/assistant message, inclusive, so the flurry of
-tool calls in between is visible on the way. The newest revealed card is always
-the selection, so the URL fragment tracks where you are and a reload resumes
-rather than restarting. Entering narrate on a deep link (`#<ref>` already in the
-URL) reveals everything up to that card instead of starting empty.
+of cards ending at the next card flagged `beat: true`, inclusive, so the flurry
+of tool calls in between is visible on the way. Which cards are beats is a
+per-card flag the parser sets (main-thread user/assistant messages, by
+default) and Jess can override in edit mode — exempting a message from the
+stepping, or adding a stop on a card the parser wouldn't guess, like a tool
+call. The newest revealed card is always the selection, so the URL fragment
+tracks where you are and a reload resumes rather than restarting. Entering
+narrate on a deep link (`#<ref>` already in the URL) reveals everything up to
+that card instead of starting empty.
 
 | key | explore / edit | narrate |
 |---|---|---|
 | `→` | select next visible card | reveal **one** card |
 | `←` | select previous visible card | un-reveal **one** card |
-| `shift+→` | next **user/assistant** card, scrolled into view | reveal one **beat** |
-| `shift+←` | previous **user/assistant** card, scrolled into view | un-reveal one **beat** |
+| `shift+→` | next **beat** card, scrolled into view | reveal one **beat** |
+| `shift+←` | previous **beat** card, scrolled into view | un-reveal one **beat** |
 | `n` | enter narrate | reveal one beat (same as `shift+→`) |
 | `p` | — | un-reveal one beat (same as `shift+←`) |
 | `x` / `e` / `N` | switch to explore / edit / narrate | same |
 | `Esc` | collapse sidebar → else clear selection | collapse sidebar → else exit to explore |
 
-Unshifted moves one card, shifted moves one message — the same shape in both
+Unshifted moves one card, shifted moves one beat — the same shape in both
 modes, and `n`/`p` are the easier-to-press aliases for shift-arrow. The sidebar
 is sticky state Jess owns: clicking a card opens it, clicking the active card
 closes it, and advancing a narration beat closes it too, so drilling into a

@@ -118,9 +118,9 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   the caret is for quieting a subagent down. `story.js`'s caret toggles it,
   `NAV()` is the "cards Jess can step through" list that excludes collapsed ones,
   and a link to a nested ref expands what it needs. **A beat never stops inside a
-  subagent**: `isMessage` (narrate beats and shift+arrow) means "a message in the
-  conversation with Jess", so a subagent's whole story reveals as one flurry
-  within the beat that spawned it. **Anything that counts or looks up cards must walk the
+  subagent**: since session 20 that rule lives in the parser (no `beat` on a
+  nested event) rather than in `story.js`'s old `isMessage`, so a subagent's
+  whole story still reveals as one flurry within the beat that spawned it. **Anything that counts or looks up cards must walk the
   tree**: `Renderer#all_visible_events`, `test/story_events.rb`, `Edits#apply`,
   `bin/serve`'s `event_for`. `notes/2026-07-28-session-15-subagents.md` and the
   Subagents section of `notes/intermediate-schema.md` have the rest.
@@ -205,6 +205,21 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   these; `notes/2026-07-28-session-17-coordinator-message.md` has the rest,
   including the background/async-subagent (`status: async_launched`) and
   `SendMessage` mechanics that make coordinator messages possible.
+- **`beat` says where narration stops** — `n` / `p` / shift+arrow step between
+  beats. The parser sets `beat: true` on main-thread `user_message` /
+  `assistant_message` (`Parser::BEAT_KINDS`) and **never inside a subagent**:
+  the recursive parse is `Parser.new(path, nested: true)`, which suppresses it,
+  because a beat never stops inside a subagent. The renderer emits
+  `data-beat="true"` and `story.js`'s `isBeat` reads that attribute — it used to
+  sniff `k-user`/`k-assistant` plus "not in `.subactions`", the same set with no
+  way to override it. Jess overrides per card in edit mode (a checkbox that
+  saves on toggle, `PUT /api/beat`), stored in `edits/<name>.yaml`'s `beats:`
+  section; `false` **deletes** the key, so "not a beat" has one shape. The
+  detail pane shows a 🥁 cue in every mode; the ▸ marker paints only in edit
+  mode, on `.card::before` — **not** the gutter (a `.gutter::before` version at
+  the design's own negative offset landed exactly on the accent border, same
+  pixel and same color, and fired invisibly; see `story.css`'s comment above the
+  rule). See `notes/2026-07-28-beat-flag-design.md`.
 - **`ConversationStory::Markdown`** (`lib/conversation_story/markdown.rb`) is a
   small, safe markdown-subset renderer used for prose detail text
   (user/assistant messages, reasoning). Escapes raw text before any markdown
@@ -258,19 +273,25 @@ Note: the Rakefile's `RENDER_SRC`/`PARSE_SRC`/`SITE_SRC` lists source files
 explicitly (not a glob) — a new `lib/` file needs adding there or `rake build`
 won't notice it changed.
 
-- **Hand-written summaries are a sidecar, not an edit to `out/`** (session 11,
-  Mount Malleable). `edits/<name>.yaml` maps event `ref` → summary;
-  `ConversationStory::Edits` loads it and `bin/parse` overlays it onto the
-  freshly parsed document, setting `summary` and stamping `summary_edited:
-  true`. **`story.yaml` therefore stays 100% derived** — from the log AND the
+- **Hand edits are a sidecar, not an edit to `out/`** (session 11, Mount
+  Malleable; session 20 added the second section). `edits/<name>.yaml` holds
+  two named sections keyed by event `ref`: `summaries:` (rewritten card text)
+  and `beats:` (where narration stops — see the `beat` bullet above).
+  `ConversationStory::Edits` loads both and `bin/parse` overlays them onto the
+  freshly parsed document — a summary sets `summary` and stamps
+  `summary_edited: true`; a beat override sets `event["beat"] = true` or
+  **deletes** the key for `false`, converging on the same shape the parser
+  emits. **`story.yaml` therefore stays 100% derived** — from the log AND the
   sidecar — so a parser improvement still reaches every un-edited card and no
   file needs a "don't overwrite me" lock. `summary_edited` beats the composed
   card faces (a `tool_call` otherwise ignores `summary`) and adds `data-edited`
-  to the card.
+  to the card; a beat override gets no such stamp — there's no composed face
+  to beat and nothing to mark.
 - **`rake serve` is now `bin/serve`**, a WEBrick server that serves `out/` AND
-  accepts `PUT /api/summary`. A save writes the sidecar and then **shells out to
-  `bin/parse` and `bin/render`** — it never patches YAML or HTML in place, so
-  the two-separate-programs rule holds and a reload always matches `rake build`.
+  accepts `PUT /api/summary` and `PUT /api/beat`. A save writes the sidecar and
+  then **shells out to `bin/parse` and `bin/render`** — it never patches YAML
+  or HTML in place, so the two-separate-programs rule holds and a reload
+  always matches `rake build`.
   It binds **`localhost`, not `127.0.0.1`**, on purpose: with the v4 address
   alone, a stray server bound to the wildcard answers `::1` first and the page
   silently talks to it (static files fine, `/api/health` 404, editing
@@ -300,8 +321,9 @@ won't notice it changed.
   shows it was discarded, offers an `undo` in the status area. So undo needs no
   server support and no history: it's just another save of the old text.
 - Verify the write path with **`bin/check-edit-api`** (starts `bin/serve` against
-  a temp edits dir, saves + reverts, asserts sidecar/story/page all agree, and
-  checks the path-traversal and unknown-ref refusals). `bin/screenshot` takes a
+  a temp edits dir, saves + reverts both summaries and beats, asserts
+  sidecar/story/page all agree, and checks the path-traversal and unknown-ref
+  refusals). `bin/screenshot` takes a
   full `http://…` URL with `?mode=edit` now — the only way to *see* the editor,
   since `file://` can't reach the API and explore mode never builds the box.
 
