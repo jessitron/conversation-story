@@ -6,6 +6,10 @@ the conversation accurately, based on the agent's log.
 
 The web page should display everything that happened in the conversation, but most of it will be a tiny summary by default. I can click on an event for more detail.
 
+**See it live: <https://jessitron.github.io/conversation-story/>** — the example
+conversations in `examples/`, built and published on every push to `main`
+(details in [Published site](#published-site)).
+
 ## Architecture
 
 Input Logs -> Intermediate Descriptions -> Output HTML
