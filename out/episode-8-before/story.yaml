@@ -3681,7 +3681,6 @@ events:
     context: 26516
     added: 328
     cumulative_context: 77161
-  beat: true
   turn_leader: true
 - id: 933fed0b-30ba-4000-9a1a-57a5b8c11d2f
   ref: episode-8-before:23
@@ -4023,7 +4022,6 @@ events:
     context: 27435
     added: 561
     cumulative_context: 158217
-  beat: true
   turn_leader: true
   summary_edited: true
 - id: 570b4ff3-b3d4-499e-bfd9-05b210618702
@@ -4483,8 +4481,7 @@ events:
   kind: assistant_message
   role: assistant
   at: '2026-04-14T02:29:18.356Z'
-  summary: Let me start it on different ports so it won't conflict with your regular
-    install.
+  summary: Let me start it
   source:
     file: episode-8-before.jsonl
     line: 53
