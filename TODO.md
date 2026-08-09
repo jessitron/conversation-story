@@ -122,6 +122,10 @@ Usually, this map moves immediately when a new card is selected (no transition).
 
 Subagents get their own bar to the right of the main bar! When I click on a subagent card or any card representing a subagent's event, then the main bar shows the context added by the subagent as if the subagent's result card was selected. An additional bar appears next to it, representing the subagent context. The subagent's bar has more parts: before the subagent started; context added before the current selected card; current card's token contribution; future context from later cards; extra space that the subagent didn't use. The subagent's context bar should use _the same scale as the main conversation_, unless the subagent's context is larger than the main conversation's, in which case it scales to screen height. The subagent's "context added before" starts at the height of the subagent invocation on the main bar, unless that would make its context summary go off the bottom of the page, in which case it moves up to fit.
 
+I also want an option (in the header) to see all subagent context bars displayed at the same time, lined up in parallel after the main one. This is going to show me where the tokens are being used.
+
+Later: I can get an agent at conversation-import-time to classify the different parts of the conversation. Which parts are overhead of dealing with worktrees etc? Which parts are dealing with errors? Which parts are consulting capability owners? Which parts are testing?
+
 ## Mount Malleable
 
 _A local web app for shaping the story — edit on the page, not in YAML._
