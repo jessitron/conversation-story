@@ -55,3 +55,13 @@ intermediate. Right now, it doesn't run on any conversation that isn't in the
 examples directory. Later we'll give it ways to pull from whatever's
 available in `.claude`. This doesn't need to run on anyone else's computer,
 but I do like to document assumptions and prerequisites.
+
+## Tracking
+
+Where the live work for this project is recorded. (Contract: the seamapping
+plugin's `TRACKING-ADAPTER.md`.)
+
+- inbox: `TODO.md` — raw captures, pre-decision. Format: the plugin's
+  `INBOX.md`.
+- tracker: none configured. `TODO.md` is the whole system for now; run
+  `/setup-matt-pocock-skills` if this ever outgrows the inbox.

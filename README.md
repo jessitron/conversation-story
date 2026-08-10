@@ -201,32 +201,14 @@ or `/docs`, so there's no `gh-pages` branch and no `docs/` rename.
 workflow rebuilds anyway: if the committed pages and a fresh build ever
 disagree, what gets published follows `lib/` and `examples/`.
 
-## North Star
+## North Star and Mountains
 
-A conversation with an agent is intelligible. I can display it, step through it, drill into it. I can explain what's happening to another person, and they can explore what happened too. Also, it's pretty.
+See `SEAMAP.md` for the canonical North Star, Mountains, and where work is
+recorded (`TODO.md`) — don't duplicate them here, they'll drift.
 
 ## Along the journey
 
 I love to learn more about how Claude Code works using what we encounter in these logs.
-
-## Mountains
-
-Mountains have names, not numbers — we climb them in whatever order the work
-wants, and several are underway at once. `TODO.md` is the working list, grouped
-by mountain.
-
-- **Mount Complete** — everything recorded in the conversation log is
-  intelligible on the web page.
-- **Mount Beautiful** — I enjoy looking at it. The drill-into-detail feels like
-  exploration.
-- **Mount Malleable** — a local web app for shaping the story. Summaries are
-  editable on the page and the change sticks (see above); what else wants
-  shaping — which events show, what order they read in — is still open.
-
-*(Climbed: **Mount Minimal** — every event in the main conversation shows as a
-card, all looking the same. **Mount Interactive** — three modes, a keyboard
-map, and a narrate mode that reveals the conversation a beat at a time; see
-"Modes and keyboard" above.)*
 
 ## Constraints
 

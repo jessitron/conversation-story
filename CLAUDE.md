@@ -3,8 +3,15 @@
 Turn a Claude agent conversation log into an explorable, pretty static web page,
 so Jess can narrate "how a conversation went" while the page shows it accurately.
 
-Read `README.md` for the architecture and vision (the named "Mountains", constraints, limitations)
-and `notes/plan.md` for the current design — especially the settled **Decisions**.
+## Seamap
+
+This repo's seamap — the North Star, Mountains, and where work is recorded —
+lives in `SEAMAP.md`. Orient, capture, and log proactively; use `drop-buoy` to
+capture work without derailing.
+
+Read `README.md` for the architecture (constraints, limitations, how to run
+things) and `notes/plan.md` for the current design — especially the settled
+**Decisions**.
 The **intermediate schema** (the `story.yaml` contract) has its own file,
 `notes/intermediate-schema.md`. For the **page look & feel**, see
 `assets/design-prototype.html` (a static art-deco mockup with sample cards) plus
