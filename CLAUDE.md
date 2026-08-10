@@ -387,3 +387,20 @@ an assistant turn made tool calls, plus block-splitting and subagent nesting
 (Mount Complete); self-hosting the fonts (Mount Beautiful); and editing a card's
 summary live on the page (Mount Malleable). The session-7 note has more context
 on the linking work.
+
+## Agent skills
+
+### Issue tracker
+
+Local markdown under `.scratch/<feature>/` — separate from `SEAMAP.md`/`TODO.md`,
+which remain this repo's own tracking system. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default five: needs-triage, needs-info, ready-for-agent, ready-for-human,
+wontfix. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `CONTEXT.md` + `docs/adr/` at repo root (don't exist yet —
+created lazily by `/domain-modeling`). See `docs/agents/domain.md`.
