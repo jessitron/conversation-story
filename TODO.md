@@ -8,6 +8,38 @@ whole system for now.
 
 ## Next
 
+- `context-map-sidebar` A "where are we" map on the left: a vertical bar,
+  full page height, non-scrolling, representing the conversation as a whole
+  on a context-length axis. Three sections: prior context, context added by
+  the currently highlighted card, and context added by all future cards. A
+  tool call that adds nothing to context shows only a minimum-height bar
+  between prior and future, marking the location; a tool result shows its
+  approximate token contribution; a user input shows its contribution (likely
+  smaller than the minimum bar height).
+
+  Usually the map jumps instantly on selection (no transition). In narrate
+  mode, pressing n/arrow animates it smoothly, showing context growing as the
+  conversation lengthens.
+
+  Subagents get their own bar to the right of the main one. Selecting a
+  subagent card (or any event inside it) makes the main bar show context as
+  of the subagent's result card, and a second bar appears next to it for the
+  subagent's own context: before the subagent started, context added before
+  the current card, the current card's contribution, future context, and
+  unused extra space. The subagent's bar uses the *same scale* as the main
+  conversation, unless the subagent's context is larger, in which case it
+  scales to screen height. Its "context added before" segment starts at the
+  height of the subagent invocation on the main bar, unless that would push
+  its summary off the bottom of the page, in which case it moves up to fit.
+
+  Also want a header option to show all subagent context bars at once, lined
+  up in parallel after the main one — to see where the tokens are going.
+
+  Later: an agent at import-time could classify parts of the conversation —
+  overhead of dealing with worktrees, dealing with errors, consulting
+  capability owners, testing.
+  ← priority: high; mountain: mount-struggle
+
 ## Backlog
 
 - `design-feature-owner` A feature owner for the CSS — a designer invoked any
@@ -101,38 +133,6 @@ whole system for now.
   ← mountain: mount-beautiful
 - `related-events-detail-style` Restyle the list of related events in the
   detail view — more like the other details, less imitation of the card
-  ← mountain: mount-beautiful
-
-- `context-map-sidebar` A "where are we" map on the left: a vertical bar,
-  full page height, non-scrolling, representing the conversation as a whole
-  on a context-length axis. Three sections: prior context, context added by
-  the currently highlighted card, and context added by all future cards. A
-  tool call that adds nothing to context shows only a minimum-height bar
-  between prior and future, marking the location; a tool result shows its
-  approximate token contribution; a user input shows its contribution (likely
-  smaller than the minimum bar height).
-
-  Usually the map jumps instantly on selection (no transition). In narrate
-  mode, pressing n/arrow animates it smoothly, showing context growing as the
-  conversation lengthens.
-
-  Subagents get their own bar to the right of the main one. Selecting a
-  subagent card (or any event inside it) makes the main bar show context as
-  of the subagent's result card, and a second bar appears next to it for the
-  subagent's own context: before the subagent started, context added before
-  the current card, the current card's contribution, future context, and
-  unused extra space. The subagent's bar uses the *same scale* as the main
-  conversation, unless the subagent's context is larger, in which case it
-  scales to screen height. Its "context added before" segment starts at the
-  height of the subagent invocation on the main bar, unless that would push
-  its summary off the bottom of the page, in which case it moves up to fit.
-
-  Also want a header option to show all subagent context bars at once, lined
-  up in parallel after the main one — to see where the tokens are going.
-
-  Later: an agent at import-time could classify parts of the conversation —
-  overhead of dealing with worktrees, dealing with errors, consulting
-  capability owners, testing.
   ← mountain: mount-beautiful
 
 - `malleable-title-editable` Make the page title editable  ← mountain: mount-malleable
