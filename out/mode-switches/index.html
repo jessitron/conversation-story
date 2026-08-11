@@ -136,7 +136,7 @@ User instructions (CLAUDE.md, AGENTS.md, GEMINI.md, etc, direct requests) take p
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>Can you find conversation f9f81f1e-8c86-4821-ad48-4aa4cd1f211d from just now in this project, and bring it into the examples?</p></div></div>
 <div class="d-section"><h4 class="deco">Mode</h4><dl class="kv"><dt>Mode</dt><dd><code>auto</code></dd></dl></div>
 
-
+<div class="d-section"><h4 class="deco">Turn 1 breakdown</h4><dl class="kv"><dt>Message size (est.)</dt><dd><code>≈36</code></dd><dt>System prompt + tools (est.)</dt><dd><code>≈24,645</code></dd></dl><p class="d-note">The API bills the system prompt, tool schemas, and this message together as one cache write — this message's share is estimated from its length; the rest is what's left.</p></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>7</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:7" title="Copy event id to clipboard"><code>mode-switches:7</code><span class="copy-hint">copy</span></button></div></template>
@@ -190,7 +190,7 @@ User instructions (CLAUDE.md, AGENTS.md, GEMINI.md, etc, direct requests) take p
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>🥕 Let me find that log and see how examples are structured.</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:18"><span class="kind-tag">Tool Call</span><span class="summary"><b>Bash</b> <code>ls -la /Users/jessitron/.claude/projects/-Users-jessitron-code-jessitron-conversation-sto…</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>45,774 (21,093 cached)</code></dd><dt>Added</dt><dd><code>24,681</code></dd><dt>Output</dt><dd><code>251</code></dd><dt>Total input</dt><dd><code>45,774</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>21,093</code></dd><dt>New content</dt><dd><code>24,679</code></dd><dt>Context</dt><dd><code>45,774 (21,093 cached)</code></dd><dt>Added</dt><dd><code>24,681</code></dd><dt>Cache write</dt><dd><code>24,679</code></dd><dt>Output</dt><dd><code>251</code></dd><dt>Total input</dt><dd><code>45,774</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>17</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:17" title="Copy event id to clipboard"><code>mode-switches:17</code><span class="copy-hint">copy</span></button></div></template>
@@ -293,7 +293,7 @@ drwxr-xr-x@  3 jessitron  staff      96 Jul 19 22:50 episode-8-before
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>48,628 (45,772 cached)</code></dd><dt>Added</dt><dd><code>2,856</code></dd><dt>Output</dt><dd><code>221</code></dd><dt>Total input</dt><dd><code>94,402</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>45,774</code></dd><dt>New content</dt><dd><code>2,852</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>48,628 (45,772 cached)</code></dd><dt>Added</dt><dd><code>2,856</code></dd><dt>Cache write</dt><dd><code>2,854</code></dd><dt>Output</dt><dd><code>221</code></dd><dt>Total input</dt><dd><code>94,402</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>20</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:20" title="Copy event id to clipboard"><code>mode-switches:20</code><span class="copy-hint">copy</span></button></div></template>
@@ -365,7 +365,7 @@ examples/episode-8-before/subagents/agent-ae20659fd0f63295e.meta.json
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>49,096 (48,626 cached)</code></dd><dt>Added</dt><dd><code>470</code></dd><dt>Output</dt><dd><code>347</code></dd><dt>Total input</dt><dd><code>143,498</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>48,628</code></dd><dt>New content</dt><dd><code>466</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>49,096 (48,626 cached)</code></dd><dt>Added</dt><dd><code>470</code></dd><dt>Cache write</dt><dd><code>468</code></dd><dt>Output</dt><dd><code>347</code></dd><dt>Total input</dt><dd><code>143,498</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>23</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:23" title="Copy event id to clipboard"><code>mode-switches:23</code><span class="copy-hint">copy</span></button></div></template>
@@ -452,7 +452,7 @@ agent-af10a5026ae9acf14.meta.json
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>50,170 (49,094 cached)</code></dd><dt>Added</dt><dd><code>1,076</code></dd><dt>Output</dt><dd><code>314</code></dd><dt>Total input</dt><dd><code>193,668</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>49,096</code></dd><dt>New content</dt><dd><code>1,072</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>50,170 (49,094 cached)</code></dd><dt>Added</dt><dd><code>1,076</code></dd><dt>Cache write</dt><dd><code>1,074</code></dd><dt>Output</dt><dd><code>314</code></dd><dt>Total input</dt><dd><code>193,668</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>26</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:26" title="Copy event id to clipboard"><code>mode-switches:26</code><span class="copy-hint">copy</span></button></div></template>
@@ -546,7 +546,7 @@ lib/conversation_story/edits.rb:41:    # @param name [String] story name, e.g. &
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>51,335 (50,168 cached)</code></dd><dt>Added</dt><dd><code>1,167</code></dd><dt>Output</dt><dd><code>130</code></dd><dt>Total input</dt><dd><code>245,003</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>50,170</code></dd><dt>New content</dt><dd><code>1,163</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>51,335 (50,168 cached)</code></dd><dt>Added</dt><dd><code>1,167</code></dd><dt>Cache write</dt><dd><code>1,165</code></dd><dt>Output</dt><dd><code>130</code></dd><dt>Total input</dt><dd><code>245,003</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>35</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:35" title="Copy event id to clipboard"><code>mode-switches:35</code><span class="copy-hint">copy</span></button></div></template>
@@ -626,7 +626,7 @@ test/parser_test.rb:89:      assert_equal EXPECTED_UNKNOWN_TYPES.sort, unknown_t
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>51,697 (51,333 cached)</code></dd><dt>Added</dt><dd><code>364</code></dd><dt>Output</dt><dd><code>142</code></dd><dt>Total input</dt><dd><code>296,700</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>51,335</code></dd><dt>New content</dt><dd><code>360</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>51,697 (51,333 cached)</code></dd><dt>Added</dt><dd><code>364</code></dd><dt>Cache write</dt><dd><code>362</code></dd><dt>Output</dt><dd><code>142</code></dd><dt>Total input</dt><dd><code>296,700</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>39</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:39" title="Copy event id to clipboard"><code>mode-switches:39</code><span class="copy-hint">copy</span></button></div></template>
@@ -721,7 +721,7 @@ class ParserTest &lt; Minitest::Test
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>52,419 (51,695 cached)</code></dd><dt>Added</dt><dd><code>724</code></dd><dt>Output</dt><dd><code>369</code></dd><dt>Total input</dt><dd><code>349,119</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>51,697</code></dd><dt>New content</dt><dd><code>720</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>52,419 (51,695 cached)</code></dd><dt>Added</dt><dd><code>724</code></dd><dt>Cache write</dt><dd><code>722</code></dd><dt>Output</dt><dd><code>369</code></dd><dt>Total input</dt><dd><code>349,119</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>42</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:42" title="Copy event id to clipboard"><code>mode-switches:42</code><span class="copy-hint">copy</span></button></div></template>
@@ -795,7 +795,7 @@ end&#39;</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>53,266 (52,417 cached)</code></dd><dt>Added</dt><dd><code>849</code></dd><dt>Output</dt><dd><code>271</code></dd><dt>Total input</dt><dd><code>402,385</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>52,419</code></dd><dt>New content</dt><dd><code>845</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>53,266 (52,417 cached)</code></dd><dt>Added</dt><dd><code>849</code></dd><dt>Cache write</dt><dd><code>847</code></dd><dt>Output</dt><dd><code>271</code></dd><dt>Total input</dt><dd><code>402,385</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>45</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:45" title="Copy event id to clipboard"><code>mode-switches:45</code><span class="copy-hint">copy</span></button></div></template>
@@ -876,7 +876,7 @@ end&#39;</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>53,826 (53,264 cached)</code></dd><dt>Added</dt><dd><code>562</code></dd><dt>Output</dt><dd><code>404</code></dd><dt>Total input</dt><dd><code>456,211</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>53,266</code></dd><dt>New content</dt><dd><code>558</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>53,826 (53,264 cached)</code></dd><dt>Added</dt><dd><code>562</code></dd><dt>Cache write</dt><dd><code>560</code></dd><dt>Output</dt><dd><code>404</code></dd><dt>Total input</dt><dd><code>456,211</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>48</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:48" title="Copy event id to clipboard"><code>mode-switches:48</code><span class="copy-hint">copy</span></button></div></template>
@@ -934,7 +934,7 @@ end&#39;</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>54,405 (53,824 cached)</code></dd><dt>Added</dt><dd><code>581</code></dd><dt>Output</dt><dd><code>223</code></dd><dt>Total input</dt><dd><code>510,616</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>53,826</code></dd><dt>New content</dt><dd><code>578</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>54,405 (53,824 cached)</code></dd><dt>Added</dt><dd><code>581</code></dd><dt>Cache write</dt><dd><code>580</code></dd><dt>Output</dt><dd><code>223</code></dd><dt>Total input</dt><dd><code>510,616</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>52</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:52" title="Copy event id to clipboard"><code>mode-switches:52</code><span class="copy-hint">copy</span></button></div></template>
@@ -1009,7 +1009,7 @@ Tasks: TOP =&gt; test
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>55,061 (54,404 cached)</code></dd><dt>Added</dt><dd><code>657</code></dd><dt>Output</dt><dd><code>243</code></dd><dt>Total input</dt><dd><code>565,677</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>54,405</code></dd><dt>New content</dt><dd><code>654</code></dd><dt>Re-cached (overhead)</dt><dd><code>1</code></dd><dt>Context</dt><dd><code>55,061 (54,404 cached)</code></dd><dt>Added</dt><dd><code>657</code></dd><dt>Cache write</dt><dd><code>655</code></dd><dt>Output</dt><dd><code>243</code></dd><dt>Total input</dt><dd><code>565,677</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>59</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:59" title="Copy event id to clipboard"><code>mode-switches:59</code><span class="copy-hint">copy</span></button></div></template>
@@ -1148,7 +1148,7 @@ mtg-tabletop-plan.jsonl
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>56,977 (55,059 cached)</code></dd><dt>Added</dt><dd><code>1,918</code></dd><dt>Output</dt><dd><code>397</code></dd><dt>Total input</dt><dd><code>622,654</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>55,061</code></dd><dt>New content</dt><dd><code>1,914</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>56,977 (55,059 cached)</code></dd><dt>Added</dt><dd><code>1,918</code></dd><dt>Cache write</dt><dd><code>1,916</code></dd><dt>Output</dt><dd><code>397</code></dd><dt>Total input</dt><dd><code>622,654</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>62</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:62" title="Copy event id to clipboard"><code>mode-switches:62</code><span class="copy-hint">copy</span></button></div></template>
@@ -1227,7 +1227,7 @@ unexpected record types fell back to `unknown`.
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>57,800 (56,975 cached)</code></dd><dt>Added</dt><dd><code>825</code></dd><dt>Output</dt><dd><code>396</code></dd><dt>Total input</dt><dd><code>680,454</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>56,977</code></dd><dt>New content</dt><dd><code>821</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>57,800 (56,975 cached)</code></dd><dt>Added</dt><dd><code>825</code></dd><dt>Cache write</dt><dd><code>823</code></dd><dt>Output</dt><dd><code>396</code></dd><dt>Total input</dt><dd><code>680,454</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>65</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:65" title="Copy event id to clipboard"><code>mode-switches:65</code><span class="copy-hint">copy</span></button></div></template>
@@ -1289,7 +1289,7 @@ examples/mtg-tabletop-plan.jsonl: {&quot;{\&quot;type\&quot; =&gt; \&quot;mode\&
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>60,516 (57,798 cached)</code></dd><dt>Added</dt><dd><code>2,718</code></dd><dt>Output</dt><dd><code>479</code></dd><dt>Total input</dt><dd><code>740,970</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>57,800</code></dd><dt>New content</dt><dd><code>2,714</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>60,516 (57,798 cached)</code></dd><dt>Added</dt><dd><code>2,718</code></dd><dt>Cache write</dt><dd><code>2,716</code></dd><dt>Output</dt><dd><code>479</code></dd><dt>Total input</dt><dd><code>740,970</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>72</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:72" title="Copy event id to clipboard"><code>mode-switches:72</code><span class="copy-hint">copy</span></button></div></template>
@@ -1386,7 +1386,7 @@ examples/mtg-tabletop-plan.jsonl: {&quot;{\&quot;type\&quot; =&gt; \&quot;mode\&
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_01EjP8MHQ4zLXbronZT81J7p</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>61,741 (60,514 cached)</code></dd><dt>Added</dt><dd><code>1,227</code></dd><dt>Output</dt><dd><code>112</code></dd><dt>Total input</dt><dd><code>802,711</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>60,516</code></dd><dt>New content</dt><dd><code>1,223</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>61,741 (60,514 cached)</code></dd><dt>Added</dt><dd><code>1,227</code></dd><dt>Cache write</dt><dd><code>1,225</code></dd><dt>Output</dt><dd><code>112</code></dd><dt>Total input</dt><dd><code>802,711</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; grep -n &quot;HIDDEN\|last-prompt\|\&quot;unknown\&quot;&quot; lib/conversation_story/parser.rb</pre></div>
 
 <div class="d-section"><h4 class="deco">Related events</h4><div class="related-links"><a class="related-link" href="#mode-switches:76"><span class="kind-tag">Tool Result</span><span class="summary">39: HIDDEN_KINDS = %w[system file_snapshot permission_mode].freeze 46: HIDDEN_ATTACHMENT_TYPES = %w[ 49: # The unsent-prompt buffer (a `las…</span></a></div></div>
@@ -1433,7 +1433,7 @@ examples/mtg-tabletop-plan.jsonl: {&quot;{\&quot;type\&quot; =&gt; \&quot;mode\&
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_01RYcJ5Y2W3bfmg2k9MmRyfL</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>62,149 (61,739 cached)</code></dd><dt>Added</dt><dd><code>410</code></dd><dt>Output</dt><dd><code>99</code></dd><dt>Total input</dt><dd><code>864,860</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>61,741</code></dd><dt>New content</dt><dd><code>406</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>62,149 (61,739 cached)</code></dd><dt>Added</dt><dd><code>410</code></dd><dt>Cache write</dt><dd><code>408</code></dd><dt>Output</dt><dd><code>99</code></dd><dt>Total input</dt><dd><code>864,860</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; sed -n &#39;25,60p;140,170p&#39; lib/conversation_story/parser.rb</pre></div>
 
 <div class="d-section"><h4 class="deco">Related events</h4><div class="related-links"><a class="related-link" href="#mode-switches:78"><span class="kind-tag">Tool Result</span><span class="summary">&quot;system&quot; =&gt; &quot;system&quot;, &quot;attachment&quot; =&gt; &quot;attachment&quot;, &quot;file-history-snapshot&quot; =&gt; &quot;file_snapshot&quot;, &quot;permission-mode&quot; =&gt; &quot;permission_mode&quot;, &quot;qu…</span></a></div></div>
@@ -1556,7 +1556,7 @@ examples/mtg-tabletop-plan.jsonl: {&quot;{\&quot;type\&quot; =&gt; \&quot;mode\&
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>Found it: 683 lines, 6.8 MB, and it&#39;s the session where we implemented subagents. I named it <code>examples/inlining-subagents.jsonl</code>. Three test failures came from it — two real gaps:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:81"><span class="kind-tag">Tool Call</span><span class="summary"><b>Read</b> <code>parser.rb</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>63,503 (62,147 cached)</code></dd><dt>Added</dt><dd><code>1,356</code></dd><dt>Output</dt><dd><code>1,472</code></dd><dt>Total input</dt><dd><code>928,363</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>62,149</code></dd><dt>New content</dt><dd><code>1,352</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>63,503 (62,147 cached)</code></dd><dt>Added</dt><dd><code>1,356</code></dd><dt>Cache write</dt><dd><code>1,354</code></dd><dt>Output</dt><dd><code>1,472</code></dd><dt>Total input</dt><dd><code>928,363</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>80</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:80" title="Copy event id to clipboard"><code>mode-switches:80</code><span class="copy-hint">copy</span></button></div></template>
@@ -1631,7 +1631,7 @@ examples/mtg-tabletop-plan.jsonl: {&quot;{\&quot;type\&quot; =&gt; \&quot;mode\&
     # (`ai-title`), and the incremental file-edit journal (`file-history-delta`,
     # sibling of the already-hidden `file-history-snapshot`).
     HIDDEN_RECORD_TYPES = %w[last-prompt mode ai-title file-history-delta].freeze</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>65,253 (63,501 cached)</code></dd><dt>Added</dt><dd><code>1,752</code></dd><dt>Output</dt><dd><code>401</code></dd><dt>Total input</dt><dd><code>993,616</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>63,503</code></dd><dt>New content</dt><dd><code>1,748</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>65,253 (63,501 cached)</code></dd><dt>Added</dt><dd><code>1,752</code></dd><dt>Cache write</dt><dd><code>1,750</code></dd><dt>Output</dt><dd><code>401</code></dd><dt>Total input</dt><dd><code>993,616</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;replace_all&quot;: false,
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/lib/conversation_story/parser.rb&quot;,
@@ -1675,7 +1675,7 @@ examples/mtg-tabletop-plan.jsonl: {&quot;{\&quot;type\&quot; =&gt; \&quot;mode\&
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>Now the test that hard-codes the allowed unknowns, and the subagent tests that assume every example spawns one:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:92"><span class="kind-tag">Tool Call</span><span class="summary"><b>Edit</b> <code>parser_test.rb</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>65,875 (65,251 cached)</code></dd><dt>Added</dt><dd><code>624</code></dd><dt>Output</dt><dd><code>444</code></dd><dt>Total input</dt><dd><code>1,059,491</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>65,253</code></dd><dt>New content</dt><dd><code>621</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>65,875 (65,251 cached)</code></dd><dt>Added</dt><dd><code>624</code></dd><dt>Cache write</dt><dd><code>623</code></dd><dt>Output</dt><dd><code>444</code></dd><dt>Total input</dt><dd><code>1,059,491</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>91</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:91" title="Copy event id to clipboard"><code>mode-switches:91</code><span class="copy-hint">copy</span></button></div></template>
@@ -1744,7 +1744,7 @@ examples/mtg-tabletop-plan.jsonl: {&quot;{\&quot;type\&quot; =&gt; \&quot;mode\&
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>66,406 (65,874 cached)</code></dd><dt>Added</dt><dd><code>532</code></dd><dt>Output</dt><dd><code>384</code></dd><dt>Total input</dt><dd><code>1,125,897</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>65,875</code></dd><dt>New content</dt><dd><code>529</code></dd><dt>Re-cached (overhead)</dt><dd><code>1</code></dd><dt>Context</dt><dd><code>66,406 (65,874 cached)</code></dd><dt>Added</dt><dd><code>532</code></dd><dt>Cache write</dt><dd><code>530</code></dd><dt>Output</dt><dd><code>384</code></dd><dt>Total input</dt><dd><code>1,125,897</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>95</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:95" title="Copy event id to clipboard"><code>mode-switches:95</code><span class="copy-hint">copy</span></button></div></template>
@@ -1808,7 +1808,7 @@ examples/mtg-tabletop-plan.jsonl: {&quot;{\&quot;type\&quot; =&gt; \&quot;mode\&
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>Now the three subagent tests — they assert every example spawns an Agent, which this one doesn&#39;t:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:99"><span class="kind-tag">Tool Call</span><span class="summary"><b>Read</b> <code>parser_test.rb</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>66,853 (66,404 cached)</code></dd><dt>Added</dt><dd><code>449</code></dd><dt>Output</dt><dd><code>154</code></dd><dt>Total input</dt><dd><code>1,192,750</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>66,406</code></dd><dt>New content</dt><dd><code>445</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>66,853 (66,404 cached)</code></dd><dt>Added</dt><dd><code>449</code></dd><dt>Cache write</dt><dd><code>447</code></dd><dt>Output</dt><dd><code>154</code></dd><dt>Total input</dt><dd><code>1,192,750</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>98</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:98" title="Copy event id to clipboard"><code>mode-switches:98</code><span class="copy-hint">copy</span></button></div></template>
@@ -1895,7 +1895,7 @@ examples/mtg-tabletop-plan.jsonl: {&quot;{\&quot;type\&quot; =&gt; \&quot;mode\&
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>67,590 (66,851 cached)</code></dd><dt>Added</dt><dd><code>739</code></dd><dt>Output</dt><dd><code>671</code></dd><dt>Total input</dt><dd><code>1,260,340</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>66,853</code></dd><dt>New content</dt><dd><code>735</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>67,590 (66,851 cached)</code></dd><dt>Added</dt><dd><code>739</code></dd><dt>Cache write</dt><dd><code>737</code></dd><dt>Output</dt><dd><code>671</code></dd><dt>Total input</dt><dd><code>1,260,340</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>101</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:101" title="Copy event id to clipboard"><code>mode-switches:101</code><span class="copy-hint">copy</span></button></div></template>
@@ -1997,7 +1997,7 @@ examples/mtg-tabletop-plan.jsonl: {&quot;{\&quot;type\&quot; =&gt; \&quot;mode\&
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>Jess edited <code>parser.rb</code> while I was in it — mapping the three new record types to real kinds. Let me reconcile my change with that instead of duplicating it.</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:111"><span class="kind-tag">Tool Call</span><span class="summary"><b>Bash</b> <code>cd /Users/jessitron/code/jessitron/conversation-story; grep -n &quot;def add_detail&quot; -A 40 lib…</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>71,636 (67,588 cached)</code></dd><dt>Added</dt><dd><code>4,048</code></dd><dt>Output</dt><dd><code>1,676</code></dd><dt>Total input</dt><dd><code>1,331,976</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>67,590</code></dd><dt>New content</dt><dd><code>4,044</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>71,636 (67,588 cached)</code></dd><dt>Added</dt><dd><code>4,048</code></dd><dt>Cache write</dt><dd><code>4,046</code></dd><dt>Output</dt><dd><code>1,676</code></dd><dt>Total input</dt><dd><code>1,331,976</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>110</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:110" title="Copy event id to clipboard"><code>mode-switches:110</code><span class="copy-hint">copy</span></button></div></template>
@@ -2124,7 +2124,7 @@ examples/mtg-tabletop-plan.jsonl: {&quot;{\&quot;type\&quot; =&gt; \&quot;mode\&
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>74,682 (71,634 cached)</code></dd><dt>Added</dt><dd><code>3,048</code></dd><dt>Output</dt><dd><code>532</code></dd><dt>Total input</dt><dd><code>1,406,658</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>71,636</code></dd><dt>New content</dt><dd><code>3,044</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>74,682 (71,634 cached)</code></dd><dt>Added</dt><dd><code>3,048</code></dd><dt>Cache write</dt><dd><code>3,046</code></dd><dt>Output</dt><dd><code>532</code></dd><dt>Total input</dt><dd><code>1,406,658</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>113</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:113" title="Copy event id to clipboard"><code>mode-switches:113</code><span class="copy-hint">copy</span></button></div></template>
@@ -2191,7 +2191,7 @@ examples/mtg-tabletop-plan.jsonl: {&quot;{\&quot;type\&quot; =&gt; \&quot;mode\&
     # sibling of the already-hidden `file-history-snapshot`).
     HIDDEN_RECORD_TYPES = %w[last-prompt mode ai-title file-history-delta].freeze</code></dd><dt>new_string</dt><dd><code>    # The unsent-prompt buffer (a `last-prompt` record → `unknown` fallback).
     HIDDEN_RECORD_TYPES = %w[last-prompt].freeze</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>75,306 (74,680 cached)</code></dd><dt>Added</dt><dd><code>626</code></dd><dt>Output</dt><dd><code>425</code></dd><dt>Total input</dt><dd><code>1,481,964</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>74,682</code></dd><dt>New content</dt><dd><code>622</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>75,306 (74,680 cached)</code></dd><dt>Added</dt><dd><code>626</code></dd><dt>Cache write</dt><dd><code>624</code></dd><dt>Output</dt><dd><code>425</code></dd><dt>Total input</dt><dd><code>1,481,964</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;replace_all&quot;: false,
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/lib/conversation_story/parser.rb&quot;,
@@ -2235,7 +2235,7 @@ examples/mtg-tabletop-plan.jsonl: {&quot;{\&quot;type\&quot; =&gt; \&quot;mode\&
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>Now finish the mapping Jess started — <code>ai_title</code> needs a summary and detail, and <code>permission_mode</code> now covers two record types with differently-named fields:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:120"><span class="kind-tag">Tool Call</span><span class="summary"><b>Edit</b> <code>parser.rb</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>75,928 (75,304 cached)</code></dd><dt>Added</dt><dd><code>624</code></dd><dt>Output</dt><dd><code>390</code></dd><dt>Total input</dt><dd><code>1,557,892</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>75,306</code></dd><dt>New content</dt><dd><code>621</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>75,928 (75,304 cached)</code></dd><dt>Added</dt><dd><code>624</code></dd><dt>Cache write</dt><dd><code>623</code></dd><dt>Output</dt><dd><code>390</code></dd><dt>Total input</dt><dd><code>1,557,892</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>119</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:119" title="Copy event id to clipboard"><code>mode-switches:119</code><span class="copy-hint">copy</span></button></div></template>
@@ -2308,7 +2308,7 @@ examples/mtg-tabletop-plan.jsonl: {&quot;{\&quot;type\&quot; =&gt; \&quot;mode\&
         # hidden, but the generated title is the record&#39;s whole content — keeping
         # it named means the kind loses nothing by not being `unknown`.
         event[&quot;detail&quot;] = { &quot;text&quot; =&gt; rec[&quot;aiTitle&quot;].to_s }</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>76,386 (75,927 cached)</code></dd><dt>Added</dt><dd><code>459</code></dd><dt>Output</dt><dd><code>333</code></dd><dt>Total input</dt><dd><code>1,634,278</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>75,928</code></dd><dt>New content</dt><dd><code>456</code></dd><dt>Re-cached (overhead)</dt><dd><code>1</code></dd><dt>Context</dt><dd><code>76,386 (75,927 cached)</code></dd><dt>Added</dt><dd><code>459</code></dd><dt>Cache write</dt><dd><code>457</code></dd><dt>Output</dt><dd><code>333</code></dd><dt>Total input</dt><dd><code>1,634,278</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;replace_all&quot;: false,
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/lib/conversation_story/parser.rb&quot;,
@@ -2352,7 +2352,7 @@ examples/mtg-tabletop-plan.jsonl: {&quot;{\&quot;type\&quot; =&gt; \&quot;mode\&
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>Now revert my test change, since with real kinds only <code>last-prompt</code> still falls to <code>unknown</code>:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:129"><span class="kind-tag">Tool Call</span><span class="summary"><b>Edit</b> <code>parser_test.rb</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>76,787 (76,384 cached)</code></dd><dt>Added</dt><dd><code>403</code></dd><dt>Output</dt><dd><code>464</code></dd><dt>Total input</dt><dd><code>1,711,065</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>76,386</code></dd><dt>New content</dt><dd><code>399</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>76,787 (76,384 cached)</code></dd><dt>Added</dt><dd><code>403</code></dd><dt>Cache write</dt><dd><code>401</code></dd><dt>Output</dt><dd><code>464</code></dd><dt>Total input</dt><dd><code>1,711,065</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>128</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:128" title="Copy event id to clipboard"><code>mode-switches:128</code><span class="copy-hint">copy</span></button></div></template>
@@ -2423,7 +2423,7 @@ examples/mtg-tabletop-plan.jsonl: {&quot;{\&quot;type\&quot; =&gt; \&quot;mode\&
                    &quot;unexpected record types fell back to `unknown`&quot;
       refute_empty unknown_types, &quot;expected the `unknown` fallback to be exercised&quot;</code></dd><dt>new_string</dt><dd><code>      assert_equal EXPECTED_UNKNOWN_TYPES.sort, unknown_types,
                    &quot;unexpected record types fell back to `unknown`&quot;</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>77,314 (76,785 cached)</code></dd><dt>Added</dt><dd><code>529</code></dd><dt>Output</dt><dd><code>287</code></dd><dt>Total input</dt><dd><code>1,788,379</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>76,787</code></dd><dt>New content</dt><dd><code>525</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>77,314 (76,785 cached)</code></dd><dt>Added</dt><dd><code>529</code></dd><dt>Cache write</dt><dd><code>527</code></dd><dt>Output</dt><dd><code>287</code></dd><dt>Total input</dt><dd><code>1,788,379</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;replace_all&quot;: false,
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/test/parser_test.rb&quot;,
@@ -2466,7 +2466,7 @@ examples/mtg-tabletop-plan.jsonl: {&quot;{\&quot;type\&quot; =&gt; \&quot;mode\&
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_01FDfCSDngcdSFFsrgn7CEiv</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>77,664 (77,312 cached)</code></dd><dt>Added</dt><dd><code>352</code></dd><dt>Output</dt><dd><code>84</code></dd><dt>Total input</dt><dd><code>1,866,043</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>77,314</code></dd><dt>New content</dt><dd><code>348</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>77,664 (77,312 cached)</code></dd><dt>Added</dt><dd><code>352</code></dd><dt>Cache write</dt><dd><code>350</code></dd><dt>Output</dt><dd><code>84</code></dd><dt>Total input</dt><dd><code>1,866,043</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; rake test 2&gt;&amp;1 | tail -15</pre></div>
 
 <div class="d-section"><h4 class="deco">Related events</h4><div class="related-links"><a class="related-link" href="#mode-switches:134"><span class="kind-tag">Tool Result</span><span class="summary">The user doesn&#39;t want to proceed with this tool use. The tool use was rejected (eg. if it was a file edit, the new_string was NOT written t…</span></a></div></div>
@@ -2562,7 +2562,7 @@ Note: The user&#39;s next message may contain a correction or preference. Pay cl
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>81,399 (77,662 cached)</code></dd><dt>Added</dt><dd><code>3,737</code></dd><dt>Output</dt><dd><code>116</code></dd><dt>Total input</dt><dd><code>1,947,442</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>77,664</code></dd><dt>New content</dt><dd><code>3,733</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>81,399 (77,662 cached)</code></dd><dt>Added</dt><dd><code>3,737</code></dd><dt>Cache write</dt><dd><code>3,735</code></dd><dt>Output</dt><dd><code>116</code></dd><dt>Total input</dt><dd><code>1,947,442</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>139</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:139" title="Copy event id to clipboard"><code>mode-switches:139</code><span class="copy-hint">copy</span></button></div></template>
@@ -2631,7 +2631,7 @@ You have skipped tests. Run with --verbose for details.</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>81,720 (81,397 cached)</code></dd><dt>Added</dt><dd><code>323</code></dd><dt>Output</dt><dd><code>234</code></dd><dt>Total input</dt><dd><code>2,029,162</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>81,399</code></dd><dt>New content</dt><dd><code>319</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>81,720 (81,397 cached)</code></dd><dt>Added</dt><dd><code>323</code></dd><dt>Cache write</dt><dd><code>321</code></dd><dt>Output</dt><dd><code>234</code></dd><dt>Total input</dt><dd><code>2,029,162</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>142</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:142" title="Copy event id to clipboard"><code>mode-switches:142</code><span class="copy-hint">copy</span></button></div></template>
@@ -2699,7 +2699,7 @@ a9b0648 Top-align cards, with the two conversation kinds on baseline
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>82,267 (81,718 cached)</code></dd><dt>Added</dt><dd><code>549</code></dd><dt>Output</dt><dd><code>288</code></dd><dt>Total input</dt><dd><code>2,111,429</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>81,720</code></dd><dt>New content</dt><dd><code>545</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>82,267 (81,718 cached)</code></dd><dt>Added</dt><dd><code>549</code></dd><dt>Cache write</dt><dd><code>547</code></dd><dt>Output</dt><dd><code>288</code></dd><dt>Total input</dt><dd><code>2,111,429</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>149</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:149" title="Copy event id to clipboard"><code>mode-switches:149</code><span class="copy-hint">copy</span></button></div></template>
@@ -2779,7 +2779,7 @@ index 718fabc..5265e0e 100644
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>82,967 (82,265 cached)</code></dd><dt>Added</dt><dd><code>702</code></dd><dt>Output</dt><dd><code>320</code></dd><dt>Total input</dt><dd><code>2,194,396</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>82,267</code></dd><dt>New content</dt><dd><code>699</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>82,967 (82,265 cached)</code></dd><dt>Added</dt><dd><code>702</code></dd><dt>Cache write</dt><dd><code>701</code></dd><dt>Output</dt><dd><code>320</code></dd><dt>Total input</dt><dd><code>2,194,396</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>153</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:153" title="Copy event id to clipboard"><code>mode-switches:153</code><span class="copy-hint">copy</span></button></div></template>
@@ -2839,7 +2839,7 @@ index 718fabc..5265e0e 100644
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>83,563 (82,966 cached)</code></dd><dt>Added</dt><dd><code>597</code></dd><dt>Output</dt><dd><code>454</code></dd><dt>Total input</dt><dd><code>2,277,959</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>82,967</code></dd><dt>New content</dt><dd><code>594</code></dd><dt>Re-cached (overhead)</dt><dd><code>1</code></dd><dt>Context</dt><dd><code>83,563 (82,966 cached)</code></dd><dt>Added</dt><dd><code>597</code></dd><dt>Cache write</dt><dd><code>595</code></dd><dt>Output</dt><dd><code>454</code></dd><dt>Total input</dt><dd><code>2,277,959</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>156</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:156" title="Copy event id to clipboard"><code>mode-switches:156</code><span class="copy-hint">copy</span></button></div></template>
@@ -2904,7 +2904,7 @@ SKIP  inlining-subagents:174 is a hidden event — no card by design</pre></div>
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_01PKdLwAgk1VZTTvg5KErCvG</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>84,224 (83,561 cached)</code></dd><dt>Added</dt><dd><code>663</code></dd><dt>Output</dt><dd><code>217</code></dd><dt>Total input</dt><dd><code>2,362,183</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>83,563</code></dd><dt>New content</dt><dd><code>659</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>84,224 (83,561 cached)</code></dd><dt>Added</dt><dd><code>663</code></dd><dt>Cache write</dt><dd><code>661</code></dd><dt>Output</dt><dd><code>217</code></dd><dt>Total input</dt><dd><code>2,362,183</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; ruby -ryaml -e &#39;d=YAML.unsafe_load_file(&quot;out/inlining-subagents/story.yaml&quot;); v=d[&quot;events&quot;].reject{|e| e[&quot;hidden&quot;]}; puts &quot;visible: #{v.size} / #{d[&quot;events&quot;].size}&quot;; puts v.group_by{|e| e[&quot;kind&quot;]}.transform_values(&amp;:size).inspect; puts v.first(3).map{|e| e[&quot;ref&quot;]}.inspect&#39;</pre></div>
 
 <div class="d-section"><h4 class="deco">Related events</h4><div class="related-links"><a class="related-link" href="#mode-switches:160"><span class="kind-tag">Tool Result</span><span class="summary">visible: 449 / 683 {&quot;attachment&quot; =&gt; 5, &quot;user_message&quot; =&gt; 11, &quot;assistant_message&quot; =&gt; 31, &quot;tool_call&quot; =&gt; 169, &quot;tool_result&quot; =&gt; 169, &quot;thinking…</span></a></div></div>
@@ -2944,7 +2944,7 @@ SKIP  inlining-subagents:174 is a hidden event — no card by design</pre></div>
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_01AN7gcna4uUecUPbTWWCReD</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>84,561 (84,222 cached)</code></dd><dt>Added</dt><dd><code>339</code></dd><dt>Output</dt><dd><code>124</code></dd><dt>Total input</dt><dd><code>2,446,744</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>84,224</code></dd><dt>New content</dt><dd><code>335</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>84,561 (84,222 cached)</code></dd><dt>Added</dt><dd><code>339</code></dd><dt>Cache write</dt><dd><code>337</code></dd><dt>Output</dt><dd><code>124</code></dd><dt>Total input</dt><dd><code>2,446,744</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; bin/check-anchors inlining-subagents 11 2&gt;&amp;1 | tail -8; bin/check-modes inlining-subagents 2&gt;&amp;1 | tail -8</pre></div>
 
 <div class="d-section"><h4 class="deco">Related events</h4><div class="related-links"><a class="related-link" href="#mode-switches:162"><span class="kind-tag">Tool Result</span><span class="summary">OK #inlining-subagents:11 selected its own card 0 related card(s) highlighted OK narrate entered on a deep link starts from that card OK ad…</span></a></div></div>
@@ -3017,7 +3017,7 @@ OK    one beat reveals a subagent&#39;s whole story as a flurry
 <p>Separately: <code>examples/mtg-tabletop-plan</code> showed up in the working tree from earlier work and is now committed too — I didn&#39;t touch it, just noting it rode along.</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>84,881 (84,559 cached)</code></dd><dt>Added</dt><dd><code>322</code></dd><dt>Output</dt><dd><code>1,381</code></dd><dt>Total input</dt><dd><code>2,531,625</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>84,561</code></dd><dt>New content</dt><dd><code>318</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>84,881 (84,559 cached)</code></dd><dt>Added</dt><dd><code>322</code></dd><dt>Cache write</dt><dd><code>320</code></dd><dt>Output</dt><dd><code>1,381</code></dd><dt>Total input</dt><dd><code>2,531,625</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>164</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:164" title="Copy event id to clipboard"><code>mode-switches:164</code><span class="copy-hint">copy</span></button></div></template>
@@ -3071,7 +3071,7 @@ OK    one beat reveals a subagent&#39;s whole story as a flurry
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>🥕 Let me look at what those records actually say before deciding what a &quot;switch&quot; is.</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:175"><span class="kind-tag">Tool Call</span><span class="summary"><b>Bash</b> <code>cd /Users/jessitron/code/jessitron/conversation-story; for f in examples/*.jsonl; do echo…</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>86,297 (86,260 cached)</code></dd><dt>Added</dt><dd><code>37</code></dd><dt>Output</dt><dd><code>706</code></dd><dt>Total input</dt><dd><code>2,617,922</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>86,260</code></dd><dt>New content</dt><dd><code>35</code></dd><dt>Context</dt><dd><code>86,297 (86,260 cached)</code></dd><dt>Added</dt><dd><code>37</code></dd><dt>Cache write</dt><dd><code>35</code></dd><dt>Output</dt><dd><code>706</code></dd><dt>Total input</dt><dd><code>2,617,922</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>174</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:174" title="Copy event id to clipboard"><code>mode-switches:174</code><span class="copy-hint">copy</span></button></div></template>
@@ -3163,7 +3163,7 @@ end&#39; &quot;$f&quot; | head -12; done</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>87,517 (86,295 cached)</code></dd><dt>Added</dt><dd><code>1,222</code></dd><dt>Output</dt><dd><code>924</code></dd><dt>Total input</dt><dd><code>2,705,439</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>86,297</code></dd><dt>New content</dt><dd><code>1,218</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>87,517 (86,295 cached)</code></dd><dt>Added</dt><dd><code>1,222</code></dd><dt>Cache write</dt><dd><code>1,220</code></dd><dt>Output</dt><dd><code>924</code></dd><dt>Total input</dt><dd><code>2,705,439</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>177</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:177" title="Copy event id to clipboard"><code>mode-switches:177</code><span class="copy-hint">copy</span></button></div></template>
@@ -3231,7 +3231,7 @@ mtg-tabletop-plan.jsonl: {&quot;mode=normal&quot; =&gt; 41}</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>88,579 (21,093 cached)</code></dd><dt>Added</dt><dd><code>67,486</code></dd><dt>Output</dt><dd><code>857</code></dd><dt>Total input</dt><dd><code>2,794,018</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>87,517</code></dd><dt>New content</dt><dd><code>1,060</code></dd><dt>Re-cached (overhead)</dt><dd><code>66,424</code></dd><dt>Context</dt><dd><code>88,579 (21,093 cached)</code></dd><dt>Added</dt><dd><code>67,486</code></dd><dt>Cache write</dt><dd><code>67,484</code></dd><dt>Output</dt><dd><code>857</code></dd><dt>Total input</dt><dd><code>2,794,018</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>180</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:180" title="Copy event id to clipboard"><code>mode-switches:180</code><span class="copy-hint">copy</span></button></div></template>
@@ -3335,7 +3335,7 @@ mtg-tabletop-plan.jsonl: {&quot;mode=normal&quot; =&gt; 41}</pre></div>
 <p>So &quot;show switches&quot; renders zero cards on today&#39;s fixtures unless we also show the opening state. Right-alignment itself is easy — <code>.k-user</code> already does it by swapping gutter order and setting <code>text-align: right</code>, so a mode card can reuse that.</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:186"><span class="kind-tag">Tool Call</span><span class="summary"><b>AskUserQuestion</b></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>89,750 (88,577 cached)</code></dd><dt>Added</dt><dd><code>1,173</code></dd><dt>Output</dt><dd><code>905</code></dd><dt>Total input</dt><dd><code>2,883,768</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>88,579</code></dd><dt>New content</dt><dd><code>1,169</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>89,750 (88,577 cached)</code></dd><dt>Added</dt><dd><code>1,173</code></dd><dt>Cache write</dt><dd><code>1,171</code></dd><dt>Output</dt><dd><code>905</code></dd><dt>Total input</dt><dd><code>2,883,768</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>185</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:185" title="Copy event id to clipboard"><code>mode-switches:185</code><span class="copy-hint">copy</span></button></div></template>
@@ -3426,7 +3426,7 @@ Note: The user&#39;s next message may contain a correction or preference. Pay cl
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>What would you like to clarify?</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>91,062 (89,748 cached)</code></dd><dt>Added</dt><dd><code>1,314</code></dd><dt>Output</dt><dd><code>11</code></dd><dt>Total input</dt><dd><code>2,974,830</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>89,750</code></dd><dt>New content</dt><dd><code>1,311</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>91,062 (89,748 cached)</code></dd><dt>Added</dt><dd><code>1,314</code></dd><dt>Cache write</dt><dd><code>1,313</code></dd><dt>Output</dt><dd><code>11</code></dd><dt>Total input</dt><dd><code>2,974,830</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>193</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:193" title="Copy event id to clipboard"><code>mode-switches:193</code><span class="copy-hint">copy</span></button></div></template>
@@ -3462,7 +3462,7 @@ Note: The user&#39;s next message may contain a correction or preference. Pay cl
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>91,099 (91,061 cached)</code></dd><dt>Added</dt><dd><code>38</code></dd><dt>Output</dt><dd><code>613</code></dd><dt>Total input</dt><dd><code>3,065,929</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>91,062</code></dd><dt>New content</dt><dd><code>35</code></dd><dt>Re-cached (overhead)</dt><dd><code>1</code></dd><dt>Context</dt><dd><code>91,099 (91,061 cached)</code></dd><dt>Added</dt><dd><code>38</code></dd><dt>Cache write</dt><dd><code>36</code></dd><dt>Output</dt><dd><code>613</code></dd><dt>Total input</dt><dd><code>3,065,929</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>197</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:197" title="Copy event id to clipboard"><code>mode-switches:197</code><span class="copy-hint">copy</span></button></div></template>
@@ -3545,7 +3545,7 @@ end&#39; $L</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>91,998 (91,097 cached)</code></dd><dt>Added</dt><dd><code>901</code></dd><dt>Output</dt><dd><code>1,155</code></dd><dt>Total input</dt><dd><code>3,157,927</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>91,099</code></dd><dt>New content</dt><dd><code>897</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>91,998 (91,097 cached)</code></dd><dt>Added</dt><dd><code>901</code></dd><dt>Cache write</dt><dd><code>899</code></dd><dt>Output</dt><dd><code>1,155</code></dd><dt>Total input</dt><dd><code>3,157,927</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>200</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:200" title="Copy event id to clipboard"><code>mode-switches:200</code><span class="copy-hint">copy</span></button></div></template>
@@ -3628,7 +3628,7 @@ require &quot;yaml&quot;</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>Writing a named script for this, since it&#39;s the third time this repo needs the &quot;copy a session log into examples&quot; move:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:204"><span class="kind-tag">Tool Call</span><span class="summary"><b>Write</b> <code>grab-example</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>93,500 (91,996 cached)</code></dd><dt>Added</dt><dd><code>1,504</code></dd><dt>Output</dt><dd><code>1,733</code></dd><dt>Total input</dt><dd><code>3,251,427</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>91,998</code></dd><dt>New content</dt><dd><code>1,500</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>93,500 (91,996 cached)</code></dd><dt>Added</dt><dd><code>1,504</code></dd><dt>Cache write</dt><dd><code>1,502</code></dd><dt>Output</dt><dd><code>1,733</code></dd><dt>Total input</dt><dd><code>3,251,427</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>203</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:203" title="Copy event id to clipboard"><code>mode-switches:203</code><span class="copy-hint">copy</span></button></div></template>
@@ -3790,7 +3790,7 @@ puts &quot;next: rake build, then rake test&quot;
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_01Ez55yEZSnjbWK2MKrHLDfK</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>95,291 (93,498 cached)</code></dd><dt>Added</dt><dd><code>1,793</code></dd><dt>Output</dt><dd><code>96</code></dd><dt>Total input</dt><dd><code>3,346,718</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>93,500</code></dd><dt>New content</dt><dd><code>1,789</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>95,291 (93,498 cached)</code></dd><dt>Added</dt><dd><code>1,793</code></dd><dt>Cache write</dt><dd><code>1,791</code></dd><dt>Output</dt><dd><code>96</code></dd><dt>Total input</dt><dd><code>3,346,718</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; chmod +x bin/grab-example; bin/grab-example --list | head -6</pre></div>
 
 <div class="d-section"><h4 class="deco">Related events</h4><div class="related-links"><a class="related-link" href="#mode-switches:208"><span class="kind-tag">Tool Result</span><span class="summary">440d0870-ee5a-490c-be58-a6f1c046b7bb 0.4M 2026-07-28 13:00 Can you find conversation f9f81f1e-8c86-4821-ad48-4aa4cd1f21 010bafec-db20-4ad8-…</span></a></div></div>
@@ -3834,7 +3834,7 @@ c4ff1af4-167e-4cb9-b1d8-0a6ed113e4ff      2.9M  2026-07-28 10:21  can we work on
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>95,805 (95,289 cached)</code></dd><dt>Added</dt><dd><code>516</code></dd><dt>Output</dt><dd><code>436</code></dd><dt>Total input</dt><dd><code>3,442,523</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>95,291</code></dd><dt>New content</dt><dd><code>512</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>95,805 (95,289 cached)</code></dd><dt>Added</dt><dd><code>516</code></dd><dt>Cache write</dt><dd><code>514</code></dd><dt>Output</dt><dd><code>436</code></dd><dt>Total input</dt><dd><code>3,442,523</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>213</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:213" title="Copy event id to clipboard"><code>mode-switches:213</code><span class="copy-hint">copy</span></button></div></template>
@@ -3891,7 +3891,7 @@ next: rake build, then rake test</pre></div>
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_01Xr5GuDqfXQUNgqgZyRTmrd</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>96,310 (95,803 cached)</code></dd><dt>Added</dt><dd><code>507</code></dd><dt>Output</dt><dd><code>214</code></dd><dt>Total input</dt><dd><code>3,538,833</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>95,805</code></dd><dt>New content</dt><dd><code>503</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>96,310 (95,803 cached)</code></dd><dt>Added</dt><dd><code>507</code></dd><dt>Cache write</dt><dd><code>505</code></dd><dt>Output</dt><dd><code>214</code></dd><dt>Total input</dt><dd><code>3,538,833</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; ruby -rjson -e &#39;
 File.foreach(&quot;examples/mode-switches.jsonl&quot;).with_index(1) do |l,i|
   r=JSON.parse(l) rescue next
@@ -3945,7 +3945,7 @@ You have skipped tests. Run with --verbose for details.</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>96,671 (96,308 cached)</code></dd><dt>Added</dt><dd><code>363</code></dd><dt>Output</dt><dd><code>437</code></dd><dt>Total input</dt><dd><code>3,635,504</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>96,310</code></dd><dt>New content</dt><dd><code>359</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>96,671 (96,308 cached)</code></dd><dt>Added</dt><dd><code>363</code></dd><dt>Cache write</dt><dd><code>361</code></dd><dt>Output</dt><dd><code>437</code></dd><dt>Total input</dt><dd><code>3,635,504</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>218</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:218" title="Copy event id to clipboard"><code>mode-switches:218</code><span class="copy-hint">copy</span></button></div></template>
@@ -4004,7 +4004,7 @@ site-index: wrote out/index.html (5 stories)</pre></div>
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_018yhgzyF64jDsiSmQ94QzEd</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>97,227 (96,669 cached)</code></dd><dt>Added</dt><dd><code>558</code></dd><dt>Output</dt><dd><code>359</code></dd><dt>Total input</dt><dd><code>3,732,731</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>96,671</code></dd><dt>New content</dt><dd><code>554</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>97,227 (96,669 cached)</code></dd><dt>Added</dt><dd><code>558</code></dd><dt>Cache write</dt><dd><code>556</code></dd><dt>Output</dt><dd><code>359</code></dd><dt>Total input</dt><dd><code>3,732,731</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; git add -A bin/grab-example examples/mode-switches.jsonl out; git commit -q -m &quot;$(cat &lt;&lt;&#39;EOF&#39;
 Add bin/grab-example, and grab this session as a mode-switch fixture
 
@@ -4067,7 +4067,7 @@ EOF
 <p>Want me to hold here until you&#39;ve made the switch, or start on the parser/renderer side (a visible <code>mode_switch</code> kind, right-aligned via the existing <code>.k-user</code> gutter-order trick) against the shape we know?</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>97,750 (97,225 cached)</code></dd><dt>Added</dt><dd><code>525</code></dd><dt>Output</dt><dd><code>700</code></dd><dt>Total input</dt><dd><code>3,830,481</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>97,227</code></dd><dt>New content</dt><dd><code>522</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>97,750 (97,225 cached)</code></dd><dt>Added</dt><dd><code>525</code></dd><dt>Cache write</dt><dd><code>524</code></dd><dt>Output</dt><dd><code>700</code></dd><dt>Total input</dt><dd><code>3,830,481</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>224</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:224" title="Copy event id to clipboard"><code>mode-switches:224</code><span class="copy-hint">copy</span></button></div></template>
@@ -4103,7 +4103,7 @@ EOF
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>98,479 (98,448 cached)</code></dd><dt>Added</dt><dd><code>31</code></dd><dt>Output</dt><dd><code>584</code></dd><dt>Total input</dt><dd><code>3,928,960</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>98,448</code></dd><dt>New content</dt><dd><code>29</code></dd><dt>Context</dt><dd><code>98,479 (98,448 cached)</code></dd><dt>Added</dt><dd><code>31</code></dd><dt>Cache write</dt><dd><code>29</code></dd><dt>Output</dt><dd><code>584</code></dd><dt>Total input</dt><dd><code>3,928,960</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>229</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:229" title="Copy event id to clipboard"><code>mode-switches:229</code><span class="copy-hint">copy</span></button></div></template>
@@ -4221,7 +4221,7 @@ end&#39;</pre></div>
 <p>One choice left:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:234"><span class="kind-tag">Tool Call</span><span class="summary"><b>AskUserQuestion</b></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>99,548 (98,477 cached)</code></dd><dt>Added</dt><dd><code>1,071</code></dd><dt>Output</dt><dd><code>2,196</code></dd><dt>Total input</dt><dd><code>4,028,508</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>98,479</code></dd><dt>New content</dt><dd><code>1,067</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>99,548 (98,477 cached)</code></dd><dt>Added</dt><dd><code>1,071</code></dd><dt>Cache write</dt><dd><code>1,069</code></dd><dt>Output</dt><dd><code>2,196</code></dd><dt>Total input</dt><dd><code>4,028,508</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>233</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:233" title="Copy event id to clipboard"><code>mode-switches:233</code><span class="copy-hint">copy</span></button></div></template>
@@ -4307,7 +4307,7 @@ detail pane: Mode          plan
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>101,886 (99,546 cached)</code></dd><dt>Added</dt><dd><code>2,340</code></dd><dt>Output</dt><dd><code>326</code></dd><dt>Total input</dt><dd><code>4,130,394</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>99,548</code></dd><dt>New content</dt><dd><code>2,336</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>101,886 (99,546 cached)</code></dd><dt>Added</dt><dd><code>2,340</code></dd><dt>Cache write</dt><dd><code>2,338</code></dd><dt>Output</dt><dd><code>326</code></dd><dt>Total input</dt><dd><code>4,130,394</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>240</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:240" title="Copy event id to clipboard"><code>mode-switches:240</code><span class="copy-hint">copy</span></button></div></template>
@@ -4405,7 +4405,7 @@ lib/conversation_story/renderer.rb:325:      badges</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>Now the parser side — a pass that stamps each prompt with the mode in force:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:244"><span class="kind-tag">Tool Call</span><span class="summary"><b>Read</b> <code>parser.rb</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>103,309 (101,884 cached)</code></dd><dt>Added</dt><dd><code>1,425</code></dd><dt>Output</dt><dd><code>153</code></dd><dt>Total input</dt><dd><code>4,233,703</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>101,886</code></dd><dt>New content</dt><dd><code>1,421</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>103,309 (101,884 cached)</code></dd><dt>Added</dt><dd><code>1,425</code></dd><dt>Cache write</dt><dd><code>1,423</code></dd><dt>Output</dt><dd><code>153</code></dd><dt>Total input</dt><dd><code>4,233,703</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>243</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:243" title="Copy event id to clipboard"><code>mode-switches:243</code><span class="copy-hint">copy</span></button></div></template>
@@ -4526,7 +4526,7 @@ lib/conversation_story/renderer.rb:325:      badges</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>104,643 (103,307 cached)</code></dd><dt>Added</dt><dd><code>1,336</code></dd><dt>Output</dt><dd><code>815</code></dd><dt>Total input</dt><dd><code>4,338,346</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>103,309</code></dd><dt>New content</dt><dd><code>1,332</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>104,643 (103,307 cached)</code></dd><dt>Added</dt><dd><code>1,336</code></dd><dt>Cache write</dt><dd><code>1,334</code></dd><dt>Output</dt><dd><code>815</code></dd><dt>Total input</dt><dd><code>4,338,346</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>246</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:246" title="Copy event id to clipboard"><code>mode-switches:246</code><span class="copy-hint">copy</span></button></div></template>
@@ -4611,7 +4611,7 @@ end&#39;</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>Confirmed the direction — line 12&#39;s <code>lastPrompt</code> is the prompt at line 7. The trio describes the prompt it <em>follows</em>, which matters precisely when the mode changes.</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:251"><span class="kind-tag">Tool Call</span><span class="summary"><b>Edit</b> <code>parser.rb</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>105,629 (104,641 cached)</code></dd><dt>Added</dt><dd><code>988</code></dd><dt>Output</dt><dd><code>1,346</code></dd><dt>Total input</dt><dd><code>4,443,975</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>104,643</code></dd><dt>New content</dt><dd><code>984</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>105,629 (104,641 cached)</code></dd><dt>Added</dt><dd><code>988</code></dd><dt>Cache write</dt><dd><code>986</code></dd><dt>Output</dt><dd><code>1,346</code></dd><dt>Total input</dt><dd><code>4,443,975</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>250</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:250" title="Copy event id to clipboard"><code>mode-switches:250</code><span class="copy-hint">copy</span></button></div></template>
@@ -4729,7 +4729,7 @@ end&#39;</pre></div>
     end
 
     # ---- assistant turns -----------------------------------------------------</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>107,172 (105,627 cached)</code></dd><dt>Added</dt><dd><code>1,545</code></dd><dt>Output</dt><dd><code>987</code></dd><dt>Total input</dt><dd><code>4,551,147</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>105,629</code></dd><dt>New content</dt><dd><code>1,542</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>107,172 (105,627 cached)</code></dd><dt>Added</dt><dd><code>1,545</code></dd><dt>Cache write</dt><dd><code>1,544</code></dd><dt>Output</dt><dd><code>987</code></dd><dt>Total input</dt><dd><code>4,551,147</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;replace_all&quot;: false,
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/lib/conversation_story/parser.rb&quot;,
@@ -4772,7 +4772,7 @@ end&#39;</pre></div>
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_01P7RWmJeXhfqyCkiWCcraiL</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>108,227 (107,171 cached)</code></dd><dt>Added</dt><dd><code>1,056</code></dd><dt>Output</dt><dd><code>311</code></dd><dt>Total input</dt><dd><code>4,659,374</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>107,172</code></dd><dt>New content</dt><dd><code>1,053</code></dd><dt>Re-cached (overhead)</dt><dd><code>1</code></dd><dt>Context</dt><dd><code>108,227 (107,171 cached)</code></dd><dt>Added</dt><dd><code>1,056</code></dd><dt>Cache write</dt><dd><code>1,054</code></dd><dt>Output</dt><dd><code>311</code></dd><dt>Total input</dt><dd><code>4,659,374</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; ruby -Ilib -rconversation_story/parser -e &#39;
 %w[mode-switches inlining-subagents episode-8-before].each do |n|
   d = ConversationStory::Parser.new(&quot;examples/#{n}.jsonl&quot;).to_document
@@ -4859,7 +4859,7 @@ end&#39;</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>Now the renderer — fields in the detail pane, badge only on a change:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:264"><span class="kind-tag">Tool Call</span><span class="summary"><b>Bash</b> <code>cd /Users/jessitron/code/jessitron/conversation-story; grep -n &quot;def fields_html\|def deta…</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>109,599 (108,225 cached)</code></dd><dt>Added</dt><dd><code>1,374</code></dd><dt>Output</dt><dd><code>358</code></dd><dt>Total input</dt><dd><code>4,768,973</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>108,227</code></dd><dt>New content</dt><dd><code>1,370</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>109,599 (108,225 cached)</code></dd><dt>Added</dt><dd><code>1,374</code></dd><dt>Cache write</dt><dd><code>1,372</code></dd><dt>Output</dt><dd><code>358</code></dd><dt>Total input</dt><dd><code>4,768,973</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>263</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:263" title="Copy event id to clipboard"><code>mode-switches:263</code><span class="copy-hint">copy</span></button></div></template>
@@ -4944,7 +4944,7 @@ end&#39;</pre></div>
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_01VEoDEQy4MJ6h6AwMtgFpGP</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>110,549 (109,597 cached)</code></dd><dt>Added</dt><dd><code>952</code></dd><dt>Output</dt><dd><code>136</code></dd><dt>Total input</dt><dd><code>4,879,522</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>109,599</code></dd><dt>New content</dt><dd><code>948</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>110,549 (109,597 cached)</code></dd><dt>Added</dt><dd><code>952</code></dd><dt>Cache write</dt><dd><code>950</code></dd><dt>Output</dt><dd><code>136</code></dd><dt>Total input</dt><dd><code>4,879,522</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; grep -n &quot;def kind_sections&quot; -A 30 lib/conversation_story/renderer.rb; grep -n &quot;def provenance_dl&quot; -A 18 lib/conversation_story/renderer.rb</pre></div>
 
 <div class="d-section"><h4 class="deco">Related events</h4><div class="related-links"><a class="related-link" href="#mode-switches:267"><span class="kind-tag">Tool Result</span><span class="summary">443: def kind_sections(event) 444- case event[&quot;kind&quot;] 445- when &quot;tool_call&quot; then tool_call_sections(event) 446- when &quot;tool_result&quot; then too…</span></a></div></div>
@@ -5031,7 +5031,7 @@ end&#39;</pre></div>
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_014rm1kQ1Ps3KqKYwDYBvMxX</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>111,559 (110,547 cached)</code></dd><dt>Added</dt><dd><code>1,012</code></dd><dt>Output</dt><dd><code>102</code></dd><dt>Total input</dt><dd><code>4,991,081</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>110,549</code></dd><dt>New content</dt><dd><code>1,008</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>111,559 (110,547 cached)</code></dd><dt>Added</dt><dd><code>1,012</code></dd><dt>Cache write</dt><dd><code>1,010</code></dd><dt>Output</dt><dd><code>102</code></dd><dt>Total input</dt><dd><code>4,991,081</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; grep -n &quot;def generic_sections&quot; -A 22 lib/conversation_story/renderer.rb</pre></div>
 
 <div class="d-section"><h4 class="deco">Related events</h4><div class="related-links"><a class="related-link" href="#mode-switches:273"><span class="kind-tag">Tool Result</span><span class="summary">511: def generic_sections(event) 512- sections = [text_section(event)] 513- if (raw = event.dig(&quot;detail&quot;, &quot;raw&quot;)) 514- sections &lt;&lt; section(…</span></a></div></div>
@@ -5118,7 +5118,7 @@ end&#39;</pre></div>
 
       section(&quot;Mode&quot;, kv_dl(rows))
     end</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>112,068 (111,557 cached)</code></dd><dt>Added</dt><dd><code>511</code></dd><dt>Output</dt><dd><code>572</code></dd><dt>Total input</dt><dd><code>5,103,149</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>111,559</code></dd><dt>New content</dt><dd><code>507</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>112,068 (111,557 cached)</code></dd><dt>Added</dt><dd><code>511</code></dd><dt>Cache write</dt><dd><code>509</code></dd><dt>Output</dt><dd><code>572</code></dd><dt>Total input</dt><dd><code>5,103,149</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;replace_all&quot;: false,
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/lib/conversation_story/renderer.rb&quot;,
@@ -5161,7 +5161,7 @@ end&#39;</pre></div>
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Read</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Read</code></dd><dt>use_id</dt><dd><code>toolu_01BnwgGFm9ty7xrPXvvrQoau</code></dd><dt>file_path</dt><dd><code>/Users/jessitron/code/jessitron/conversation-story/lib/conversation_story/renderer.rb</code></dd><dt>offset</dt><dd><code>295</code></dd><dt>limit</dt><dd><code>20</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>112,709 (112,066 cached)</code></dd><dt>Added</dt><dd><code>643</code></dd><dt>Output</dt><dd><code>128</code></dd><dt>Total input</dt><dd><code>5,215,858</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>112,068</code></dd><dt>New content</dt><dd><code>639</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>112,709 (112,066 cached)</code></dd><dt>Added</dt><dd><code>643</code></dd><dt>Cache write</dt><dd><code>641</code></dd><dt>Output</dt><dd><code>128</code></dd><dt>Total input</dt><dd><code>5,215,858</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/lib/conversation_story/renderer.rb&quot;,
   &quot;offset&quot;: 295,
@@ -5223,7 +5223,7 @@ end&#39;</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Edit</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Edit</code></dd><dt>use_id</dt><dd><code>toolu_01TKhPx6xDHuHn7xQDMNjPvH</code></dd><dt>replace_all</dt><dd><code>false</code></dd><dt>file_path</dt><dd><code>/Users/jessitron/code/jessitron/conversation-story/lib/conversation_story/renderer.rb</code></dd><dt>old_string</dt><dd><code>      badges &lt;&lt; %(&lt;span class=&quot;badge queue&quot;&gt;Dequeued&lt;/span&gt;) if event[&quot;dequeued&quot;]</code></dd><dt>new_string</dt><dd><code>      badges.concat(mode_badges(event))
       badges &lt;&lt; %(&lt;span class=&quot;badge queue&quot;&gt;Dequeued&lt;/span&gt;) if event[&quot;dequeued&quot;]</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>113,217 (112,707 cached)</code></dd><dt>Added</dt><dd><code>510</code></dd><dt>Output</dt><dd><code>235</code></dd><dt>Total input</dt><dd><code>5,329,075</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>112,709</code></dd><dt>New content</dt><dd><code>506</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>113,217 (112,707 cached)</code></dd><dt>Added</dt><dd><code>510</code></dd><dt>Cache write</dt><dd><code>508</code></dd><dt>Output</dt><dd><code>235</code></dd><dt>Total input</dt><dd><code>5,329,075</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;replace_all&quot;: false,
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/lib/conversation_story/renderer.rb&quot;,
@@ -5277,7 +5277,7 @@ end&#39;</pre></div>
     end
 
     def tool_call_badges(event)</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>113,521 (113,215 cached)</code></dd><dt>Added</dt><dd><code>306</code></dd><dt>Output</dt><dd><code>342</code></dd><dt>Total input</dt><dd><code>5,442,596</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>113,217</code></dd><dt>New content</dt><dd><code>302</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>113,521 (113,215 cached)</code></dd><dt>Added</dt><dd><code>306</code></dd><dt>Cache write</dt><dd><code>304</code></dd><dt>Output</dt><dd><code>342</code></dd><dt>Total input</dt><dd><code>5,442,596</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;replace_all&quot;: false,
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/lib/conversation_story/renderer.rb&quot;,
@@ -5321,7 +5321,7 @@ end&#39;</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>Now the badge style, and a test for the switch case no fixture has:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:285"><span class="kind-tag">Tool Call</span><span class="summary"><b>Bash</b> <code>cd /Users/jessitron/code/jessitron/conversation-story; grep -n &quot;badge.queue\|badge.agent\…</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>114,061 (113,519 cached)</code></dd><dt>Added</dt><dd><code>542</code></dd><dt>Output</dt><dd><code>133</code></dd><dt>Total input</dt><dd><code>5,556,657</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>113,521</code></dd><dt>New content</dt><dd><code>539</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>114,061 (113,519 cached)</code></dd><dt>Added</dt><dd><code>542</code></dd><dt>Cache write</dt><dd><code>541</code></dd><dt>Output</dt><dd><code>133</code></dd><dt>Total input</dt><dd><code>5,556,657</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>284</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:284" title="Copy event id to clipboard"><code>mode-switches:284</code><span class="copy-hint">copy</span></button></div></template>
@@ -5394,7 +5394,7 @@ end&#39;</pre></div>
 /* only worn by a prompt whose mode CHANGED, so it can afford to be emphatic:
    filled in the user card&#39;s blue, the way .err fills in red. */
 .badge.mode  { border-color: var(--blue); color: #fff; background: var(--blue); }</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>114,565 (114,060 cached)</code></dd><dt>Added</dt><dd><code>505</code></dd><dt>Output</dt><dd><code>285</code></dd><dt>Total input</dt><dd><code>5,671,222</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>114,061</code></dd><dt>New content</dt><dd><code>502</code></dd><dt>Re-cached (overhead)</dt><dd><code>1</code></dd><dt>Context</dt><dd><code>114,565 (114,060 cached)</code></dd><dt>Added</dt><dd><code>505</code></dd><dt>Cache write</dt><dd><code>503</code></dd><dt>Output</dt><dd><code>285</code></dd><dt>Total input</dt><dd><code>5,671,222</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;replace_all&quot;: false,
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/assets/story.css&quot;,
@@ -5438,7 +5438,7 @@ end&#39;</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>114,910 (114,563 cached)</code></dd><dt>Added</dt><dd><code>347</code></dd><dt>Output</dt><dd><code>620</code></dd><dt>Total input</dt><dd><code>5,786,132</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>114,565</code></dd><dt>New content</dt><dd><code>343</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>114,910 (114,563 cached)</code></dd><dt>Added</dt><dd><code>347</code></dd><dt>Cache write</dt><dd><code>345</code></dd><dt>Output</dt><dd><code>620</code></dd><dt>Total input</dt><dd><code>5,786,132</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>294</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:294" title="Copy event id to clipboard"><code>mode-switches:294</code><span class="copy-hint">copy</span></button></div></template>
@@ -5590,7 +5590,7 @@ end</code></dd><dt>new_string</dt><dd><code>               &quot;#{e[&quot;ref&q
     }
   end
 end</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>115,920 (114,908 cached)</code></dd><dt>Added</dt><dd><code>1,012</code></dd><dt>Output</dt><dd><code>1,541</code></dd><dt>Total input</dt><dd><code>5,902,052</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>114,910</code></dd><dt>New content</dt><dd><code>1,008</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>115,920 (114,908 cached)</code></dd><dt>Added</dt><dd><code>1,012</code></dd><dt>Cache write</dt><dd><code>1,010</code></dd><dt>Output</dt><dd><code>1,541</code></dd><dt>Total input</dt><dd><code>5,902,052</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;replace_all&quot;: false,
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/test/parser_test.rb&quot;,
@@ -5633,7 +5633,7 @@ end</code></dd></dl></div>
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_01FTg5SjJLC7WJGqginG3TES</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>117,524 (115,918 cached)</code></dd><dt>Added</dt><dd><code>1,606</code></dd><dt>Output</dt><dd><code>131</code></dd><dt>Total input</dt><dd><code>6,019,576</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>115,920</code></dd><dt>New content</dt><dd><code>1,602</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>117,524 (115,918 cached)</code></dd><dt>Added</dt><dd><code>1,606</code></dd><dt>Cache write</dt><dd><code>1,604</code></dd><dt>Output</dt><dd><code>131</code></dd><dt>Total input</dt><dd><code>6,019,576</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; sed -i &#39;&#39; &#39;s/^require &quot;yaml&quot;$/require &quot;yaml&quot;\nrequire &quot;tempfile&quot;/&#39; test/parser_test.rb; rake test 2&gt;&amp;1 | tail -25</pre></div>
 
 <div class="d-section"><h4 class="deco">Related events</h4><div class="related-links"><a class="related-link" href="#mode-switches:300"><span class="kind-tag">Tool Result</span><span class="summary">ruby -Ilib -Itest -e Dir.glob(&quot;test/**/*_test.rb&quot;).each { |f| require &quot;./#{f}&quot; } Run options: --seed 5052 # Running: ......................…</span></a></div></div>
@@ -5701,7 +5701,7 @@ You have skipped tests. Run with --verbose for details.</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>121,260 (117,522 cached)</code></dd><dt>Added</dt><dd><code>3,738</code></dd><dt>Output</dt><dd><code>319</code></dd><dt>Total input</dt><dd><code>6,140,836</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>117,524</code></dd><dt>New content</dt><dd><code>3,734</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>121,260 (117,522 cached)</code></dd><dt>Added</dt><dd><code>3,738</code></dd><dt>Cache write</dt><dd><code>3,736</code></dd><dt>Output</dt><dd><code>319</code></dd><dt>Total input</dt><dd><code>6,140,836</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>306</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:306" title="Copy event id to clipboard"><code>mode-switches:306</code><span class="copy-hint">copy</span></button></div></template>
@@ -5765,7 +5765,7 @@ site-index: wrote out/index.html (5 stories)
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>121,857 (121,258 cached)</code></dd><dt>Added</dt><dd><code>599</code></dd><dt>Output</dt><dd><code>560</code></dd><dt>Total input</dt><dd><code>6,262,693</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>121,260</code></dd><dt>New content</dt><dd><code>595</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>121,857 (121,258 cached)</code></dd><dt>Added</dt><dd><code>599</code></dd><dt>Cache write</dt><dd><code>597</code></dd><dt>Output</dt><dd><code>560</code></dd><dt>Total input</dt><dd><code>6,262,693</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>309</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:309" title="Copy event id to clipboard"><code>mode-switches:309</code><span class="copy-hint">copy</span></button></div></template>
@@ -5843,7 +5843,7 @@ echo &quot;$out&quot;</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>122,753 (121,855 cached)</code></dd><dt>Added</dt><dd><code>898</code></dd><dt>Output</dt><dd><code>1,737</code></dd><dt>Total input</dt><dd><code>6,385,446</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>121,857</code></dd><dt>New content</dt><dd><code>894</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>122,753 (121,855 cached)</code></dd><dt>Added</dt><dd><code>898</code></dd><dt>Cache write</dt><dd><code>896</code></dd><dt>Output</dt><dd><code>1,737</code></dd><dt>Total input</dt><dd><code>6,385,446</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>313</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:313" title="Copy event id to clipboard"><code>mode-switches:313</code><span class="copy-hint">copy</span></button></div></template>
@@ -5963,7 +5963,7 @@ puts png
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_01CNcjMwqLR7VfpdAGKnYZhM</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>124,594 (122,751 cached)</code></dd><dt>Added</dt><dd><code>1,843</code></dd><dt>Output</dt><dd><code>170</code></dd><dt>Total input</dt><dd><code>6,510,040</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>122,753</code></dd><dt>New content</dt><dd><code>1,839</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>124,594 (122,751 cached)</code></dd><dt>Added</dt><dd><code>1,843</code></dd><dt>Cache write</dt><dd><code>1,841</code></dd><dt>Output</dt><dd><code>170</code></dd><dt>Total input</dt><dd><code>6,510,040</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; S=/private/tmp/claude-501/-Users-jessitron-code-jessitron-conversation-story/440d0870-ee5a-490c-be58-a6f1c046b7bb/scratchpad; chmod +x $S/mode-badge-demo; ruby $S/mode-badge-demo</pre></div>
 
 <div class="d-section"><h4 class="deco">Related events</h4><div class="related-links"><a class="related-link" href="#mode-switches:317"><span class="kind-tag">Tool Result</span><span class="summary">/private/tmp/claude-501/-Users-jessitron-code-jessitron-conversation-story/440d0870-ee5a-490c-be58-a6f1c046b7bb/scratchpad/mode-badge.png</span></a></div></div>
@@ -6001,7 +6001,7 @@ puts png
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Read</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Read</code></dd><dt>use_id</dt><dd><code>toolu_018euX727xrV1UjdxJxqQgoZ</code></dd><dt>file_path</dt><dd><code>/private/tmp/claude-501/-Users-jessitron-code-jessitron-conversation-story/440d0870-ee5a-490c-be58-a6f1c046b7bb/scratchpad/mode-badge.png</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>124,972 (124,592 cached)</code></dd><dt>Added</dt><dd><code>380</code></dd><dt>Output</dt><dd><code>121</code></dd><dt>Total input</dt><dd><code>6,635,012</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>124,594</code></dd><dt>New content</dt><dd><code>377</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>124,972 (124,592 cached)</code></dd><dt>Added</dt><dd><code>380</code></dd><dt>Cache write</dt><dd><code>379</code></dd><dt>Output</dt><dd><code>121</code></dd><dt>Total input</dt><dd><code>6,635,012</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;file_path&quot;: &quot;/private/tmp/claude-501/-Users-jessitron-code-jessitron-conversation-story/440d0870-ee5a-490c-be58-a6f1c046b7bb/scratchpad/mode-badge.png&quot;
 }</pre></div>
@@ -6059,7 +6059,7 @@ puts png
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>Works, but it shows <code>PLAN PLAN</code> — both dimensions changed to the same value. Deduping:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:327"><span class="kind-tag">Tool Call</span><span class="summary"><b>Edit</b> <code>renderer.rb</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>127,262 (124,971 cached)</code></dd><dt>Added</dt><dd><code>2,291</code></dd><dt>Output</dt><dd><code>840</code></dd><dt>Total input</dt><dd><code>6,762,274</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>124,972</code></dd><dt>New content</dt><dd><code>2,288</code></dd><dt>Re-cached (overhead)</dt><dd><code>1</code></dd><dt>Context</dt><dd><code>127,262 (124,971 cached)</code></dd><dt>Added</dt><dd><code>2,291</code></dd><dt>Cache write</dt><dd><code>2,289</code></dd><dt>Output</dt><dd><code>840</code></dd><dt>Total input</dt><dd><code>6,762,274</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>326</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:326" title="Copy event id to clipboard"><code>mode-switches:326</code><span class="copy-hint">copy</span></button></div></template>
@@ -6163,7 +6163,7 @@ puts png
     html = ConversationStory::Renderer.new(doc).to_html
     assert_equal 1, html.scan(/badge mode/).size, &quot;one badge, not two saying `plan`&quot;
   end</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>128,171 (127,260 cached)</code></dd><dt>Added</dt><dd><code>911</code></dd><dt>Output</dt><dd><code>775</code></dd><dt>Total input</dt><dd><code>6,890,445</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>127,262</code></dd><dt>New content</dt><dd><code>907</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>128,171 (127,260 cached)</code></dd><dt>Added</dt><dd><code>911</code></dd><dt>Cache write</dt><dd><code>909</code></dd><dt>Output</dt><dd><code>775</code></dd><dt>Total input</dt><dd><code>6,890,445</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;replace_all&quot;: false,
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/test/parser_test.rb&quot;,
@@ -6225,7 +6225,7 @@ puts png
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>132,571 (128,169 cached)</code></dd><dt>Added</dt><dd><code>4,402</code></dd><dt>Output</dt><dd><code>182</code></dd><dt>Total input</dt><dd><code>7,023,016</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>128,171</code></dd><dt>New content</dt><dd><code>4,398</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>132,571 (128,169 cached)</code></dd><dt>Added</dt><dd><code>4,402</code></dd><dt>Cache write</dt><dd><code>4,400</code></dd><dt>Output</dt><dd><code>182</code></dd><dt>Total input</dt><dd><code>7,023,016</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>332</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:332" title="Copy event id to clipboard"><code>mode-switches:332</code><span class="copy-hint">copy</span></button></div></template>
@@ -6285,7 +6285,7 @@ You have skipped tests. Run with --verbose for details.</pre></div>
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_01R7udD3GbxQdbcwdpjtiw7U</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>132,879 (132,569 cached)</code></dd><dt>Added</dt><dd><code>310</code></dd><dt>Output</dt><dd><code>153</code></dd><dt>Total input</dt><dd><code>7,155,895</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>132,571</code></dd><dt>New content</dt><dd><code>306</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>132,879 (132,569 cached)</code></dd><dt>Added</dt><dd><code>310</code></dd><dt>Cache write</dt><dd><code>308</code></dd><dt>Output</dt><dd><code>153</code></dd><dt>Total input</dt><dd><code>7,155,895</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; S=/private/tmp/claude-501/-Users-jessitron-code-jessitron-conversation-story/440d0870-ee5a-490c-be58-a6f1c046b7bb/scratchpad; ruby $S/mode-badge-demo</pre></div>
 
 <div class="d-section"><h4 class="deco">Related events</h4><div class="related-links"><a class="related-link" href="#mode-switches:340"><span class="kind-tag">Tool Result</span><span class="summary">/private/tmp/claude-501/-Users-jessitron-code-jessitron-conversation-story/440d0870-ee5a-490c-be58-a6f1c046b7bb/scratchpad/mode-badge.png</span></a></div></div>
@@ -6323,7 +6323,7 @@ You have skipped tests. Run with --verbose for details.</pre></div>
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Read</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Read</code></dd><dt>use_id</dt><dd><code>toolu_01CTEMxFDhZ7moqHKhZNhxVX</code></dd><dt>file_path</dt><dd><code>/private/tmp/claude-501/-Users-jessitron-code-jessitron-conversation-story/440d0870-ee5a-490c-be58-a6f1c046b7bb/scratchpad/mode-badge.png</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>133,111 (132,877 cached)</code></dd><dt>Added</dt><dd><code>234</code></dd><dt>Output</dt><dd><code>121</code></dd><dt>Total input</dt><dd><code>7,289,006</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>132,879</code></dd><dt>New content</dt><dd><code>230</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>133,111 (132,877 cached)</code></dd><dt>Added</dt><dd><code>234</code></dd><dt>Cache write</dt><dd><code>232</code></dd><dt>Output</dt><dd><code>121</code></dd><dt>Total input</dt><dd><code>7,289,006</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;file_path&quot;: &quot;/private/tmp/claude-501/-Users-jessitron-code-jessitron-conversation-story/440d0870-ee5a-490c-be58-a6f1c046b7bb/scratchpad/mode-badge.png&quot;
 }</pre></div>
@@ -6381,7 +6381,7 @@ You have skipped tests. Run with --verbose for details.</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>Now the docs, then rebuild and commit:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:349"><span class="kind-tag">Tool Call</span><span class="summary"><b>Bash</b> <code>cd /Users/jessitron/code/jessitron/conversation-story; grep -n &quot;^#\+ \|^### &quot; notes/inter…</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>135,401 (133,109 cached)</code></dd><dt>Added</dt><dd><code>2,292</code></dd><dt>Output</dt><dd><code>221</code></dd><dt>Total input</dt><dd><code>7,424,407</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>133,111</code></dd><dt>New content</dt><dd><code>2,288</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>135,401 (133,109 cached)</code></dd><dt>Added</dt><dd><code>2,292</code></dd><dt>Cache write</dt><dd><code>2,290</code></dd><dt>Output</dt><dd><code>221</code></dd><dt>Total input</dt><dd><code>7,424,407</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>348</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:348" title="Copy event id to clipboard"><code>mode-switches:348</code><span class="copy-hint">copy</span></button></div></template>
@@ -6444,7 +6444,7 @@ You have skipped tests. Run with --verbose for details.</pre></div>
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_01HvcJbJjr21Xtiu8nZsJSnu</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>135,781 (135,399 cached)</code></dd><dt>Added</dt><dd><code>382</code></dd><dt>Output</dt><dd><code>92</code></dd><dt>Total input</dt><dd><code>7,560,188</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>135,401</code></dd><dt>New content</dt><dd><code>378</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>135,781 (135,399 cached)</code></dd><dt>Added</dt><dd><code>382</code></dd><dt>Cache write</dt><dd><code>380</code></dd><dt>Output</dt><dd><code>92</code></dd><dt>Total input</dt><dd><code>7,560,188</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; sed -n &#39;308,345p&#39; notes/intermediate-schema.md</pre></div>
 
 <div class="d-section"><h4 class="deco">Related events</h4><div class="related-links"><a class="related-link" href="#mode-switches:352"><span class="kind-tag">Tool Result</span><span class="summary">## Event `kind`s (initial set + fallback) - `user_message`, `assistant_message` (text) - `thinking` (assistant reasoning block) - `tool_cal…</span></a></div></div>
@@ -6535,7 +6535,7 @@ the direction and the badge are covered by hand-built logs in `parser_test.rb`
 rather than a golden fixture.
 
 ## Event `kind`s (initial set + fallback)</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>136,291 (135,779 cached)</code></dd><dt>Added</dt><dd><code>512</code></dd><dt>Output</dt><dd><code>821</code></dd><dt>Total input</dt><dd><code>7,696,479</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>135,781</code></dd><dt>New content</dt><dd><code>509</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>136,291 (135,779 cached)</code></dd><dt>Added</dt><dd><code>512</code></dd><dt>Cache write</dt><dd><code>511</code></dd><dt>Output</dt><dd><code>821</code></dd><dt>Total input</dt><dd><code>7,696,479</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;replace_all&quot;: false,
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/notes/intermediate-schema.md&quot;,
@@ -6578,7 +6578,7 @@ rather than a golden fixture.
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_014LFDS6gy6MYCzAHFUz4Ko5</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>137,178 (136,290 cached)</code></dd><dt>Added</dt><dd><code>888</code></dd><dt>Output</dt><dd><code>92</code></dd><dt>Total input</dt><dd><code>7,833,657</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>136,291</code></dd><dt>New content</dt><dd><code>885</code></dd><dt>Re-cached (overhead)</dt><dd><code>1</code></dd><dt>Context</dt><dd><code>137,178 (136,290 cached)</code></dd><dt>Added</dt><dd><code>888</code></dd><dt>Cache write</dt><dd><code>886</code></dd><dt>Output</dt><dd><code>92</code></dd><dt>Total input</dt><dd><code>7,833,657</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; grep -n &quot;A background task&#39;s result delivered&quot; CLAUDE.md</pre></div>
 
 <div class="d-section"><h4 class="deco">Related events</h4><div class="related-links"><a class="related-link" href="#mode-switches:358"><span class="kind-tag">Tool Result</span><span class="summary">166:- A background task&#39;s result delivered mid-conversation as a `&lt;task-notification&gt;`</span></a></div></div>
@@ -6616,7 +6616,7 @@ rather than a golden fixture.
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Read</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Read</code></dd><dt>use_id</dt><dd><code>toolu_01DxvyJtWNMg2YyKT1mWUWxf</code></dd><dt>file_path</dt><dd><code>/Users/jessitron/code/jessitron/conversation-story/CLAUDE.md</code></dd><dt>offset</dt><dd><code>166</code></dd><dt>limit</dt><dd><code>6</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>137,302 (137,176 cached)</code></dd><dt>Added</dt><dd><code>126</code></dd><dt>Output</dt><dd><code>121</code></dd><dt>Total input</dt><dd><code>7,970,959</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>137,178</code></dd><dt>New content</dt><dd><code>122</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>137,302 (137,176 cached)</code></dd><dt>Added</dt><dd><code>126</code></dd><dt>Cache write</dt><dd><code>124</code></dd><dt>Output</dt><dd><code>121</code></dd><dt>Total input</dt><dd><code>7,970,959</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/CLAUDE.md&quot;,
   &quot;offset&quot;: 166,
@@ -6677,7 +6677,7 @@ rather than a golden fixture.
   real switch (44 stamps in `inlining-subagents`, all `normal`), so hand-built
   logs in `parser_test.rb` cover the direction — don&#39;t &quot;simplify&quot; it to
   most-recent-preceding. See the Mode section of `notes/intermediate-schema.md`.</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>137,608 (137,300 cached)</code></dd><dt>Added</dt><dd><code>308</code></dd><dt>Output</dt><dd><code>601</code></dd><dt>Total input</dt><dd><code>8,108,567</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>137,302</code></dd><dt>New content</dt><dd><code>304</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>137,608 (137,300 cached)</code></dd><dt>Added</dt><dd><code>308</code></dd><dt>Cache write</dt><dd><code>306</code></dd><dt>Output</dt><dd><code>601</code></dd><dt>Total input</dt><dd><code>8,108,567</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;replace_all&quot;: false,
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/CLAUDE.md&quot;,
@@ -6720,7 +6720,7 @@ rather than a golden fixture.
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_017L9x1XwSuW5xejYKzkPexT</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>138,271 (137,606 cached)</code></dd><dt>Added</dt><dd><code>665</code></dd><dt>Output</dt><dd><code>128</code></dd><dt>Total input</dt><dd><code>8,246,838</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>137,608</code></dd><dt>New content</dt><dd><code>661</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>138,271 (137,606 cached)</code></dd><dt>Added</dt><dd><code>665</code></dd><dt>Cache write</dt><dd><code>663</code></dd><dt>Output</dt><dd><code>128</code></dd><dt>Total input</dt><dd><code>8,246,838</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; rake build 2&gt;&amp;1 | tail -2 &amp;&amp; rake test 2&gt;&amp;1 | tail -4 &amp;&amp; bin/check-anchors mode-switches 7 2&gt;&amp;1 | tail -3</pre></div>
 
 <div class="d-section"><h4 class="deco">Related events</h4><div class="related-links"><a class="related-link" href="#mode-switches:369"><span class="kind-tag">Tool Result</span><span class="summary">139 runs, 27518 assertions, 0 failures, 0 errors, 4 skips You have skipped tests. Run with --verbose for details. OK #mode-switches:7 selec…</span></a></div></div>
@@ -6762,7 +6762,7 @@ OK  #mode-switches:7 selected its own card
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Bash</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Bash</code></dd><dt>use_id</dt><dd><code>toolu_01XJb1anAaKTy5JpB5a9PPMD</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>138,484 (138,269 cached)</code></dd><dt>Added</dt><dd><code>215</code></dd><dt>Output</dt><dd><code>503</code></dd><dt>Total input</dt><dd><code>8,385,322</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>138,271</code></dd><dt>New content</dt><dd><code>211</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>138,484 (138,269 cached)</code></dd><dt>Added</dt><dd><code>215</code></dd><dt>Cache write</dt><dd><code>213</code></dd><dt>Output</dt><dd><code>503</code></dd><dt>Total input</dt><dd><code>8,385,322</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">cd /Users/jessitron/code/jessitron/conversation-story; git add -A; git commit -q -m &quot;$(cat &lt;&lt;&#39;EOF&#39;
 Show the mode a prompt was sent in, as a field on the prompt
 
@@ -6832,7 +6832,7 @@ EOF
 <p><code>examples/mode-switches.jsonl</code> is still the switch-free snapshot. When you want a real one in the fixtures: shift-tab into plan, send a prompt, and I&#39;ll re-run <code>bin/grab-example 440d0870-ee5a-490c-be58-a6f1c046b7bb mode-switches</code> — the badge will then show up on a real card instead of a synthetic one.</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>139,018 (138,482 cached)</code></dd><dt>Added</dt><dd><code>536</code></dd><dt>Output</dt><dd><code>726</code></dd><dt>Total input</dt><dd><code>8,524,340</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>138,484</code></dd><dt>New content</dt><dd><code>532</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>139,018 (138,482 cached)</code></dd><dt>Added</dt><dd><code>536</code></dd><dt>Cache write</dt><dd><code>534</code></dd><dt>Output</dt><dd><code>726</code></dd><dt>Total input</dt><dd><code>8,524,340</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>372</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:372" title="Copy event id to clipboard"><code>mode-switches:372</code><span class="copy-hint">copy</span></button></div></template>
@@ -6904,7 +6904,7 @@ EOF
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>🥕 That&#39;s the fixture-making act — let me confirm the harness recorded it. (I can only read here, not run <code>bin/grab-example</code>.)</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:379"><span class="kind-tag">Tool Call</span><span class="summary"><b>Bash</b> <code>L=/Users/jessitron/.claude/projects/-Users-jessitron-code-jessitron-conversation-story/44…</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>141,520 (139,742 cached)</code></dd><dt>Added</dt><dd><code>1,778</code></dd><dt>Output</dt><dd><code>817</code></dd><dt>Total input</dt><dd><code>8,665,860</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>139,742</code></dd><dt>New content</dt><dd><code>1,776</code></dd><dt>Context</dt><dd><code>141,520 (139,742 cached)</code></dd><dt>Added</dt><dd><code>1,778</code></dd><dt>Cache write</dt><dd><code>1,776</code></dd><dt>Output</dt><dd><code>817</code></dd><dt>Total input</dt><dd><code>8,665,860</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>378</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:378" title="Copy event id to clipboard"><code>mode-switches:378</code><span class="copy-hint">copy</span></button></div></template>
@@ -7003,7 +7003,7 @@ end&#39; $L | tail -16</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>142,550 (141,518 cached)</code></dd><dt>Added</dt><dd><code>1,032</code></dd><dt>Output</dt><dd><code>1,132</code></dd><dt>Total input</dt><dd><code>8,808,410</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>141,520</code></dd><dt>New content</dt><dd><code>1,028</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>142,550 (141,518 cached)</code></dd><dt>Added</dt><dd><code>1,032</code></dd><dt>Cache write</dt><dd><code>1,030</code></dd><dt>Output</dt><dd><code>1,132</code></dd><dt>Total input</dt><dd><code>8,808,410</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>383</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:383" title="Copy event id to clipboard"><code>mode-switches:383</code><span class="copy-hint">copy</span></button></div></template>
@@ -7136,7 +7136,7 @@ end&#39; $L</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>Out of plan mode now, and the log has moved. This is the decisive measurement:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:391"><span class="kind-tag">Tool Call</span><span class="summary"><b>Bash</b> <code>L=/Users/jessitron/.claude/projects/-Users-jessitron-code-jessitron-conversation-story/44…</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>144,284 (142,548 cached)</code></dd><dt>Added</dt><dd><code>1,736</code></dd><dt>Output</dt><dd><code>616</code></dd><dt>Total input</dt><dd><code>8,952,694</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>142,550</code></dd><dt>New content</dt><dd><code>1,733</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>144,284 (142,548 cached)</code></dd><dt>Added</dt><dd><code>1,736</code></dd><dt>Cache write</dt><dd><code>1,735</code></dd><dt>Output</dt><dd><code>616</code></dd><dt>Total input</dt><dd><code>8,952,694</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>390</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:390" title="Copy event id to clipboard"><code>mode-switches:390</code><span class="copy-hint">copy</span></button></div></template>
@@ -7226,7 +7226,7 @@ end&#39; $L</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>145,269 (144,283 cached)</code></dd><dt>Added</dt><dd><code>986</code></dd><dt>Output</dt><dd><code>854</code></dd><dt>Total input</dt><dd><code>9,097,963</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>144,284</code></dd><dt>New content</dt><dd><code>983</code></dd><dt>Re-cached (overhead)</dt><dd><code>1</code></dd><dt>Context</dt><dd><code>145,269 (144,283 cached)</code></dd><dt>Added</dt><dd><code>986</code></dd><dt>Cache write</dt><dd><code>984</code></dd><dt>Output</dt><dd><code>854</code></dd><dt>Total input</dt><dd><code>9,097,963</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>397</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:397" title="Copy event id to clipboard"><code>mode-switches:397</code><span class="copy-hint">copy</span></button></div></template>
@@ -7321,7 +7321,7 @@ p h&#39; $L; echo &quot;== records mentioning plan mode:&quot;; grep -n &quot;Pl
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p><code>mode</code> on line 374 printed as <code>plan</code> — but that&#39;s not a mode record, that&#39;s the <strong>user record itself</strong>. Checking:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:402"><span class="kind-tag">Tool Call</span><span class="summary"><b>Bash</b> <code>L=/Users/jessitron/.claude/projects/-Users-jessitron-code-jessitron-conversation-story/44…</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>146,992 (145,267 cached)</code></dd><dt>Added</dt><dd><code>1,725</code></dd><dt>Output</dt><dd><code>792</code></dd><dt>Total input</dt><dd><code>9,244,955</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>145,269</code></dd><dt>New content</dt><dd><code>1,721</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>146,992 (145,267 cached)</code></dd><dt>Added</dt><dd><code>1,725</code></dd><dt>Cache write</dt><dd><code>1,723</code></dd><dt>Output</dt><dd><code>792</code></dd><dt>Total input</dt><dd><code>9,244,955</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>401</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:401" title="Copy event id to clipboard"><code>mode-switches:401</code><span class="copy-hint">copy</span></button></div></template>
@@ -7407,7 +7407,7 @@ end&#39; $L</pre></div>
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>The user record carries <code>permissionMode</code> itself — and for the plan-mode prompt it says <code>plan</code>. Checking the other logs:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:406"><span class="kind-tag">Tool Call</span><span class="summary"><b>Bash</b> <code>cd /Users/jessitron/code/jessitron/conversation-story; ruby -rjson -e &#39; Dir[&quot;examples/*.j…</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>148,067 (146,990 cached)</code></dd><dt>Added</dt><dd><code>1,077</code></dd><dt>Output</dt><dd><code>739</code></dd><dt>Total input</dt><dd><code>9,393,022</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>146,992</code></dd><dt>New content</dt><dd><code>1,073</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>148,067 (146,990 cached)</code></dd><dt>Added</dt><dd><code>1,077</code></dd><dt>Cache write</dt><dd><code>1,075</code></dd><dt>Output</dt><dd><code>739</code></dd><dt>Total input</dt><dd><code>9,393,022</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>405</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:405" title="Copy event id to clipboard"><code>mode-switches:405</code><span class="copy-hint">copy</span></button></div></template>
@@ -7495,7 +7495,7 @@ mtg-tabletop-plan: 162 user records, permissionMode: {&quot;nil&quot; =&gt; 131,
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>That settles it — and it means what I shipped is wrong. The <code>mode</code> bookkeeping records reflect <strong>write-time</strong> UI state, not the prompt&#39;s: all 22 in this session say <code>normal</code>, including the trio whose <code>lastPrompt</code> is literally &quot;this is a prompt in plan mode&quot;. The real signal is <code>permissionMode</code> <strong>on the user record</strong>, which every log carries. Fixing:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:410"><span class="kind-tag">Tool Call</span><span class="summary"><b>Read</b> <code>parser.rb</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>149,028 (148,065 cached)</code></dd><dt>Added</dt><dd><code>963</code></dd><dt>Output</dt><dd><code>1,319</code></dd><dt>Total input</dt><dd><code>9,542,050</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>148,067</code></dd><dt>New content</dt><dd><code>959</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>149,028 (148,065 cached)</code></dd><dt>Added</dt><dd><code>963</code></dd><dt>Cache write</dt><dd><code>961</code></dd><dt>Output</dt><dd><code>1,319</code></dd><dt>Total input</dt><dd><code>9,542,050</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>409</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:409" title="Copy event id to clipboard"><code>mode-switches:409</code><span class="copy-hint">copy</span></button></div></template>
@@ -7691,7 +7691,7 @@ mtg-tabletop-plan: 162 user records, permissionMode: {&quot;nil&quot; =&gt; 131,
         previous = mode
       end
     end</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>151,267 (149,026 cached)</code></dd><dt>Added</dt><dd><code>2,241</code></dd><dt>Output</dt><dd><code>1,475</code></dd><dt>Total input</dt><dd><code>9,693,317</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>149,028</code></dd><dt>New content</dt><dd><code>2,237</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>151,267 (149,026 cached)</code></dd><dt>Added</dt><dd><code>2,241</code></dd><dt>Cache write</dt><dd><code>2,239</code></dd><dt>Output</dt><dd><code>1,475</code></dd><dt>Total input</dt><dd><code>9,693,317</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;replace_all&quot;: false,
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/lib/conversation_story/parser.rb&quot;,
@@ -7790,7 +7790,7 @@ String:     # ---- the mode a prompt was sent in -------------------------------
         <template class="detail"><div class="d-section"><h4 class="deco">Reasoning</h4><div class="d-markdown"><p>(reasoning — not captured)</p></div></div>
 
 
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>153,772 (151,265 cached)</code></dd><dt>Added</dt><dd><code>2,507</code></dd><dt>Output</dt><dd><code>1,316</code></dd><dt>Total input</dt><dd><code>9,847,089</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>151,267</code></dd><dt>New content</dt><dd><code>2,504</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>153,772 (151,265 cached)</code></dd><dt>Added</dt><dd><code>2,507</code></dd><dt>Cache write</dt><dd><code>2,506</code></dd><dt>Output</dt><dd><code>1,316</code></dd><dt>Total input</dt><dd><code>9,847,089</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>419</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:419" title="Copy event id to clipboard"><code>mode-switches:419</code><span class="copy-hint">copy</span></button></div></template>
@@ -7928,7 +7928,7 @@ String:     # ---- the mode a prompt was sent in -------------------------------
     end
 
 </code></dd><dt>new_string</dt><dd><code></code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>155,156 (153,771 cached)</code></dd><dt>Added</dt><dd><code>1,385</code></dd><dt>Output</dt><dd><code>387</code></dd><dt>Total input</dt><dd><code>10,002,245</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>153,772</code></dd><dt>New content</dt><dd><code>1,382</code></dd><dt>Re-cached (overhead)</dt><dd><code>1</code></dd><dt>Context</dt><dd><code>155,156 (153,771 cached)</code></dd><dt>Added</dt><dd><code>1,385</code></dd><dt>Cache write</dt><dd><code>1,383</code></dd><dt>Output</dt><dd><code>387</code></dd><dt>Total input</dt><dd><code>10,002,245</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;replace_all&quot;: false,
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/lib/conversation_story/parser.rb&quot;,
@@ -7972,7 +7972,7 @@ String:     # ---- the mode a prompt was sent in -------------------------------
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>Now the renderer — one dimension, so the dedupe and the Permissions row go away:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:425"><span class="kind-tag">Tool Call</span><span class="summary"><b>Edit</b> <code>renderer.rb</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>155,611 (155,154 cached)</code></dd><dt>Added</dt><dd><code>457</code></dd><dt>Output</dt><dd><code>549</code></dd><dt>Total input</dt><dd><code>10,157,856</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>155,156</code></dd><dt>New content</dt><dd><code>453</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>155,611 (155,154 cached)</code></dd><dt>Added</dt><dd><code>457</code></dd><dt>Cache write</dt><dd><code>455</code></dd><dt>Output</dt><dd><code>549</code></dd><dt>Total input</dt><dd><code>10,157,856</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>424</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:424" title="Copy event id to clipboard"><code>mode-switches:424</code><span class="copy-hint">copy</span></button></div></template>
@@ -8064,7 +8064,7 @@ String:     # ---- the mode a prompt was sent in -------------------------------
 
       [%(&lt;span class=&quot;badge mode&quot;&gt;#{h event[&quot;mode&quot;]}&lt;/span&gt;)]
     end</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>156,229 (155,609 cached)</code></dd><dt>Added</dt><dd><code>620</code></dd><dt>Output</dt><dd><code>403</code></dd><dt>Total input</dt><dd><code>10,314,085</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>155,611</code></dd><dt>New content</dt><dd><code>616</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>156,229 (155,609 cached)</code></dd><dt>Added</dt><dd><code>620</code></dd><dt>Cache write</dt><dd><code>618</code></dd><dt>Output</dt><dd><code>403</code></dd><dt>Total input</dt><dd><code>10,314,085</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;replace_all&quot;: false,
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/lib/conversation_story/renderer.rb&quot;,
@@ -8108,7 +8108,7 @@ String:     # ---- the mode a prompt was sent in -------------------------------
         <template class="detail"><div class="d-section"><h4 class="deco">Message</h4><div class="d-markdown"><p>Now the tests — the synthetic logs must put <code>permissionMode</code> on the prompt record:</p></div></div>
 
 <div class="d-section"><h4 class="deco">Tool calls in this turn</h4><div class="related-links"><a class="related-link" href="#mode-switches:434"><span class="kind-tag">Tool Call</span><span class="summary"><b>Read</b> <code>parser_test.rb</code></span></a></div></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>156,701 (156,227 cached)</code></dd><dt>Added</dt><dd><code>474</code></dd><dt>Output</dt><dd><code>152</code></dd><dt>Total input</dt><dd><code>10,470,786</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>156,229</code></dd><dt>New content</dt><dd><code>470</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>156,701 (156,227 cached)</code></dd><dt>Added</dt><dd><code>474</code></dd><dt>Cache write</dt><dd><code>472</code></dd><dt>Output</dt><dd><code>152</code></dd><dt>Total input</dt><dd><code>10,470,786</code></dd></dl></div>
 
 <div class="d-section"><h4 class="deco">Provenance</h4><dl class="kv"><dt>source.file</dt><dd><code>mode-switches.jsonl</code></dd><dt>source.line</dt><dd><code>433</code></dd><dt>agent</dt><dd><code>main</code></dd></dl></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="mode-switches:433" title="Copy event id to clipboard"><code>mode-switches:433</code><span class="copy-hint">copy</span></button></div></template>
@@ -8236,7 +8236,7 @@ String:     # ---- the mode a prompt was sent in -------------------------------
         </div>
         <template class="detail"><div class="d-section"><h4 class="deco">Tool call — Read</h4></div>
 <div class="d-section"><h4 class="deco">Fields</h4><dl class="kv"><dt>Tool</dt><dd><code>Read</code></dd><dt>use_id</dt><dd><code>toolu_013oMBfi9RRPKxk6zB5dXQan</code></dd><dt>file_path</dt><dd><code>/Users/jessitron/code/jessitron/conversation-story/test/parser_test.rb</code></dd><dt>offset</dt><dd><code>377</code></dd><dt>limit</dt><dd><code>24</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>158,234 (156,699 cached)</code></dd><dt>Added</dt><dd><code>1,535</code></dd><dt>Output</dt><dd><code>122</code></dd><dt>Total input</dt><dd><code>10,629,020</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>156,701</code></dd><dt>New content</dt><dd><code>1,531</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>158,234 (156,699 cached)</code></dd><dt>Added</dt><dd><code>1,535</code></dd><dt>Cache write</dt><dd><code>1,533</code></dd><dt>Output</dt><dd><code>122</code></dd><dt>Total input</dt><dd><code>10,629,020</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/test/parser_test.rb&quot;,
   &quot;offset&quot;: 377,
@@ -8479,7 +8479,7 @@ end</code></dd><dt>new_string</dt><dd><code>  # ---- the mode a prompt was sent 
     rec
   end
 end</code></dd></dl></div>
-<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context</dt><dd><code>158,930 (158,232 cached)</code></dd><dt>Added</dt><dd><code>698</code></dd><dt>Output</dt><dd><code>3,536</code></dd><dt>Total input</dt><dd><code>10,787,950</code></dd></dl></div>
+<div class="d-section"><h4 class="deco">Tokens</h4><dl class="kv"><dt>Context so far</dt><dd><code>158,234</code></dd><dt>New content</dt><dd><code>694</code></dd><dt>Re-cached (overhead)</dt><dd><code>2</code></dd><dt>Context</dt><dd><code>158,930 (158,232 cached)</code></dd><dt>Added</dt><dd><code>698</code></dd><dt>Cache write</dt><dd><code>696</code></dd><dt>Output</dt><dd><code>3,536</code></dd><dt>Total input</dt><dd><code>10,787,950</code></dd></dl></div>
 <div class="d-section"><h4 class="deco">Input</h4><pre class="code">{
   &quot;replace_all&quot;: false,
   &quot;file_path&quot;: &quot;/Users/jessitron/code/jessitron/conversation-story/test/parser_test.rb&quot;,

@@ -57,6 +57,10 @@ events:
       user while running local commands. DO NOT respond to these messages or otherwise
       consider them in your response unless the user explicitly asks you to.</local-command-caveat>"
   beat: true
+  tokens:
+    user_message_chars: 245
+    user_message_estimate: 70
+    system_prompt_estimate: 21489
 - id: b264d18e-d436-43c5-9b4d-7616ab28b005
   ref: mtg-tabletop-plan:4
   agent: main
@@ -294,6 +298,9 @@ events:
     service_tier: standard
     context: 42635
     added: 21559
+    rewrite_overhead: 0
+    context_so_far: 21076
+    new_content: 21557
     cumulative_context: 42635
   beat: true
   turn_leader: true
@@ -605,6 +612,9 @@ events:
     service_tier: standard
     context: 49304
     added: 6671
+    rewrite_overhead: 2
+    context_so_far: 42635
+    new_content: 6668
     cumulative_context: 91939
   turn_leader: true
 - id: 24804d7c-b21c-4cb5-b5bb-fb3a445cc009
@@ -692,6 +702,10 @@ events:
           so run it directly and do NOT fork again. Orient in this repo''s seamap
           (repo root: /Users/jessitron/code/jessitron/mtg-deck-shuffler); return both
           the <orientation> text digest and the <seamap> ASCII art.'
+      tokens:
+        user_message_chars: 345
+        user_message_estimate: 99
+        system_prompt_estimate: 26557
       hidden: true
     - id: e939b939-b976-44f2-aaba-fb2751b19e00
       ref: agent-ad2eddaec01f22fdc:2
@@ -777,6 +791,9 @@ events:
         service_tier: standard
         context: 26656
         added: 26656
+        rewrite_overhead: 0
+        context_so_far: 0
+        new_content: 26654
         cumulative_context: 26656
       turn_leader: true
     - id: 365d76ee-aeca-4691-87d4-b76c6f082878
@@ -1091,6 +1108,9 @@ events:
         service_tier: standard
         context: 37945
         added: 11291
+        rewrite_overhead: 2
+        context_so_far: 26656
+        new_content: 11287
         cumulative_context: 64601
       link_ids:
       - tool:toolu_017dBqGgPibvN49f6kScJumf
@@ -1212,6 +1232,9 @@ events:
         service_tier: standard
         context: 40000
         added: 2057
+        rewrite_overhead: 2
+        context_so_far: 37945
+        new_content: 2053
         cumulative_context: 104601
       turn_leader: true
     - id: ece01787-3cb7-412a-8a01-ac5d1483fd6b
@@ -1410,6 +1433,9 @@ events:
         service_tier: standard
         context: 44013
         added: 4015
+        rewrite_overhead: 2
+        context_so_far: 40000
+        new_content: 4011
         cumulative_context: 148614
       link_ids:
       - tool:toolu_01EzghGqec8uvqs5CEfSVNi8
@@ -1915,6 +1941,9 @@ events:
         service_tier: standard
         context: 67872
         added: 23861
+        rewrite_overhead: 2
+        context_so_far: 44013
+        new_content: 22732
         cumulative_context: 216486
       turn_leader: true
 - id: line-23
@@ -2111,6 +2140,9 @@ events:
     service_tier: standard
     context: 51240
     added: 1937
+    rewrite_overhead: 1
+    context_so_far: 49304
+    new_content: 1934
     cumulative_context: 143179
   turn_leader: true
 - id: c8134ab9-ee4c-4f74-aa98-545ea11d38c8
@@ -2329,6 +2361,9 @@ events:
     service_tier: standard
     context: 53550
     added: 2312
+    rewrite_overhead: 2
+    context_so_far: 51240
+    new_content: 2308
     cumulative_context: 196729
   link_ids:
   - tool:toolu_01Y1cBAexjBxdtceyNMVzsAu
@@ -2724,6 +2759,9 @@ events:
     service_tier: standard
     context: 61192
     added: 7644
+    rewrite_overhead: 2
+    context_so_far: 53550
+    new_content: 7640
     cumulative_context: 257921
   turn_leader: true
 - id: 252a528e-fa87-43e0-a714-e15c048a347c
@@ -3422,6 +3460,9 @@ events:
     service_tier: standard
     context: 74521
     added: 13331
+    rewrite_overhead: 2
+    context_so_far: 61192
+    new_content: 13327
     cumulative_context: 332442
   beat: true
   turn_leader: true
@@ -3542,6 +3583,9 @@ events:
     service_tier: standard
     context: 76051
     added: 1532
+    rewrite_overhead: 2
+    context_so_far: 74521
+    new_content: 1529
     cumulative_context: 408493
   beat: true
   turn_leader: true
@@ -3939,6 +3983,9 @@ events:
     service_tier: standard
     context: 80469
     added: 4419
+    rewrite_overhead: 1
+    context_so_far: 76051
+    new_content: 4416
     cumulative_context: 488962
   turn_leader: true
 - id: e8336811-fbe1-4fa2-9f47-d4f02f48482f
@@ -4230,6 +4277,9 @@ events:
     service_tier: standard
     context: 85757
     added: 5290
+    rewrite_overhead: 2
+    context_so_far: 80469
+    new_content: 5286
     cumulative_context: 574719
   beat: true
   turn_leader: true
@@ -4549,6 +4599,9 @@ events:
     service_tier: standard
     context: 88365
     added: 2610
+    rewrite_overhead: 2
+    context_so_far: 85757
+    new_content: 2606
     cumulative_context: 663084
   turn_leader: true
 - id: 1ae33b16-d122-48f9-a49d-74cf076e555c
@@ -4818,6 +4871,9 @@ events:
     service_tier: standard
     context: 91082
     added: 2719
+    rewrite_overhead: 2
+    context_so_far: 88365
+    new_content: 2716
     cumulative_context: 754166
   beat: true
   turn_leader: true
@@ -5079,6 +5135,9 @@ events:
     service_tier: standard
     context: 91868
     added: 787
+    rewrite_overhead: 1
+    context_so_far: 91082
+    new_content: 784
     cumulative_context: 846034
   turn_leader: true
 - id: '0487c0d7-00a2-469d-9ad1-0c5a51552db0'
@@ -5197,6 +5256,9 @@ events:
     service_tier: standard
     context: 92358
     added: 492
+    rewrite_overhead: 2
+    context_so_far: 91868
+    new_content: 488
     cumulative_context: 938392
   turn_leader: true
 - id: 7fbb184d-b60e-4577-818e-ccdb0d098566
@@ -5459,6 +5521,9 @@ events:
     service_tier: standard
     context: 95297
     added: 2941
+    rewrite_overhead: 2
+    context_so_far: 92358
+    new_content: 2937
     cumulative_context: 1033689
   beat: true
   turn_leader: true
@@ -5670,6 +5735,9 @@ events:
     service_tier: standard
     context: 96934
     added: 1639
+    rewrite_overhead: 2
+    context_so_far: 95297
+    new_content: 1635
     cumulative_context: 1130623
   beat: true
   turn_leader: true
@@ -5819,6 +5887,9 @@ events:
     service_tier: standard
     context: 97863
     added: 931
+    rewrite_overhead: 2
+    context_so_far: 96934
+    new_content: 927
     cumulative_context: 1228486
   beat: true
   turn_leader: true
@@ -5923,6 +5994,9 @@ events:
     service_tier: standard
     context: 100825
     added: 48
+    rewrite_overhead: 0
+    context_so_far: 100777
+    new_content: 46
     cumulative_context: 1329311
   beat: true
   turn_leader: true
@@ -6103,6 +6177,9 @@ events:
     service_tier: standard
     context: 102457
     added: 1634
+    rewrite_overhead: 2
+    context_so_far: 100825
+    new_content: 1631
     cumulative_context: 1431768
   turn_leader: true
 - id: b176f965-7820-44c7-a549-67d064157f97
@@ -6268,6 +6345,9 @@ events:
     service_tier: standard
     context: 103978
     added: 1522
+    rewrite_overhead: 1
+    context_so_far: 102457
+    new_content: 1519
     cumulative_context: 1535746
   link_ids:
   - tool:toolu_019T4g4w9fNvaydEvevADAdE
@@ -6371,6 +6451,9 @@ events:
     service_tier: standard
     context: 105741
     added: 1765
+    rewrite_overhead: 2
+    context_so_far: 103978
+    new_content: 1761
     cumulative_context: 1641487
   beat: true
   turn_leader: true
@@ -6491,6 +6574,10 @@ events:
           - Part B: the Shuffler integration (Prep screen "join a table" input, Play/Discard send the card to the table) — touches apps/shuffler/, must run serially after Part A, and should note that the repo's feature-owner skills (library-search, two-faced-cards, animations) must be consulted per the Task Implementation Process in CLAUDE.md.
 
           Deliverable: a step-by-step implementation plan with the critical files/dirs to create or touch, technology choices (tldraw sync options, ws server hosting, how cards render on the canvas — image URLs come from the deck's stored Scryfall imageUris), testing strategy per step, deploy/observability steps, and open questions that need Jess's input. Flag any risks or architectural tradeoffs you see.
+      tokens:
+        user_message_chars: 3246
+        user_message_estimate: 927
+        system_prompt_estimate: 15213
       hidden: true
     - id: d6d89f68-3dea-459e-8597-e1d40d41bfb3
       ref: agent-a56368861b5046b93:2
@@ -6576,6 +6663,9 @@ events:
         service_tier: standard
         context: 16140
         added: 16140
+        rewrite_overhead: 0
+        context_so_far: 0
+        new_content: 16138
         cumulative_context: 16140
       turn_leader: true
     - id: 91927b95-6989-437b-9953-a324d2b7d229
@@ -6824,6 +6914,9 @@ events:
         service_tier: standard
         context: 19015
         added: 2877
+        rewrite_overhead: 2
+        context_so_far: 16140
+        new_content: 2873
         cumulative_context: 35155
       link_ids:
       - tool:toolu_01P5sSWm9YjKAF39fLAifuU8
@@ -7304,6 +7397,9 @@ events:
         service_tier: standard
         context: 27993
         added: 8980
+        rewrite_overhead: 2
+        context_so_far: 19015
+        new_content: 8976
         cumulative_context: 63148
       link_ids:
       - tool:toolu_01VbVdLUrGceJqUnF3shT3nN
@@ -7678,6 +7774,9 @@ events:
         service_tier: standard
         context: 33700
         added: 5709
+        rewrite_overhead: 2
+        context_so_far: 27993
+        new_content: 5705
         cumulative_context: 96848
       link_ids:
       - tool:toolu_01FB8dbHjXUn6vRaWPgStpqC
@@ -7874,6 +7973,9 @@ events:
         service_tier: standard
         context: 36467
         added: 2769
+        rewrite_overhead: 2
+        context_so_far: 33700
+        new_content: 2765
         cumulative_context: 133315
       link_ids:
       - tool:toolu_011eC7w3ukyysh3WPjo5ofJp
@@ -8074,6 +8176,9 @@ events:
         service_tier: standard
         context: 39260
         added: 2795
+        rewrite_overhead: 2
+        context_so_far: 36467
+        new_content: 2791
         cumulative_context: 172575
       link_ids:
       - tool:toolu_019YhkvgKt4UUJrX5TT5K9iG
@@ -8180,6 +8285,9 @@ events:
         service_tier: standard
         context: 41003
         added: 1745
+        rewrite_overhead: 2
+        context_so_far: 39260
+        new_content: 1741
         cumulative_context: 213578
       turn_leader: true
     - id: 7eec8ec1-e26b-41d3-a321-3e3ff475f600
@@ -8480,6 +8588,9 @@ events:
         service_tier: standard
         context: 44415
         added: 3414
+        rewrite_overhead: 2
+        context_so_far: 41003
+        new_content: 3410
         cumulative_context: 257993
       turn_leader: true
     - id: d00544ae-3d0e-43ac-bfe3-cd7d56b09f68
@@ -8687,6 +8798,9 @@ events:
         service_tier: standard
         context: 46987
         added: 2574
+        rewrite_overhead: 2
+        context_so_far: 44415
+        new_content: 2570
         cumulative_context: 304980
       turn_leader: true
     - id: 2a69427b-87b5-496c-980f-f118c852d0b2
@@ -8888,6 +9002,9 @@ events:
         service_tier: standard
         context: 48843
         added: 1858
+        rewrite_overhead: 2
+        context_so_far: 46987
+        new_content: 1854
         cumulative_context: 353823
       link_ids:
       - tool:toolu_01DHgSCvCA5v9dRA3Dqk27Ss
@@ -9118,6 +9235,9 @@ events:
         service_tier: standard
         context: 52576
         added: 3735
+        rewrite_overhead: 2
+        context_so_far: 48843
+        new_content: 3731
         cumulative_context: 406399
       turn_leader: true
     - id: b7a4efa1-a9c4-4f97-b1ba-69fdec74464a
@@ -9285,6 +9405,9 @@ events:
         service_tier: standard
         context: 54108
         added: 1534
+        rewrite_overhead: 2
+        context_so_far: 52576
+        new_content: 1530
         cumulative_context: 460507
       link_ids:
       - tool:toolu_011JeaStFkLt89Scat8uDgZz
@@ -9564,6 +9687,9 @@ events:
         service_tier: standard
         context: 56077
         added: 1971
+        rewrite_overhead: 2
+        context_so_far: 54108
+        new_content: 1967
         cumulative_context: 516584
       turn_leader: true
     - id: 752e221b-a26b-4afb-a2cb-0d3c75c92484
@@ -9821,6 +9947,9 @@ events:
         service_tier: standard
         context: 59212
         added: 3137
+        rewrite_overhead: 2
+        context_so_far: 56077
+        new_content: 3133
         cumulative_context: 575796
       turn_leader: true
     - id: e7b02c24-1125-4c5d-873c-7b171156222a
@@ -10124,6 +10253,9 @@ events:
     service_tier: standard
     context: 107598
     added: 1859
+    rewrite_overhead: 2
+    context_so_far: 105741
+    new_content: 1855
     cumulative_context: 1749085
   beat: true
   turn_leader: true
@@ -10310,6 +10442,9 @@ events:
     service_tier: standard
     context: 108585
     added: 185
+    rewrite_overhead: 0
+    context_so_far: 108400
+    new_content: 183
     cumulative_context: 1857670
   beat: true
   turn_leader: true
@@ -10491,6 +10626,9 @@ events:
     service_tier: standard
     context: 108883
     added: 300
+    rewrite_overhead: 2
+    context_so_far: 108585
+    new_content: 296
     cumulative_context: 1966553
   beat: true
   turn_leader: true
@@ -10624,6 +10762,9 @@ events:
     service_tier: standard
     context: 109632
     added: 751
+    rewrite_overhead: 2
+    context_so_far: 108883
+    new_content: 747
     cumulative_context: 2076185
   beat: true
   turn_leader: true
@@ -10744,6 +10885,10 @@ events:
           - Part B: the Shuffler integration (Prep screen "join a table" input, Play/Discard send the card to the table) — touches apps/shuffler/, must run serially after Part A, and should note that the repo's feature-owner skills (library-search, two-faced-cards, animations) must be consulted per the Task Implementation Process in CLAUDE.md.
 
           Deliverable: a step-by-step implementation plan with the critical files/dirs to create or touch, technology choices (tldraw sync options, ws server hosting, how cards render on the canvas — image URLs come from the deck's stored Scryfall imageUris), testing strategy per step, deploy/observability steps, and open questions that need Jess's input. Flag any risks or architectural tradeoffs you see.
+      tokens:
+        user_message_chars: 3396
+        user_message_estimate: 970
+        system_prompt_estimate: 10440
       hidden: true
     - id: 748be18e-d80b-4892-bc03-0453f5bd6081
       ref: agent-a574aba0082b4260c:2
@@ -10829,6 +10974,9 @@ events:
         service_tier: standard
         context: 16194
         added: 11410
+        rewrite_overhead: 0
+        context_so_far: 4784
+        new_content: 11408
         cumulative_context: 16194
       turn_leader: true
     - id: 8e86a0e9-e3ba-4979-8f86-b28c0bdac5ec
@@ -11130,6 +11278,9 @@ events:
         service_tier: standard
         context: 20698
         added: 4506
+        rewrite_overhead: 2
+        context_so_far: 16194
+        new_content: 4502
         cumulative_context: 36892
       link_ids:
       - tool:toolu_01XoHpMKF5pXMefJSoVsdftS
@@ -11435,6 +11586,9 @@ events:
         service_tier: standard
         context: 26890
         added: 6194
+        rewrite_overhead: 2
+        context_so_far: 20698
+        new_content: 6190
         cumulative_context: 63782
       link_ids:
       - tool:toolu_01WVNtxQ6bhShFwvnDr26Jzq
@@ -11920,6 +12074,9 @@ events:
         service_tier: standard
         context: 33975
         added: 7087
+        rewrite_overhead: 2
+        context_so_far: 26890
+        new_content: 7083
         cumulative_context: 97757
       turn_leader: true
     - id: c75cfa2d-5adc-4c03-8b56-9bc696d5e6b3
@@ -12239,6 +12396,9 @@ events:
         service_tier: standard
         context: 35952
         added: 1979
+        rewrite_overhead: 2
+        context_so_far: 33975
+        new_content: 1975
         cumulative_context: 133709
       link_ids:
       - tool:toolu_01Jf8btgt7vG2MYorp2STrXR
@@ -12426,6 +12586,9 @@ events:
         service_tier: standard
         context: 37842
         added: 1892
+        rewrite_overhead: 2
+        context_so_far: 35952
+        new_content: 1888
         cumulative_context: 171551
       link_ids:
       - tool:toolu_0179UeLHEvddhy7XsXoEeEpc
@@ -12644,6 +12807,9 @@ events:
         service_tier: standard
         context: 41526
         added: 3686
+        rewrite_overhead: 2
+        context_so_far: 37842
+        new_content: 3682
         cumulative_context: 213077
       turn_leader: true
     - id: 69af8352-ff52-4730-b922-0cc2adccba73
@@ -12867,6 +13033,9 @@ events:
         service_tier: standard
         context: 43763
         added: 2239
+        rewrite_overhead: 2
+        context_so_far: 41526
+        new_content: 2235
         cumulative_context: 256840
       link_ids:
       - tool:toolu_01EHPS2uqRZSJ7Z18DtUsiyq
@@ -13161,6 +13330,9 @@ events:
         service_tier: standard
         context: 46814
         added: 3053
+        rewrite_overhead: 2
+        context_so_far: 43763
+        new_content: 3049
         cumulative_context: 303654
       turn_leader: true
     - id: 2092b227-f6c3-40dd-aa85-0c49589cd4e6
@@ -13385,6 +13557,9 @@ events:
         service_tier: standard
         context: 48682
         added: 1870
+        rewrite_overhead: 2
+        context_so_far: 46814
+        new_content: 1866
         cumulative_context: 352336
       link_ids:
       - tool:toolu_014j4d1ncZSvkGB76fGWuvkZ
@@ -13603,6 +13778,9 @@ events:
         service_tier: standard
         context: 51676
         added: 2996
+        rewrite_overhead: 2
+        context_so_far: 48682
+        new_content: 2992
         cumulative_context: 404012
       link_ids:
       - tool:toolu_01JpmuTB1BN3y93jmcEjU8n6
@@ -13749,6 +13927,9 @@ events:
         service_tier: standard
         context: 53103
         added: 1429
+        rewrite_overhead: 2
+        context_so_far: 51676
+        new_content: 1425
         cumulative_context: 457115
       turn_leader: true
     - id: ce8e8931-019c-42c7-ba2a-b7822ad510c8
@@ -13955,6 +14136,9 @@ events:
         service_tier: standard
         context: 54792
         added: 1691
+        rewrite_overhead: 2
+        context_so_far: 53103
+        new_content: 1687
         cumulative_context: 511907
       link_ids:
       - tool:toolu_0125UUFKVpobrM7DkwVeDxmG
@@ -14154,6 +14338,9 @@ events:
         service_tier: standard
         context: 56291
         added: 1501
+        rewrite_overhead: 2
+        context_so_far: 54792
+        new_content: 1497
         cumulative_context: 568198
       turn_leader: true
     - id: d19ae54c-887a-4bea-bdb7-0e06ba2dd16c
@@ -14309,6 +14496,9 @@ events:
         service_tier: standard
         context: 57035
         added: 746
+        rewrite_overhead: 2
+        context_so_far: 56291
+        new_content: 742
         cumulative_context: 625233
       link_ids:
       - tool:toolu_0191X2o9zFnPkdq8NgLtknzU
@@ -14476,6 +14666,9 @@ events:
         service_tier: standard
         context: 58325
         added: 1292
+        rewrite_overhead: 2
+        context_so_far: 57035
+        new_content: 1288
         cumulative_context: 683558
       turn_leader: true
     - id: 63ce2ce0-fc9e-4c4b-a368-9a8e2054beb5
@@ -14591,6 +14784,9 @@ events:
         service_tier: standard
         context: 59541
         added: 1218
+        rewrite_overhead: 2
+        context_so_far: 58325
+        new_content: 1214
         cumulative_context: 743099
       turn_leader: true
     - id: 680a0145-bfdd-4ec5-b26a-4668a98faeae
@@ -14817,6 +15013,9 @@ events:
         service_tier: standard
         context: 62317
         added: 2778
+        rewrite_overhead: 2
+        context_so_far: 59541
+        new_content: 2774
         cumulative_context: 805416
       turn_leader: true
     - id: d7d16834-eb7e-47ef-9f16-f42d851bf779
@@ -15133,6 +15332,9 @@ events:
         service_tier: standard
         context: 68706
         added: 6391
+        rewrite_overhead: 2
+        context_so_far: 62317
+        new_content: 6387
         cumulative_context: 874122
       turn_leader: true
     - id: cbb34eb5-e146-4784-b446-7e255235ed2c
@@ -15196,6 +15398,9 @@ events:
         service_tier: standard
         context: 75011
         added: 75011
+        rewrite_overhead: 68706
+        context_so_far: 68706
+        new_content: 6303
         cumulative_context: 949133
       link_ids:
       - tool:toolu_01WjpjP67RoxfR8K1qVp55q8
@@ -15425,6 +15630,9 @@ events:
         service_tier: standard
         context: 81777
         added: 6768
+        rewrite_overhead: 2
+        context_so_far: 75011
+        new_content: 6764
         cumulative_context: 1030910
       turn_leader: true
     - id: 4e574b99-6ec1-4d80-994e-de27494822cc
@@ -15813,6 +16021,9 @@ events:
         service_tier: standard
         context: 85640
         added: 3865
+        rewrite_overhead: 2
+        context_so_far: 81777
+        new_content: 3861
         cumulative_context: 1116550
       turn_leader: true
 - id: 386cba46-6c92-4a39-8b23-e7f4b371fd6a
@@ -15976,6 +16187,9 @@ events:
     service_tier: standard
     context: 111497
     added: 1867
+    rewrite_overhead: 2
+    context_so_far: 109632
+    new_content: 1863
     cumulative_context: 2187682
   beat: true
   turn_leader: true
@@ -16098,6 +16312,9 @@ events:
     service_tier: standard
     context: 112570
     added: 148
+    rewrite_overhead: 0
+    context_so_far: 112422
+    new_content: 147
     cumulative_context: 2300252
   beat: true
   turn_leader: true
@@ -16310,6 +16527,9 @@ events:
     service_tier: standard
     context: 115229
     added: 2660
+    rewrite_overhead: 1
+    context_so_far: 112570
+    new_content: 2657
     cumulative_context: 2415481
   link_ids:
   - tool:toolu_015EHMAL8UHvuEeaVbH3wTzw
@@ -16397,6 +16617,9 @@ events:
     service_tier: standard
     context: 115611
     added: 384
+    rewrite_overhead: 2
+    context_so_far: 115229
+    new_content: 380
     cumulative_context: 2531092
   beat: true
   turn_leader: true
@@ -16828,6 +17051,9 @@ events:
     service_tier: standard
     context: 126123
     added: 10514
+    rewrite_overhead: 2
+    context_so_far: 115611
+    new_content: 10510
     cumulative_context: 2657215
   beat: true
   turn_leader: true
@@ -17082,6 +17308,9 @@ events:
     service_tier: standard
     context: 131701
     added: 5580
+    rewrite_overhead: 2
+    context_so_far: 126123
+    new_content: 5576
     cumulative_context: 2788916
   beat: true
   turn_leader: true
@@ -17196,6 +17425,9 @@ events:
     service_tier: standard
     context: 133109
     added: 74
+    rewrite_overhead: 0
+    context_so_far: 133035
+    new_content: 72
     cumulative_context: 2922025
   beat: true
   turn_leader: true
@@ -17443,6 +17675,9 @@ events:
     service_tier: standard
     context: 136687
     added: 3580
+    rewrite_overhead: 2
+    context_so_far: 133109
+    new_content: 3576
     cumulative_context: 3058712
   turn_leader: true
 - id: 8907dbcc-7f6e-47b5-9e32-a7b79722b5be
@@ -17604,6 +17839,9 @@ events:
     service_tier: standard
     context: 140098
     added: 3413
+    rewrite_overhead: 2
+    context_so_far: 136687
+    new_content: 3410
     cumulative_context: 3198810
   beat: true
   turn_leader: true
@@ -18298,6 +18536,9 @@ events:
     service_tier: standard
     context: 143402
     added: 3305
+    rewrite_overhead: 1
+    context_so_far: 140098
+    new_content: 3302
     cumulative_context: 3342212
   link_ids:
   - tool:toolu_01VgoDYGw5d4RSHSqSa7EdQS
@@ -18390,6 +18631,9 @@ events:
     service_tier: standard
     context: 143845
     added: 445
+    rewrite_overhead: 2
+    context_so_far: 143402
+    new_content: 441
     cumulative_context: 3486057
   beat: true
   turn_leader: true
@@ -18574,6 +18818,9 @@ events:
     service_tier: standard
     context: 145820
     added: 1977
+    rewrite_overhead: 2
+    context_so_far: 143845
+    new_content: 1973
     cumulative_context: 3631877
   beat: true
   turn_leader: true
@@ -18713,6 +18960,9 @@ events:
     service_tier: standard
     context: 146932
     added: 243
+    rewrite_overhead: 0
+    context_so_far: 146689
+    new_content: 241
     cumulative_context: 3778809
   beat: true
   turn_leader: true
@@ -18937,6 +19187,9 @@ events:
     service_tier: standard
     context: 149775
     added: 2845
+    rewrite_overhead: 2
+    context_so_far: 146932
+    new_content: 2841
     cumulative_context: 3928584
   link_ids:
   - tool:toolu_01UgS5eBUwaZoWYVJAMVHRrA
@@ -19032,6 +19285,9 @@ events:
     service_tier: standard
     context: 150140
     added: 367
+    rewrite_overhead: 2
+    context_so_far: 149775
+    new_content: 363
     cumulative_context: 4078724
   link_ids:
   - tool:toolu_0145jsCcLUqCckMVsGqNDxoU
@@ -19157,6 +19413,9 @@ events:
     service_tier: standard
     context: 150673
     added: 535
+    rewrite_overhead: 2
+    context_so_far: 150140
+    new_content: 532
     cumulative_context: 4229397
   beat: true
   turn_leader: true
@@ -19271,6 +19530,9 @@ events:
     service_tier: standard
     context: 151584
     added: 86
+    rewrite_overhead: 0
+    context_so_far: 151498
+    new_content: 84
     cumulative_context: 4380981
   beat: true
   turn_leader: true
@@ -19523,6 +19785,9 @@ events:
     service_tier: standard
     context: 154428
     added: 2846
+    rewrite_overhead: 2
+    context_so_far: 151584
+    new_content: 2842
     cumulative_context: 4535409
   link_ids:
   - tool:toolu_01J6eJn7UfQAvn5ZzmJe4f45
@@ -19595,6 +19860,9 @@ events:
     service_tier: standard
     context: 155130
     added: 704
+    rewrite_overhead: 2
+    context_so_far: 154428
+    new_content: 700
     cumulative_context: 4690539
   turn_leader: true
 - id: 2dbd3bc3-64ad-4b9c-96b7-636c9b648d0f
@@ -19763,6 +20031,9 @@ events:
     service_tier: standard
     context: 156290
     added: 1162
+    rewrite_overhead: 2
+    context_so_far: 155130
+    new_content: 1158
     cumulative_context: 4846829
   link_ids:
   - tool:toolu_01DndHzbwVWFQE1BvdXZzyqA
@@ -19867,6 +20138,9 @@ events:
     service_tier: standard
     context: 156641
     added: 353
+    rewrite_overhead: 2
+    context_so_far: 156290
+    new_content: 349
     cumulative_context: 5003470
   beat: true
   turn_leader: true
@@ -20031,6 +20305,9 @@ events:
     service_tier: standard
     context: 157106
     added: 83
+    rewrite_overhead: 0
+    context_so_far: 157023
+    new_content: 81
     cumulative_context: 5160576
   beat: true
   turn_leader: true
@@ -20129,6 +20406,9 @@ events:
     service_tier: standard
     context: 158659
     added: 1555
+    rewrite_overhead: 2
+    context_so_far: 157106
+    new_content: 1551
     cumulative_context: 5319235
   link_ids:
   - tool:toolu_01NvRwALRXtcqXrbsKRchjMp
@@ -20225,6 +20505,9 @@ events:
     service_tier: standard
     context: 159623
     added: 966
+    rewrite_overhead: 2
+    context_so_far: 158659
+    new_content: 963
     cumulative_context: 5478858
   beat: true
   turn_leader: true
@@ -20686,6 +20969,9 @@ events:
     service_tier: standard
     context: 161597
     added: 1975
+    rewrite_overhead: 1
+    context_so_far: 159623
+    new_content: 1972
     cumulative_context: 5640455
   link_ids:
   - tool:toolu_011p1mRdxSZ9ohLuo2Sy5Jef
@@ -20776,6 +21062,9 @@ events:
     service_tier: standard
     context: 162023
     added: 428
+    rewrite_overhead: 2
+    context_so_far: 161597
+    new_content: 424
     cumulative_context: 5802478
   beat: true
   turn_leader: true
@@ -21174,6 +21463,9 @@ events:
     service_tier: standard
     context: 170243
     added: 8222
+    rewrite_overhead: 2
+    context_so_far: 162023
+    new_content: 8218
     cumulative_context: 5972721
   beat: true
   turn_leader: true
@@ -21285,6 +21577,9 @@ events:
     service_tier: standard
     context: 170996
     added: 755
+    rewrite_overhead: 2
+    context_so_far: 170243
+    new_content: 751
     cumulative_context: 6143717
   link_ids:
   - tool:toolu_01K9BJuidxkSPC5rnNEsnsMQ
@@ -21382,6 +21677,9 @@ events:
     service_tier: standard
     context: 171347
     added: 353
+    rewrite_overhead: 2
+    context_so_far: 170996
+    new_content: 350
     cumulative_context: 6315064
   beat: true
   turn_leader: true
@@ -21711,6 +22009,9 @@ events:
     service_tier: standard
     context: 180818
     added: 9472
+    rewrite_overhead: 1
+    context_so_far: 171347
+    new_content: 9469
     cumulative_context: 6495882
   turn_leader: true
 - id: 888ed668-eac2-4a90-b973-cb99dfde6a4c
@@ -22112,6 +22413,9 @@ events:
     service_tier: standard
     context: 187378
     added: 6562
+    rewrite_overhead: 2
+    context_so_far: 180818
+    new_content: 6558
     cumulative_context: 6683260
   turn_leader: true
 - id: 40379515-e5ee-4c20-9801-5bc08f0230d6
@@ -23086,6 +23390,9 @@ events:
     service_tier: standard
     context: 194564
     added: 7188
+    rewrite_overhead: 2
+    context_so_far: 187378
+    new_content: 7184
     cumulative_context: 6877824
   link_ids:
   - tool:toolu_0144ttE5HFu2UUCg9YGEiqa6
@@ -23223,6 +23530,9 @@ events:
     service_tier: standard
     context: 195202
     added: 640
+    rewrite_overhead: 2
+    context_so_far: 194564
+    new_content: 636
     cumulative_context: 7073026
   beat: true
   turn_leader: true
@@ -23337,6 +23647,9 @@ events:
     service_tier: standard
     context: 196297
     added: 40
+    rewrite_overhead: 0
+    context_so_far: 196257
+    new_content: 38
     cumulative_context: 7269323
   beat: true
   turn_leader: true
@@ -23798,6 +24111,9 @@ events:
     service_tier: standard
     context: 199160
     added: 2865
+    rewrite_overhead: 2
+    context_so_far: 196297
+    new_content: 2862
     cumulative_context: 7468483
   beat: true
   turn_leader: true
@@ -23975,6 +24291,9 @@ events:
     service_tier: standard
     context: 201984
     added: 2825
+    rewrite_overhead: 1
+    context_so_far: 199160
+    new_content: 2822
     cumulative_context: 7670467
   turn_leader: true
 - id: 9915cfe9-3cf7-41ae-b2a8-745a97ef11f5
@@ -24447,6 +24766,9 @@ events:
     service_tier: standard
     context: 204370
     added: 2388
+    rewrite_overhead: 2
+    context_so_far: 201984
+    new_content: 2384
     cumulative_context: 7874837
   link_ids:
   - tool:toolu_01RvfLArFPi5F4QyrLRmXLh3
@@ -24541,6 +24863,9 @@ events:
     service_tier: standard
     context: 204764
     added: 396
+    rewrite_overhead: 2
+    context_so_far: 204370
+    new_content: 392
     cumulative_context: 8079601
   beat: true
   turn_leader: true
@@ -24661,6 +24986,9 @@ events:
     service_tier: standard
     context: 205209
     added: 447
+    rewrite_overhead: 2
+    context_so_far: 204764
+    new_content: 443
     cumulative_context: 8284810
   link_ids:
   - tool:toolu_01LtcqCkYr6kVfw13uSxZ7uh
@@ -24771,6 +25099,9 @@ events:
     service_tier: standard
     context: 205407
     added: 200
+    rewrite_overhead: 2
+    context_so_far: 205209
+    new_content: 196
     cumulative_context: 8490217
   beat: true
   turn_leader: true
@@ -24904,6 +25235,9 @@ events:
     service_tier: standard
     context: 208925
     added: 2721
+    rewrite_overhead: 0
+    context_so_far: 206204
+    new_content: 2720
     cumulative_context: 8699142
   beat: true
   turn_leader: true
@@ -25070,6 +25404,9 @@ events:
     service_tier: standard
     context: 211455
     added: 2531
+    rewrite_overhead: 1
+    context_so_far: 208925
+    new_content: 2528
     cumulative_context: 8910597
   turn_leader: true
 - id: c241af5e-0e57-426e-9562-57a41d626189
@@ -25431,6 +25768,9 @@ events:
     service_tier: standard
     context: 215590
     added: 4137
+    rewrite_overhead: 2
+    context_so_far: 211455
+    new_content: 4133
     cumulative_context: 9126187
   link_ids:
   - tool:toolu_01JWnydKP6TFaT26HisDwtfZ
@@ -25492,6 +25832,9 @@ events:
     service_tier: standard
     context: 215929
     added: 341
+    rewrite_overhead: 2
+    context_so_far: 215590
+    new_content: 337
     cumulative_context: 9342116
   turn_leader: true
 - id: 5dd1ef50-0965-49fb-91f4-13c74199e7ca
@@ -25631,6 +25974,10 @@ events:
           For A6 (Docker/k8s/deploy): build the manifests and Dockerfile per the plan (host table.jessitron.honeydemo.io, existing secret, ALB group only-one-alb-please, repo-root build context). Attempt the deploy with the same tooling apps/shuffler/deploy.sh uses; if cluster access fails from your session, commit everything and report the deploy as the remaining manual step rather than fighting it. For the browser-telemetry collector: look for existing OTel collectors in the cluster (kubectl) and route to one if suitable; otherwise include a minimal collector deployment in apps/tabletop/k8s/; locally a collector config in the repo (or documented fallback) is fine.
 
           When finishing: update apps/tabletop/SEAMAP.md, apps/shuffler docs, root CLAUDE.md repo-layout notes, notes/GLOSSARY.md (Modes), notes/AGENT-NOTES.md gotchas, run the feature-owner `-update` skills, and drop the two buoys listed in the plan via the seamapping:drop-buoy skill. Your final report: what works (with test evidence), what's deployed vs pending, commits made, and any deviations from the plan with reasons.
+      tokens:
+        user_message_chars: 4021
+        user_message_estimate: 1149
+        system_prompt_estimate: 25508
       hidden: true
     - id: 2515195f-1867-492d-9f5f-81ba4de4883b
       ref: agent-afbfa2ada82f0c6bb:2
@@ -25745,6 +26092,9 @@ events:
         service_tier: standard
         context: 26657
         added: 26657
+        rewrite_overhead: 0
+        context_so_far: 0
+        new_content: 26655
         cumulative_context: 26657
       turn_leader: true
     - id: 206ba7b0-08aa-4f9f-95db-11b3522951b0
@@ -26262,6 +26612,9 @@ events:
         service_tier: standard
         context: 40626
         added: 13971
+        rewrite_overhead: 2
+        context_so_far: 26657
+        new_content: 13967
         cumulative_context: 67283
       turn_leader: true
     - id: 28359497-782c-4370-8f22-3da3d6cd6e52
@@ -26634,6 +26987,9 @@ events:
         service_tier: standard
         context: 43830
         added: 3206
+        rewrite_overhead: 2
+        context_so_far: 40626
+        new_content: 3202
         cumulative_context: 111113
       turn_leader: true
     - id: 1606e24c-a165-48ce-81e5-857bd694bac2
@@ -26901,6 +27257,9 @@ events:
         service_tier: standard
         context: 45545
         added: 1717
+        rewrite_overhead: 2
+        context_so_far: 43830
+        new_content: 1713
         cumulative_context: 156658
       link_ids:
       - tool:toolu_01FCG6XFKWXGQtEZKWXKWJk9
@@ -27175,6 +27534,9 @@ events:
         service_tier: standard
         context: 49449
         added: 3906
+        rewrite_overhead: 2
+        context_so_far: 45545
+        new_content: 3902
         cumulative_context: 206107
       link_ids:
       - tool:toolu_01KVpbQzUBW8mvNwGRQS1aTD
@@ -27407,6 +27769,9 @@ events:
         service_tier: standard
         context: 53350
         added: 3903
+        rewrite_overhead: 2
+        context_so_far: 49449
+        new_content: 3899
         cumulative_context: 259457
       link_ids:
       - tool:toolu_013VyQrboNAzbjYWizwmZonC
@@ -27558,6 +27923,9 @@ events:
         service_tier: standard
         context: 54311
         added: 963
+        rewrite_overhead: 2
+        context_so_far: 53350
+        new_content: 959
         cumulative_context: 313768
       link_ids:
       - tool:toolu_01L6N7DjxJzxiPU4q4edrj5N
@@ -27765,6 +28133,9 @@ events:
         service_tier: standard
         context: 58638
         added: 4329
+        rewrite_overhead: 2
+        context_so_far: 54311
+        new_content: 4325
         cumulative_context: 372406
       link_ids:
       - tool:toolu_01NM9ssud7UGiqKMr9MZ6U6J
@@ -27928,6 +28299,9 @@ events:
         service_tier: standard
         context: 62142
         added: 3506
+        rewrite_overhead: 2
+        context_so_far: 58638
+        new_content: 3502
         cumulative_context: 434548
       link_ids:
       - tool:toolu_01PeQUau9yp9i5tQYfWopFMD
@@ -28405,6 +28779,9 @@ events:
         service_tier: standard
         context: 75571
         added: 13431
+        rewrite_overhead: 2
+        context_so_far: 62142
+        new_content: 13427
         cumulative_context: 510119
       turn_leader: true
     - id: 53ad0bc7-fd33-452b-9cc5-3110b7f60e7d
@@ -28831,6 +29208,9 @@ events:
         service_tier: standard
         context: 83825
         added: 8256
+        rewrite_overhead: 2
+        context_so_far: 75571
+        new_content: 8252
         cumulative_context: 593944
       turn_leader: true
     - id: 0dffae5d-6243-454c-9382-29ba78709612
@@ -28993,6 +29373,9 @@ events:
         service_tier: standard
         context: 84935
         added: 1112
+        rewrite_overhead: 2
+        context_so_far: 83825
+        new_content: 1109
         cumulative_context: 678879
       link_ids:
       - tool:toolu_01WrEqGhK9RNVJFdf7NzcHtX
@@ -29074,6 +29457,9 @@ events:
         service_tier: standard
         context: 85106
         added: 172
+        rewrite_overhead: 1
+        context_so_far: 84935
+        new_content: 169
         cumulative_context: 763985
       link_ids:
       - tool:toolu_017dHQwobgVAcUYN7Koe7hA3
@@ -29421,6 +29807,9 @@ events:
         service_tier: standard
         context: 92629
         added: 7525
+        rewrite_overhead: 2
+        context_so_far: 85106
+        new_content: 7521
         cumulative_context: 856614
       turn_leader: true
     - id: 8164bcda-13d8-4e25-9cca-b494a946bcd2
@@ -29582,6 +29971,9 @@ events:
         service_tier: standard
         context: 94095
         added: 1468
+        rewrite_overhead: 2
+        context_so_far: 92629
+        new_content: 1465
         cumulative_context: 950709
       link_ids:
       - tool:toolu_0163MMCHHWikwMerFK72mRfD
@@ -29702,6 +30094,9 @@ events:
         service_tier: standard
         context: 96094
         added: 2000
+        rewrite_overhead: 1
+        context_so_far: 94095
+        new_content: 1997
         cumulative_context: 1046803
       turn_leader: true
     - id: cc2a41e5-242d-4cd3-bc32-d324b01c6c74
@@ -29865,6 +30260,9 @@ events:
         service_tier: standard
         context: 97394
         added: 1302
+        rewrite_overhead: 2
+        context_so_far: 96094
+        new_content: 1299
         cumulative_context: 1144197
       link_ids:
       - tool:toolu_01Go2aymAJ8Ch5A7BMzTeaKJ
@@ -30044,6 +30442,9 @@ events:
         service_tier: standard
         context: 99626
         added: 2233
+        rewrite_overhead: 1
+        context_so_far: 97394
+        new_content: 2230
         cumulative_context: 1243823
       turn_leader: true
     - id: 6597c59b-15f3-4b7d-81b2-50c40a062037
@@ -30221,6 +30622,9 @@ events:
         service_tier: standard
         context: 101672
         added: 2048
+        rewrite_overhead: 2
+        context_so_far: 99626
+        new_content: 2044
         cumulative_context: 1345495
       link_ids:
       - tool:toolu_01NqnbHmHJk85yLwzr9U2c5g
@@ -30606,6 +31010,9 @@ events:
         service_tier: standard
         context: 104092
         added: 2422
+        rewrite_overhead: 2
+        context_so_far: 101672
+        new_content: 2418
         cumulative_context: 1449587
       link_ids:
       - tool:toolu_01CS7W6T8z2wBurQQD1AchHn
@@ -30782,6 +31189,9 @@ events:
         service_tier: standard
         context: 108003
         added: 3913
+        rewrite_overhead: 2
+        context_so_far: 104092
+        new_content: 3909
         cumulative_context: 1557590
       turn_leader: true
     - id: 24fd2f75-c9f7-421c-b98a-f87da5e163b9
@@ -31099,6 +31509,9 @@ events:
         service_tier: standard
         context: 113692
         added: 5691
+        rewrite_overhead: 2
+        context_so_far: 108003
+        new_content: 5687
         cumulative_context: 1671282
       turn_leader: true
     - id: aa59f389-7b15-41a0-a5bb-42fa146475fb
@@ -31302,6 +31715,9 @@ events:
         service_tier: standard
         context: 118009
         added: 4319
+        rewrite_overhead: 2
+        context_so_far: 113692
+        new_content: 4315
         cumulative_context: 1789291
       link_ids:
       - tool:toolu_01Ptp8o9v5JM4HPDtxMtgERM
@@ -31418,6 +31834,9 @@ events:
         service_tier: standard
         context: 119212
         added: 1205
+        rewrite_overhead: 2
+        context_so_far: 118009
+        new_content: 1201
         cumulative_context: 1908503
       turn_leader: true
     - id: 78ff8219-9375-4923-87de-f1c2d757791f
@@ -31720,6 +32139,9 @@ events:
         service_tier: standard
         context: 122745
         added: 3535
+        rewrite_overhead: 2
+        context_so_far: 119212
+        new_content: 3531
         cumulative_context: 2031248
       turn_leader: true
     - id: dc5480c3-2af6-40e7-ac1d-042438b8bf89
@@ -31873,6 +32295,9 @@ events:
         service_tier: standard
         context: 124510
         added: 1767
+        rewrite_overhead: 2
+        context_so_far: 122745
+        new_content: 1763
         cumulative_context: 2155758
       link_ids:
       - tool:toolu_01S5yxeUhKotzSKkmU3LESp2
@@ -31953,6 +32378,9 @@ events:
         service_tier: standard
         context: 124748
         added: 240
+        rewrite_overhead: 2
+        context_so_far: 124510
+        new_content: 236
         cumulative_context: 2280506
       link_ids:
       - tool:toolu_01CheL9XhW4Bzp6suGHWNiZ9
@@ -32018,6 +32446,9 @@ events:
         service_tier: standard
         context: 125042
         added: 296
+        rewrite_overhead: 2
+        context_so_far: 124748
+        new_content: 292
         cumulative_context: 2405548
       turn_leader: true
     - id: cf3cd673-5038-4b70-83da-a3fbc7550883
@@ -32217,6 +32648,9 @@ events:
         service_tier: standard
         context: 126813
         added: 1773
+        rewrite_overhead: 2
+        context_so_far: 125042
+        new_content: 1769
         cumulative_context: 2532361
       link_ids:
       - tool:toolu_01YHe673KFtrW4iHCsuK23Bk
@@ -32297,6 +32731,9 @@ events:
         service_tier: standard
         context: 127139
         added: 328
+        rewrite_overhead: 2
+        context_so_far: 126813
+        new_content: 324
         cumulative_context: 2659500
       link_ids:
       - tool:toolu_01NTmGCEwtmDtZYQHRNKgDVj
@@ -32387,6 +32824,9 @@ events:
         service_tier: standard
         context: 127391
         added: 254
+        rewrite_overhead: 2
+        context_so_far: 127139
+        new_content: 250
         cumulative_context: 2786891
       turn_leader: true
     - id: b14b3e65-2856-4e96-9ca1-978a865b0df0
@@ -32669,6 +33109,9 @@ events:
         service_tier: standard
         context: 130729
         added: 3340
+        rewrite_overhead: 2
+        context_so_far: 127391
+        new_content: 3336
         cumulative_context: 2917620
       turn_leader: true
     - id: 325663f5-e281-437e-96be-eae1412b34af
@@ -32820,6 +33263,9 @@ events:
         service_tier: standard
         context: 131976
         added: 1249
+        rewrite_overhead: 2
+        context_so_far: 130729
+        new_content: 1245
         cumulative_context: 3049596
       turn_leader: true
     - id: a7250a5c-4a90-4aad-ad64-97875aa83fac
@@ -33011,6 +33457,9 @@ events:
         service_tier: standard
         context: 132730
         added: 756
+        rewrite_overhead: 2
+        context_so_far: 131976
+        new_content: 752
         cumulative_context: 3182326
       link_ids:
       - tool:toolu_013GjP539H7Qc36mW8ffrV6D
@@ -33128,6 +33577,9 @@ events:
         service_tier: standard
         context: 133218
         added: 490
+        rewrite_overhead: 2
+        context_so_far: 132730
+        new_content: 486
         cumulative_context: 3315544
       link_ids:
       - tool:toolu_012JNaCqbQtHHh6haG9DUH2X
@@ -33274,6 +33726,9 @@ events:
         service_tier: standard
         context: 134771
         added: 1555
+        rewrite_overhead: 2
+        context_so_far: 133218
+        new_content: 1551
         cumulative_context: 3450315
       turn_leader: true
     - id: 57bde06e-3284-44d1-9b63-4e286638ce62
@@ -33408,6 +33863,9 @@ events:
         service_tier: standard
         context: 135950
         added: 1181
+        rewrite_overhead: 2
+        context_so_far: 134771
+        new_content: 1177
         cumulative_context: 3586265
       link_ids:
       - tool:toolu_01XcsevXfv2GJNHsaYsdwkVD
@@ -33473,6 +33931,9 @@ events:
         service_tier: standard
         context: 136262
         added: 314
+        rewrite_overhead: 2
+        context_so_far: 135950
+        new_content: 310
         cumulative_context: 3722527
       turn_leader: true
     - id: 57c6c775-6e2d-4e49-8573-06da580c2a43
@@ -33578,6 +34039,9 @@ events:
         service_tier: standard
         context: 136826
         added: 566
+        rewrite_overhead: 2
+        context_so_far: 136262
+        new_content: 562
         cumulative_context: 3859353
       turn_leader: true
     - id: 548eab41-72aa-4683-b00a-4de417233294
@@ -33709,6 +34173,9 @@ events:
         service_tier: standard
         context: 139992
         added: 3168
+        rewrite_overhead: 2
+        context_so_far: 136826
+        new_content: 3164
         cumulative_context: 3999345
       turn_leader: true
     - id: 3fd0826a-a01d-4c43-bd85-773d17bae60e
@@ -33849,6 +34316,9 @@ events:
         service_tier: standard
         context: 140692
         added: 702
+        rewrite_overhead: 2
+        context_so_far: 139992
+        new_content: 698
         cumulative_context: 4140037
       turn_leader: true
     - id: 72d957d1-1887-42e4-94bd-742eb9e78e01
@@ -33957,6 +34427,9 @@ events:
         service_tier: standard
         context: 141834
         added: 1144
+        rewrite_overhead: 2
+        context_so_far: 140692
+        new_content: 1140
         cumulative_context: 4281871
       turn_leader: true
     - id: 74438156-4dc0-4fbf-b405-a317f36a7604
@@ -34332,6 +34805,9 @@ events:
         service_tier: standard
         context: 143962
         added: 2130
+        rewrite_overhead: 2
+        context_so_far: 141834
+        new_content: 2126
         cumulative_context: 4425833
       link_ids:
       - tool:toolu_012jw61PpWF8BPUbqvD72oga
@@ -34396,6 +34872,9 @@ events:
         service_tier: standard
         context: 144101
         added: 141
+        rewrite_overhead: 2
+        context_so_far: 143962
+        new_content: 137
         cumulative_context: 4569934
       turn_leader: true
     - id: f1e3cdaa-9519-4322-94fe-956c0fb35e20
@@ -34554,6 +35033,9 @@ events:
         service_tier: standard
         context: 144606
         added: 507
+        rewrite_overhead: 2
+        context_so_far: 144101
+        new_content: 503
         cumulative_context: 4714540
       link_ids:
       - tool:toolu_01Sn8tdqj59QMLVFrfWGKDkU
@@ -34655,6 +35137,9 @@ events:
         service_tier: standard
         context: 144938
         added: 334
+        rewrite_overhead: 2
+        context_so_far: 144606
+        new_content: 330
         cumulative_context: 4859478
       turn_leader: true
     - id: 011bbbe3-9c51-4e85-b44b-bbab3926b65f
@@ -34855,6 +35340,9 @@ events:
         service_tier: standard
         context: 145573
         added: 637
+        rewrite_overhead: 2
+        context_so_far: 144938
+        new_content: 633
         cumulative_context: 5005051
       link_ids:
       - tool:toolu_01LBhV2WK2eZnuyt5GhVwySr
@@ -34923,6 +35411,9 @@ events:
         service_tier: standard
         context: 146602
         added: 1031
+        rewrite_overhead: 2
+        context_so_far: 145573
+        new_content: 1027
         cumulative_context: 5151653
       link_ids:
       - tool:toolu_01GySN1ujZgJRspR3ZkKDEz5
@@ -35021,6 +35512,9 @@ events:
         service_tier: standard
         context: 147021
         added: 421
+        rewrite_overhead: 2
+        context_so_far: 146602
+        new_content: 417
         cumulative_context: 5298674
       link_ids:
       - tool:toolu_01Q9E3zXffKgEPRpTPhEEiuf
@@ -35107,6 +35601,9 @@ events:
         service_tier: standard
         context: 147446
         added: 427
+        rewrite_overhead: 2
+        context_so_far: 147021
+        new_content: 423
         cumulative_context: 5446120
       link_ids:
       - tool:toolu_01TthKRvnYr7wpubdf7Lmq69
@@ -35249,6 +35746,9 @@ events:
         service_tier: standard
         context: 148853
         added: 1409
+        rewrite_overhead: 2
+        context_so_far: 147446
+        new_content: 1405
         cumulative_context: 5594973
       link_ids:
       - tool:toolu_01QymPShwk81k5kWhnvSVKK7
@@ -35333,6 +35833,9 @@ events:
         service_tier: standard
         context: 149124
         added: 273
+        rewrite_overhead: 2
+        context_so_far: 148853
+        new_content: 269
         cumulative_context: 5744097
       link_ids:
       - tool:toolu_01MLWw6LuqhpUg9J1jt1P4TW
@@ -35435,6 +35938,9 @@ events:
         service_tier: standard
         context: 149398
         added: 276
+        rewrite_overhead: 2
+        context_so_far: 149124
+        new_content: 272
         cumulative_context: 5893495
       turn_leader: true
     - id: e0f6a5d9-285e-46a8-92cc-217651e0bdc3
@@ -35855,6 +36361,9 @@ events:
         service_tier: standard
         context: 151412
         added: 2016
+        rewrite_overhead: 2
+        context_so_far: 149398
+        new_content: 2012
         cumulative_context: 6044907
       link_ids:
       - tool:toolu_01F63Li51A6CEDFTkxoFTYJo
@@ -35913,6 +36422,9 @@ events:
         service_tier: standard
         context: 152639
         added: 1229
+        rewrite_overhead: 2
+        context_so_far: 151412
+        new_content: 1225
         cumulative_context: 6197546
       turn_leader: true
     - id: 73328536-5e12-43cb-9477-dbf99f8dbe84
@@ -36220,6 +36732,9 @@ events:
         service_tier: standard
         context: 156197
         added: 3560
+        rewrite_overhead: 2
+        context_so_far: 152639
+        new_content: 3556
         cumulative_context: 6353743
       link_ids:
       - tool:toolu_01J9xr1qfKQwDPmSenowCnsK
@@ -36289,6 +36804,9 @@ events:
         service_tier: standard
         context: 156578
         added: 383
+        rewrite_overhead: 2
+        context_so_far: 156197
+        new_content: 379
         cumulative_context: 6510321
       turn_leader: true
     - id: d30045db-fcad-4058-b5cb-b8e584e5e05a
@@ -36387,6 +36905,9 @@ events:
         service_tier: standard
         context: 156954
         added: 378
+        rewrite_overhead: 2
+        context_so_far: 156578
+        new_content: 374
         cumulative_context: 6667275
       turn_leader: true
     - id: 1d73394c-0561-4b88-be7b-43c70a49c15d
@@ -36519,6 +37040,9 @@ events:
         service_tier: standard
         context: 157472
         added: 520
+        rewrite_overhead: 2
+        context_so_far: 156954
+        new_content: 516
         cumulative_context: 6824747
       link_ids:
       - tool:toolu_01HbjSACMnSjwSyBybfcBKUf
@@ -36606,6 +37130,9 @@ events:
         service_tier: standard
         context: 157658
         added: 188
+        rewrite_overhead: 2
+        context_so_far: 157472
+        new_content: 184
         cumulative_context: 6982405
       turn_leader: true
     - id: 2afd259a-9f36-4158-8a97-4295ec990e39
@@ -36751,6 +37278,9 @@ events:
         service_tier: standard
         context: 158997
         added: 1341
+        rewrite_overhead: 2
+        context_so_far: 157658
+        new_content: 1337
         cumulative_context: 7141402
       turn_leader: true
     - id: 2d52fb58-5dee-4384-9f7c-71470553ceef
@@ -36974,6 +37504,9 @@ events:
         service_tier: standard
         context: 161590
         added: 2595
+        rewrite_overhead: 2
+        context_so_far: 158997
+        new_content: 2591
         cumulative_context: 7302992
       link_ids:
       - tool:toolu_015dzJorVyWYsaJ7bjyNsVH5
@@ -37090,6 +37623,9 @@ events:
         service_tier: standard
         context: 161952
         added: 364
+        rewrite_overhead: 2
+        context_so_far: 161590
+        new_content: 360
         cumulative_context: 7464944
       turn_leader: true
     - id: 0f61716d-9a30-4dc1-b78a-ebc0db9c1aff
@@ -37280,6 +37816,9 @@ events:
         service_tier: standard
         context: 163416
         added: 1466
+        rewrite_overhead: 2
+        context_so_far: 161952
+        new_content: 1462
         cumulative_context: 7628360
       link_ids:
       - tool:toolu_01B5WtGQ2TXJ698fQV5iPUEk
@@ -37539,6 +38078,9 @@ events:
         service_tier: standard
         context: 165443
         added: 2029
+        rewrite_overhead: 2
+        context_so_far: 163416
+        new_content: 2025
         cumulative_context: 7793803
       link_ids:
       - tool:toolu_01P8qZpL1nbWQCaZ9SykMCtF
@@ -37601,6 +38143,9 @@ events:
         service_tier: standard
         context: 165687
         added: 246
+        rewrite_overhead: 2
+        context_so_far: 165443
+        new_content: 242
         cumulative_context: 7959490
       turn_leader: true
     - id: 2603551a-fa97-4b5a-abfe-cb2539e40203
@@ -37710,6 +38255,9 @@ events:
         service_tier: standard
         context: 166341
         added: 656
+        rewrite_overhead: 2
+        context_so_far: 165687
+        new_content: 652
         cumulative_context: 8125831
       turn_leader: true
     - id: 539bb149-4cef-4a18-b12b-1cf418aaa7a7
@@ -37828,6 +38376,9 @@ events:
         service_tier: standard
         context: 175624
         added: 9285
+        rewrite_overhead: 2
+        context_so_far: 166341
+        new_content: 9281
         cumulative_context: 8301455
       link_ids:
       - tool:toolu_01Djg4ruiqAKd8cRCtTTQs3C
@@ -37895,6 +38446,9 @@ events:
         service_tier: standard
         context: 175848
         added: 226
+        rewrite_overhead: 2
+        context_so_far: 175624
+        new_content: 222
         cumulative_context: 8477303
       link_ids:
       - tool:toolu_01LnDQo4zuqC2hKMMXLpVTjX
@@ -37954,6 +38508,9 @@ events:
         service_tier: standard
         context: 176052
         added: 206
+        rewrite_overhead: 2
+        context_so_far: 175848
+        new_content: 202
         cumulative_context: 8653355
       link_ids:
       - tool:toolu_012jWf71715W1pjupDNkWdrU
@@ -38256,6 +38813,9 @@ events:
         service_tier: standard
         context: 178620
         added: 2570
+        rewrite_overhead: 2
+        context_so_far: 176052
+        new_content: 2566
         cumulative_context: 8831975
       turn_leader: true
     - id: 48d30130-61ac-491f-b50f-84485b42c67b
@@ -38336,6 +38896,9 @@ events:
         service_tier: standard
         context: 179206
         added: 588
+        rewrite_overhead: 2
+        context_so_far: 178620
+        new_content: 584
         cumulative_context: 9011181
       turn_leader: true
     - id: 30349879-b988-4060-8f31-291c2be278df
@@ -38484,6 +39047,9 @@ events:
         service_tier: standard
         context: 179919
         added: 715
+        rewrite_overhead: 2
+        context_so_far: 179206
+        new_content: 711
         cumulative_context: 9191100
       turn_leader: true
     - id: a0e12524-13e4-4511-981c-1cc3fbeaa829
@@ -38716,6 +39282,9 @@ events:
         service_tier: standard
         context: 181392
         added: 1475
+        rewrite_overhead: 2
+        context_so_far: 179919
+        new_content: 1471
         cumulative_context: 9372492
       link_ids:
       - tool:toolu_01AV9gMgTuUGqiknSXi7kUyB
@@ -38774,6 +39343,9 @@ events:
         service_tier: standard
         context: 183530
         added: 2140
+        rewrite_overhead: 2
+        context_so_far: 181392
+        new_content: 2136
         cumulative_context: 9556022
       turn_leader: true
     - id: 81f07b3c-bdb1-48f6-9d9b-04f6347db1e1
@@ -39121,6 +39693,9 @@ events:
         service_tier: standard
         context: 185799
         added: 2271
+        rewrite_overhead: 2
+        context_so_far: 183530
+        new_content: 2267
         cumulative_context: 9741821
       turn_leader: true
     - id: ed381d64-2f05-4adf-897a-707a60f93959
@@ -39228,6 +39803,9 @@ events:
         service_tier: standard
         context: 186208
         added: 411
+        rewrite_overhead: 2
+        context_so_far: 185799
+        new_content: 407
         cumulative_context: 9928029
       link_ids:
       - tool:toolu_01YZRBYPaTHZu1TYnioEV7a8
@@ -39301,6 +39879,9 @@ events:
         service_tier: standard
         context: 186499
         added: 293
+        rewrite_overhead: 2
+        context_so_far: 186208
+        new_content: 289
         cumulative_context: 10114528
       turn_leader: true
     - id: 95a5b21b-1442-4abd-95e9-0667db25c782
@@ -39429,6 +40010,9 @@ events:
         service_tier: standard
         context: 186848
         added: 351
+        rewrite_overhead: 2
+        context_so_far: 186499
+        new_content: 347
         cumulative_context: 10301376
       turn_leader: true
     - id: 846e7532-bd88-46a2-9d5b-2fe56f339396
@@ -39528,6 +40112,9 @@ events:
         service_tier: standard
         context: 187852
         added: 1006
+        rewrite_overhead: 2
+        context_so_far: 186848
+        new_content: 1002
         cumulative_context: 10489228
       turn_leader: true
     - id: c0640f1f-e8cc-4c61-8a7a-648e422dfc5b
@@ -39648,6 +40235,9 @@ events:
         service_tier: standard
         context: 188235
         added: 385
+        rewrite_overhead: 2
+        context_so_far: 187852
+        new_content: 381
         cumulative_context: 10677463
       link_ids:
       - tool:toolu_01TUZeRpFyAUn46LMX3TQLZc
@@ -39811,6 +40401,9 @@ events:
         service_tier: standard
         context: 189831
         added: 1598
+        rewrite_overhead: 2
+        context_so_far: 188235
+        new_content: 1594
         cumulative_context: 10867294
       turn_leader: true
     - id: 4d44562b-d427-4bf5-a733-9457ae91a264
@@ -40116,6 +40709,9 @@ events:
         service_tier: standard
         context: 191197
         added: 1368
+        rewrite_overhead: 2
+        context_so_far: 189831
+        new_content: 1364
         cumulative_context: 11058491
       link_ids:
       - tool:toolu_017gXm656ULKRqHdYrAGLEDB
@@ -40174,6 +40770,9 @@ events:
         service_tier: standard
         context: 191926
         added: 731
+        rewrite_overhead: 2
+        context_so_far: 191197
+        new_content: 727
         cumulative_context: 11250417
       turn_leader: true
     - id: 06b6c732-c868-49ea-a14b-0aa6b5d6a4a6
@@ -40532,6 +41131,9 @@ events:
         service_tier: standard
         context: 194741
         added: 2817
+        rewrite_overhead: 2
+        context_so_far: 191926
+        new_content: 2813
         cumulative_context: 11445158
       link_ids:
       - tool:toolu_01QBrNAS2JyEsVHmmDyiS7RJ
@@ -40645,6 +41247,9 @@ events:
         service_tier: standard
         context: 195402
         added: 663
+        rewrite_overhead: 2
+        context_so_far: 194741
+        new_content: 659
         cumulative_context: 11640560
       turn_leader: true
     - id: de947f85-344d-4993-8d7e-2d4924dfab0a
@@ -40769,6 +41374,9 @@ events:
         service_tier: standard
         context: 195755
         added: 355
+        rewrite_overhead: 2
+        context_so_far: 195402
+        new_content: 351
         cumulative_context: 11836315
       turn_leader: true
     - id: cad2b913-2dcb-4a1e-862b-0e2949ff5e99
@@ -40871,6 +41479,9 @@ events:
         service_tier: standard
         context: 197340
         added: 1587
+        rewrite_overhead: 2
+        context_so_far: 195755
+        new_content: 1583
         cumulative_context: 12033655
       turn_leader: true
     - id: 486bbba6-ca7c-46a1-9da6-2d6576272d73
@@ -41091,6 +41702,9 @@ events:
         service_tier: standard
         context: 199830
         added: 2492
+        rewrite_overhead: 2
+        context_so_far: 197340
+        new_content: 2488
         cumulative_context: 12233485
       turn_leader: true
     - id: 29d13705-ee6c-49dd-aa97-eee11a4ea7f4
@@ -41505,6 +42119,9 @@ events:
         service_tier: standard
         context: 202568
         added: 2740
+        rewrite_overhead: 2
+        context_so_far: 199830
+        new_content: 2736
         cumulative_context: 12436053
       link_ids:
       - tool:toolu_01SfJUA2uuqyaRPUE8UnsPmW
@@ -41902,6 +42519,9 @@ events:
         service_tier: standard
         context: 207326
         added: 4760
+        rewrite_overhead: 2
+        context_so_far: 202568
+        new_content: 4756
         cumulative_context: 12643379
       link_ids:
       - tool:toolu_013nF58UwXpNgKuwRc3g5st7
@@ -42012,6 +42632,9 @@ events:
         service_tier: standard
         context: 207707
         added: 383
+        rewrite_overhead: 2
+        context_so_far: 207326
+        new_content: 379
         cumulative_context: 12851086
       turn_leader: true
     - id: 4ba2198d-95df-4592-94f7-0bd5502159ec
@@ -42140,6 +42763,9 @@ events:
         service_tier: standard
         context: 208152
         added: 447
+        rewrite_overhead: 2
+        context_so_far: 207707
+        new_content: 443
         cumulative_context: 13059238
       link_ids:
       - tool:toolu_01P6CY1GH9bZPxSyinwd5gtm
@@ -42213,6 +42839,9 @@ events:
         service_tier: standard
         context: 208516
         added: 366
+        rewrite_overhead: 2
+        context_so_far: 208152
+        new_content: 362
         cumulative_context: 13267754
       turn_leader: true
     - id: ace883ed-442e-4ed4-a588-25416e64c01b
@@ -42365,6 +42994,9 @@ events:
         service_tier: standard
         context: 209694
         added: 1180
+        rewrite_overhead: 2
+        context_so_far: 208516
+        new_content: 1176
         cumulative_context: 13477448
       link_ids:
       - tool:toolu_01BAPh5JHYEpkcqY5pgrqwS5
@@ -42442,6 +43074,9 @@ events:
         service_tier: standard
         context: 210193
         added: 501
+        rewrite_overhead: 2
+        context_so_far: 209694
+        new_content: 497
         cumulative_context: 13687641
       turn_leader: true
     - id: 8df6b718-64b2-4782-932a-65fcf57160ad
@@ -42564,6 +43199,9 @@ events:
         service_tier: standard
         context: 210450
         added: 259
+        rewrite_overhead: 2
+        context_so_far: 210193
+        new_content: 255
         cumulative_context: 13898091
       turn_leader: true
     - id: a256be24-bc29-4158-b713-52cf325fb53c
@@ -42712,6 +43350,9 @@ events:
         service_tier: standard
         context: 211607
         added: 1159
+        rewrite_overhead: 2
+        context_so_far: 210450
+        new_content: 1155
         cumulative_context: 14109698
       link_ids:
       - tool:toolu_017m4uiijrDBGqYNLnZJoxqj
@@ -43027,6 +43668,9 @@ events:
         service_tier: standard
         context: 213555
         added: 1950
+        rewrite_overhead: 2
+        context_so_far: 211607
+        new_content: 1946
         cumulative_context: 14323253
       turn_leader: true
     - id: cc67a7e3-11d5-42ef-b8f8-9df49d053944
@@ -43187,6 +43831,9 @@ events:
         service_tier: standard
         context: 214928
         added: 1375
+        rewrite_overhead: 2
+        context_so_far: 213555
+        new_content: 1371
         cumulative_context: 14538181
       turn_leader: true
     - id: 81cea24e-80a9-42f6-8378-eedc13086ef4
@@ -43287,6 +43934,9 @@ events:
         service_tier: standard
         context: 216669
         added: 1743
+        rewrite_overhead: 2
+        context_so_far: 214928
+        new_content: 1739
         cumulative_context: 14754850
       turn_leader: true
     - id: 8d131c49-7568-4a7e-9184-de9504eb39d7
@@ -43537,6 +44187,9 @@ events:
         service_tier: standard
         context: 219033
         added: 2366
+        rewrite_overhead: 2
+        context_so_far: 216669
+        new_content: 2362
         cumulative_context: 14973883
       turn_leader: true
     - id: aaa39ca8-0d70-4f22-82c7-ee2e484c15ac
@@ -44092,6 +44745,9 @@ events:
         service_tier: standard
         context: 222888
         added: 3857
+        rewrite_overhead: 2
+        context_so_far: 219033
+        new_content: 3853
         cumulative_context: 15196771
       link_ids:
       - tool:toolu_013bdLEwXaAypqs81xkrUHVe
@@ -44293,6 +44949,9 @@ events:
         service_tier: standard
         context: 225485
         added: 2599
+        rewrite_overhead: 2
+        context_so_far: 222888
+        new_content: 2595
         cumulative_context: 15422256
       link_ids:
       - tool:toolu_011UQTcrUFead86DUAM9ggRM
@@ -44351,6 +45010,9 @@ events:
         service_tier: standard
         context: 227111
         added: 1628
+        rewrite_overhead: 2
+        context_so_far: 225485
+        new_content: 1624
         cumulative_context: 15649367
       turn_leader: true
     - id: 369cf2b8-f8af-412d-ad2b-25a2d0c37539
@@ -44479,6 +45141,9 @@ events:
         service_tier: standard
         context: 227530
         added: 421
+        rewrite_overhead: 2
+        context_so_far: 227111
+        new_content: 417
         cumulative_context: 15876897
       link_ids:
       - tool:toolu_0112upK6CAPox5YB9o2wTTKQ
@@ -44541,6 +45206,9 @@ events:
         service_tier: standard
         context: 227723
         added: 195
+        rewrite_overhead: 2
+        context_so_far: 227530
+        new_content: 191
         cumulative_context: 16104620
       turn_leader: true
     - id: ce0d5abe-5141-4d5e-a7b4-f2966d8dc09d
@@ -44648,6 +45316,9 @@ events:
         service_tier: standard
         context: 227969
         added: 248
+        rewrite_overhead: 2
+        context_so_far: 227723
+        new_content: 244
         cumulative_context: 16332589
       link_ids:
       - tool:toolu_015EZ6jVi62WKo2WUqtMBTHX
@@ -44720,6 +45391,9 @@ events:
         service_tier: standard
         context: 228250
         added: 283
+        rewrite_overhead: 2
+        context_so_far: 227969
+        new_content: 279
         cumulative_context: 16560839
       link_ids:
       - tool:toolu_019KZQqLWAfjbH62a1qcpJjJ
@@ -44785,6 +45459,9 @@ events:
         service_tier: standard
         context: 228682
         added: 434
+        rewrite_overhead: 2
+        context_so_far: 228250
+        new_content: 430
         cumulative_context: 16789521
       link_ids:
       - tool:toolu_01MBnXsddEaz1wSMEnnncWna
@@ -44855,6 +45532,9 @@ events:
         service_tier: standard
         context: 228821
         added: 141
+        rewrite_overhead: 2
+        context_so_far: 228682
+        new_content: 137
         cumulative_context: 17018342
       link_ids:
       - tool:toolu_01GBUr1UAYJT9W2MHWtyP3XY
@@ -44982,6 +45662,9 @@ events:
         service_tier: standard
         context: 229966
         added: 1147
+        rewrite_overhead: 2
+        context_so_far: 228821
+        new_content: 1143
         cumulative_context: 17248308
       turn_leader: true
     - id: 991a8feb-76c6-4917-af33-8c83720916ef
@@ -45169,6 +45852,9 @@ events:
         service_tier: standard
         context: 231496
         added: 1532
+        rewrite_overhead: 2
+        context_so_far: 229966
+        new_content: 1528
         cumulative_context: 17479804
       link_ids:
       - tool:toolu_0111iLsNvYUh7DubzDyT4NbX
@@ -45259,6 +45945,9 @@ events:
         service_tier: standard
         context: 232064
         added: 570
+        rewrite_overhead: 2
+        context_so_far: 231496
+        new_content: 566
         cumulative_context: 17711868
       turn_leader: true
     - id: bc2cd15f-3125-4899-bd19-d5fa0aeb9065
@@ -45364,6 +46053,9 @@ events:
         service_tier: standard
         context: 232325
         added: 263
+        rewrite_overhead: 2
+        context_so_far: 232064
+        new_content: 259
         cumulative_context: 17944193
       link_ids:
       - tool:toolu_01JhRT2EPCef6Khsa965scXr
@@ -45562,6 +46254,10 @@ events:
           Working agreements: commit after each conceptual change, tagged "- claude". IMPORTANT — another agent is concurrently working in this same checkout on apps/tabletop/ and apps/shuffler/: stage ONLY your own files with explicit `git add <paths>` (never `git add -A` or `git commit -a`), commit immediately after staging, and on an index.lock conflict wait 2 seconds and retry. Do not push. You own services/spine/ and contracts/; do not touch apps/. Pick a local port that clashes with nothing (Shuffler tests use 3344; tabletop ~5180; use e.g. 4600). Update services/spine/SEAMAP.md and root CLAUDE.md's repo notes when done.
 
           Final report: what runs (with test evidence), the contracts/ files written, admin-screen screenshot-level description, deployed vs pending, commits made, and any contract ambiguities you hit (do NOT change the contract doc — report ambiguities instead).
+      tokens:
+        user_message_chars: 4567
+        user_message_estimate: 1305
+        system_prompt_estimate: 15681
       hidden: true
     - id: e600e3ad-4712-49be-8040-d934f9111d1c
       ref: agent-aad1d0eebfc921561:2
@@ -45676,6 +46372,9 @@ events:
         service_tier: standard
         context: 26902
         added: 16986
+        rewrite_overhead: 0
+        context_so_far: 9916
+        new_content: 16984
         cumulative_context: 26902
       turn_leader: true
     - id: ae4a333c-9381-45b9-9188-b0816e8d9c98
@@ -46133,6 +46832,9 @@ events:
         service_tier: standard
         context: 37041
         added: 10141
+        rewrite_overhead: 2
+        context_so_far: 26902
+        new_content: 10137
         cumulative_context: 63943
       turn_leader: true
     - id: 4ce2d100-71e4-416a-8d7e-420bfe6980f3
@@ -46567,6 +47269,9 @@ events:
         service_tier: standard
         context: 43630
         added: 6591
+        rewrite_overhead: 2
+        context_so_far: 37041
+        new_content: 6587
         cumulative_context: 107573
       turn_leader: true
     - id: a5488efe-3ea8-42fd-8239-8e285376408e
@@ -46830,6 +47535,9 @@ events:
         service_tier: standard
         context: 47708
         added: 4080
+        rewrite_overhead: 2
+        context_so_far: 43630
+        new_content: 4076
         cumulative_context: 155281
       turn_leader: true
     - id: cb0e8002-b0a7-4fdc-81fe-c8440e2d14af
@@ -47294,6 +48002,9 @@ events:
         service_tier: standard
         context: 50528
         added: 2822
+        rewrite_overhead: 2
+        context_so_far: 47708
+        new_content: 2818
         cumulative_context: 205809
       turn_leader: true
     - id: 7a5bef4c-0e90-4b09-b851-f84130cc6ad0
@@ -47436,6 +48147,9 @@ events:
         service_tier: standard
         context: 54379
         added: 3853
+        rewrite_overhead: 2
+        context_so_far: 50528
+        new_content: 3849
         cumulative_context: 260188
       turn_leader: true
     - id: 80aee823-5b46-46c7-bb48-b3f6468c52cf
@@ -47986,6 +48700,9 @@ events:
         service_tier: standard
         context: 58731
         added: 4354
+        rewrite_overhead: 2
+        context_so_far: 54379
+        new_content: 4350
         cumulative_context: 318919
       link_ids:
       - tool:toolu_018XkeqqVx4hHbeS6MVkTgju
@@ -48086,6 +48803,9 @@ events:
         service_tier: standard
         context: 59034
         added: 305
+        rewrite_overhead: 2
+        context_so_far: 58731
+        new_content: 301
         cumulative_context: 377953
       turn_leader: true
     - id: b317bbc3-a71d-47c6-a676-57ba66ee7077
@@ -48198,6 +48918,9 @@ events:
         service_tier: standard
         context: 59291
         added: 259
+        rewrite_overhead: 2
+        context_so_far: 59034
+        new_content: 255
         cumulative_context: 437244
       link_ids:
       - tool:toolu_013SaPHr3R2BZtmPsyb4nkj1
@@ -48287,6 +49010,9 @@ events:
         service_tier: standard
         context: 59897
         added: 608
+        rewrite_overhead: 2
+        context_so_far: 59291
+        new_content: 604
         cumulative_context: 497141
       turn_leader: true
     - id: 5c95596e-4d70-4f92-96de-c1ff2bf934b4
@@ -48431,6 +49157,9 @@ events:
         service_tier: standard
         context: 60803
         added: 908
+        rewrite_overhead: 2
+        context_so_far: 59897
+        new_content: 904
         cumulative_context: 557944
       turn_leader: true
     - id: eac0e463-c914-4c57-8b5c-8fa8cd0b7cd0
@@ -48655,6 +49384,9 @@ events:
         service_tier: standard
         context: 61871
         added: 1070
+        rewrite_overhead: 2
+        context_so_far: 60803
+        new_content: 1066
         cumulative_context: 619815
       link_ids:
       - tool:toolu_012T2jWCvq9ZW44RxQQ9Xmxi
@@ -48761,6 +49493,9 @@ events:
         service_tier: standard
         context: 62284
         added: 415
+        rewrite_overhead: 2
+        context_so_far: 61871
+        new_content: 411
         cumulative_context: 682099
       turn_leader: true
     - id: 95312e7e-01a0-418a-aa44-b5698f2d105d
@@ -49123,6 +49858,9 @@ events:
         service_tier: standard
         context: 64537
         added: 2255
+        rewrite_overhead: 2
+        context_so_far: 62284
+        new_content: 2251
         cumulative_context: 746636
       turn_leader: true
     - id: 1c7eba8b-d6df-4266-b2d2-2bd9483b0d40
@@ -49216,6 +49954,9 @@ events:
         service_tier: standard
         context: 64876
         added: 341
+        rewrite_overhead: 2
+        context_so_far: 64537
+        new_content: 337
         cumulative_context: 811512
       turn_leader: true
     - id: bdf8afe4-ae2d-49c3-ab98-d0ff7c846289
@@ -49400,6 +50141,9 @@ events:
         service_tier: standard
         context: 66139
         added: 1265
+        rewrite_overhead: 2
+        context_so_far: 64876
+        new_content: 1261
         cumulative_context: 877651
       link_ids:
       - tool:toolu_015FtJkjreAiHDwLKReDeeFG
@@ -49546,6 +50290,9 @@ events:
         service_tier: standard
         context: 66696
         added: 559
+        rewrite_overhead: 2
+        context_so_far: 66139
+        new_content: 555
         cumulative_context: 944347
       link_ids:
       - tool:toolu_01XXSRYGHquuWdyajG9PLaZy
@@ -49640,6 +50387,9 @@ events:
         service_tier: standard
         context: 67988
         added: 1294
+        rewrite_overhead: 2
+        context_so_far: 66696
+        new_content: 1290
         cumulative_context: 1012335
       turn_leader: true
     - id: 40b06287-d696-44a9-ac63-c207e3830ca7
@@ -49846,6 +50596,9 @@ events:
         service_tier: standard
         context: 69078
         added: 1092
+        rewrite_overhead: 2
+        context_so_far: 67988
+        new_content: 1088
         cumulative_context: 1081413
       turn_leader: true
     - id: bb997298-3fe7-4ee6-aa39-7c31c7c05172
@@ -49948,6 +50701,9 @@ events:
         service_tier: standard
         context: 69624
         added: 548
+        rewrite_overhead: 2
+        context_so_far: 69078
+        new_content: 544
         cumulative_context: 1151037
       turn_leader: true
     - id: 033ef4d0-88b8-40c2-84cc-d161c25500ce
@@ -50085,6 +50841,9 @@ events:
         service_tier: standard
         context: 70487
         added: 865
+        rewrite_overhead: 2
+        context_so_far: 69624
+        new_content: 861
         cumulative_context: 1221524
       link_ids:
       - tool:toolu_01F8WgGERNuEbzihF7GLErQv
@@ -50193,6 +50952,9 @@ events:
         service_tier: standard
         context: 70618
         added: 133
+        rewrite_overhead: 2
+        context_so_far: 70487
+        new_content: 129
         cumulative_context: 1292142
       link_ids:
       - tool:toolu_01EunWn6yWZGLC8NRHmtwok8
@@ -50262,6 +51024,9 @@ events:
         service_tier: standard
         context: 71462
         added: 846
+        rewrite_overhead: 2
+        context_so_far: 70618
+        new_content: 842
         cumulative_context: 1363604
       link_ids:
       - tool:toolu_01DVE8tSvmYPuzqVqCCQK43B
@@ -50492,6 +51257,9 @@ events:
         service_tier: standard
         context: 73226
         added: 1766
+        rewrite_overhead: 2
+        context_so_far: 71462
+        new_content: 1762
         cumulative_context: 1436830
       turn_leader: true
     - id: 53da810b-aa26-45ad-bb09-21a748ecdc43
@@ -50645,6 +51413,9 @@ events:
         service_tier: standard
         context: 77129
         added: 3905
+        rewrite_overhead: 2
+        context_so_far: 73226
+        new_content: 3901
         cumulative_context: 1513959
       turn_leader: true
     - id: 90146309-ec33-4d12-89bf-66932db48e90
@@ -50781,6 +51552,9 @@ events:
         service_tier: standard
         context: 78100
         added: 973
+        rewrite_overhead: 2
+        context_so_far: 77129
+        new_content: 970
         cumulative_context: 1592059
       link_ids:
       - tool:toolu_017pSrFwHBLF1eGhocGpJgQD
@@ -51089,6 +51863,9 @@ events:
         service_tier: standard
         context: 84358
         added: 6259
+        rewrite_overhead: 1
+        context_so_far: 78100
+        new_content: 6256
         cumulative_context: 1676417
       turn_leader: true
     - id: f6841448-cdbe-4fb4-aa41-db207d0163a8
@@ -51373,6 +52150,9 @@ events:
         service_tier: standard
         context: 86108
         added: 1752
+        rewrite_overhead: 2
+        context_so_far: 84358
+        new_content: 1748
         cumulative_context: 1762525
       turn_leader: true
     - id: e62006db-bd9d-422c-9073-bb8ae85d3a35
@@ -51918,6 +52698,9 @@ events:
         service_tier: standard
         context: 90264
         added: 4158
+        rewrite_overhead: 2
+        context_so_far: 86108
+        new_content: 4154
         cumulative_context: 1852789
       turn_leader: true
     - id: 78647873-fa77-49e3-b94b-0d166799ad67
@@ -52457,6 +53240,9 @@ events:
         service_tier: standard
         context: 93683
         added: 3421
+        rewrite_overhead: 2
+        context_so_far: 90264
+        new_content: 3417
         cumulative_context: 1946472
       link_ids:
       - tool:toolu_01RDxact5AXXCZLVBwviSWy9
@@ -52590,6 +53376,9 @@ events:
         service_tier: standard
         context: 94313
         added: 632
+        rewrite_overhead: 2
+        context_so_far: 93683
+        new_content: 628
         cumulative_context: 2040785
       link_ids:
       - tool:toolu_01GFqK59xE1UdvdjjgMqwjLf
@@ -52690,6 +53479,9 @@ events:
         service_tier: standard
         context: 94462
         added: 151
+        rewrite_overhead: 2
+        context_so_far: 94313
+        new_content: 147
         cumulative_context: 2135247
       link_ids:
       - tool:toolu_01XAWfw7qRWxKffpmyieQhRC
@@ -52853,6 +53645,9 @@ events:
         service_tier: standard
         context: 95549
         added: 1089
+        rewrite_overhead: 2
+        context_so_far: 94462
+        new_content: 1085
         cumulative_context: 2230796
       turn_leader: true
     - id: 693c2bf0-8fbf-435c-92b7-86b903d48f52
@@ -52965,6 +53760,9 @@ events:
         service_tier: standard
         context: 95861
         added: 314
+        rewrite_overhead: 2
+        context_so_far: 95549
+        new_content: 310
         cumulative_context: 2326657
       link_ids:
       - tool:toolu_01GGtg88QEtvFRSJ2xr5AEeg
@@ -53391,6 +54189,9 @@ events:
         service_tier: standard
         context: 98923
         added: 3064
+        rewrite_overhead: 2
+        context_so_far: 95861
+        new_content: 3060
         cumulative_context: 2425580
       turn_leader: true
     - id: ecda49f6-2bb3-4211-85a2-803575b0aa37
@@ -53549,6 +54350,9 @@ events:
         service_tier: standard
         context: 99787
         added: 866
+        rewrite_overhead: 2
+        context_so_far: 98923
+        new_content: 862
         cumulative_context: 2525367
       link_ids:
       - tool:toolu_014EDCheHzJcCr4fs8y9pva2
@@ -53921,6 +54725,9 @@ events:
         service_tier: standard
         context: 102649
         added: 2864
+        rewrite_overhead: 2
+        context_so_far: 99787
+        new_content: 2860
         cumulative_context: 2628016
       link_ids:
       - tool:toolu_01SAd8wku3wK7dW92qamNm6q
@@ -54078,6 +54885,9 @@ events:
         service_tier: standard
         context: 105367
         added: 2720
+        rewrite_overhead: 2
+        context_so_far: 102649
+        new_content: 2716
         cumulative_context: 2733383
       turn_leader: true
     - id: 158e0cf7-a660-4850-9666-91ba309b9d15
@@ -54181,6 +54991,9 @@ events:
         service_tier: standard
         context: 105680
         added: 315
+        rewrite_overhead: 2
+        context_so_far: 105367
+        new_content: 311
         cumulative_context: 2839063
       link_ids:
       - tool:toolu_01PiX1TjoWhwht8rKjoLnEYJ
@@ -54359,6 +55172,9 @@ events:
         service_tier: standard
         context: 106596
         added: 918
+        rewrite_overhead: 2
+        context_so_far: 105680
+        new_content: 914
         cumulative_context: 2945659
       turn_leader: true
     - id: aba8767b-7312-43c6-a37d-50247692d5be
@@ -54523,6 +55339,9 @@ events:
         service_tier: standard
         context: 107806
         added: 1212
+        rewrite_overhead: 2
+        context_so_far: 106596
+        new_content: 1208
         cumulative_context: 3053465
       link_ids:
       - tool:toolu_01UpuB12vJucBk4n8W1zdJnu
@@ -54586,6 +55405,9 @@ events:
         service_tier: standard
         context: 108023
         added: 219
+        rewrite_overhead: 2
+        context_so_far: 107806
+        new_content: 215
         cumulative_context: 3161488
       turn_leader: true
     - id: 2bafb090-6784-4e22-b11d-53d3fb2ef5c9
@@ -54721,6 +55543,9 @@ events:
         service_tier: standard
         context: 108318
         added: 297
+        rewrite_overhead: 2
+        context_so_far: 108023
+        new_content: 293
         cumulative_context: 3269806
       link_ids:
       - tool:toolu_01RcXL1MCEKeWDzA5r7D5iyX
@@ -54806,6 +55631,9 @@ events:
         service_tier: standard
         context: 108674
         added: 358
+        rewrite_overhead: 2
+        context_so_far: 108318
+        new_content: 354
         cumulative_context: 3378480
       link_ids:
       - tool:toolu_01DtVkxGDUoR4iqYbienxEXj
@@ -54885,6 +55713,9 @@ events:
         service_tier: standard
         context: 110035
         added: 1363
+        rewrite_overhead: 2
+        context_so_far: 108674
+        new_content: 1359
         cumulative_context: 3488515
       turn_leader: true
     - id: dc563678-5079-42fa-bcc6-d8c1687629ce
@@ -54995,6 +55826,9 @@ events:
         service_tier: standard
         context: 110765
         added: 732
+        rewrite_overhead: 2
+        context_so_far: 110035
+        new_content: 728
         cumulative_context: 3599280
       link_ids:
       - tool:toolu_01AZbYdShixUuDxnqf8SxoJ3
@@ -55080,6 +55914,9 @@ events:
         service_tier: standard
         context: 111000
         added: 237
+        rewrite_overhead: 2
+        context_so_far: 110765
+        new_content: 233
         cumulative_context: 3710280
       turn_leader: true
     - id: 67d9b97c-405a-4454-9658-7ba8aacc6f4e
@@ -55260,6 +56097,9 @@ events:
         service_tier: standard
         context: 113673
         added: 2675
+        rewrite_overhead: 2
+        context_so_far: 111000
+        new_content: 2671
         cumulative_context: 3823953
       turn_leader: true
     - id: 56dcb461-e822-48f5-bb4f-7a0bfe2534be
@@ -55949,6 +56789,9 @@ events:
         service_tier: standard
         context: 119518
         added: 5847
+        rewrite_overhead: 2
+        context_so_far: 113673
+        new_content: 5843
         cumulative_context: 3943471
       link_ids:
       - tool:toolu_01NKmziyjeyY41UKgNmuzdUB
@@ -56039,6 +56882,9 @@ events:
         service_tier: standard
         context: 119785
         added: 269
+        rewrite_overhead: 2
+        context_so_far: 119518
+        new_content: 265
         cumulative_context: 4063256
       turn_leader: true
     - id: 99eff634-4416-46b8-8249-c1ed03152655
@@ -56136,6 +56982,9 @@ events:
         service_tier: standard
         context: 120333
         added: 550
+        rewrite_overhead: 2
+        context_so_far: 119785
+        new_content: 546
         cumulative_context: 4183589
       turn_leader: true
     - id: 902a5aaf-2bb3-4133-985e-8b3d186069ed
@@ -56393,6 +57242,9 @@ events:
         service_tier: standard
         context: 121749
         added: 1418
+        rewrite_overhead: 2
+        context_so_far: 120333
+        new_content: 1414
         cumulative_context: 4305338
       turn_leader: true
     - id: 7a6256c2-ec29-45b1-aa55-551fa2330ffb
@@ -56535,6 +57387,9 @@ events:
         service_tier: standard
         context: 122321
         added: 574
+        rewrite_overhead: 2
+        context_so_far: 121749
+        new_content: 570
         cumulative_context: 4427659
       link_ids:
       - tool:toolu_018ajsEEEV73HsZ4yBjjiMjJ
@@ -56627,6 +57482,9 @@ events:
         service_tier: standard
         context: 122877
         added: 558
+        rewrite_overhead: 2
+        context_so_far: 122321
+        new_content: 554
         cumulative_context: 4550536
       link_ids:
       - tool:toolu_01RHSbeGZnm3hGCJsbT7iQrn
@@ -56730,6 +57588,9 @@ events:
         service_tier: standard
         context: 123545
         added: 670
+        rewrite_overhead: 2
+        context_so_far: 122877
+        new_content: 666
         cumulative_context: 4674081
       link_ids:
       - tool:toolu_01FcJ4DdH2oErwJUpdHw2WbT
@@ -56816,6 +57677,9 @@ events:
         service_tier: standard
         context: 124365
         added: 822
+        rewrite_overhead: 2
+        context_so_far: 123545
+        new_content: 818
         cumulative_context: 4798446
       turn_leader: true
     - id: 70497002-045d-436a-8dbb-bfa35599d4eb
@@ -57020,6 +57884,9 @@ events:
         service_tier: standard
         context: 125462
         added: 1099
+        rewrite_overhead: 2
+        context_so_far: 124365
+        new_content: 1095
         cumulative_context: 4923908
       turn_leader: true
     - id: 23af9d9f-b6a5-4396-b378-01f8e96bc9d0
@@ -57217,6 +58084,9 @@ events:
         service_tier: standard
         context: 126223
         added: 763
+        rewrite_overhead: 2
+        context_so_far: 125462
+        new_content: 759
         cumulative_context: 5050131
       turn_leader: true
     - id: 99dbcff7-ec91-45dd-be7b-dbc79e59f993
@@ -57366,6 +58236,9 @@ events:
         service_tier: standard
         context: 127405
         added: 1184
+        rewrite_overhead: 2
+        context_so_far: 126223
+        new_content: 1181
         cumulative_context: 5177536
       link_ids:
       - tool:toolu_015QQfFdA2FoMyKUhXAB6Rph
@@ -57452,6 +58325,9 @@ events:
         service_tier: standard
         context: 128470
         added: 1066
+        rewrite_overhead: 1
+        context_so_far: 127405
+        new_content: 1063
         cumulative_context: 5306006
       turn_leader: true
     - id: c55aac89-434b-465e-ae25-1a2293a26982
@@ -57683,6 +58559,9 @@ events:
         service_tier: standard
         context: 129555
         added: 1087
+        rewrite_overhead: 2
+        context_so_far: 128470
+        new_content: 1083
         cumulative_context: 5435561
       link_ids:
       - tool:toolu_01NU4crXr69rVuVBDMxZmX9j
@@ -57753,6 +58632,9 @@ events:
         service_tier: standard
         context: 130045
         added: 492
+        rewrite_overhead: 2
+        context_so_far: 129555
+        new_content: 488
         cumulative_context: 5565606
       link_ids:
       - tool:toolu_019mERgcmYYZbz8d8QEGSvhV
@@ -57842,6 +58724,9 @@ events:
         service_tier: standard
         context: 130466
         added: 423
+        rewrite_overhead: 2
+        context_so_far: 130045
+        new_content: 419
         cumulative_context: 5696072
       turn_leader: true
     - id: ab76da79-f637-40bd-9587-7e5a5fcbdf46
@@ -57976,6 +58861,9 @@ events:
         service_tier: standard
         context: 133520
         added: 3056
+        rewrite_overhead: 2
+        context_so_far: 130466
+        new_content: 3052
         cumulative_context: 5829592
       turn_leader: true
     - id: 7012d054-39da-4525-a118-c2b354667180
@@ -58090,6 +58978,9 @@ events:
         service_tier: standard
         context: 133905
         added: 387
+        rewrite_overhead: 2
+        context_so_far: 133520
+        new_content: 383
         cumulative_context: 5963497
       link_ids:
       - tool:toolu_01CEiS1pjDsW7CyMJ1Gd4yqY
@@ -58165,6 +59056,9 @@ events:
         service_tier: standard
         context: 134245
         added: 342
+        rewrite_overhead: 2
+        context_so_far: 133905
+        new_content: 338
         cumulative_context: 6097742
       link_ids:
       - tool:toolu_01PAfDQUP1mqs9DsS2CXX91G
@@ -58222,6 +59116,9 @@ events:
         service_tier: standard
         context: 134661
         added: 418
+        rewrite_overhead: 2
+        context_so_far: 134245
+        new_content: 414
         cumulative_context: 6232403
       turn_leader: true
     - id: '058085df-fd18-4cc4-a5f4-b80fa50cf497'
@@ -58335,6 +59232,9 @@ events:
         service_tier: standard
         context: 137262
         added: 2603
+        rewrite_overhead: 2
+        context_so_far: 134661
+        new_content: 2599
         cumulative_context: 6369665
       link_ids:
       - tool:toolu_01HMfKPyARYipmTVjxNGyBPj
@@ -58400,6 +59300,9 @@ events:
         service_tier: standard
         context: 137528
         added: 268
+        rewrite_overhead: 2
+        context_so_far: 137262
+        new_content: 264
         cumulative_context: 6507193
       turn_leader: true
     - id: c293549a-b69f-4192-9056-b44d260d3911
@@ -58772,6 +59675,9 @@ events:
         service_tier: standard
         context: 141570
         added: 4044
+        rewrite_overhead: 2
+        context_so_far: 137528
+        new_content: 4040
         cumulative_context: 6648763
       turn_leader: true
     - id: 9ea1cf7c-810c-41da-8b9c-d00ec1f6541a
@@ -58914,6 +59820,9 @@ events:
         service_tier: standard
         context: 142210
         added: 642
+        rewrite_overhead: 2
+        context_so_far: 141570
+        new_content: 638
         cumulative_context: 6790973
       link_ids:
       - tool:toolu_01SEcns7LyRExFP1bXpBGEUP
@@ -58989,6 +59898,9 @@ events:
         service_tier: standard
         context: 143378
         added: 1170
+        rewrite_overhead: 2
+        context_so_far: 142210
+        new_content: 1166
         cumulative_context: 6934351
       turn_leader: true
     - id: b17cc320-5982-4d95-ba34-1dce7d2dbfc5
@@ -59097,6 +60009,9 @@ events:
         service_tier: standard
         context: 144000
         added: 624
+        rewrite_overhead: 2
+        context_so_far: 143378
+        new_content: 620
         cumulative_context: 7078351
       turn_leader: true
     - id: 999331e5-0847-4732-b64a-17ef5ea3467b
@@ -59222,6 +60137,9 @@ events:
         service_tier: standard
         context: 145106
         added: 1108
+        rewrite_overhead: 2
+        context_so_far: 144000
+        new_content: 1104
         cumulative_context: 7223457
       turn_leader: true
     - id: 1552ca83-7a20-4842-b216-62bc4b943c0c
@@ -59349,6 +60267,9 @@ events:
         service_tier: standard
         context: 145477
         added: 373
+        rewrite_overhead: 2
+        context_so_far: 145106
+        new_content: 369
         cumulative_context: 7368934
       turn_leader: true
     - id: de2d7459-1b08-40e6-b01f-33d77ac88de8
@@ -59528,6 +60449,9 @@ events:
         service_tier: standard
         context: 146050
         added: 575
+        rewrite_overhead: 2
+        context_so_far: 145477
+        new_content: 571
         cumulative_context: 7514984
       turn_leader: true
 - id: 4149451d-6145-491d-ba69-3b2cf4922edc
@@ -59661,6 +60585,9 @@ events:
     service_tier: standard
     context: 221415
     added: 5488
+    rewrite_overhead: 2
+    context_so_far: 215929
+    new_content: 5484
     cumulative_context: 9563531
   beat: true
   turn_leader: true
@@ -59880,6 +60807,9 @@ events:
     service_tier: standard
     context: 223904
     added: 2491
+    rewrite_overhead: 2
+    context_so_far: 221415
+    new_content: 2488
     cumulative_context: 9787435
   beat: true
   turn_leader: true
@@ -59998,6 +60928,9 @@ events:
     service_tier: standard
     context: 224513
     added: 610
+    rewrite_overhead: 1
+    context_so_far: 223904
+    new_content: 607
     cumulative_context: 10011948
   beat: true
   turn_leader: true
@@ -60531,6 +61464,9 @@ events:
     service_tier: standard
     context: 228863
     added: 3773
+    rewrite_overhead: 0
+    context_so_far: 225090
+    new_content: 3771
     cumulative_context: 10240811
   beat: true
   turn_leader: true
@@ -60701,6 +61637,9 @@ events:
     service_tier: standard
     context: 231013
     added: 2152
+    rewrite_overhead: 2
+    context_so_far: 228863
+    new_content: 2148
     cumulative_context: 10471824
   link_ids:
   - tool:toolu_01BqrvkrBwnHfBQo5JFW2NAx
@@ -60762,6 +61701,9 @@ events:
     service_tier: standard
     context: 231233
     added: 222
+    rewrite_overhead: 2
+    context_so_far: 231013
+    new_content: 218
     cumulative_context: 10703057
   turn_leader: true
 - id: 04602e57-87e1-42ce-af03-784f7833cc8d
@@ -60906,6 +61848,9 @@ events:
     service_tier: standard
     context: 232585
     added: 1354
+    rewrite_overhead: 2
+    context_so_far: 231233
+    new_content: 1350
     cumulative_context: 10935642
   beat: true
   turn_leader: true
@@ -61008,6 +61953,9 @@ events:
     service_tier: standard
     context: 233045
     added: 462
+    rewrite_overhead: 2
+    context_so_far: 232585
+    new_content: 458
     cumulative_context: 11168687
   beat: true
   turn_leader: true
@@ -61180,6 +62128,9 @@ events:
     service_tier: standard
     context: 234244
     added: 1201
+    rewrite_overhead: 2
+    context_so_far: 233045
+    new_content: 1197
     cumulative_context: 11402931
   turn_leader: true
 - id: b45bc811-5a4d-4793-9198-fdd3ffac71d1
@@ -61402,6 +62353,9 @@ events:
     service_tier: standard
     context: 236850
     added: 2608
+    rewrite_overhead: 2
+    context_so_far: 234244
+    new_content: 2605
     cumulative_context: 11639781
   turn_leader: true
 - id: d698f548-d96a-43cd-97c8-51f463312480
@@ -61567,6 +62521,9 @@ events:
     service_tier: standard
     context: 237438
     added: 589
+    rewrite_overhead: 1
+    context_so_far: 236850
+    new_content: 586
     cumulative_context: 11877219
   beat: true
   turn_leader: true
@@ -61677,6 +62634,9 @@ events:
     service_tier: standard
     context: 238546
     added: 1110
+    rewrite_overhead: 2
+    context_so_far: 237438
+    new_content: 1106
     cumulative_context: 12115765
   beat: true
   turn_leader: true
@@ -61902,6 +62862,9 @@ events:
     service_tier: standard
     context: 239263
     added: 188
+    rewrite_overhead: 0
+    context_so_far: 239075
+    new_content: 186
     cumulative_context: 12355028
   beat: true
   turn_leader: true
@@ -62034,6 +62997,9 @@ events:
     service_tier: standard
     context: 239611
     added: 350
+    rewrite_overhead: 2
+    context_so_far: 239263
+    new_content: 346
     cumulative_context: 12594639
   beat: true
   turn_leader: true
@@ -62142,6 +63108,9 @@ events:
     service_tier: standard
     context: 240385
     added: 776
+    rewrite_overhead: 2
+    context_so_far: 239611
+    new_content: 772
     cumulative_context: 12835024
   turn_leader: true
 - id: 333cdaf3-bc3b-4597-8af3-9d78648c2768
@@ -62319,6 +63288,9 @@ events:
     service_tier: standard
     context: 241114
     added: 731
+    rewrite_overhead: 2
+    context_so_far: 240385
+    new_content: 727
     cumulative_context: 13076138
   beat: true
   turn_leader: true
@@ -62442,6 +63414,10 @@ events:
           A6 deploy: manifests per the plan (host table.jessitron.honeydemo.io, secret mtg-deck-shuffler-secret, ALB group only-one-alb-please, repo-root build context); attempt deploy via the same tooling as apps/shuffler/deploy.sh (kubectl context "orion" works from this machine); if blocked, commit and report the manual step. Browser-telemetry collector: check for existing OTel collectors in the cluster first; else include a minimal collector deployment in apps/tabletop/k8s/.
 
           On finish: update apps/tabletop/SEAMAP.md, shuffler docs, root CLAUDE.md repo notes, notes/GLOSSARY.md (Modes), notes/AGENT-NOTES.md, run the feature-owner `-update` skills, drop the plan's two buoys via seamapping:drop-buoy. Final report: what was already done vs what you did, what works (test evidence), deployed vs pending, commits, deviations with reasons.
+      tokens:
+        user_message_chars: 3981
+        user_message_estimate: 1137
+        system_prompt_estimate: 15752
       hidden: true
     - id: b554789b-4679-4a2f-ae86-d50a48838b4b
       ref: agent-add276e5d3a4839a2:2
@@ -62554,6 +63530,9 @@ events:
         service_tier: standard
         context: 26805
         added: 16889
+        rewrite_overhead: 0
+        context_so_far: 9916
+        new_content: 16887
         cumulative_context: 26805
       turn_leader: true
     - id: cba9d4b0-342b-4283-840e-31c41472f503
@@ -62697,6 +63676,9 @@ events:
         service_tier: standard
         context: 30372
         added: 3569
+        rewrite_overhead: 2
+        context_so_far: 26805
+        new_content: 3565
         cumulative_context: 57177
       turn_leader: true
     - id: 7ad103f9-9948-4d2e-914d-c8df0e85156c
@@ -62859,6 +63841,9 @@ events:
         service_tier: standard
         context: 31409
         added: 1039
+        rewrite_overhead: 2
+        context_so_far: 30372
+        new_content: 1035
         cumulative_context: 88586
       turn_leader: true
     - id: b4071166-7832-4670-a3e8-7ba198305c25
@@ -62997,6 +63982,9 @@ events:
         service_tier: standard
         context: 32016
         added: 609
+        rewrite_overhead: 2
+        context_so_far: 31409
+        new_content: 605
         cumulative_context: 120602
       turn_leader: true
     - id: dec1157a-5be8-497d-a9af-2bb4474b5324
@@ -63307,6 +64295,9 @@ events:
         service_tier: standard
         context: 39383
         added: 7369
+        rewrite_overhead: 2
+        context_so_far: 32016
+        new_content: 7365
         cumulative_context: 159985
       turn_leader: true
     - id: 0db20a63-eac9-4095-9109-f01ea9dc54af
@@ -63605,6 +64596,9 @@ events:
         service_tier: standard
         context: 42449
         added: 3068
+        rewrite_overhead: 2
+        context_so_far: 39383
+        new_content: 3064
         cumulative_context: 202434
       turn_leader: true
     - id: b031daa2-00de-4f63-8459-ec7dfaf04ba1
@@ -63733,6 +64727,9 @@ events:
         service_tier: standard
         context: 42825
         added: 378
+        rewrite_overhead: 2
+        context_so_far: 42449
+        new_content: 374
         cumulative_context: 245259
       turn_leader: true
     - id: ad1e0e12-a4e0-4697-a808-c75896fda298
@@ -64013,6 +65010,9 @@ events:
         service_tier: standard
         context: 44817
         added: 1994
+        rewrite_overhead: 2
+        context_so_far: 42825
+        new_content: 1990
         cumulative_context: 290076
       turn_leader: true
     - id: deac0e33-84d8-485f-9a3a-0530f600efe1
@@ -64181,6 +65181,9 @@ events:
         service_tier: standard
         context: 46312
         added: 1497
+        rewrite_overhead: 2
+        context_so_far: 44817
+        new_content: 1494
         cumulative_context: 336388
       link_ids:
       - tool:toolu_01Sk7vbW1rxTK5A88qwUYqeA
@@ -64268,6 +65271,9 @@ events:
         service_tier: standard
         context: 46540
         added: 229
+        rewrite_overhead: 1
+        context_so_far: 46312
+        new_content: 226
         cumulative_context: 382928
       link_ids:
       - tool:toolu_01JcZFmKkSnkZynTUffxumnM
@@ -64585,6 +65591,9 @@ events:
         service_tier: standard
         context: 53091
         added: 6553
+        rewrite_overhead: 2
+        context_so_far: 46540
+        new_content: 6549
         cumulative_context: 436019
       turn_leader: true
     - id: 70a33e12-7aeb-4ea7-afa4-d0ad35175a13
@@ -64749,6 +65758,9 @@ events:
         service_tier: standard
         context: 54197
         added: 1108
+        rewrite_overhead: 2
+        context_so_far: 53091
+        new_content: 1105
         cumulative_context: 490216
       link_ids:
       - tool:toolu_01HRVxCFFZ12dnzmRgYptPQY
@@ -64952,6 +65964,9 @@ events:
         service_tier: standard
         context: 57160
         added: 2964
+        rewrite_overhead: 1
+        context_so_far: 54197
+        new_content: 2961
         cumulative_context: 547376
       turn_leader: true
     - id: 8cc84524-b157-45ef-a06d-35b43104ba2c
@@ -65096,6 +66111,9 @@ events:
         service_tier: standard
         context: 58229
         added: 1071
+        rewrite_overhead: 2
+        context_so_far: 57160
+        new_content: 1067
         cumulative_context: 605605
       turn_leader: true
     - id: 231d10e9-4d54-4420-a156-e5cf36195977
@@ -65338,6 +66356,9 @@ events:
         service_tier: standard
         context: 63674
         added: 5447
+        rewrite_overhead: 2
+        context_so_far: 58229
+        new_content: 5443
         cumulative_context: 669279
       turn_leader: true
     - id: 7930f299-189d-4245-81ad-eecf63ac1eba
@@ -65499,6 +66520,9 @@ events:
         service_tier: standard
         context: 65164
         added: 1492
+        rewrite_overhead: 2
+        context_so_far: 63674
+        new_content: 1489
         cumulative_context: 734443
       link_ids:
       - tool:toolu_01JA7QQFPvt9rAxHXYYLtYf9
@@ -65619,6 +66643,9 @@ events:
         service_tier: standard
         context: 67163
         added: 2000
+        rewrite_overhead: 1
+        context_so_far: 65164
+        new_content: 1997
         cumulative_context: 801606
       turn_leader: true
     - id: 6801fe6a-3fd8-4a75-a2c9-835741a9bb86
@@ -65776,6 +66803,9 @@ events:
         service_tier: standard
         context: 67923
         added: 762
+        rewrite_overhead: 2
+        context_so_far: 67163
+        new_content: 758
         cumulative_context: 869529
       link_ids:
       - tool:toolu_01EGhkHQa3jMd8iVA9Gg2PC1
@@ -66070,6 +67100,9 @@ events:
         service_tier: standard
         context: 73845
         added: 5924
+        rewrite_overhead: 2
+        context_so_far: 67923
+        new_content: 5920
         cumulative_context: 943374
       turn_leader: true
     - id: 8d52531e-98ff-49d1-a120-1bd94f4c0ceb
@@ -66369,6 +67402,9 @@ events:
         service_tier: standard
         context: 76703
         added: 2860
+        rewrite_overhead: 2
+        context_so_far: 73845
+        new_content: 2856
         cumulative_context: 1020077
       link_ids:
       - tool:toolu_014NFdsqXqvZ6wJ2j3eohSAZ
@@ -66452,6 +67488,9 @@ events:
         service_tier: standard
         context: 77668
         added: 967
+        rewrite_overhead: 2
+        context_so_far: 76703
+        new_content: 963
         cumulative_context: 1097745
       link_ids:
       - tool:toolu_01QtL4vmW8CnvFHTLEUBw6o4
@@ -66644,6 +67683,9 @@ events:
         service_tier: standard
         context: 79571
         added: 1905
+        rewrite_overhead: 2
+        context_so_far: 77668
+        new_content: 1901
         cumulative_context: 1177316
       link_ids:
       - tool:toolu_011gyctQEsb6FScHkAzc4Edc
@@ -66867,6 +67909,9 @@ events:
         service_tier: standard
         context: 81910
         added: 2341
+        rewrite_overhead: 2
+        context_so_far: 79571
+        new_content: 2337
         cumulative_context: 1259226
       link_ids:
       - tool:toolu_01BWa7qAzxxisQQ6F9CmpZ22
@@ -67077,6 +68122,9 @@ events:
         service_tier: standard
         context: 84266
         added: 2358
+        rewrite_overhead: 2
+        context_so_far: 81910
+        new_content: 2354
         cumulative_context: 1343492
       turn_leader: true
     - id: dbb08ae8-e668-4376-a186-b39c1934db00
@@ -67621,6 +68669,9 @@ events:
         service_tier: standard
         context: 90629
         added: 6365
+        rewrite_overhead: 2
+        context_so_far: 84266
+        new_content: 6361
         cumulative_context: 1434121
       turn_leader: true
     - id: bf0bf932-7a41-4830-94a7-231636f3a1e2
@@ -67790,6 +68841,9 @@ events:
         service_tier: standard
         context: 91991
         added: 1364
+        rewrite_overhead: 2
+        context_so_far: 90629
+        new_content: 1360
         cumulative_context: 1526112
       link_ids:
       - tool:toolu_01NHTqT1G5CWjge78MNQyphs
@@ -67907,6 +68961,9 @@ events:
         service_tier: standard
         context: 93841
         added: 1852
+        rewrite_overhead: 2
+        context_so_far: 91991
+        new_content: 1848
         cumulative_context: 1619953
       link_ids:
       - tool:toolu_013b8S95ydotvARBUurgFxga
@@ -68028,6 +69085,9 @@ events:
         service_tier: standard
         context: 94566
         added: 727
+        rewrite_overhead: 2
+        context_so_far: 93841
+        new_content: 723
         cumulative_context: 1714519
       turn_leader: true
     - id: a9c70670-3ad2-4481-955e-8be37d611d6a
@@ -68223,6 +69283,9 @@ events:
         service_tier: standard
         context: 95734
         added: 1170
+        rewrite_overhead: 2
+        context_so_far: 94566
+        new_content: 1166
         cumulative_context: 1810253
       turn_leader: true
     - id: 88984a1d-82fe-4948-832b-c08f9a641b33
@@ -68686,6 +69749,9 @@ events:
         service_tier: standard
         context: 103492
         added: 7760
+        rewrite_overhead: 2
+        context_so_far: 95734
+        new_content: 7756
         cumulative_context: 1913745
       link_ids:
       - tool:toolu_01ARA73W5W7Vx61Cuf2ka78Q
@@ -68886,6 +69952,9 @@ events:
         service_tier: standard
         context: 107460
         added: 3970
+        rewrite_overhead: 2
+        context_so_far: 103492
+        new_content: 3966
         cumulative_context: 2021205
       turn_leader: true
     - id: dd5be232-a459-49a7-b174-6d8d7c324d1e
@@ -69151,6 +70220,9 @@ events:
         service_tier: standard
         context: 113397
         added: 5939
+        rewrite_overhead: 2
+        context_so_far: 107460
+        new_content: 5935
         cumulative_context: 2134602
       link_ids:
       - tool:toolu_014qN2xPFn2bUEj5UiYLeALr
@@ -69506,6 +70578,9 @@ events:
         service_tier: standard
         context: 115865
         added: 2470
+        rewrite_overhead: 2
+        context_so_far: 113397
+        new_content: 2466
         cumulative_context: 2250467
       turn_leader: true
     - id: 8e340ef4-f044-422a-bbc8-b3517d7cc778
@@ -69688,6 +70763,9 @@ events:
         service_tier: standard
         context: 117858
         added: 1995
+        rewrite_overhead: 2
+        context_so_far: 115865
+        new_content: 1992
         cumulative_context: 2368325
       turn_leader: true
     - id: 0ac326ab-0d10-41bb-bfac-0072dd492380
@@ -69872,6 +70950,9 @@ events:
         service_tier: standard
         context: 122136
         added: 4279
+        rewrite_overhead: 1
+        context_so_far: 117858
+        new_content: 4276
         cumulative_context: 2490461
       turn_leader: true
     - id: f8f0fb71-b480-4953-a97c-cd4e7a58ce94
@@ -70018,6 +71099,9 @@ events:
         service_tier: standard
         context: 124370
         added: 2236
+        rewrite_overhead: 2
+        context_so_far: 122136
+        new_content: 2232
         cumulative_context: 2614831
       link_ids:
       - tool:toolu_01Uc5ZFrtdwZmYmxSMPj8rAs
@@ -70172,6 +71256,9 @@ events:
         service_tier: standard
         context: 125107
         added: 739
+        rewrite_overhead: 2
+        context_so_far: 124370
+        new_content: 735
         cumulative_context: 2739938
       link_ids:
       - tool:toolu_01V1VihxP8sExdFwDvtHAKfm
@@ -70257,6 +71344,9 @@ events:
         service_tier: standard
         context: 125755
         added: 650
+        rewrite_overhead: 2
+        context_so_far: 125107
+        new_content: 646
         cumulative_context: 2865693
       turn_leader: true
     - id: f87002bc-ec38-475b-81ba-9e662c58b792
@@ -71073,6 +72163,9 @@ events:
         service_tier: standard
         context: 131656
         added: 5903
+        rewrite_overhead: 2
+        context_so_far: 125755
+        new_content: 5899
         cumulative_context: 2997349
       turn_leader: true
     - id: cad605e1-2b8c-4e64-9e5a-bbf41c8a0f67
@@ -71214,6 +72307,9 @@ events:
         service_tier: standard
         context: 132506
         added: 852
+        rewrite_overhead: 2
+        context_so_far: 131656
+        new_content: 848
         cumulative_context: 3129855
       turn_leader: true
     - id: 3bea26a2-fd40-43b1-aec7-883f452e982f
@@ -71336,6 +72432,9 @@ events:
         service_tier: standard
         context: 132835
         added: 331
+        rewrite_overhead: 2
+        context_so_far: 132506
+        new_content: 327
         cumulative_context: 3262690
       turn_leader: true
     - id: 46622346-55f5-464a-928e-1abc1d90f5c6
@@ -71433,6 +72532,9 @@ events:
         service_tier: standard
         context: 133296
         added: 463
+        rewrite_overhead: 2
+        context_so_far: 132835
+        new_content: 459
         cumulative_context: 3395986
       turn_leader: true
     - id: f6c20dbf-d6ed-40c7-9f32-3f734289791f
@@ -71527,6 +72629,9 @@ events:
         service_tier: standard
         context: 133536
         added: 242
+        rewrite_overhead: 2
+        context_so_far: 133296
+        new_content: 238
         cumulative_context: 3529522
       turn_leader: true
     - id: 712ea2a5-937a-44c8-afec-47a3d3cb5dc1
@@ -71633,6 +72738,9 @@ events:
         service_tier: standard
         context: 133944
         added: 410
+        rewrite_overhead: 2
+        context_so_far: 133536
+        new_content: 406
         cumulative_context: 3663466
       link_ids:
       - tool:toolu_0123EFN2fax1pVEk5ZjDAmtH
@@ -71784,6 +72892,9 @@ events:
         service_tier: standard
         context: 134872
         added: 930
+        rewrite_overhead: 2
+        context_so_far: 133944
+        new_content: 926
         cumulative_context: 3798338
       turn_leader: true
     - id: 9f6dfa6c-c121-4739-b73e-ce6a38bf37a4
@@ -71965,6 +73076,9 @@ events:
         service_tier: standard
         context: 136086
         added: 1216
+        rewrite_overhead: 2
+        context_so_far: 134872
+        new_content: 1212
         cumulative_context: 3934424
       turn_leader: true
     - id: 70cb598d-2514-4bf8-84ed-02a4bed7b14d
@@ -72163,6 +73277,9 @@ events:
         service_tier: standard
         context: 138054
         added: 1970
+        rewrite_overhead: 2
+        context_so_far: 136086
+        new_content: 1966
         cumulative_context: 4072478
       turn_leader: true
     - id: 4f78689c-849f-4d9b-8cfa-42d3666bf6c4
@@ -72384,6 +73501,9 @@ events:
         service_tier: standard
         context: 139430
         added: 1378
+        rewrite_overhead: 2
+        context_so_far: 138054
+        new_content: 1374
         cumulative_context: 4211908
       link_ids:
       - tool:toolu_01RUkWMc2aNb6NhvqKcBY5tN
@@ -72460,6 +73580,9 @@ events:
         service_tier: standard
         context: 140374
         added: 946
+        rewrite_overhead: 2
+        context_so_far: 139430
+        new_content: 942
         cumulative_context: 4352282
       turn_leader: true
     - id: 82b9448c-bb39-4df2-93d8-b3353c13e544
@@ -72621,6 +73744,9 @@ events:
         service_tier: standard
         context: 141096
         added: 724
+        rewrite_overhead: 2
+        context_so_far: 140374
+        new_content: 720
         cumulative_context: 4493378
       link_ids:
       - tool:toolu_01TveKdc6UufdYuBJa21rjJB
@@ -72751,6 +73877,9 @@ events:
         service_tier: standard
         context: 141495
         added: 401
+        rewrite_overhead: 2
+        context_so_far: 141096
+        new_content: 397
         cumulative_context: 4634873
       link_ids:
       - tool:toolu_01USz9FhBCxiHUMA2xCmA4gL
@@ -72809,6 +73938,9 @@ events:
         service_tier: standard
         context: 142120
         added: 627
+        rewrite_overhead: 2
+        context_so_far: 141495
+        new_content: 623
         cumulative_context: 4776993
       turn_leader: true
     - id: 071b87f2-e3d2-4ec0-a10b-8e3fe561c1d4
@@ -72913,6 +74045,9 @@ events:
         service_tier: standard
         context: 142489
         added: 371
+        rewrite_overhead: 2
+        context_so_far: 142120
+        new_content: 367
         cumulative_context: 4919482
       turn_leader: true
     - id: c2dde3ab-0737-4a0c-86cf-0d2aa1dd5720
@@ -73045,6 +74180,9 @@ events:
         service_tier: standard
         context: 143357
         added: 870
+        rewrite_overhead: 2
+        context_so_far: 142489
+        new_content: 866
         cumulative_context: 5062839
       turn_leader: true
     - id: 84be457e-5222-4c90-b9d1-c3ef043a48c5
@@ -73133,6 +74271,9 @@ events:
         service_tier: standard
         context: 145253
         added: 1898
+        rewrite_overhead: 2
+        context_so_far: 143357
+        new_content: 1894
         cumulative_context: 5208092
       link_ids:
       - tool:toolu_01AKNVDTfRYmR2sYwdrKu7yx
@@ -73188,6 +74329,9 @@ events:
         service_tier: standard
         context: 145449
         added: 198
+        rewrite_overhead: 2
+        context_so_far: 145253
+        new_content: 194
         cumulative_context: 5353541
       turn_leader: true
     - id: 7294035b-cb6a-4007-8e45-14aaaf4ee7f2
@@ -73297,6 +74441,9 @@ events:
         service_tier: standard
         context: 145929
         added: 482
+        rewrite_overhead: 2
+        context_so_far: 145449
+        new_content: 478
         cumulative_context: 5499470
       turn_leader: true
     - id: 030f952f-1e16-4e11-be0f-f24a471a2481
@@ -73428,6 +74575,9 @@ events:
         service_tier: standard
         context: 147461
         added: 1534
+        rewrite_overhead: 2
+        context_so_far: 145929
+        new_content: 1530
         cumulative_context: 5646931
       turn_leader: true
     - id: 7d122603-3bf7-47ab-9e8f-d1286980f904
@@ -73566,6 +74716,9 @@ events:
         service_tier: standard
         context: 147806
         added: 347
+        rewrite_overhead: 2
+        context_so_far: 147461
+        new_content: 343
         cumulative_context: 5794737
       turn_leader: true
     - id: f6d446a3-53f8-48d5-9f42-98139ffac036
@@ -73685,6 +74838,9 @@ events:
         service_tier: standard
         context: 148464
         added: 660
+        rewrite_overhead: 2
+        context_so_far: 147806
+        new_content: 656
         cumulative_context: 5943201
       link_ids:
       - tool:toolu_01WnDhC1YdGCFtFF1o67r95w
@@ -73867,6 +75023,9 @@ events:
         service_tier: standard
         context: 150134
         added: 1672
+        rewrite_overhead: 2
+        context_so_far: 148464
+        new_content: 1668
         cumulative_context: 6093335
       turn_leader: true
     - id: a133fd23-d27e-46a2-be35-33613165415e
@@ -73992,6 +75151,9 @@ events:
         service_tier: standard
         context: 151469
         added: 1337
+        rewrite_overhead: 2
+        context_so_far: 150134
+        new_content: 1333
         cumulative_context: 6244804
       link_ids:
       - tool:toolu_01LDSrwXkXSb9zYZWwD1MbPm
@@ -74066,6 +75228,9 @@ events:
         service_tier: standard
         context: 152264
         added: 797
+        rewrite_overhead: 2
+        context_so_far: 151469
+        new_content: 793
         cumulative_context: 6397068
       turn_leader: true
     - id: e2779b9e-4ff5-45f9-9c50-3fbc5798c5a6
@@ -74162,6 +75327,9 @@ events:
         service_tier: standard
         context: 152698
         added: 436
+        rewrite_overhead: 2
+        context_so_far: 152264
+        new_content: 432
         cumulative_context: 6549766
       turn_leader: true
     - id: 82472b36-3809-413e-bdf4-94a6eebaaf00
@@ -74294,6 +75462,9 @@ events:
         service_tier: standard
         context: 154525
         added: 1829
+        rewrite_overhead: 2
+        context_so_far: 152698
+        new_content: 1825
         cumulative_context: 6704291
       turn_leader: true
     - id: d29737a4-6318-4240-a0b4-7d000e1c54aa
@@ -74489,6 +75660,9 @@ events:
         service_tier: standard
         context: 156005
         added: 1482
+        rewrite_overhead: 2
+        context_so_far: 154525
+        new_content: 1478
         cumulative_context: 6860296
       turn_leader: true
 - id: 57fba667-2d44-4229-8af6-d63c627effcf
@@ -74714,6 +75888,9 @@ events:
     service_tier: standard
     context: 244083
     added: 2971
+    rewrite_overhead: 2
+    context_so_far: 241114
+    new_content: 2968
     cumulative_context: 13320221
   turn_leader: true
 - id: 4f944be8-87f0-4444-bbed-569e47f91687
@@ -74905,6 +76082,9 @@ events:
     service_tier: standard
     context: 245171
     added: 1089
+    rewrite_overhead: 1
+    context_so_far: 244083
+    new_content: 1086
     cumulative_context: 13565392
   turn_leader: true
 - id: 829020f5-ab76-4602-b371-1d36e4b7352f
@@ -75048,6 +76228,9 @@ events:
     service_tier: standard
     context: 246513
     added: 1344
+    rewrite_overhead: 2
+    context_so_far: 245171
+    new_content: 1340
     cumulative_context: 13811905
   turn_leader: true
 - id: b2c30c1b-a262-4d2f-8c4e-ab057d2855d5
@@ -75169,6 +76352,9 @@ events:
     service_tier: standard
     context: 255263
     added: 8752
+    rewrite_overhead: 2
+    context_so_far: 246513
+    new_content: 8748
     cumulative_context: 14067168
   link_ids:
   - tool:toolu_01RTJ3hfDxMoYxc1MU2gUWXF
@@ -75228,6 +76414,9 @@ events:
     service_tier: standard
     context: 255512
     added: 251
+    rewrite_overhead: 2
+    context_so_far: 255263
+    new_content: 247
     cumulative_context: 14322680
   link_ids:
   - tool:toolu_01XRmZYHTtuN2e6UZo5SHYn1
@@ -75545,6 +76734,9 @@ events:
     service_tier: standard
     context: 258080
     added: 2570
+    rewrite_overhead: 2
+    context_so_far: 255512
+    new_content: 2566
     cumulative_context: 14580760
   turn_leader: true
 - id: 91fd3e69-3a6c-4dbb-ad3f-ab3def1aa8ca
@@ -75720,6 +76912,9 @@ events:
     service_tier: standard
     context: 258659
     added: 581
+    rewrite_overhead: 2
+    context_so_far: 258080
+    new_content: 577
     cumulative_context: 14839419
   beat: true
   turn_leader: true
@@ -75948,6 +77143,9 @@ events:
     service_tier: standard
     context: 261612
     added: 2955
+    rewrite_overhead: 2
+    context_so_far: 258659
+    new_content: 2951
     cumulative_context: 15101031
   beat: true
   turn_leader: true
@@ -76049,6 +77247,9 @@ events:
     service_tier: standard
     context: 270622
     added: 9012
+    rewrite_overhead: 2
+    context_so_far: 261612
+    new_content: 9009
     cumulative_context: 15371653
   link_ids:
   - tool:toolu_01V8Aa7X8Msh2vuG4Tr7wfTh
@@ -76122,6 +77323,9 @@ events:
     service_tier: standard
     context: 270981
     added: 360
+    rewrite_overhead: 1
+    context_so_far: 270622
+    new_content: 357
     cumulative_context: 15642634
   turn_leader: true
 - id: 2018e421-6cd4-416b-b874-647121dcefe1
@@ -76246,6 +77450,10 @@ events:
           Tracking is Linear (team jessitron, project MTG Deck Shuffler) per SEAMAP.md''s
           Tracking section — search for existing related issues before creating a
           new one, per the skill.'
+      tokens:
+        user_message_chars: 828
+        user_message_estimate: 237
+        system_prompt_estimate: 17751
       hidden: true
     - id: d696f372-b4e4-4dd0-805d-f8bf2fbfc091
       ref: agent-a89dd1f7c23bc5819:2
@@ -76331,6 +77539,9 @@ events:
         service_tier: standard
         context: 26399
         added: 17988
+        rewrite_overhead: 0
+        context_so_far: 8411
+        new_content: 17986
         cumulative_context: 26399
       turn_leader: true
     - id: 29de3e94-c6b2-4d92-8214-90b92bf858c2
@@ -76511,6 +77722,9 @@ events:
         service_tier: standard
         context: 34245
         added: 7848
+        rewrite_overhead: 2
+        context_so_far: 26399
+        new_content: 7844
         cumulative_context: 60644
       turn_leader: true
     - id: 7ef0151e-f0a5-4d2c-b629-702f12abb64b
@@ -76626,6 +77840,9 @@ events:
         service_tier: standard
         context: 34583
         added: 340
+        rewrite_overhead: 2
+        context_so_far: 34245
+        new_content: 336
         cumulative_context: 95227
       link_ids:
       - tool:toolu_01F6z57KTNZ42nM7xtJceFEc
@@ -76742,6 +77959,9 @@ events:
         service_tier: standard
         context: 36442
         added: 1861
+        rewrite_overhead: 2
+        context_so_far: 34583
+        new_content: 1857
         cumulative_context: 131669
       link_ids:
       - tool:toolu_012FWySCD8K5VS5TansKxr1c
@@ -76802,6 +78022,9 @@ events:
         service_tier: standard
         context: 36539
         added: 99
+        rewrite_overhead: 2
+        context_so_far: 36442
+        new_content: 95
         cumulative_context: 168208
       link_ids:
       - tool:toolu_018mQnkt4HytopDjqWuh4i42
@@ -76851,6 +78074,9 @@ events:
         service_tier: standard
         context: 41708
         added: 5171
+        rewrite_overhead: 2
+        context_so_far: 36539
+        new_content: 5167
         cumulative_context: 209916
       turn_leader: true
     - id: 6a3933ed-66cf-4647-878c-06fa362a2bb9
@@ -77042,6 +78268,9 @@ events:
         service_tier: standard
         context: 43545
         added: 1839
+        rewrite_overhead: 2
+        context_so_far: 41708
+        new_content: 337
         cumulative_context: 253461
       turn_leader: true
     - id: 50cb1296-08be-4892-a4ca-79db5cfef4f3
@@ -77195,6 +78424,9 @@ events:
         service_tier: standard
         context: 44720
         added: 2675
+        rewrite_overhead: 1500
+        context_so_far: 43545
+        new_content: 1173
         cumulative_context: 298181
       turn_leader: true
     - id: 6167864f-94dd-47bc-b7b2-2e942c6509e7
@@ -77350,6 +78582,9 @@ events:
         service_tier: standard
         context: 46226
         added: 1508
+        rewrite_overhead: 2
+        context_so_far: 44720
+        new_content: 1504
         cumulative_context: 344407
       turn_leader: true
 - id: c6b198c1-8a23-4957-9492-34701dce9c2a
@@ -77441,6 +78676,9 @@ events:
     service_tier: standard
     context: 272469
     added: 1490
+    rewrite_overhead: 2
+    context_so_far: 270981
+    new_content: 1486
     cumulative_context: 15915103
   beat: true
   turn_leader: true
@@ -77603,6 +78841,9 @@ events:
     service_tier: standard
     context: 274086
     added: 1619
+    rewrite_overhead: 2
+    context_so_far: 272469
+    new_content: 1615
     cumulative_context: 16189189
   beat: true
   turn_leader: true
@@ -77786,6 +79027,9 @@ events:
     service_tier: standard
     context: 274493
     added: 409
+    rewrite_overhead: 2
+    context_so_far: 274086
+    new_content: 405
     cumulative_context: 16463682
   beat: true
   turn_leader: true
@@ -77926,6 +79170,9 @@ events:
     service_tier: standard
     context: 276306
     added: 1815
+    rewrite_overhead: 2
+    context_so_far: 274493
+    new_content: 1811
     cumulative_context: 16739988
   link_ids:
   - tool:toolu_01HV2L2XMVBG86xg9W9PZXKP
@@ -77990,6 +79237,10 @@ events:
           Git etiquette (CRITICAL — a second agent shares this checkout): stage ONLY your own files with explicit `git add <paths>`, never -A; commit immediately after staging, tagged "- claude"; on index.lock errors wait 2s and retry; never push; pull nothing.
 
           Final report: what was already done vs what you did, test evidence, the exact boundary with Part A (anything left for the two-app verification), commits, deviations with reasons.
+      tokens:
+        user_message_chars: 4848
+        user_message_estimate: 1385
+        system_prompt_estimate: 16590
       hidden: true
     - id: 8b071bdc-aa36-4ceb-ae60-c37c9d8764a0
       ref: agent-ada9fc7259561d8af:2
@@ -78102,6 +79353,9 @@ events:
         service_tier: standard
         context: 27891
         added: 17975
+        rewrite_overhead: 0
+        context_so_far: 9916
+        new_content: 17973
         cumulative_context: 27891
       turn_leader: true
     - id: f8a473e0-88d6-42a2-81fe-cfb45ab03a2f
@@ -78263,6 +79517,9 @@ events:
         service_tier: standard
         context: 32304
         added: 4415
+        rewrite_overhead: 2
+        context_so_far: 27891
+        new_content: 4411
         cumulative_context: 60195
       turn_leader: true
     - id: 26ac6ebc-70b4-4c79-abb0-4712fc9675b4
@@ -78719,6 +79976,9 @@ events:
         service_tier: standard
         context: 40513
         added: 8211
+        rewrite_overhead: 2
+        context_so_far: 32304
+        new_content: 8207
         cumulative_context: 100708
       turn_leader: true
     - id: f8c6e3bb-8234-432c-a466-a7f10d31a8a5
@@ -79196,6 +80456,9 @@ events:
         service_tier: standard
         context: 48720
         added: 8209
+        rewrite_overhead: 2
+        context_so_far: 40513
+        new_content: 8205
         cumulative_context: 149428
       turn_leader: true
     - id: bb2bb83d-6b81-41e5-b4e4-d65d4f2f7435
@@ -79361,6 +80624,9 @@ events:
         service_tier: standard
         context: 50035
         added: 1317
+        rewrite_overhead: 2
+        context_so_far: 48720
+        new_content: 1314
         cumulative_context: 199463
       link_ids:
       - tool:toolu_01HTpGmTHTUFjNwn4Ggx5r8m
@@ -79442,6 +80708,9 @@ events:
         service_tier: standard
         context: 50199
         added: 165
+        rewrite_overhead: 1
+        context_so_far: 50035
+        new_content: 162
         cumulative_context: 249662
       link_ids:
       - tool:toolu_01DtHtrefBa1bQhbAyPKrxcD
@@ -79704,6 +80973,9 @@ events:
         service_tier: standard
         context: 53302
         added: 3105
+        rewrite_overhead: 2
+        context_so_far: 50199
+        new_content: 3101
         cumulative_context: 302964
       turn_leader: true
     - id: a58ed20f-77fc-4e82-babc-b10cbc31e147
@@ -79784,6 +81056,9 @@ events:
         service_tier: standard
         context: 51935
         added: 42019
+        rewrite_overhead: 43386
+        context_so_far: 53302
+        new_content: -1369
         cumulative_context: 354899
       turn_leader: true
     - id: 4f35a35f-2ca0-44f4-8aaf-d78883b90d02
@@ -79924,6 +81199,9 @@ events:
         service_tier: standard
         context: 59149
         added: 7216
+        rewrite_overhead: 2
+        context_so_far: 51935
+        new_content: 7212
         cumulative_context: 414048
       link_ids:
       - tool:toolu_01Br3pCZV9J8WuKZPKgMWYMd
@@ -80286,6 +81564,9 @@ events:
         service_tier: standard
         context: 65700
         added: 6553
+        rewrite_overhead: 2
+        context_so_far: 59149
+        new_content: 6549
         cumulative_context: 479748
       turn_leader: true
     - id: 62c46b68-2fef-47fc-bac2-71ae3cd49a00
@@ -80366,6 +81647,9 @@ events:
         service_tier: standard
         context: 61123
         added: 9190
+        rewrite_overhead: 13767
+        context_so_far: 65700
+        new_content: -4579
         cumulative_context: 540871
       turn_leader: true
     - id: 961f2afb-4e27-4600-9629-3ac937d5e3d1
@@ -80501,6 +81785,9 @@ events:
         service_tier: standard
         context: 68277
         added: 7156
+        rewrite_overhead: 2
+        context_so_far: 61123
+        new_content: 7152
         cumulative_context: 609148
       turn_leader: true
     - id: a4dc43c2-89ce-4ea4-b51e-c19eee452ba2
@@ -80762,6 +82049,9 @@ events:
         service_tier: standard
         context: 71327
         added: 3052
+        rewrite_overhead: 2
+        context_so_far: 68277
+        new_content: 3048
         cumulative_context: 680475
       turn_leader: true
     - id: c8612dad-b7b3-4ca6-bde3-e6e058e9afd1
@@ -80878,6 +82168,9 @@ events:
         service_tier: standard
         context: 72371
         added: 1046
+        rewrite_overhead: 2
+        context_so_far: 71327
+        new_content: 1042
         cumulative_context: 752846
       link_ids:
       - tool:toolu_012toAb4n2K4ESoruu66HMFC
@@ -81088,6 +82381,9 @@ events:
         service_tier: standard
         context: 77564
         added: 5195
+        rewrite_overhead: 2
+        context_so_far: 72371
+        new_content: 5191
         cumulative_context: 830410
       turn_leader: true
     - id: 96c74d08-0214-43c0-861f-31513e60f6a0
@@ -81419,6 +82715,9 @@ events:
         service_tier: standard
         context: 84909
         added: 7347
+        rewrite_overhead: 2
+        context_so_far: 77564
+        new_content: 7343
         cumulative_context: 915319
       link_ids:
       - tool:toolu_019YC3LSiFtLhZwLA2hWG84X
@@ -81963,6 +83262,9 @@ events:
         service_tier: standard
         context: 98879
         added: 13972
+        rewrite_overhead: 2
+        context_so_far: 84909
+        new_content: 13968
         cumulative_context: 1014198
       turn_leader: true
     - id: f7d58e00-4072-45ed-abea-86e3ec339198
@@ -82157,6 +83459,9 @@ events:
         service_tier: standard
         context: 100179
         added: 1302
+        rewrite_overhead: 2
+        context_so_far: 98879
+        new_content: 1298
         cumulative_context: 1114377
       turn_leader: true
     - id: 2f2a8e94-ad2d-4db7-b7f2-e56a3eceac00
@@ -82499,6 +83804,9 @@ events:
         service_tier: standard
         context: 106476
         added: 6299
+        rewrite_overhead: 2
+        context_so_far: 100179
+        new_content: 6295
         cumulative_context: 1220853
       turn_leader: true
     - id: af61652d-2b5d-489f-8930-f2792cf96b0c
@@ -82837,6 +84145,9 @@ events:
         service_tier: standard
         context: 112884
         added: 6410
+        rewrite_overhead: 2
+        context_so_far: 106476
+        new_content: 6406
         cumulative_context: 1333737
       turn_leader: true
     - id: 4fc3fb23-13b5-434d-be9e-cb502f399149
@@ -83054,6 +84365,9 @@ events:
         service_tier: standard
         context: 116158
         added: 3276
+        rewrite_overhead: 2
+        context_so_far: 112884
+        new_content: 3272
         cumulative_context: 1449895
       link_ids:
       - tool:toolu_01TMf33QxPDidm9f8XiaUiMA
@@ -83314,6 +84628,9 @@ events:
         service_tier: standard
         context: 121239
         added: 5083
+        rewrite_overhead: 2
+        context_so_far: 116158
+        new_content: 5079
         cumulative_context: 1571134
       turn_leader: true
     - id: 2ef26370-a945-4d1b-bd69-aea91cda72f3
@@ -83611,6 +84928,9 @@ events:
         service_tier: standard
         context: 127029
         added: 5792
+        rewrite_overhead: 2
+        context_so_far: 121239
+        new_content: 5788
         cumulative_context: 1698163
       turn_leader: true
     - id: c37c6df5-d3fc-4213-bd3c-82cd4b612cd3
@@ -83902,6 +85222,9 @@ events:
         service_tier: standard
         context: 130037
         added: 3010
+        rewrite_overhead: 2
+        context_so_far: 127029
+        new_content: 3006
         cumulative_context: 1828200
       link_ids:
       - tool:toolu_01Tk5ngd98hoUG7FvJUcMfrN
@@ -84128,6 +85451,9 @@ events:
         service_tier: standard
         context: 132786
         added: 2751
+        rewrite_overhead: 2
+        context_so_far: 130037
+        new_content: 2747
         cumulative_context: 1960986
       turn_leader: true
     - id: 27e6506d-1368-471b-a64d-ef9508aee63b
@@ -84321,6 +85647,9 @@ events:
         service_tier: standard
         context: 134911
         added: 2127
+        rewrite_overhead: 2
+        context_so_far: 132786
+        new_content: 2123
         cumulative_context: 2095897
       turn_leader: true
     - id: 9ca8256c-28af-4571-a9f4-6016ab4f889b
@@ -84521,6 +85850,9 @@ events:
         service_tier: standard
         context: 140838
         added: 5929
+        rewrite_overhead: 2
+        context_so_far: 134911
+        new_content: 5925
         cumulative_context: 2236735
       turn_leader: true
     - id: 2509bbae-7593-481f-81b0-79b7e45104a2
@@ -84642,6 +85974,9 @@ events:
         service_tier: standard
         context: 143116
         added: 2280
+        rewrite_overhead: 2
+        context_so_far: 140838
+        new_content: 2276
         cumulative_context: 2379851
       turn_leader: true
     - id: 1fea28c6-0d49-4638-a97e-ec199d448bea
@@ -84780,6 +86115,9 @@ events:
         service_tier: standard
         context: 145170
         added: 2056
+        rewrite_overhead: 2
+        context_so_far: 143116
+        new_content: 2052
         cumulative_context: 2525021
       turn_leader: true
     - id: dc0cfdfc-e85e-4c39-afd9-c101ec9408d6
@@ -85039,6 +86377,9 @@ events:
         service_tier: standard
         context: 147636
         added: 2468
+        rewrite_overhead: 2
+        context_so_far: 145170
+        new_content: 2464
         cumulative_context: 2672657
       turn_leader: true
     - id: a9b9becf-1065-44b6-94a9-d19340abbdc1
@@ -85197,6 +86538,9 @@ events:
         service_tier: standard
         context: 149696
         added: 2062
+        rewrite_overhead: 2
+        context_so_far: 147636
+        new_content: 2058
         cumulative_context: 2822353
       turn_leader: true
     - id: e6262bb8-01ae-45a7-88af-83c7a87eed0f
@@ -85347,6 +86691,9 @@ events:
         service_tier: standard
         context: 151020
         added: 1326
+        rewrite_overhead: 2
+        context_so_far: 149696
+        new_content: 1322
         cumulative_context: 2973373
       turn_leader: true
     - id: 036563e2-663b-4ac5-b44a-3ea1f2196631
@@ -85563,6 +86910,9 @@ events:
         service_tier: standard
         context: 152237
         added: 1219
+        rewrite_overhead: 2
+        context_so_far: 151020
+        new_content: 1215
         cumulative_context: 3125610
       link_ids:
       - tool:toolu_01UidTQ2aauh1Zwr453nEzch
@@ -85725,6 +87075,9 @@ events:
         service_tier: standard
         context: 153173
         added: 938
+        rewrite_overhead: 2
+        context_so_far: 152237
+        new_content: 934
         cumulative_context: 3278783
       link_ids:
       - tool:toolu_01QhonNsjvGL5viHaMLeRjHn
@@ -85865,6 +87218,9 @@ events:
         service_tier: standard
         context: 154325
         added: 1154
+        rewrite_overhead: 2
+        context_so_far: 153173
+        new_content: 1150
         cumulative_context: 3433108
       link_ids:
       - tool:toolu_01WeaWP47FoL6kup4WmKScK3
@@ -85932,6 +87288,9 @@ events:
         service_tier: standard
         context: 154634
         added: 311
+        rewrite_overhead: 2
+        context_so_far: 154325
+        new_content: 307
         cumulative_context: 3587742
       link_ids:
       - tool:toolu_01Ru14xxAeoyvc9Jerfktk4D
@@ -86010,6 +87369,9 @@ events:
         service_tier: standard
         context: 154999
         added: 367
+        rewrite_overhead: 2
+        context_so_far: 154634
+        new_content: 363
         cumulative_context: 3742741
       link_ids:
       - tool:toolu_01N4ZRJEDLZYQtjS2ZYE7h6E
@@ -86073,6 +87435,9 @@ events:
         service_tier: standard
         context: 155156
         added: 159
+        rewrite_overhead: 2
+        context_so_far: 154999
+        new_content: 155
         cumulative_context: 3897897
       link_ids:
       - tool:toolu_01FwBzEYqrMTybhaECXJkkHd
@@ -86136,6 +87501,9 @@ events:
         service_tier: standard
         context: 155312
         added: 158
+        rewrite_overhead: 2
+        context_so_far: 155156
+        new_content: 154
         cumulative_context: 4053209
       link_ids:
       - tool:toolu_019HLf3uFqkFyv5o7JpFMcf1
@@ -86200,6 +87568,9 @@ events:
         service_tier: standard
         context: 155472
         added: 162
+        rewrite_overhead: 2
+        context_so_far: 155312
+        new_content: 158
         cumulative_context: 4208681
       link_ids:
       - tool:toolu_01N8TASe286VYjJrfQXLp75d
@@ -86253,6 +87624,9 @@ events:
         service_tier: standard
         context: 155693
         added: 223
+        rewrite_overhead: 2
+        context_so_far: 155472
+        new_content: 219
         cumulative_context: 4364374
       turn_leader: true
     - id: 1686d9a3-2fbe-47dc-9ac1-e59a98d72754
@@ -86412,6 +87786,9 @@ events:
         service_tier: standard
         context: 156958
         added: 1267
+        rewrite_overhead: 2
+        context_so_far: 155693
+        new_content: 1263
         cumulative_context: 4521332
       turn_leader: true
     - id: 232669dc-7748-4471-8cbf-a0777d527314
@@ -86534,6 +87911,9 @@ events:
         service_tier: standard
         context: 157460
         added: 504
+        rewrite_overhead: 2
+        context_so_far: 156958
+        new_content: 500
         cumulative_context: 4678792
       turn_leader: true
     - id: d870686f-4f04-4acc-b22d-c48efe9c432d
@@ -86710,6 +88090,9 @@ events:
         service_tier: standard
         context: 158926
         added: 1468
+        rewrite_overhead: 2
+        context_so_far: 157460
+        new_content: 1464
         cumulative_context: 4837718
       turn_leader: true
     - id: 6dfcc232-c187-427f-925c-d30b9a08fd19
@@ -86899,6 +88282,9 @@ events:
         service_tier: standard
         context: 160764
         added: 1840
+        rewrite_overhead: 2
+        context_so_far: 158926
+        new_content: 1836
         cumulative_context: 4998482
       link_ids:
       - tool:toolu_015TUq4omH3AYCHuY3GezGzs
@@ -86962,6 +88348,9 @@ events:
         service_tier: standard
         context: 160923
         added: 161
+        rewrite_overhead: 2
+        context_so_far: 160764
+        new_content: 157
         cumulative_context: 5159405
       link_ids:
       - tool:toolu_01XYcBMUXHUefnrTRPCKLqmb
@@ -87026,6 +88415,9 @@ events:
         service_tier: standard
         context: 161339
         added: 418
+        rewrite_overhead: 2
+        context_so_far: 160923
+        new_content: 414
         cumulative_context: 5320744
       turn_leader: true
     - id: d626ca6d-3994-4c46-a064-37f9341c8e4b
@@ -87164,6 +88556,9 @@ events:
         service_tier: standard
         context: 161986
         added: 649
+        rewrite_overhead: 2
+        context_so_far: 161339
+        new_content: 645
         cumulative_context: 5482730
       link_ids:
       - tool:toolu_01LB8QE3bgnmXDkC6Ssi1tcC
@@ -87324,6 +88719,9 @@ events:
         service_tier: standard
         context: 162963
         added: 979
+        rewrite_overhead: 2
+        context_so_far: 161986
+        new_content: 975
         cumulative_context: 5645693
       link_ids:
       - tool:toolu_016rkk9nkadKAC2bhwPYx3rF
@@ -87460,6 +88858,9 @@ events:
         service_tier: standard
         context: 163969
         added: 1008
+        rewrite_overhead: 2
+        context_so_far: 162963
+        new_content: 1004
         cumulative_context: 5809662
       turn_leader: true
     - id: b5ca3828-baf1-4d5c-989b-4dc924a8f7de
@@ -87575,6 +88976,9 @@ events:
         service_tier: standard
         context: 164474
         added: 507
+        rewrite_overhead: 2
+        context_so_far: 163969
+        new_content: 503
         cumulative_context: 5974136
       link_ids:
       - tool:toolu_01FnNW8qN8jpzzcujDvAthKs
@@ -87826,6 +89230,9 @@ events:
         service_tier: standard
         context: 165933
         added: 1461
+        rewrite_overhead: 2
+        context_so_far: 164474
+        new_content: 1457
         cumulative_context: 6140069
       link_ids:
       - tool:toolu_01NDu5KfG7WeeVrPmWeZ9Qmq
@@ -88045,6 +89452,9 @@ events:
         service_tier: standard
         context: 167126
         added: 1195
+        rewrite_overhead: 2
+        context_so_far: 165933
+        new_content: 1191
         cumulative_context: 6307195
       link_ids:
       - tool:toolu_01QwifADJsvzEEa97WNMd5Vk
@@ -88112,6 +89522,9 @@ events:
         service_tier: standard
         context: 167502
         added: 378
+        rewrite_overhead: 2
+        context_so_far: 167126
+        new_content: 374
         cumulative_context: 6474697
       link_ids:
       - tool:toolu_01Rjk4CTkCpfgstLYCiac7wH
@@ -88200,6 +89613,9 @@ events:
         service_tier: standard
         context: 167777
         added: 277
+        rewrite_overhead: 2
+        context_so_far: 167502
+        new_content: 273
         cumulative_context: 6642474
       turn_leader: true
     - id: b0546c2a-2ae6-4bee-b4a3-8a7a14646a24
@@ -88350,6 +89766,9 @@ events:
         service_tier: standard
         context: 169328
         added: 1553
+        rewrite_overhead: 2
+        context_so_far: 167777
+        new_content: 1549
         cumulative_context: 6811802
       turn_leader: true
     - id: 01415c37-36ba-43ac-a04d-bcd8428569ed
@@ -88466,6 +89885,9 @@ events:
         service_tier: standard
         context: 171208
         added: 1882
+        rewrite_overhead: 2
+        context_so_far: 169328
+        new_content: 1878
         cumulative_context: 6983010
       turn_leader: true
     - id: ab6a5fa8-2a30-4fa5-afee-7c148c710ba1
@@ -88730,6 +90152,9 @@ events:
         service_tier: standard
         context: 172989
         added: 1783
+        rewrite_overhead: 2
+        context_so_far: 171208
+        new_content: 1779
         cumulative_context: 7155999
       turn_leader: true
     - id: ca36d079-dd37-4975-a1d2-b81168d560c8
@@ -88913,6 +90338,9 @@ events:
         service_tier: standard
         context: 174175
         added: 1188
+        rewrite_overhead: 2
+        context_so_far: 172989
+        new_content: 1184
         cumulative_context: 7330174
       turn_leader: true
     - id: acbde83f-ee8a-44e1-aaf7-b504c9947816
@@ -89069,6 +90497,9 @@ events:
         service_tier: standard
         context: 174561
         added: 388
+        rewrite_overhead: 2
+        context_so_far: 174175
+        new_content: 384
         cumulative_context: 7504735
       link_ids:
       - tool:toolu_01DZxiF42SjDEY6GFC7AjQWy
@@ -89132,6 +90563,9 @@ events:
         service_tier: standard
         context: 175062
         added: 503
+        rewrite_overhead: 2
+        context_so_far: 174561
+        new_content: 499
         cumulative_context: 7679797
       link_ids:
       - tool:toolu_01UgaoHapiECZSJEmjGYEXq5
@@ -89204,6 +90638,9 @@ events:
         service_tier: standard
         context: 175294
         added: 234
+        rewrite_overhead: 2
+        context_so_far: 175062
+        new_content: 230
         cumulative_context: 7855091
       link_ids:
       - tool:toolu_01XK48w64BX9ZWNeEo8Ly1V4
@@ -89287,6 +90724,9 @@ events:
         service_tier: standard
         context: 176489
         added: 1197
+        rewrite_overhead: 2
+        context_so_far: 175294
+        new_content: 1193
         cumulative_context: 8031580
       turn_leader: true
     - id: c47ca1c2-e6d6-435d-97b1-240b84dd527f
@@ -89437,6 +90877,9 @@ events:
         service_tier: standard
         context: 177050
         added: 563
+        rewrite_overhead: 2
+        context_so_far: 176489
+        new_content: 559
         cumulative_context: 8208630
       turn_leader: true
     - id: cb808e9a-1db1-4e5b-8194-e62d1ad1291f
@@ -89663,6 +91106,9 @@ events:
         service_tier: standard
         context: 179266
         added: 2218
+        rewrite_overhead: 2
+        context_so_far: 177050
+        new_content: 2214
         cumulative_context: 8387896
       link_ids:
       - tool:toolu_012q3NHRwCJheU2seu1DyCVQ
@@ -89813,6 +91259,9 @@ events:
         service_tier: standard
         context: 180484
         added: 1220
+        rewrite_overhead: 2
+        context_so_far: 179266
+        new_content: 1216
         cumulative_context: 8568380
       link_ids:
       - tool:toolu_017btN6JoKEfgji8bXiZmQvG
@@ -89899,6 +91348,9 @@ events:
         service_tier: standard
         context: 180708
         added: 226
+        rewrite_overhead: 2
+        context_so_far: 180484
+        new_content: 222
         cumulative_context: 8749088
       turn_leader: true
     - id: f959b81f-bfe0-4b3d-a6ae-72d14e6bc325
@@ -90214,6 +91666,9 @@ events:
         service_tier: standard
         context: 182715
         added: 2009
+        rewrite_overhead: 2
+        context_so_far: 180708
+        new_content: 2005
         cumulative_context: 8931803
       link_ids:
       - tool:toolu_01NybLTPWP6ScfLX4j29H5AQ
@@ -90306,6 +91761,9 @@ events:
         service_tier: standard
         context: 183197
         added: 484
+        rewrite_overhead: 2
+        context_so_far: 182715
+        new_content: 480
         cumulative_context: 9115000
       turn_leader: true
     - id: 05132413-3082-4c6d-9290-c24f9d43b605
@@ -90585,6 +92043,9 @@ events:
         service_tier: standard
         context: 185689
         added: 2494
+        rewrite_overhead: 2
+        context_so_far: 183197
+        new_content: 2490
         cumulative_context: 9300689
       link_ids:
       - tool:toolu_015kZjM1msjt5rYJUDPsnfkN
@@ -90651,6 +92112,9 @@ events:
         service_tier: standard
         context: 188523
         added: 2836
+        rewrite_overhead: 2
+        context_so_far: 185689
+        new_content: 2832
         cumulative_context: 9489212
       link_ids:
       - tool:toolu_01VDfhUaKx9ZezZ2eYQhhwAp
@@ -90714,6 +92178,9 @@ events:
         service_tier: standard
         context: 188697
         added: 176
+        rewrite_overhead: 2
+        context_so_far: 188523
+        new_content: 172
         cumulative_context: 9677909
       link_ids:
       - tool:toolu_015AXPJQkEmvDGxhRYcj9dRa
@@ -90777,6 +92244,9 @@ events:
         service_tier: standard
         context: 189174
         added: 479
+        rewrite_overhead: 2
+        context_so_far: 188697
+        new_content: 475
         cumulative_context: 9867083
       turn_leader: true
     - id: ec368f7b-d745-4574-bedd-64bd7722d906
@@ -90882,6 +92352,9 @@ events:
         service_tier: standard
         context: 189632
         added: 460
+        rewrite_overhead: 2
+        context_so_far: 189174
+        new_content: 456
         cumulative_context: 10056715
       turn_leader: true
     - id: d084f17e-2fc0-428c-bdbe-04305b71b735
@@ -90996,6 +92469,9 @@ events:
         service_tier: standard
         context: 190484
         added: 854
+        rewrite_overhead: 2
+        context_so_far: 189632
+        new_content: 850
         cumulative_context: 10247199
       link_ids:
       - tool:toolu_01Fxm3VHGP6SGVZAYFDPb2ZL
@@ -91061,6 +92537,9 @@ events:
         service_tier: standard
         context: 190671
         added: 189
+        rewrite_overhead: 2
+        context_so_far: 190484
+        new_content: 185
         cumulative_context: 10437870
       link_ids:
       - tool:toolu_01XUPXf8S6tteA3HxbaPMxor
@@ -91124,6 +92603,9 @@ events:
         service_tier: standard
         context: 191142
         added: 473
+        rewrite_overhead: 2
+        context_so_far: 190671
+        new_content: 469
         cumulative_context: 10629012
       turn_leader: true
     - id: f2196f90-b7cb-4d42-b422-3fb5ca05dc7b
@@ -91225,6 +92707,9 @@ events:
         service_tier: standard
         context: 193211
         added: 2071
+        rewrite_overhead: 2
+        context_so_far: 191142
+        new_content: 2067
         cumulative_context: 10822223
       turn_leader: true
     - id: 1b51b931-721f-4502-8920-4210a1073b5b
@@ -91463,6 +92948,9 @@ events:
         service_tier: standard
         context: 195470
         added: 2261
+        rewrite_overhead: 2
+        context_so_far: 193211
+        new_content: 2257
         cumulative_context: 11017693
       link_ids:
       - tool:toolu_01XbRYjvn7xNwaV66ufVCZSS
@@ -91691,6 +93179,9 @@ events:
         service_tier: standard
         context: 198574
         added: 3106
+        rewrite_overhead: 2
+        context_so_far: 195470
+        new_content: 3102
         cumulative_context: 11216267
       link_ids:
       - tool:toolu_014FMi5h8Ezje2Xpv3odcdZg
@@ -91777,6 +93268,9 @@ events:
         service_tier: standard
         context: 198808
         added: 236
+        rewrite_overhead: 2
+        context_so_far: 198574
+        new_content: 232
         cumulative_context: 11415075
       turn_leader: true
     - id: 7258b4b7-6625-45cb-85f6-05a3090be283
@@ -91882,6 +93376,9 @@ events:
         service_tier: standard
         context: 200358
         added: 1552
+        rewrite_overhead: 2
+        context_so_far: 198808
+        new_content: 1548
         cumulative_context: 11615433
       link_ids:
       - tool:toolu_012ZFTbDoG49LMYRNYxZqftf
@@ -92047,6 +93544,9 @@ events:
         service_tier: standard
         context: 201880
         added: 1524
+        rewrite_overhead: 2
+        context_so_far: 200358
+        new_content: 1520
         cumulative_context: 11817313
       turn_leader: true
     - id: 5c21f864-507c-434f-9c3d-a4554a4624bd
@@ -92150,6 +93650,9 @@ events:
         service_tier: standard
         context: 202418
         added: 540
+        rewrite_overhead: 2
+        context_so_far: 201880
+        new_content: 536
         cumulative_context: 12019731
       turn_leader: true
     - id: 78ee0a8c-c61c-4417-bf9b-2e0833c0809b
@@ -92427,6 +93930,9 @@ events:
         service_tier: standard
         context: 204329
         added: 1913
+        rewrite_overhead: 2
+        context_so_far: 202418
+        new_content: 1909
         cumulative_context: 12224060
       link_ids:
       - tool:toolu_01HNUtkGSXhK45yqB45znedk
@@ -92558,6 +94064,9 @@ events:
         service_tier: standard
         context: 207165
         added: 2838
+        rewrite_overhead: 2
+        context_so_far: 204329
+        new_content: 2834
         cumulative_context: 12431225
       turn_leader: true
     - id: 6810c653-9711-4362-9625-5c8e8c7a22e7
@@ -92660,6 +94169,9 @@ events:
         service_tier: standard
         context: 208212
         added: 1049
+        rewrite_overhead: 2
+        context_so_far: 207165
+        new_content: 1045
         cumulative_context: 12639437
       turn_leader: true
     - id: '07091bfc-478b-4a9b-bad5-e3af5701df23'
@@ -92757,6 +94269,9 @@ events:
         service_tier: standard
         context: 208673
         added: 463
+        rewrite_overhead: 2
+        context_so_far: 208212
+        new_content: 459
         cumulative_context: 12848110
       turn_leader: true
     - id: 7abf9cdb-b7cc-4771-ba61-f04a33da178a
@@ -92958,6 +94473,9 @@ events:
         service_tier: standard
         context: 209796
         added: 1125
+        rewrite_overhead: 2
+        context_so_far: 208673
+        new_content: 1121
         cumulative_context: 13057906
       turn_leader: true
     - id: 1bf36843-e0b6-4a68-a684-ef2f2f816546
@@ -93098,6 +94616,9 @@ events:
         service_tier: standard
         context: 211174
         added: 1380
+        rewrite_overhead: 2
+        context_so_far: 209796
+        new_content: 1376
         cumulative_context: 13269080
       link_ids:
       - tool:toolu_01MsA2dkxkxwRciS8GhKfkp8
@@ -93170,6 +94691,9 @@ events:
         service_tier: standard
         context: 211415
         added: 243
+        rewrite_overhead: 2
+        context_so_far: 211174
+        new_content: 239
         cumulative_context: 13480495
       link_ids:
       - tool:toolu_01DWZbkhTPHnxyLEFs74y4ZH
@@ -93244,6 +94768,9 @@ events:
         service_tier: standard
         context: 212452
         added: 1039
+        rewrite_overhead: 2
+        context_so_far: 211415
+        new_content: 1035
         cumulative_context: 13692947
       turn_leader: true
     - id: f6f78db9-b836-4b51-bd79-9a8c63141ee0
@@ -93390,6 +94917,9 @@ events:
         service_tier: standard
         context: 214124
         added: 1674
+        rewrite_overhead: 2
+        context_so_far: 212452
+        new_content: 1670
         cumulative_context: 13907071
       turn_leader: true
     - id: 8f642a90-87b9-464f-8c58-064b31d1ad71
@@ -93522,6 +95052,9 @@ events:
         service_tier: standard
         context: 216059
         added: 1937
+        rewrite_overhead: 2
+        context_so_far: 214124
+        new_content: 1933
         cumulative_context: 14123130
       link_ids:
       - tool:toolu_01ThMaYBYDLAMPr387xD7Yjb
@@ -93586,6 +95119,9 @@ events:
         service_tier: standard
         context: 216558
         added: 501
+        rewrite_overhead: 2
+        context_so_far: 216059
+        new_content: 497
         cumulative_context: 14339688
       turn_leader: true
     - id: 261307f9-eb3f-491c-8a9a-3fb03c95b7b3
@@ -93710,6 +95246,9 @@ events:
         service_tier: standard
         context: 216961
         added: 405
+        rewrite_overhead: 2
+        context_so_far: 216558
+        new_content: 401
         cumulative_context: 14556649
       turn_leader: true
     - id: 263ea821-4415-4084-aabf-5439dd5882da
@@ -93892,6 +95431,9 @@ events:
         service_tier: standard
         context: 219072
         added: 2113
+        rewrite_overhead: 2
+        context_so_far: 216961
+        new_content: 2109
         cumulative_context: 14775721
       link_ids:
       - tool:toolu_01HemvVagPQGgpnPfDiuCy2y
@@ -93972,6 +95514,9 @@ events:
         service_tier: standard
         context: 219237
         added: 167
+        rewrite_overhead: 2
+        context_so_far: 219072
+        new_content: 163
         cumulative_context: 14994958
       turn_leader: true
     - id: cbe25887-3613-4ec6-85ad-b4e6ac1544d6
@@ -94161,6 +95706,9 @@ events:
         service_tier: standard
         context: 220480
         added: 1245
+        rewrite_overhead: 2
+        context_so_far: 219237
+        new_content: 1241
         cumulative_context: 15215438
       link_ids:
       - tool:toolu_016JPE9tUrxUuDpyPpHa6Nxj
@@ -94458,6 +96006,9 @@ events:
         service_tier: standard
         context: 222431
         added: 1953
+        rewrite_overhead: 2
+        context_so_far: 220480
+        new_content: 1949
         cumulative_context: 15437869
       turn_leader: true
     - id: 1e6022ab-3bfa-4d88-bab1-bcdd3cf3385d
@@ -94615,6 +96166,9 @@ events:
         service_tier: standard
         context: 223155
         added: 726
+        rewrite_overhead: 2
+        context_so_far: 222431
+        new_content: 722
         cumulative_context: 15661024
       turn_leader: true
     - id: 98d63941-0d28-4a40-951c-c6e84890540f
@@ -94844,6 +96398,9 @@ events:
         service_tier: standard
         context: 225147
         added: 1994
+        rewrite_overhead: 2
+        context_so_far: 223155
+        new_content: 1990
         cumulative_context: 15886171
       turn_leader: true
     - id: cac255c5-3b41-4ebb-bae9-8ac39f176075
@@ -94966,6 +96523,9 @@ events:
         service_tier: standard
         context: 225440
         added: 295
+        rewrite_overhead: 2
+        context_so_far: 225147
+        new_content: 291
         cumulative_context: 16111611
       turn_leader: true
     - id: 948c686b-6873-4329-87b6-0ea16c7ce7d6
@@ -95113,6 +96673,9 @@ events:
         service_tier: standard
         context: 226797
         added: 1359
+        rewrite_overhead: 2
+        context_so_far: 225440
+        new_content: 1355
         cumulative_context: 16338408
       link_ids:
       - tool:toolu_01GCeZHkF7V9JCYsHucMbDyg
@@ -95193,6 +96756,9 @@ events:
         service_tier: standard
         context: 227541
         added: 746
+        rewrite_overhead: 2
+        context_so_far: 226797
+        new_content: 742
         cumulative_context: 16565949
       link_ids:
       - tool:toolu_01AwCtFBr69NgdW1aW6wUH9U
@@ -95292,6 +96858,9 @@ events:
         service_tier: standard
         context: 229561
         added: 2022
+        rewrite_overhead: 2
+        context_so_far: 227541
+        new_content: 2018
         cumulative_context: 16795510
       turn_leader: true
     - id: d55228da-5aa7-40bd-b6ad-ee5adc9f67b5
@@ -95421,6 +96990,9 @@ events:
         service_tier: standard
         context: 230567
         added: 1008
+        rewrite_overhead: 2
+        context_so_far: 229561
+        new_content: 1004
         cumulative_context: 17026077
       turn_leader: true
     - id: 83217915-0719-4ada-af91-b0851749f48f
@@ -95583,6 +97155,9 @@ events:
         service_tier: standard
         context: 231731
         added: 1166
+        rewrite_overhead: 2
+        context_so_far: 230567
+        new_content: 1162
         cumulative_context: 17257808
       turn_leader: true
     - id: 953f067e-d9af-4f5d-83fa-523ce39512c4
@@ -95682,6 +97257,9 @@ events:
         service_tier: standard
         context: 232830
         added: 1101
+        rewrite_overhead: 2
+        context_so_far: 231731
+        new_content: 1097
         cumulative_context: 17490638
       turn_leader: true
     - id: 7b9e777d-ac96-4966-802e-70b14f705058
@@ -95809,6 +97387,9 @@ events:
         service_tier: standard
         context: 233411
         added: 583
+        rewrite_overhead: 2
+        context_so_far: 232830
+        new_content: 579
         cumulative_context: 17724049
       link_ids:
       - tool:toolu_01Gd6hpUFdRAVtSpB1bfJnij
@@ -95872,6 +97453,9 @@ events:
         service_tier: standard
         context: 233632
         added: 223
+        rewrite_overhead: 2
+        context_so_far: 233411
+        new_content: 219
         cumulative_context: 17957681
       link_ids:
       - tool:toolu_01WG2CbABTYDPSVjz1MNSip9
@@ -95949,6 +97533,9 @@ events:
         service_tier: standard
         context: 234287
         added: 657
+        rewrite_overhead: 2
+        context_so_far: 233632
+        new_content: 653
         cumulative_context: 18191968
       turn_leader: true
     - id: 41cbb5b9-5e9c-4c03-b4cf-8ca3cdf4d0ce
@@ -96035,6 +97622,9 @@ events:
         service_tier: standard
         context: 234576
         added: 291
+        rewrite_overhead: 2
+        context_so_far: 234287
+        new_content: 287
         cumulative_context: 18426544
       turn_leader: true
     - id: 6ef7a4ca-138e-41ea-8e40-ebb55ef489dc
@@ -96130,6 +97720,9 @@ events:
         service_tier: standard
         context: 235492
         added: 918
+        rewrite_overhead: 2
+        context_so_far: 234576
+        new_content: 914
         cumulative_context: 18662036
       turn_leader: true
     - id: b5c013ee-6158-4084-bb0b-33c335e9493d
@@ -96233,6 +97826,9 @@ events:
         service_tier: standard
         context: 236786
         added: 1296
+        rewrite_overhead: 2
+        context_so_far: 235492
+        new_content: 1292
         cumulative_context: 18898822
       turn_leader: true
     - id: 1880034c-8cae-4dd1-b2c6-9242b937eecd
@@ -96384,6 +97980,9 @@ events:
         service_tier: standard
         context: 238547
         added: 1763
+        rewrite_overhead: 2
+        context_so_far: 236786
+        new_content: 1759
         cumulative_context: 19137369
       turn_leader: true
     - id: 810a1078-1273-42ea-8767-374d85fe5d2d
@@ -96502,6 +98101,9 @@ events:
         service_tier: standard
         context: 239630
         added: 1085
+        rewrite_overhead: 2
+        context_so_far: 238547
+        new_content: 1081
         cumulative_context: 19376999
       link_ids:
       - tool:toolu_01TifXRvUJ7rvmvbY9i8pkaf
@@ -96564,6 +98166,9 @@ events:
         service_tier: standard
         context: 240379
         added: 751
+        rewrite_overhead: 2
+        context_so_far: 239630
+        new_content: 747
         cumulative_context: 19617378
       turn_leader: true
     - id: dcc5aea9-6b97-4548-9479-faf931e125e9
@@ -96690,6 +98295,9 @@ events:
         service_tier: standard
         context: 240861
         added: 484
+        rewrite_overhead: 2
+        context_so_far: 240379
+        new_content: 480
         cumulative_context: 19858239
       turn_leader: true
     - id: c88efc72-e6a6-4857-badf-c2a8ffdbf85a
@@ -96890,6 +98498,9 @@ events:
         service_tier: standard
         context: 243964
         added: 3105
+        rewrite_overhead: 2
+        context_so_far: 240861
+        new_content: 3101
         cumulative_context: 20102203
       turn_leader: true
     - id: 6b1c77e9-9cf3-40c3-9b5e-b964caccd588
@@ -97010,6 +98621,9 @@ events:
         service_tier: standard
         context: 244686
         added: 724
+        rewrite_overhead: 2
+        context_so_far: 243964
+        new_content: 720
         cumulative_context: 20346889
       link_ids:
       - tool:toolu_01E22cHFoEHLC2SJ6ZbqGs8x
@@ -97120,6 +98734,9 @@ events:
         service_tier: standard
         context: 245694
         added: 1010
+        rewrite_overhead: 2
+        context_so_far: 244686
+        new_content: 1006
         cumulative_context: 20592583
       turn_leader: true
     - id: 41733d8a-c830-431c-96aa-9e3094580c39
@@ -97284,6 +98901,9 @@ events:
         service_tier: standard
         context: 248674
         added: 2982
+        rewrite_overhead: 2
+        context_so_far: 245694
+        new_content: 2978
         cumulative_context: 20841257
       turn_leader: true
     - id: 630b9563-704a-47cb-b512-3fc6def18983
@@ -97441,6 +99061,9 @@ events:
         service_tier: standard
         context: 251295
         added: 2623
+        rewrite_overhead: 2
+        context_so_far: 248674
+        new_content: 2619
         cumulative_context: 21092552
       link_ids:
       - tool:toolu_01Ji1eiHqKffG6KbvQEh7PNt
@@ -97528,6 +99151,9 @@ events:
         service_tier: standard
         context: 251893
         added: 600
+        rewrite_overhead: 2
+        context_so_far: 251295
+        new_content: 596
         cumulative_context: 21344445
       turn_leader: true
     - id: 69a27b57-9df6-4674-a814-290ab326e62c
@@ -97634,6 +99260,9 @@ events:
         service_tier: standard
         context: 252184
         added: 293
+        rewrite_overhead: 2
+        context_so_far: 251893
+        new_content: 289
         cumulative_context: 21596629
       link_ids:
       - tool:toolu_01VxmRUhaAr4RQ2vYwnDAJa3
@@ -97719,6 +99348,9 @@ events:
         service_tier: standard
         context: 252539
         added: 357
+        rewrite_overhead: 2
+        context_so_far: 252184
+        new_content: 353
         cumulative_context: 21849168
       turn_leader: true
     - id: 7d33bf2c-c8c3-4b05-9839-aad52795591a
@@ -97852,6 +99484,9 @@ events:
         service_tier: standard
         context: 253619
         added: 1082
+        rewrite_overhead: 2
+        context_so_far: 252539
+        new_content: 1078
         cumulative_context: 22102787
       link_ids:
       - tool:toolu_01AGFghPJoGVtaBFRNBYtcyt
@@ -97988,6 +99623,9 @@ events:
         service_tier: standard
         context: 254749
         added: 1132
+        rewrite_overhead: 2
+        context_so_far: 253619
+        new_content: 1128
         cumulative_context: 22357536
       turn_leader: true
     - id: 9c0e9bb2-547e-42a7-867a-affc4fdbbb1c
@@ -98210,6 +99848,9 @@ events:
         service_tier: standard
         context: 257735
         added: 2988
+        rewrite_overhead: 2
+        context_so_far: 254749
+        new_content: 2984
         cumulative_context: 22615271
       link_ids:
       - tool:toolu_013Die3Jdemrnvu75Jw9KrVq
@@ -98298,6 +99939,9 @@ events:
         service_tier: standard
         context: 258357
         added: 624
+        rewrite_overhead: 2
+        context_so_far: 257735
+        new_content: 620
         cumulative_context: 22873628
       turn_leader: true
     - id: 2354b529-3820-425c-ae45-257aa9025c8f
@@ -98402,6 +100046,9 @@ events:
         service_tier: standard
         context: 258876
         added: 521
+        rewrite_overhead: 2
+        context_so_far: 258357
+        new_content: 517
         cumulative_context: 23132504
       link_ids:
       - tool:toolu_01NfptJYw9GSjrPprD68TkS2
@@ -98482,6 +100129,9 @@ events:
         service_tier: standard
         context: 259100
         added: 226
+        rewrite_overhead: 2
+        context_so_far: 258876
+        new_content: 222
         cumulative_context: 23391604
       turn_leader: true
     - id: 660202ae-cbdc-4179-a07b-46b2a749148c
@@ -98603,6 +100253,9 @@ events:
         service_tier: standard
         context: 260710
         added: 1612
+        rewrite_overhead: 2
+        context_so_far: 259100
+        new_content: 1608
         cumulative_context: 23652314
       link_ids:
       - tool:toolu_01Pv6X14PWgL9exv5mfizgmk
@@ -98762,6 +100415,9 @@ events:
         service_tier: standard
         context: 262438
         added: 1730
+        rewrite_overhead: 2
+        context_so_far: 260710
+        new_content: 1726
         cumulative_context: 23914752
       turn_leader: true
     - id: ebe99797-6e98-4425-8a84-6c1359d5eabc
@@ -98926,6 +100582,9 @@ events:
         service_tier: standard
         context: 263851
         added: 1415
+        rewrite_overhead: 2
+        context_so_far: 262438
+        new_content: 1411
         cumulative_context: 24178603
       link_ids:
       - tool:toolu_01NsVwLmLi5QubGzbyMD1sMy
@@ -99005,6 +100664,9 @@ events:
         service_tier: standard
         context: 264517
         added: 668
+        rewrite_overhead: 2
+        context_so_far: 263851
+        new_content: 664
         cumulative_context: 24443120
       link_ids:
       - tool:toolu_01WGcmQhJ5sxhhuaCxK3hd8H
@@ -99061,6 +100723,9 @@ events:
         service_tier: standard
         context: 265125
         added: 610
+        rewrite_overhead: 2
+        context_so_far: 264517
+        new_content: 606
         cumulative_context: 24708245
       turn_leader: true
     - id: dfa85b95-bedd-4192-aa72-9d8639ed3907
@@ -99192,6 +100857,9 @@ events:
         service_tier: standard
         context: 266428
         added: 1305
+        rewrite_overhead: 2
+        context_so_far: 265125
+        new_content: 1301
         cumulative_context: 24974673
       link_ids:
       - tool:toolu_01QDCeZ76SAwi28QB3qm7yk5
@@ -99248,6 +100916,9 @@ events:
         service_tier: standard
         context: 267127
         added: 701
+        rewrite_overhead: 2
+        context_so_far: 266428
+        new_content: 697
         cumulative_context: 25241800
       turn_leader: true
     - id: 9b44a212-d5e5-466f-a913-302bcab71541
@@ -99372,6 +101043,9 @@ events:
         service_tier: standard
         context: 268106
         added: 981
+        rewrite_overhead: 2
+        context_so_far: 267127
+        new_content: 977
         cumulative_context: 25509906
       link_ids:
       - tool:toolu_015xMrtqzM1G9rpEa13XmTi8
@@ -99425,6 +101099,9 @@ events:
         service_tier: standard
         context: 268321
         added: 217
+        rewrite_overhead: 2
+        context_so_far: 268106
+        new_content: 213
         cumulative_context: 25778227
       turn_leader: true
     - id: dce015a0-a373-4c97-88cd-d674c5f0a695
@@ -99598,6 +101275,9 @@ events:
         service_tier: standard
         context: 270173
         added: 1854
+        rewrite_overhead: 2
+        context_so_far: 268321
+        new_content: 1851
         cumulative_context: 26048400
       link_ids:
       - tool:toolu_01Q7x79GN9ikiDJBrbEeYrHp
@@ -99782,6 +101462,9 @@ events:
         service_tier: standard
         context: 273621
         added: 3449
+        rewrite_overhead: 1
+        context_so_far: 270173
+        new_content: 3446
         cumulative_context: 26322021
       link_ids:
       - tool:toolu_018qWfg7anod2FPxYURgn7ZC
@@ -99857,6 +101540,9 @@ events:
         service_tier: standard
         context: 274295
         added: 676
+        rewrite_overhead: 2
+        context_so_far: 273621
+        new_content: 672
         cumulative_context: 26596316
       turn_leader: true
     - id: 306ab57c-9a6a-409f-aa75-5720ef7ca574
@@ -100100,6 +101786,9 @@ events:
         service_tier: standard
         context: 275716
         added: 1423
+        rewrite_overhead: 2
+        context_so_far: 274295
+        new_content: 1419
         cumulative_context: 26872032
       link_ids:
       - tool:toolu_01NU8fu4MxCFx4x4qwd99ooh
@@ -100232,6 +101921,9 @@ events:
         service_tier: standard
         context: 276671
         added: 957
+        rewrite_overhead: 2
+        context_so_far: 275716
+        new_content: 953
         cumulative_context: 27148703
       link_ids:
       - tool:toolu_012vkc7aWewsU9smDx9EnZig
@@ -100373,6 +102065,9 @@ events:
         service_tier: standard
         context: 278346
         added: 1677
+        rewrite_overhead: 2
+        context_so_far: 276671
+        new_content: 1673
         cumulative_context: 27427049
       link_ids:
       - tool:toolu_01YRTyiNjwLisBgyyfNyZijh
@@ -100429,6 +102124,9 @@ events:
         service_tier: standard
         context: 279068
         added: 724
+        rewrite_overhead: 2
+        context_so_far: 278346
+        new_content: 720
         cumulative_context: 27706117
       turn_leader: true
     - id: 452e036e-1587-4e30-9e24-15f40ad76713
@@ -100541,6 +102239,9 @@ events:
         service_tier: standard
         context: 279389
         added: 323
+        rewrite_overhead: 2
+        context_so_far: 279068
+        new_content: 319
         cumulative_context: 27985506
       link_ids:
       - tool:toolu_01NNq1j3PSeNpewbjrrKuNrd
@@ -100656,6 +102357,9 @@ events:
         service_tier: standard
         context: 281115
         added: 1728
+        rewrite_overhead: 2
+        context_so_far: 279389
+        new_content: 1725
         cumulative_context: 28266621
       link_ids:
       - tool:toolu_01Fdqb9xeNZrE1yUXxEPpaEn
@@ -100768,6 +102472,9 @@ events:
         service_tier: standard
         context: 282924
         added: 1810
+        rewrite_overhead: 1
+        context_so_far: 281115
+        new_content: 1807
         cumulative_context: 28549545
       link_ids:
       - tool:toolu_01FxptL4o4a7iwC9qinxapsr
@@ -100905,6 +102612,9 @@ events:
         service_tier: standard
         context: 284261
         added: 1339
+        rewrite_overhead: 2
+        context_so_far: 282924
+        new_content: 1335
         cumulative_context: 28833806
       link_ids:
       - tool:toolu_01CvQjtTEsXeLARrBwFVFPzs
@@ -100961,6 +102671,9 @@ events:
         service_tier: standard
         context: 284782
         added: 523
+        rewrite_overhead: 2
+        context_so_far: 284261
+        new_content: 519
         cumulative_context: 29118588
       turn_leader: true
     - id: 40830d75-a508-481b-ad44-8bf0d9a36715
@@ -101067,6 +102780,9 @@ events:
         service_tier: standard
         context: 285341
         added: 561
+        rewrite_overhead: 2
+        context_so_far: 284782
+        new_content: 557
         cumulative_context: 29403929
       link_ids:
       - tool:toolu_01RKJTR2SrupAz4K7EDKQazt
@@ -101143,6 +102859,9 @@ events:
         service_tier: standard
         context: 285566
         added: 227
+        rewrite_overhead: 2
+        context_so_far: 285341
+        new_content: 223
         cumulative_context: 29689495
       link_ids:
       - tool:toolu_018pTBRgbBEEpsfAvA3CsCK2
@@ -101259,6 +102978,9 @@ events:
         service_tier: standard
         context: 287110
         added: 1546
+        rewrite_overhead: 2
+        context_so_far: 285566
+        new_content: 1543
         cumulative_context: 29976605
       link_ids:
       - tool:toolu_01NU9KwMhcR4cWpWu6hbogYW
@@ -101340,6 +103062,9 @@ events:
         service_tier: standard
         context: 287634
         added: 525
+        rewrite_overhead: 1
+        context_so_far: 287110
+        new_content: 522
         cumulative_context: 30264239
       link_ids:
       - tool:toolu_019BvNVF3tm9nRpKKe8kAXsw
@@ -101482,6 +103207,9 @@ events:
         service_tier: standard
         context: 288402
         added: 770
+        rewrite_overhead: 2
+        context_so_far: 287634
+        new_content: 766
         cumulative_context: 30552641
       link_ids:
       - tool:toolu_01Ka6oarW1a6pm3ymBQ3AfKL
@@ -101549,6 +103277,9 @@ events:
         service_tier: standard
         context: 288945
         added: 545
+        rewrite_overhead: 2
+        context_so_far: 288402
+        new_content: 541
         cumulative_context: 30841586
       link_ids:
       - tool:toolu_01GoRuxuHxr8KFxxhzCKjs6W
@@ -101616,6 +103347,9 @@ events:
         service_tier: standard
         context: 289901
         added: 958
+        rewrite_overhead: 2
+        context_so_far: 288945
+        new_content: 954
         cumulative_context: 31131487
       turn_leader: true
     - id: 86d1df65-2264-4fd9-8c56-7516b0c9291b
@@ -101814,6 +103548,9 @@ events:
         service_tier: standard
         context: 290421
         added: 522
+        rewrite_overhead: 2
+        context_so_far: 289901
+        new_content: 518
         cumulative_context: 31421908
       turn_leader: true
 - id: ce6c52ab-9310-438e-aacb-79dd095ad1a6
@@ -101988,6 +103725,9 @@ events:
     service_tier: standard
     context: 279626
     added: 3322
+    rewrite_overhead: 2
+    context_so_far: 276306
+    new_content: 3318
     cumulative_context: 17019614
   beat: true
   turn_leader: true
@@ -102218,6 +103958,9 @@ events:
     service_tier: standard
     context: 281640
     added: 2016
+    rewrite_overhead: 2
+    context_so_far: 279626
+    new_content: 2012
     cumulative_context: 17301254
   beat: true
   turn_leader: true
@@ -102353,6 +104096,9 @@ events:
     service_tier: standard
     context: 283014
     added: 1376
+    rewrite_overhead: 2
+    context_so_far: 281640
+    new_content: 1373
     cumulative_context: 17584268
   beat: true
   turn_leader: true
@@ -102530,6 +104276,9 @@ events:
     service_tier: standard
     context: 284787
     added: 1774
+    rewrite_overhead: 1
+    context_so_far: 283014
+    new_content: 1771
     cumulative_context: 17869055
   beat: true
   turn_leader: true
@@ -102693,6 +104442,9 @@ events:
     service_tier: standard
     context: 285914
     added: 1129
+    rewrite_overhead: 2
+    context_so_far: 284787
+    new_content: 1125
     cumulative_context: 18154969
   beat: true
   turn_leader: true
@@ -103085,6 +104837,9 @@ events:
     service_tier: standard
     context: 287866
     added: 1954
+    rewrite_overhead: 2
+    context_so_far: 285914
+    new_content: 1950
     cumulative_context: 18442835
   beat: true
   turn_leader: true
@@ -103329,6 +105084,9 @@ events:
     service_tier: standard
     context: 289472
     added: 1608
+    rewrite_overhead: 2
+    context_so_far: 287866
+    new_content: 1604
     cumulative_context: 18732307
   beat: true
   turn_leader: true
@@ -103692,6 +105450,9 @@ events:
     service_tier: standard
     context: 293549
     added: 4079
+    rewrite_overhead: 2
+    context_so_far: 289472
+    new_content: 4075
     cumulative_context: 19025856
   beat: true
   turn_leader: true
@@ -103802,6 +105563,9 @@ events:
     service_tier: standard
     context: 294764
     added: 11
+    rewrite_overhead: 0
+    context_so_far: 294753
+    new_content: 9
     cumulative_context: 19320620
   beat: true
   turn_leader: true
@@ -103919,6 +105683,9 @@ events:
     service_tier: standard
     context: 295754
     added: 992
+    rewrite_overhead: 2
+    context_so_far: 294764
+    new_content: 989
     cumulative_context: 19616374
   turn_leader: true
 - id: f3dc0e53-f927-42a8-a5f4-0da4f5d305e7
@@ -104105,6 +105872,9 @@ events:
     service_tier: standard
     context: 296295
     added: 542
+    rewrite_overhead: 1
+    context_so_far: 295754
+    new_content: 539
     cumulative_context: 19912669
   link_ids:
   - tool:toolu_01Kd5uPxnHWfSRNfqHFUxQBL
@@ -104191,6 +105961,9 @@ events:
     service_tier: standard
     context: 296682
     added: 389
+    rewrite_overhead: 2
+    context_so_far: 296295
+    new_content: 385
     cumulative_context: 20209351
   link_ids:
   - tool:toolu_013A6VzWU3peZMTUcJkxnYdN
@@ -104281,6 +106054,9 @@ events:
     service_tier: standard
     context: 297255
     added: 575
+    rewrite_overhead: 2
+    context_so_far: 296682
+    new_content: 571
     cumulative_context: 20506606
   link_ids:
   - tool:toolu_01LCVfuJ2RnfQkYiCPsRoocx
@@ -104360,6 +106136,9 @@ events:
     service_tier: standard
     context: 297824
     added: 571
+    rewrite_overhead: 2
+    context_so_far: 297255
+    new_content: 567
     cumulative_context: 20804430
   turn_leader: true
 - id: 7db01328-bb09-44b8-9258-392a9ae42cf0
@@ -104483,6 +106262,9 @@ events:
     service_tier: standard
     context: 298212
     added: 390
+    rewrite_overhead: 2
+    context_so_far: 297824
+    new_content: 386
     cumulative_context: 21102642
   link_ids:
   - tool:toolu_01Caw676KAcZ5pdnL8KwbNop
@@ -104551,6 +106333,9 @@ events:
     service_tier: standard
     context: 298417
     added: 207
+    rewrite_overhead: 2
+    context_so_far: 298212
+    new_content: 203
     cumulative_context: 21401059
   link_ids:
   - tool:toolu_01K1HN5qpHzCxxxHYbiMifra
@@ -104638,6 +106423,9 @@ events:
     service_tier: standard
     context: 298581
     added: 166
+    rewrite_overhead: 2
+    context_so_far: 298417
+    new_content: 162
     cumulative_context: 21699640
   beat: true
   turn_leader: true
@@ -104765,6 +106553,9 @@ events:
     service_tier: standard
     context: 299112
     added: 533
+    rewrite_overhead: 2
+    context_so_far: 298581
+    new_content: 529
     cumulative_context: 21998752
   link_ids:
   - tool:toolu_01J4gdN4diCfnTC2EJifi3To
@@ -104866,6 +106657,9 @@ events:
     service_tier: standard
     context: 299447
     added: 337
+    rewrite_overhead: 2
+    context_so_far: 299112
+    new_content: 334
     cumulative_context: 22298199
   beat: true
   turn_leader: true
@@ -105060,6 +106854,9 @@ events:
     service_tier: standard
     context: 300462
     added: 1016
+    rewrite_overhead: 1
+    context_so_far: 299447
+    new_content: 1013
     cumulative_context: 22598661
   beat: true
   turn_leader: true
@@ -105180,6 +106977,9 @@ events:
     service_tier: standard
     context: 301295
     added: 42
+    rewrite_overhead: 0
+    context_so_far: 301253
+    new_content: 40
     cumulative_context: 22899956
   beat: true
   turn_leader: true
@@ -105539,6 +107339,9 @@ events:
     service_tier: standard
     context: 303689
     added: 2396
+    rewrite_overhead: 2
+    context_so_far: 301295
+    new_content: 2392
     cumulative_context: 23203645
   beat: true
   turn_leader: true
@@ -105779,6 +107582,9 @@ events:
     service_tier: standard
     context: 306221
     added: 2534
+    rewrite_overhead: 2
+    context_so_far: 303689
+    new_content: 2530
     cumulative_context: 23509866
   link_ids:
   - tool:toolu_01DL1yGDz7SEShRbQT4ATwpc
@@ -105885,6 +107691,9 @@ events:
     service_tier: standard
     context: 306772
     added: 553
+    rewrite_overhead: 2
+    context_so_far: 306221
+    new_content: 549
     cumulative_context: 23816638
   beat: true
   turn_leader: true
@@ -106006,6 +107815,9 @@ events:
     service_tier: standard
     context: 307586
     added: 816
+    rewrite_overhead: 2
+    context_so_far: 306772
+    new_content: 813
     cumulative_context: 24124224
   turn_leader: true
 - id: e3cee6fb-ae3b-4476-a164-610b40d32e60
@@ -106279,6 +108091,9 @@ events:
     service_tier: standard
     context: 309095
     added: 1510
+    rewrite_overhead: 1
+    context_so_far: 307586
+    new_content: 1507
     cumulative_context: 24433319
   beat: true
   turn_leader: true
@@ -106381,6 +108196,9 @@ events:
     service_tier: standard
     context: 309630
     added: 537
+    rewrite_overhead: 2
+    context_so_far: 309095
+    new_content: 533
     cumulative_context: 24742949
   turn_leader: true
 - id: c1122ca2-bccd-4925-8794-2b82dbe0278a
@@ -106567,6 +108385,9 @@ events:
     service_tier: standard
     context: 310244
     added: 616
+    rewrite_overhead: 2
+    context_so_far: 309630
+    new_content: 612
     cumulative_context: 25053193
   link_ids:
   - tool:toolu_01ULjnahNg6n8xSaAZ6RvUUw
@@ -106679,6 +108500,9 @@ events:
     service_tier: standard
     context: 310508
     added: 266
+    rewrite_overhead: 2
+    context_so_far: 310244
+    new_content: 262
     cumulative_context: 25363701
   link_ids:
   - tool:toolu_014RvvaWjgzBPtMfgQQkQnLj
@@ -106778,6 +108602,9 @@ events:
     service_tier: standard
     context: 310998
     added: 492
+    rewrite_overhead: 2
+    context_so_far: 310508
+    new_content: 488
     cumulative_context: 25674699
   link_ids:
   - tool:toolu_01SEy5CR4raEN23Vv1Vo65yk
@@ -106859,6 +108686,9 @@ events:
     service_tier: standard
     context: 311293
     added: 297
+    rewrite_overhead: 2
+    context_so_far: 310998
+    new_content: 293
     cumulative_context: 25985992
   beat: true
   turn_leader: true

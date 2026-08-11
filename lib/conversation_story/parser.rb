@@ -134,6 +134,7 @@ module ConversationStory
       events  = records.map { |lineno, rec| build_event(lineno, rec) }
       link_related_events!(events)
       mark_turns!(events)
+      mark_first_turn_breakdown!(events)
       document = { "meta" => build_meta(records, events), "events" => events }
       attach_subagents!(events)
       document
@@ -551,6 +552,7 @@ module ConversationStory
     # they cause in the running total, would appear on no card at all.
     def mark_turns!(events)
       running = 0
+      prev_context = 0
       turns(events).each_value do |group|
         leader = group.find { |e| e["kind"] == "assistant_message" } || group.first
         leader["turn_leader"] = true
@@ -564,9 +566,52 @@ module ConversationStory
         # can't be shown on its own as "the context length".
         tokens["context"] = %w[input cache_creation cache_read].sum { |k| tokens[k].to_i }
         tokens["added"]   = tokens["input"].to_i + tokens["cache_creation"].to_i
+
+        # A cache write isn't always NEW content: if the previous turn's context
+        # didn't come back whole as cache_read (TTL lapsed, or the breakpoint
+        # walked outside the 20-block lookback), the missing part has to be
+        # rewritten into the cache too — re-paying for OLD content, not adding
+        # new. rewrite_overhead isolates that: what's left of cache_creation
+        # after subtracting it is the genuinely new tail (new_content), and
+        # cache_read + rewrite_overhead should equal prev_context exactly,
+        # which makes context_so_far a sanity check on this whole model, not
+        # just another number.
+        cache_read = tokens["cache_read"].to_i
+        rewrite_overhead = [prev_context - cache_read, 0].max
+        tokens["rewrite_overhead"] = rewrite_overhead
+        tokens["context_so_far"]   = cache_read + rewrite_overhead
+        tokens["new_content"]      = tokens["cache_creation"].to_i - rewrite_overhead
+
         running += tokens["context"]
         tokens["cumulative_context"] = running
+        prev_context = tokens["context"]
       end
+    end
+
+    # Turn 1's `added` pays for the system prompt AND the tool schemas AND the
+    # first user message, all as one cache write — prompt caching hashes the
+    # whole `tools -> system -> messages` prefix together, so there's no
+    # line-item to read the system/tools portion off of (see
+    # notes/2026-08-11-session-21-token-accounting-research.md). The one piece
+    # we CAN size independently is the first user message itself (chars, same
+    # estimator as a tool_result); whatever's left of turn 1's `added` gets
+    # named as the system prompt's estimated size rather than left unexplained.
+    def mark_first_turn_breakdown!(events)
+      first_leader = events.find { |e| e["turn_leader"] }
+      tokens = first_leader && first_leader["tokens"]
+      return unless tokens && tokens["added"]
+
+      first_message = events.find { |e| e["kind"] == "user_message" }
+      return unless first_message
+
+      chars = first_message.dig("detail", "text").to_s.length
+      estimate = (chars / CHARS_PER_TOKEN).round
+
+      first_message["tokens"] = (first_message["tokens"] || {}).merge(
+        "user_message_chars"    => chars,
+        "user_message_estimate" => estimate,
+        "system_prompt_estimate" => [tokens["added"] - estimate, 0].max,
+      )
     end
 
     # message_id => that turn's records, in log order. A record with no message

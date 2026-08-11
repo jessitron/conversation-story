@@ -77,6 +77,10 @@ events:
       I’ve used this app and enjoyed the live replay. The events go in a list and stay in the list and I can scroll the list but there's a little timeline across the top that is live.
       Is there a way to rewind the timeline?
   beat: true
+  tokens:
+    user_message_chars: 216
+    user_message_estimate: 62
+    system_prompt_estimate: 10885
   summary_edited: true
 - id: e534103e-d5be-45a2-a83f-2e11f03c1b6e
   ref: episode-8-after:5
@@ -202,6 +206,9 @@ events:
     service_tier: standard
     context: 24781
     added: 10947
+    rewrite_overhead: 0
+    context_so_far: 13834
+    new_content: 10944
     cumulative_context: 24781
   beat: true
   turn_leader: true
@@ -295,6 +302,10 @@ events:
           3. How events are displayed in the list and how the timeline relates to the list
 
           Search for files related to: timeline, replay, rewind, scrub, time, playback. Read the key components thoroughly. Report what you find.
+      tokens:
+        user_message_chars: 468
+        user_message_estimate: 134
+        system_prompt_estimate: 375
       hidden: true
     - id: 99790a25-f911-497b-a67e-ba2e3c9d3091
       ref: agent-ad79cef00e3496606:2
@@ -327,6 +338,9 @@ events:
         service_tier: standard
         context: 88480
         added: 509
+        rewrite_overhead: 0
+        context_so_far: 87971
+        new_content: 506
         cumulative_context: 88480
       turn_leader: true
     - id: b7e6fc63-fb41-47ad-8368-16d6dc621f83
@@ -714,6 +728,9 @@ events:
         service_tier: standard
         context: 92283
         added: 3806
+        rewrite_overhead: 3
+        context_so_far: 88480
+        new_content: 3796
         cumulative_context: 180763
       turn_leader: true
     - id: 6987edd5-94d2-4de5-a3a1-8bb486a27ae6
@@ -934,6 +951,9 @@ events:
         service_tier: standard
         context: 93126
         added: 850
+        rewrite_overhead: 7
+        context_so_far: 92283
+        new_content: 836
         cumulative_context: 273889
       turn_leader: true
     - id: fcda351e-1968-400b-a4f2-bfc465b0876d
@@ -1323,6 +1343,9 @@ events:
         service_tier: standard
         context: 98341
         added: 5222
+        rewrite_overhead: 7
+        context_so_far: 93126
+        new_content: 5208
         cumulative_context: 372230
       turn_leader: true
     - id: 5bc10c60-4004-4848-b2da-31efccde32d6
@@ -1486,6 +1509,9 @@ events:
         service_tier: standard
         context: 98849
         added: 515
+        rewrite_overhead: 7
+        context_so_far: 98341
+        new_content: 501
         cumulative_context: 471079
       link_ids:
       - tool:toolu_01L4JNSEdV7Vsd4t2QJscC92
@@ -1846,6 +1872,9 @@ events:
         service_tier: standard
         context: 105501
         added: 6659
+        rewrite_overhead: 7
+        context_so_far: 98849
+        new_content: 6645
         cumulative_context: 576580
       turn_leader: true
     - id: 05c76e5c-bd8e-4db6-8bab-4113eaeb8a18
@@ -2019,6 +2048,9 @@ events:
         service_tier: standard
         context: 107018
         added: 1524
+        rewrite_overhead: 7
+        context_so_far: 105501
+        new_content: 1510
         cumulative_context: 683598
       turn_leader: true
     - id: add755fe-ba97-410c-adc7-d69d358dadf9
@@ -2480,6 +2512,9 @@ events:
         service_tier: standard
         context: 115659
         added: 8648
+        rewrite_overhead: 7
+        context_so_far: 107018
+        new_content: 8403
         cumulative_context: 799257
       turn_leader: true
     - id: 56bd4352-4d3f-4851-80cf-60c3c6e78f89
@@ -2672,6 +2707,9 @@ events:
         service_tier: standard
         context: 118605
         added: 3184
+        rewrite_overhead: 238
+        context_so_far: 115659
+        new_content: 2940
         cumulative_context: 917862
       turn_leader: true
     - id: ed4cbc5e-d4cb-4308-8bb9-198cd6528966
@@ -2933,6 +2971,9 @@ events:
         service_tier: standard
         context: 119418
         added: 819
+        rewrite_overhead: 6
+        context_so_far: 118605
+        new_content: 806
         cumulative_context: 1037280
       turn_leader: true
 - id: b4e1f5f7-2ad7-4c6b-8fe7-724b4cb75be1
@@ -3142,6 +3183,9 @@ events:
     service_tier: standard
     context: 26508
     added: 1730
+    rewrite_overhead: 3
+    context_so_far: 24781
+    new_content: 1726
     cumulative_context: 51289
   beat: true
   turn_leader: true
@@ -3261,6 +3305,9 @@ events:
     service_tier: standard
     context: 26842
     added: 335
+    rewrite_overhead: 1
+    context_so_far: 26508
+    new_content: 331
     cumulative_context: 78131
   beat: true
   turn_leader: true
@@ -3399,6 +3446,9 @@ events:
     service_tier: standard
     context: 27072
     added: 233
+    rewrite_overhead: 3
+    context_so_far: 26842
+    new_content: 229
     cumulative_context: 105203
   link_ids:
   - tool:toolu_0171YPWV5zZRb5RrGDJYdwwc
@@ -3494,6 +3544,9 @@ events:
     service_tier: standard
     context: 27189
     added: 118
+    rewrite_overhead: 1
+    context_so_far: 27072
+    new_content: 116
     cumulative_context: 132392
   link_ids:
   - tool:toolu_015Xikx9Pwizs8uxWH1CXFvf
@@ -3610,6 +3663,9 @@ events:
     service_tier: standard
     context: 27898
     added: 710
+    rewrite_overhead: 1
+    context_so_far: 27189
+    new_content: 708
     cumulative_context: 160290
   link_ids:
   - tool:toolu_01Nqx71EaSoxcSEzfD62sM8v
@@ -3725,6 +3781,9 @@ events:
     service_tier: standard
     context: 28710
     added: 813
+    rewrite_overhead: 1
+    context_so_far: 27898
+    new_content: 811
     cumulative_context: 189000
   link_ids:
   - tool:toolu_01HWHtujfi6ykUwnfbu8S2Dr
@@ -3866,6 +3925,9 @@ events:
     service_tier: standard
     context: 30174
     added: 1465
+    rewrite_overhead: 1
+    context_so_far: 28710
+    new_content: 1463
     cumulative_context: 219174
   beat: true
   turn_leader: true
@@ -4010,6 +4072,9 @@ events:
     service_tier: standard
     context: 30453
     added: 280
+    rewrite_overhead: 1
+    context_so_far: 30174
+    new_content: 278
     cumulative_context: 249627
   link_ids:
   - tool:toolu_019mTYC24WG2tVnMn7Ltkqrs
@@ -4108,6 +4173,9 @@ events:
     service_tier: standard
     context: 30810
     added: 637
+    rewrite_overhead: 280
+    context_so_far: 30453
+    new_content: 356
     cumulative_context: 280437
   beat: true
   turn_leader: true
@@ -4263,6 +4331,9 @@ events:
     service_tier: standard
     context: 31052
     added: 243
+    rewrite_overhead: 1
+    context_so_far: 30810
+    new_content: 241
     cumulative_context: 311489
   beat: true
   turn_leader: true
@@ -4425,6 +4496,9 @@ events:
     service_tier: standard
     context: 31291
     added: 240
+    rewrite_overhead: 1
+    context_so_far: 31052
+    new_content: 238
     cumulative_context: 342780
   link_ids:
   - tool:toolu_01Ybz8bNzxFuaq7dSRKXeBJ3
@@ -4558,6 +4632,9 @@ events:
     service_tier: standard
     context: 31757
     added: 706
+    rewrite_overhead: 240
+    context_so_far: 31291
+    new_content: 465
     cumulative_context: 374537
   beat: true
   turn_leader: true
@@ -4747,6 +4824,9 @@ events:
     service_tier: standard
     context: 32073
     added: 317
+    rewrite_overhead: 1
+    context_so_far: 31757
+    new_content: 315
     cumulative_context: 406610
   link_ids:
   - tool:toolu_01XH2YBeFoNrb3CSLAfBiJ9D
@@ -4847,6 +4927,9 @@ events:
     service_tier: standard
     context: 32306
     added: 234
+    rewrite_overhead: 1
+    context_so_far: 32073
+    new_content: 232
     cumulative_context: 438916
   link_ids:
   - tool:toolu_01Thp9R1agZk6wJko8LdEVME
@@ -5006,6 +5089,9 @@ events:
     service_tier: standard
     context: 33420
     added: 1115
+    rewrite_overhead: 1
+    context_so_far: 32306
+    new_content: 1113
     cumulative_context: 472336
   beat: true
   turn_leader: true
@@ -5141,6 +5227,9 @@ events:
     service_tier: standard
     context: 33556
     added: 137
+    rewrite_overhead: 1
+    context_so_far: 33420
+    new_content: 135
     cumulative_context: 505892
   link_ids:
   - tool:toolu_01TPh5wsNXb4Bs3hkoMi9Xvw
@@ -5241,6 +5330,9 @@ events:
     service_tier: standard
     context: 33783
     added: 228
+    rewrite_overhead: 1
+    context_so_far: 33556
+    new_content: 226
     cumulative_context: 539675
   link_ids:
   - tool:toolu_01YRjbanTxKu1MWQ9fCEVegA
@@ -5355,6 +5447,9 @@ events:
     service_tier: standard
     context: 34159
     added: 377
+    rewrite_overhead: 1
+    context_so_far: 33783
+    new_content: 375
     cumulative_context: 573834
   beat: true
   turn_leader: true
@@ -5486,6 +5581,9 @@ events:
     service_tier: standard
     context: 34326
     added: 168
+    rewrite_overhead: 1
+    context_so_far: 34159
+    new_content: 164
     cumulative_context: 608160
   beat: true
   turn_leader: true
@@ -5590,6 +5688,9 @@ events:
     service_tier: standard
     context: 34611
     added: 288
+    rewrite_overhead: 3
+    context_so_far: 34326
+    new_content: 282
     cumulative_context: 642771
   beat: true
   turn_leader: true
@@ -5772,6 +5873,9 @@ events:
     service_tier: standard
     context: 36404
     added: 1796
+    rewrite_overhead: 3
+    context_so_far: 34611
+    new_content: 1792
     cumulative_context: 679175
   beat: true
   turn_leader: true
@@ -5970,6 +6074,9 @@ events:
     service_tier: standard
     context: 36983
     added: 580
+    rewrite_overhead: 1
+    context_so_far: 36404
+    new_content: 578
     cumulative_context: 716158
   beat: true
   turn_leader: true
@@ -6121,6 +6228,9 @@ events:
     service_tier: standard
     context: 37457
     added: 475
+    rewrite_overhead: 1
+    context_so_far: 36983
+    new_content: 473
     cumulative_context: 753615
   link_ids:
   - tool:toolu_01TJ1u9S867nsdQfCvnicVDa
@@ -6246,6 +6356,9 @@ events:
     service_tier: standard
     context: 37733
     added: 277
+    rewrite_overhead: 1
+    context_so_far: 37457
+    new_content: 275
     cumulative_context: 791348
   beat: true
   turn_leader: true
@@ -6389,6 +6502,9 @@ events:
     service_tier: standard
     context: 37973
     added: 241
+    rewrite_overhead: 1
+    context_so_far: 37733
+    new_content: 239
     cumulative_context: 829321
   beat: true
   turn_leader: true
@@ -6554,6 +6670,9 @@ events:
     service_tier: standard
     context: 38562
     added: 590
+    rewrite_overhead: 1
+    context_so_far: 37973
+    new_content: 588
     cumulative_context: 867883
   beat: true
   turn_leader: true
@@ -6714,6 +6833,9 @@ events:
     service_tier: standard
     context: 38825
     added: 264
+    rewrite_overhead: 1
+    context_so_far: 38562
+    new_content: 262
     cumulative_context: 906708
   beat: true
   turn_leader: true

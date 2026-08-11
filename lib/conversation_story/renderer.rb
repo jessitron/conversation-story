@@ -420,18 +420,41 @@ module ConversationStory
     # real numbers print once per turn, on the record the parser elected.
     # tool_results get result_tokens_section instead: an estimate, labelled.
     def tokens_section(event)
+      return first_message_tokens_section(event) if event.dig("tokens", "system_prompt_estimate")
       return "" unless event["turn_leader"]
 
       tokens = event["tokens"]
       return "" unless tokens
 
       rows = [
+        ["Context so far", comma(tokens["context_so_far"])],
+        ["New content",    comma(tokens["new_content"])],
+      ]
+      rows << ["Re-cached (overhead)", comma(tokens["rewrite_overhead"])] if tokens["rewrite_overhead"].to_i > 0
+      rows += [
         ["Context",     "#{comma tokens["context"]}#{cached_note(tokens)}"],
         ["Added",       comma(tokens["added"])],
+        ["Cache write", comma(tokens["cache_creation"])],
         ["Output",      comma(tokens["output"])],
         ["Total input", comma(tokens["cumulative_context"])],
       ]
       section("Tokens", kv_dl(rows))
+    end
+
+    # Turn 1's real `added` pays for this message AND the system prompt AND the
+    # tool schemas, all as one cache write — see Parser#mark_first_turn_breakdown!.
+    # This message's own size is the one piece we can estimate independently;
+    # the rest is named rather than left as an unexplained gap in turn 1's math.
+    def first_message_tokens_section(event)
+      tokens = event["tokens"]
+      rows = [
+        ["Message size (est.)",       "≈#{comma tokens["user_message_estimate"]}"],
+        ["System prompt + tools (est.)", "≈#{comma tokens["system_prompt_estimate"]}"],
+      ]
+      section("Turn 1 breakdown",
+              kv_dl(rows) + %(<p class="d-note">The API bills the system prompt, ) +
+              %(tool schemas, and this message together as one cache write — this ) +
+              %(message's share is estimated from its length; the rest is what's left.</p>))
     end
 
     def cached_note(tokens)
