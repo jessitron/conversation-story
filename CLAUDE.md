@@ -188,6 +188,35 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   is the same context re-sent and cache-read each turn, and the biggest context
   the conversation ever held was 45k. Details in
   `notes/intermediate-schema.md`.
+- **Per-card context attribution, and "dark matter"** (session 22). A turn's
+  `cache_creation` isn't all new content — some of it can be OLD content
+  getting re-paid because it fell out of cache (TTL lapse, or the breakpoint
+  walked past the 20-block lookback, session 21). `rewrite_overhead = max(0,
+  previous_turn.context - cache_read)` isolates that; `context_so_far =
+  cache_read + rewrite_overhead` should equal the **previous** turn's
+  `context` exactly — a real identity, checked against episode-8-before, not
+  just an estimate — and `new_content = cache_creation - rewrite_overhead` is
+  what's genuinely new. The chars-based `≈` estimate (`Parser::ESTIMATE_KINDS`)
+  is no longer tool_result-only — every `user_message`/`coordinator_message`/
+  `task_notification`/`queue_operation` gets one too. Turn 1's `added` bills
+  the system prompt + tool schemas + first message as one cache write with no
+  line-item for the system/tools portion (caching hashes the whole `tools ->
+  system -> messages` prefix); `system_prompt_estimate` on the first
+  `user_message` names that remainder rather than measuring it. Subtracting
+  the previous turn's real `output` plus every intervening event's estimate
+  from `new_content` should leave nothing — when it doesn't, that's "dark
+  matter": real, billed context with no card whose content explains it.
+  Attributed to any Underspecified attachment event in the window
+  (`deferred_tools_delta`/`mcp_instructions_delta`/`skill_listing` — un-hidden
+  this session, since their own logged content is a name list, not the real
+  schema text billed) as `dark_matter_estimate`; if the only candidate is a
+  `hook_success`, the parser logs a warning instead of guessing — running it
+  against the examples found dark matter on nearly every turn of the two
+  `episode-8` logs (up to 2549 tokens), which ran a hook on every tool call,
+  and zero in three newer logs that only run a session-start hook. Display of
+  Underspecified events and dark-matter shares is still unstyled — see
+  `notes/2026-08-11-session-22-dark-matter-and-underspecified-events.md` and
+  TODO.md's `underspecified-events-display`.
 - A background task's result delivered mid-conversation as a `<task-notification>`
   XML blob gets its own kind, `task_notification` (not `user_message` — it's
   not something Jess typed); its summary is the extracted `<summary>` field.

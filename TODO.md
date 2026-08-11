@@ -117,6 +117,21 @@ whole system for now.
     ```
   ← mountain: mount-complete
 
+- `underspecified-events-display` Session 22 added per-card context
+  attribution (`context_so_far`/`new_content`/`rewrite_overhead` on every
+  turn, a turn-1 system-prompt estimate, and a "dark matter" pass that
+  attributes unexplained context to Underspecified attachment events —
+  `deferred_tools_delta`/`mcp_instructions_delta`/`skill_listing`, newly
+  un-hidden). Right now those three render as bare `ATTACHMENT /
+  deferred_tools_delta`-labelled cards with no styling and, only when dark
+  matter landed on one, a plain "Dark matter share" line. Design an
+  unobtrusive treatment that reads as "mysterious, not measured" — distinct
+  from a real `estimated_input` ≈ number — and figure out how it should
+  relate to `token-count-rearrange` just below and to `context-map-sidebar`
+  (Next, above) using the same numbers. See
+  `notes/2026-08-11-session-22-dark-matter-and-underspecified-events.md`.
+  ← mountain: mount-complete
+
 - `subagent-detail-tweaks` Move the 'log' field to 'Provenance'; give it a
   button near the top to expand/collapse its cards in the conversation
   ← mountain: mount-beautiful

@@ -93,11 +93,36 @@ events:
                                      #   the whole context actually sent
       added: 10622                   # input + cache_creation — what was new
       cumulative_context: 24456      # running sum of `context` over turns
+      # derived (session 22) — splits `added`/`cache_creation` into content
+      # that's genuinely new vs. old content re-paid because it fell out of
+      # cache (TTL lapse, or the breakpoint walked past the 20-block
+      # lookback). context_so_far should equal the PREVIOUS turn's `context`
+      # exactly — a sanity check, not just another estimate. See
+      # notes/2026-08-11-session-22-dark-matter-and-underspecified-events.md.
+      rewrite_overhead: 3            # max(0, previous_turn.context - cache_read)
+      context_so_far: 24456          # cache_read + rewrite_overhead
+      new_content: 1732              # cache_creation - rewrite_overhead
 
-    # --- tokens on a tool_result: an ESTIMATE, named so ---
+    # --- tokens on a tool_result, user_message, coordinator_message,
+    #     task_notification, or queue_operation `enqueue`: an ESTIMATE, named so
+    #     (Parser::ESTIMATE_KINDS; session 22 generalized this beyond tool_result) ---
     tokens:
-      result_chars: 4568             # length of the result text
+      result_chars: 4568             # length of the event's own text
       estimated_input: 1305          # result_chars / Parser::CHARS_PER_TOKEN
+      # only on an Underspecified attachment event that a dark-matter pass
+      # (session 22) had to attribute unexplained context to — see below:
+      dark_matter_estimate: 829
+
+    # --- tokens on the FIRST user_message ONLY (session 22) ---
+    tokens:
+      result_chars: 216
+      estimated_input: 62             # this message's own share (chars-based)
+      system_prompt_estimate: 10560   # turn_1.added minus this message's own
+                                       #   share — the system prompt + tool
+                                       #   schemas, named but not measured
+                                       #   (caching hashes them together with
+                                       #   the first message; no line-item to
+                                       #   read their size off of)
 
     # --- tool events add: ---
     tool:
@@ -295,14 +320,31 @@ prose-tuned 4 — 3.5 splits the difference.
   lost and `event_count` == line count), but marks them `hidden: true`; the
   renderer skips hidden events and its header "events" stat counts only visible
   ones. Hidden set: kinds `system`, `file_snapshot`, `permission_mode`,
-  `ai_title`; the `last-prompt` record; and attachments of subtype `hook_success`,
-  `deferred_tools_delta`, `mcp_instructions_delta`, `skill_listing`. **Kept
-  visible** (deliberately): all `queue_operation`s — including the bare
-  `dequeue`/`remove` markers, so the enqueue→deliver lifecycle is legible — plus
-  attachments `queued_command` (delivered queued input AND background
-  `<task-notification>`s) and `task_reminder` (the system nudging the agent). The
+  `ai_title`; the `last-prompt` record; and the `hook_success` attachment
+  subtype. **Kept visible** (deliberately): all `queue_operation`s — including
+  the bare `dequeue`/`remove` markers, so the enqueue→deliver lifecycle is
+  legible — plus attachments `queued_command` (delivered queued input AND
+  background `<task-notification>`s), `task_reminder` (the system nudging the
+  agent), and (session 22) `deferred_tools_delta`/`mcp_instructions_delta`/
+  `skill_listing` — the Underspecified attachment types, see below. The
   field is omitted (not `false`) on visible events. See
-  `notes/2026-07-20-session-6-hidden-events.md` for the full rationale.
+  `notes/2026-07-20-session-6-hidden-events.md` for the original rationale and
+  `notes/2026-08-11-session-22-dark-matter-and-underspecified-events.md` for
+  why the three Underspecified types moved from hidden to visible.
+- **`attachment_type`** (session 22): the attachment's own subtype (e.g.
+  `hook_success`, `queued_command`), stored directly on every `kind: attachment`
+  event — previously only reachable by re-reading the log, which the schema's
+  own contract forbids. Lets downstream code (the dark-matter pass, and any
+  future display work) tell attachment subtypes apart without a raw passthrough.
+- **Underspecified attachment events** (session 22): `deferred_tools_delta`,
+  `mcp_instructions_delta`, `skill_listing` record that the system/tools
+  portion of context changed mid-conversation, but their own logged content
+  (a name list or delta reference) isn't the schema/instruction text actually
+  billed — so they carry no `estimated_input` of their own, only a
+  `dark_matter_estimate` when a dark-matter pass had unexplained context to
+  attribute nearby. They're the recurring, mid-conversation version of turn
+  1's `system_prompt_estimate`. No dedicated display treatment yet — see the
+  session 22 note.
 - **Queued**: `queue-operation` events (`operation: enqueue`, etc.) carry
   `content` referencing a `tool-use-id` and `task-id`. The visible `enqueue`
   event stores that content in `detail.text` (e.g. a "…failed with exit code 1"
