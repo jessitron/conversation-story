@@ -57,8 +57,26 @@ module ConversationStory
     # and `task_reminder` (the system nudging the agent about pending tasks) —
     # except a `task_reminder` with itemCount 0 has nothing to show, so those
     # are hidden individually below rather than by type.
-    HIDDEN_ATTACHMENT_TYPES = %w[
-      hook_success deferred_tools_delta mcp_instructions_delta skill_listing
+    #
+    # `hook_success` is the one left fully hidden: none of these attachment
+    # records carry a `message` field (confirmed by grepping the examples),
+    # unlike every real conversation record, which is consistent with them
+    # being harness-internal rather than sent to the model — but `hook_success`
+    # specifically carries real hook stdout text, so if a mark_dark_matter! run
+    # ever pins unexplained context on a window whose only candidate is a
+    # hook_success, that's a live signal this assumption is wrong (see the
+    # warning it logs).
+    HIDDEN_ATTACHMENT_TYPES = %w[hook_success].freeze
+    # These three record that the system/tools portion of context changed
+    # mid-conversation (new tools deferred in, MCP instructions updated, a
+    # skill listed) — real cost, but their own content is a name list / delta
+    # reference, not the schema text that's actually billed, so a chars
+    # estimate of the record itself would be misleadingly small. Left visible
+    # with no number of their own; mark_dark_matter! gives them a share of
+    # whatever context shows up unexplained around them, the same idea as
+    # turn 1's "system prompt" bucket but recurring.
+    UNDERSPECIFIED_ATTACHMENT_TYPES = %w[
+      deferred_tools_delta mcp_instructions_delta skill_listing
     ].freeze
     # The unsent-prompt buffer (a `last-prompt` record → `unknown` fallback).
     HIDDEN_RECORD_TYPES = %w[last-prompt].freeze
@@ -100,6 +118,15 @@ module ConversationStory
     # better measurement turns up; the renderer labels the number an estimate.
     CHARS_PER_TOKEN = 3.5
 
+    # Kinds whose text is genuinely what gets sent to the model (not a name
+    # list or delta reference standing in for something bigger elsewhere) —
+    # so a chars-based estimate of the record's own content is representative.
+    # `attachment` is deliberately excluded: `queued_command`'s "content" is
+    # the payload that arrives again, separately, as its own estimable event
+    # once delivered (see the queue-detour design), and the Underspecified
+    # attachment types' content isn't what's actually billed at all.
+    ESTIMATE_KINDS = %w[user_message coordinator_message tool_result task_notification queue_operation].freeze
+
     ELLIPSIS = "…"
     SUMMARY_LIMIT = 140
     # user/assistant messages are the actual conversation — the headline
@@ -135,6 +162,7 @@ module ConversationStory
       link_related_events!(events)
       mark_turns!(events)
       mark_first_turn_breakdown!(events)
+      mark_dark_matter!(events)
       document = { "meta" => build_meta(records, events), "events" => events }
       attach_subagents!(events)
       document
@@ -172,6 +200,7 @@ module ConversationStory
         "source"  => { "file" => @log_file, "line" => lineno },
       }
       event["operation"] = rec["operation"] if kind == "queue_operation"
+      event["attachment_type"] = rec.dig("attachment", "type") if kind == "attachment"
       status = notification_status(kind, rec)
       event["status"] = status if status
       # The mode a prompt was sent in is a FIELD THE PROMPT RECORD CARRIES:
@@ -404,6 +433,7 @@ module ConversationStory
       when "unknown"
         event["detail"] = { "raw" => rec }
       end
+      add_result_token_estimate(event) if ESTIMATE_KINDS.include?(kind)
     end
 
     def thinking_text(rec)
@@ -481,12 +511,12 @@ module ConversationStory
         end
       end
       event["tool"] = tool
-      add_result_token_estimate(event)
     end
 
-    # What this result added to the context — estimated, because nothing counts
-    # it (see CHARS_PER_TOKEN). Named `estimated_input` rather than `input` so
-    # no consumer can mistake it for a number the API reported; the renderer
+    # What this event added to the context — estimated, because nothing counts
+    # it per-event (see CHARS_PER_TOKEN); called for every ESTIMATE_KINDS event,
+    # not just tool_result. Named `estimated_input` rather than `input` so no
+    # consumer can mistake it for a number the API reported; the renderer
     # prints it with a ≈ and says where it came from.
     def add_result_token_estimate(event)
       chars = event.dig("detail", "text").to_s.length
@@ -592,10 +622,10 @@ module ConversationStory
     # first user message, all as one cache write — prompt caching hashes the
     # whole `tools -> system -> messages` prefix together, so there's no
     # line-item to read the system/tools portion off of (see
-    # notes/2026-08-11-session-21-token-accounting-research.md). The one piece
-    # we CAN size independently is the first user message itself (chars, same
-    # estimator as a tool_result); whatever's left of turn 1's `added` gets
-    # named as the system prompt's estimated size rather than left unexplained.
+    # notes/2026-08-11-session-21-token-accounting-research.md). The first
+    # user message already has its own `estimated_input` (ESTIMATE_KINDS, set
+    # during build_event); whatever's left of turn 1's `added` gets named as
+    # the system prompt's estimated size rather than left unexplained.
     def mark_first_turn_breakdown!(events)
       first_leader = events.find { |e| e["turn_leader"] }
       tokens = first_leader && first_leader["tokens"]
@@ -604,14 +634,61 @@ module ConversationStory
       first_message = events.find { |e| e["kind"] == "user_message" }
       return unless first_message
 
-      chars = first_message.dig("detail", "text").to_s.length
-      estimate = (chars / CHARS_PER_TOKEN).round
+      estimate = first_message.dig("tokens", "estimated_input").to_i
+      (first_message["tokens"] ||= {})["system_prompt_estimate"] = [tokens["added"] - estimate, 0].max
+    end
 
-      first_message["tokens"] = (first_message["tokens"] || {}).merge(
-        "user_message_chars"    => chars,
-        "user_message_estimate" => estimate,
-        "system_prompt_estimate" => [tokens["added"] - estimate, 0].max,
-      )
+    # After the first turn, a turn's `new_content` (see mark_turns!) should be
+    # explained by two things: the PREVIOUS turn's own output (a real number —
+    # thinking/text/tool_use it generated, now being resent as history for the
+    # first time) plus whatever arrived in between (tool_results, a user
+    # message, notifications — each already carrying an `estimated_input` via
+    # ESTIMATE_KINDS). Whatever's left over after subtracting both is "dark
+    # matter": real, billed context with no card whose content explains it.
+    # Attribute it to any Underspecified attachment in the same window (the
+    # mid-conversation equivalent of turn 1's system-prompt bucket); if the
+    # only candidate is a `hook_success`, log it instead of guessing — that's
+    # the live test of whether hook_success really is sent to the model.
+    def mark_dark_matter!(events)
+      window = []
+      prev_output = nil
+
+      events.each do |e|
+        if e["role"] == "assistant"
+          next unless e["turn_leader"]
+
+          tokens = e["tokens"]
+          attribute_dark_matter!(window, prev_output, e) if prev_output
+          window = []
+          prev_output = tokens ? tokens["output"].to_i : nil
+        else
+          window << e
+        end
+      end
+    end
+
+    def attribute_dark_matter!(window, prev_output, turn_leader_event)
+      tokens = turn_leader_event["tokens"]
+      return unless tokens && tokens["new_content"]
+
+      explained    = window.sum { |e| e.dig("tokens", "estimated_input").to_i }
+      dark_matter  = tokens["new_content"].to_i - prev_output - explained
+      return if dark_matter <= 0
+
+      candidates = window.select { |e| underspecified_attachment?(e) }
+      if candidates.any?
+        share = dark_matter / candidates.size
+        candidates.each { |e| (e["tokens"] ||= {})["dark_matter_estimate"] = share }
+      elsif (hook = window.find { |e| e["attachment_type"] == "hook_success" })
+        warn "conversation-story: #{dark_matter} tokens of unexplained context " \
+             "before #{turn_leader_event["ref"]}, and the only candidate in that " \
+             "window is hook_success #{hook["ref"]} — maybe hook output does " \
+             "reach the model after all?"
+      end
+    end
+
+    def underspecified_attachment?(event)
+      event["kind"] == "attachment" && UNDERSPECIFIED_ATTACHMENT_TYPES.include?(event["attachment_type"])
     end
 
     # message_id => that turn's records, in log order. A record with no message

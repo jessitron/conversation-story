@@ -448,13 +448,14 @@ module ConversationStory
     def first_message_tokens_section(event)
       tokens = event["tokens"]
       rows = [
-        ["Message size (est.)",       "≈#{comma tokens["user_message_estimate"]}"],
+        ["Message size (est.)",       "≈#{comma tokens["estimated_input"]}"],
         ["System prompt + tools (est.)", "≈#{comma tokens["system_prompt_estimate"]}"],
       ]
       section("Turn 1 breakdown",
-              kv_dl(rows) + %(<p class="d-note">The API bills the system prompt, ) +
-              %(tool schemas, and this message together as one cache write — this ) +
-              %(message's share is estimated from its length; the rest is what's left.</p>))
+              kv_dl(rows) + %(<p class="d-note">Estimated from the message's length. ) +
+              %(The API bills the system prompt, tool schemas, and this message ) +
+              %(together as one cache write — this message's share is estimated; ) +
+              %(the rest is what's left.</p>))
     end
 
     def cached_note(tokens)
@@ -463,18 +464,23 @@ module ConversationStory
     end
 
     # The result is what actually lands in the context, but no count of it
-    # exists in the log (Parser::CHARS_PER_TOKEN explains why). An estimate that
-    # reads like a measurement is worse than no number, so the ≈ and the note
-    # are part of the content, not decoration.
+    # exists in the log (Parser::CHARS_PER_TOKEN explains why). Mark it as an
+    # estimate — the ≈ and the note — rather than pretending it's a measurement.
     def result_tokens_section(event)
       est = event.dig("tokens", "estimated_input")
-      return "" unless est
+      dark = event.dig("tokens", "dark_matter_estimate")
+      return "" unless est || dark
 
-      rows = [["Result size", byte_label(event.dig("tokens", "result_chars"))],
-              ["Est. tokens", "≈#{comma est}"]]
+      rows = []
+      rows += [["Result size", byte_label(event.dig("tokens", "result_chars"))],
+               ["Est. tokens", "≈#{comma est}"]] if est
+      rows << ["Dark matter share", "≈#{comma dark}"] if dark
+      note = est ? "Estimated from the result's length. " : ""
+      note += "Dark matter: this turn's cache write is bigger than everything visible " \
+              "can explain; this is this event's share of what's left over. " if dark
       section("Added to context",
-              kv_dl(rows) + %(<p class="d-note">Estimated from the result's length. ) +
-              %(The log reports token counts only on assistant turns.</p>))
+              kv_dl(rows) + %(<p class="d-note">#{note}The log reports token counts ) +
+              %(only on assistant turns.</p>))
     end
 
     def kind_sections(event)
@@ -548,6 +554,10 @@ module ConversationStory
     def generic_sections(event)
       sections = [text_section(event)]
       sections << mode_section(event)
+      # The first user_message gets its own "Turn 1 breakdown" from
+      # tokens_section instead (see Parser#mark_first_turn_breakdown!) — skip
+      # this one there so its estimate doesn't print twice.
+      sections << result_tokens_section(event) unless event.dig("tokens", "system_prompt_estimate")
       if (raw = event.dig("detail", "raw"))
         sections << section("Raw record", machine_html(JSON.pretty_generate(raw)))
       end

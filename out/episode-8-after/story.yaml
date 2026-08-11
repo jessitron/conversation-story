@@ -42,6 +42,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 2
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -76,11 +77,11 @@ events:
     text: |-
       I’ve used this app and enjoyed the live replay. The events go in a list and stay in the list and I can scroll the list but there's a little timeline across the top that is live.
       Is there a way to rewind the timeline?
-  beat: true
   tokens:
-    user_message_chars: 216
-    user_message_estimate: 62
+    result_chars: 216
+    estimated_input: 62
     system_prompt_estimate: 10885
+  beat: true
   summary_edited: true
 - id: e534103e-d5be-45a2-a83f-2e11f03c1b6e
   ref: episode-8-after:5
@@ -93,7 +94,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 5
-  hidden: true
+  attachment_type: deferred_tools_delta
 - id: 3033a83c-ed25-4187-ad77-7616757d1be7
   ref: episode-8-after:6
   agent: main
@@ -105,7 +106,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 6
-  hidden: true
+  attachment_type: mcp_instructions_delta
 - id: 48909f62-637b-4611-ba04-7dc10e3e4a08
   ref: episode-8-after:7
   agent: main
@@ -117,6 +118,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 7
+  attachment_type: skill_listing
   detail:
     text: |-
       - update-config: Use this skill to configure the Claude Code harness via settings.json. Automated behaviors ("from now on when X", "each time X", "whenever X", "before/after X") require hooks configured in settings.json - the harness executes these, not Claude, so memory/preferences cannot fulfill them. Also use for: permissions ("allow X", "add permission", "move permission to"), env vars ("set X=Y"), hook troubleshooting, or any changes to settings.json/settings.local.json files. Examples: "allow npm commands", "add bq permission to global settings", "move permission to user settings", "set DEBUG=true", "when claude stops show X". For simple settings like theme/model, use Config tool.
@@ -135,7 +137,6 @@ events:
       - honeycomb:otel-instrumentation: Use when the user asks to "instrument my app", "add tracing", "set up OpenTelemetry", "configure OTel", "add custom spans", "add attributes to spans", "send traces to Honeycomb", "set up OTLP", "configure the OTel SDK", "add span events", "add span links", "instrument with OpenTelemetry", "set up tracing for Go", "set up tracing for Python", "set up tracing for Node.js", "set up tracing for Java", "set up tracing for Ruby", "set up tracing for .NET", "add observability", "improve instrumentation", "configure sampling", "set up head sampling", "set up tail sampling", "configure the OTel Collector", or needs guidance on OpenTelemetry SDK setup, custom instrumentation, or sending data to Honeycomb.
       - honeycomb:production-investigation: Use when investigating production issues in Honeycomb — provides the structured sequence of tool calls (context priming, broad query, BubbleUp, filtered drill-down, trace analysis) and how to chain results between steps using query_run_pk, trace IDs, and BubbleUp differentiators. Without it, queries work but miss the systematic narrowing that identifies root causes. Trigger phrases: "investigate a production issue", "debug a latency spike", "find root cause", "use BubbleUp", "analyze traces", "find what changed", "debug an outage", "why is my API slow", "why are requests failing", "what's causing errors", "something is wrong with", "users are complaining", "latency is spiking", "errors are increasing", "check service dependencies", "view service map", "health check", "SLO burning", or any request to investigate or debug production problems.
       - honeycomb:observability-fundamentals: Use when answering conceptual "why" questions about observability — explains the foundations of why Honeycomb works the way it does: wide structured events, high cardinality, the core analysis loop, events vs metrics vs logs, and how instrumentation decisions connect to debugging outcomes. Grounds recommendations in first principles rather than tool-specific how-to. Trigger phrases: "what is observability", "why observability", "why Honeycomb", "events vs metrics", "events vs logs", "what should I instrument", "why wide events", "what is high cardinality", "how does BubbleUp work", "core analysis loop", "what makes good instrumentation", "observability vs monitoring", "why not just use metrics", "why not just use logs", "what is an event", "what is a span", "why structured events", "what is dimensionality", "explain observability", or any conceptual or philosophical question about observability, events, instrumentation strategy, or why Honeycomb's approach differs from traditional monitoring.
-  hidden: true
 - id: 5599dcfc-aaf2-48fe-b139-80b4f5e7ca1c
   ref: episode-8-after:8
   agent: main
@@ -147,6 +148,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 8
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -303,8 +305,8 @@ events:
 
           Search for files related to: timeline, replay, rewind, scrub, time, playback. Read the key components thoroughly. Report what you find.
       tokens:
-        user_message_chars: 468
-        user_message_estimate: 134
+        result_chars: 468
+        estimated_input: 134
         system_prompt_estimate: 375
       hidden: true
     - id: 99790a25-f911-497b-a67e-ba2e3c9d3091
@@ -2987,6 +2989,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 12
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -3133,6 +3136,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 14
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -3200,6 +3204,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 16
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -3258,6 +3263,9 @@ events:
     text: |-
       first, let's verify that we can test it. Can you make a small change, like add 'jess was here' to the header?
       Then run it on a different port for me, so I can compare with my regular install
+  tokens:
+    result_chars: 190
+    estimated_input: 54
   beat: true
   summary_edited: true
 - id: 4023e6b9-d839-41b9-8130-73077b09cdfd
@@ -3271,6 +3279,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 21
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -3357,6 +3366,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 24
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -3406,6 +3416,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 26
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -3464,6 +3475,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 28
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -3505,6 +3517,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 30
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -3562,6 +3575,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 32
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -3623,6 +3637,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 34
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -3681,6 +3696,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 36
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -3743,6 +3759,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 38
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -3799,6 +3816,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 40
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -3891,6 +3909,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 42
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -3977,6 +3996,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 45
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -4020,6 +4040,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 47
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -4036,6 +4057,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 48
+  attachment_type: task_reminder
   hidden: true
 - id: f2d63364-310a-4aac-9da7-bdef5b233d76
   ref: episode-8-after:49
@@ -4090,6 +4112,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 50
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -4138,6 +4161,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 52
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -4239,6 +4263,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 56
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -4297,6 +4322,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 58
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -4387,6 +4413,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 61
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -4432,6 +4459,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 63
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -4460,6 +4488,9 @@ events:
       <status>completed</status>
       <summary>Background command "Start dev server on alternate ports" completed (exit code 0)</summary>
       </task-notification>
+  tokens:
+    result_chars: 411
+    estimated_input: 117
   link_ids:
   - queue:bpcd7npkf
   - tool:toolu_01VhEih6eZJ48ySXrY1xCJKe
@@ -4530,6 +4561,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 67
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -4573,6 +4605,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 69
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -4590,6 +4623,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 70
+  attachment_type: queued_command
   status: completed
   detail:
     text: |-
@@ -4684,6 +4718,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 73
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -4780,6 +4815,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 75
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -4842,6 +4878,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 77
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -4887,6 +4924,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 79
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -4945,6 +4983,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 81
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -5041,6 +5080,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 83
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -5057,6 +5097,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 84
+  attachment_type: task_reminder
   hidden: true
 - id: 7aa5d61b-d953-472f-8367-d023bb7b8cbd
   ref: episode-8-after:85
@@ -5140,6 +5181,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 87
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -5183,6 +5225,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 89
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -5245,6 +5288,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 91
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -5290,6 +5334,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 93
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -5348,6 +5393,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 95
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -5407,6 +5453,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 97
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -5464,6 +5511,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 99
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -5510,6 +5558,9 @@ events:
     text: ok. that was kind of a lot of steps. Is there something we could do better
       in CLAUDE.md to help you get oriented and know whether you need to do installations
       before runnign?
+  tokens:
+    result_chars: 174
+    estimated_input: 50
   beat: true
   summary_edited: true
 - id: 216289f5-5bec-4935-9208-14c665ef75d0
@@ -5523,6 +5574,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 103
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -5599,6 +5651,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 106
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -5642,6 +5695,9 @@ events:
   mode: acceptEdits
   detail:
     text: that's a great idea! make it self-bootstrapping
+  tokens:
+    result_chars: 47
+    estimated_input: 13
   beat: true
 - id: 2ced6fe0-b9c5-48cc-bb1c-16b169ca4afb
   ref: episode-8-after:110
@@ -5654,6 +5710,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 110
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -5738,6 +5795,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 113
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -5837,6 +5895,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 115
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -5964,6 +6023,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 119
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -6028,6 +6088,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 121
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -6044,6 +6105,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 122
+  attachment_type: task_reminder
   hidden: true
 - id: 45df823f-1bce-4325-a0b6-1ff7456c0b4a
   ref: episode-8-after:123
@@ -6124,6 +6186,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 125
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -6177,6 +6240,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 127
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -6258,6 +6322,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 130
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -6322,6 +6387,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 132
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -6410,6 +6476,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 135
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -6468,6 +6535,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 137
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -6553,6 +6621,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 140
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -6636,6 +6705,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 142
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -6732,6 +6802,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 145
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -6748,6 +6819,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 146
+  attachment_type: hook_success
   hidden: true
 - id: c8e2f968-8c9c-4682-b729-9f3c95b8b3ac
   ref: episode-8-after:147
@@ -6792,6 +6864,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 148
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...
@@ -6851,6 +6924,7 @@ events:
   source:
     file: episode-8-after.jsonl
     line: 150
+  attachment_type: hook_success
   detail:
     text: |-
       Sending OTLP log...

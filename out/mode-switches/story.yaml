@@ -68,6 +68,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 4
+  attachment_type: hook_success
   hidden: true
 - id: 79ea65d0-946f-44b6-8fdb-31f05eee235d
   ref: mode-switches:5
@@ -80,6 +81,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 5
+  attachment_type: hook_additional_context
   detail:
     text: |-
       <EXTREMELY_IMPORTANT>
@@ -178,11 +180,11 @@ events:
   detail:
     text: Can you find conversation f9f81f1e-8c86-4821-ad48-4aa4cd1f211d from just
       now in this project, and bring it into the examples?
-  beat: true
   tokens:
-    user_message_chars: 125
-    user_message_estimate: 36
+    result_chars: 125
+    estimated_input: 36
     system_prompt_estimate: 24645
+  beat: true
 - id: 18d18f03-d421-4471-ad5f-09436291f267
   ref: mode-switches:8
   agent: main
@@ -194,7 +196,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 8
-  hidden: true
+  attachment_type: deferred_tools_delta
 - id: 06f725c3-bc8f-4054-b172-0859264dc517
   ref: mode-switches:9
   agent: main
@@ -206,6 +208,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 9
+  attachment_type: agent_listing_delta
 - id: eae9e0cb-efe4-4989-8c6d-f629250b8c40
   ref: mode-switches:10
   agent: main
@@ -217,7 +220,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 10
-  hidden: true
+  attachment_type: mcp_instructions_delta
 - id: 993a1ba7-e9b5-4d7f-8608-2e58f331a3eb
   ref: mode-switches:11
   agent: main
@@ -229,6 +232,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 11
+  attachment_type: skill_listing
   detail:
     text: |-
       - learning-opportunities:learning-opportunities: Facilitates deliberate skill development during AI-assisted coding. Offers interactive learning exercises after architectural work (new files, schema changes, refactors). Use when completing features, making design decisions, or when user asks to understand code better. Supports the user's stated goal of understanding design choices as learning opportunities.
@@ -262,7 +266,6 @@ events:
       - init: Initialize a new CLAUDE.md file with codebase documentation
       - review: Review a GitHub pull request; for your working diff use /code-review
       - security-review: Complete a security review of the pending changes on the current branch
-  hidden: true
 - id: line-12
   ref: mode-switches:12
   agent: main
@@ -1042,6 +1045,9 @@ events:
   operation: enqueue
   detail:
     text: Give it a good name based on what it did
+  tokens:
+    result_chars: 40
+    estimated_input: 11
   link_ids:
   - queue:line-33
 - id: line-34
@@ -1058,6 +1064,9 @@ events:
   operation: remove
   detail:
     text: Give it a good name based on what it did
+  tokens:
+    result_chars: 40
+    estimated_input: 11
   link_ids:
   - queue:line-33
   hidden: true
@@ -1182,6 +1191,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 38
+  attachment_type: queued_command
   detail:
     text: Give it a good name based on what it did
   removed_from_queue: true
@@ -1756,6 +1766,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 51
+  attachment_type: task_reminder
   hidden: true
 - id: 8db83166-bd79-4787-bf46-52c943fac23f
   ref: mode-switches:52
@@ -3212,6 +3223,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 86
+  attachment_type: task_reminder
   hidden: true
 - id: line-87
   ref: mode-switches:87
@@ -3783,6 +3795,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 104
+  attachment_type: edited_text_file
 - id: line-105
   ref: mode-switches:105
   agent: main
@@ -4343,6 +4356,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 118
+  attachment_type: task_reminder
   hidden: true
 - id: 9b20ac17-d551-428d-b44b-5e1f9f3db5d8
   ref: mode-switches:119
@@ -4957,6 +4971,9 @@ events:
   detail:
     text: ok, hold on, another tool was fighting you for the updates. I paused you,
       now it's done, continue with your testing
+  tokens:
+    result_chars: 115
+    estimated_input: 33
   beat: true
 - id: 01d3850d-d913-411a-a6b4-a0b2664781b6
   ref: mode-switches:137
@@ -4969,6 +4986,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 137
+  attachment_type: edited_text_file
 - id: line-138
   ref: mode-switches:138
   agent: main
@@ -5401,6 +5419,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 152
+  attachment_type: task_reminder
   hidden: true
 - id: d32f4d68-4b49-431e-8020-60971a927de2
   ref: mode-switches:153
@@ -5934,6 +5953,9 @@ events:
   detail:
     text: I would like mode switches to show up in the conversation log. that's a
       user action, right? It should be right-aligned
+  tokens:
+    result_chars: 118
+    estimated_input: 34
   beat: true
 - id: line-169
   ref: mode-switches:169
@@ -6394,6 +6416,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 183
+  attachment_type: plan_mode_exit
 - id: d16e5635-c70a-4b98-8f1d-766e2c1cd0ea
   ref: mode-switches:184
   agent: main
@@ -6568,6 +6591,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 188
+  attachment_type: task_reminder
   hidden: true
 - id: line-189
   ref: mode-switches:189
@@ -6690,6 +6714,9 @@ events:
   detail:
     text: then I need to make an example with a script. Can you grab the log of this
       conversation?
+  tokens:
+    result_chars: 88
+    estimated_input: 25
   beat: true
 - id: line-196
   ref: mode-switches:196
@@ -7704,6 +7731,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 223
+  attachment_type: task_reminder
   hidden: true
 - id: 1a132175-12d9-4b00-946d-5d32feee3f14
   ref: mode-switches:224
@@ -7804,6 +7832,9 @@ events:
   detail:
     text: oh, so it's just a field on the user prompt? Then shall we display it as
       a field?
+  tokens:
+    result_chars: 81
+    estimated_input: 23
   beat: true
 - id: line-228
   ref: mode-switches:228
@@ -8747,6 +8778,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 253
+  attachment_type: task_reminder
   hidden: true
 - id: line-254
   ref: mode-switches:254
@@ -10119,6 +10151,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 283
+  attachment_type: task_reminder
   hidden: true
 - id: effc3b9f-2cd4-4f05-a31f-5c6308931629
   ref: mode-switches:284
@@ -10898,6 +10931,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 301
+  attachment_type: edited_text_file
 - id: line-302
   ref: mode-switches:302
   agent: main
@@ -11461,6 +11495,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 318
+  attachment_type: task_reminder
   hidden: true
 - id: 80388d80-4c21-4f99-b63f-4b9e178426d7
   ref: mode-switches:319
@@ -11902,6 +11937,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 331
+  attachment_type: edited_text_file
 - id: 784ce5bc-a166-44b6-bca5-027eec720a96
   ref: mode-switches:332
   agent: main
@@ -12504,6 +12540,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 353
+  attachment_type: task_reminder
   hidden: true
 - id: line-354
   ref: mode-switches:354
@@ -13286,6 +13323,9 @@ events:
   mode: plan
   detail:
     text: this is a prompt in plan mode
+  tokens:
+    result_chars: 29
+    estimated_input: 8
   beat: true
 - id: abb2c9e8-de21-4fac-997a-bbed57cd441f
   ref: mode-switches:375
@@ -13298,6 +13338,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 375
+  attachment_type: plan_mode
 - id: line-376
   ref: mode-switches:376
   agent: main
@@ -13463,6 +13504,9 @@ events:
   operation: enqueue
   detail:
     text: ok, now you're in auto mode again
+  tokens:
+    result_chars: 33
+    estimated_input: 9
   link_ids:
   - queue:line-381
 - id: line-382
@@ -13479,6 +13523,9 @@ events:
   operation: remove
   detail:
     text: ok, now you're in auto mode again
+  tokens:
+    result_chars: 33
+    estimated_input: 9
   link_ids:
   - queue:line-381
   hidden: true
@@ -13594,6 +13641,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 386
+  attachment_type: queued_command
   detail:
     text: ok, now you're in auto mode again
   removed_from_queue: true
@@ -13610,6 +13658,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 387
+  attachment_type: plan_mode_exit
 - id: be2713ec-e03a-496e-a2a2-0d79e7261803
   ref: mode-switches:388
   agent: main
@@ -13621,6 +13670,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 388
+  attachment_type: task_reminder
   hidden: true
 - id: 2e405cae-389b-46d8-bc20-c1f20e270128
   ref: mode-switches:389
@@ -14643,6 +14693,7 @@ events:
   source:
     file: mode-switches.jsonl
     line: 418
+  attachment_type: task_reminder
   hidden: true
 - id: 0527760c-af6a-4160-9388-ef65b92a272a
   ref: mode-switches:419
