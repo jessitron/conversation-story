@@ -23,7 +23,13 @@ is right now.)*
 card, all looking the same. **Mount Interactive** — three modes, a keyboard
 map, and a narrate mode that reveals the conversation a beat at a time.)*
 
-Mount Struggle is the current priority.
+Mount Struggle is the current priority. Session 22 laid the token-accounting
+groundwork for its context-bloat signal — per-card context attribution and
+"dark matter" (`notes/2026-08-11-session-22-dark-matter-and-underspecified-events.md`).
+The next step is display: `context-map-sidebar` (TODO.md, Next) is the
+detector this feeds — a context-length axis showing where the conversation
+bloated — and `underspecified-events-display` (TODO.md, Backlog) needs an
+unobtrusive way to show the numbers session 22 computed but didn't style.
 
 ## Safe Harbor
 
