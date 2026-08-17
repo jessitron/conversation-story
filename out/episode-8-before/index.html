@@ -33,13 +33,27 @@
 </header>
 
 <div class="shell">
+  <!-- Where-are-we map: a non-scrolling vertical bar on the context-length
+       axis (TODO.md: context-map-sidebar). Three segments sized by
+       assets/story.js from the selected card's data-ctx-before/-mine and this
+       total — prior context, this card's own contribution, and everything
+       still ahead. v1: main conversation only, no subagent bars yet. -->
+  <aside class="context-map" id="context-map" data-ctx-total="15529" aria-hidden="true">
+    <div class="cm-value" id="cm-value"></div>
+    <div class="cm-bar">
+      <div class="cm-seg cm-prior" id="cm-prior"></div>
+      <div class="cm-seg cm-current" id="cm-current"></div>
+      <div class="cm-seg cm-future" id="cm-future"></div>
+    </div>
+  </aside>
+
   <main class="timeline">
     <p class="rail-label deco">claude code</p>
 
     <!-- Event cards, generated from story.yaml: one anchor per event, each
          carrying its drill-in markup in a detail template (see card.html.erb). -->
     <div id="cards">
-      <a class="card k-user" id="episode-8-before:4" href="#episode-8-before:4" data-time="02:27:21" data-edited="true" data-beat="true">
+      <a class="card k-user" id="episode-8-before:4" href="#episode-8-before:4" data-time="02:27:21" data-edited="true" data-beat="true" data-ctx-before="0" data-ctx-mine="62">
         <div class="gutter">
           <span class="kind deco">User</span>
           <span class="who">Jess</span>
@@ -57,7 +71,7 @@
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:4" title="Copy event id to clipboard"><code>episode-8-before:4</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-system" id="episode-8-before:5" href="#episode-8-before:5" data-time="02:27:21">
+      <a class="card k-system" id="episode-8-before:5" href="#episode-8-before:5" data-time="02:27:21" data-ctx-before="62" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Attachment</span>
           <span class="who">system</span>
@@ -76,7 +90,7 @@
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:5" title="Copy event id to clipboard"><code>episode-8-before:5</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-system" id="episode-8-before:6" href="#episode-8-before:6" data-time="02:27:21">
+      <a class="card k-system" id="episode-8-before:6" href="#episode-8-before:6" data-time="02:27:21" data-ctx-before="62" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Attachment</span>
           <span class="who">system</span>
@@ -95,7 +109,7 @@
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:6" title="Copy event id to clipboard"><code>episode-8-before:6</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-system" id="episode-8-before:7" href="#episode-8-before:7" data-time="02:27:21">
+      <a class="card k-system" id="episode-8-before:7" href="#episode-8-before:7" data-time="02:27:21" data-ctx-before="62" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Attachment</span>
           <span class="who">system</span>
@@ -129,7 +143,7 @@ DO NOT TRIGGER when: file imports `openai`/non-Anthropic SDK, filename signals a
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:7" title="Copy event id to clipboard"><code>episode-8-before:7</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-thinking" id="episode-8-before:9" href="#episode-8-before:9" data-time="02:27:25">
+      <a class="card k-thinking" id="episode-8-before:9" href="#episode-8-before:9" data-time="02:27:25" data-ctx-before="62" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Thinking</span>
           <span class="who">Claude</span>
@@ -148,7 +162,7 @@ DO NOT TRIGGER when: file imports `openai`/non-Anthropic SDK, filename signals a
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:9" title="Copy event id to clipboard"><code>episode-8-before:9</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:10" href="#episode-8-before:10" data-time="02:27:25" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:10" href="#episode-8-before:10" data-time="02:27:25" data-beat="true" data-ctx-before="62" data-ctx-mine="322">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -167,7 +181,7 @@ DO NOT TRIGGER when: file imports `openai`/non-Anthropic SDK, filename signals a
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:10" title="Copy event id to clipboard"><code>episode-8-before:10</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-subagent" id="episode-8-before:11" href="#episode-8-before:11" data-time="02:27:29" data-link="tool:toolu_01X8JYiZDEiSqDfPwCNCsGe4">
+      <a class="card k-subagent" id="episode-8-before:11" href="#episode-8-before:11" data-time="02:27:29" data-link="tool:toolu_01X8JYiZDEiSqDfPwCNCsGe4" data-ctx-before="384" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Subagent<span class="caret">▾</span></span>
           <span class="who">Explore</span>
@@ -3369,7 +3383,7 @@ app/client/src/components/event-stream/event-stream.test.tsx</pre></div>
       </a>
 
 </div>
-      <a class="card k-subagent_result" id="episode-8-before:13" href="#episode-8-before:13" data-time="02:28:35" data-link="tool:toolu_01X8JYiZDEiSqDfPwCNCsGe4">
+      <a class="card k-subagent_result" id="episode-8-before:13" href="#episode-8-before:13" data-time="02:28:35" data-link="tool:toolu_01X8JYiZDEiSqDfPwCNCsGe4" data-ctx-before="384" data-ctx-mine="1305">
         <div class="gutter">
           <span class="kind deco">Subagent Result</span>
           <span class="who">system</span>
@@ -3412,7 +3426,7 @@ app/client/src/components/event-stream/event-stream.test.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:13" title="Copy event id to clipboard"><code>episode-8-before:13</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:15" href="#episode-8-before:15" data-time="02:28:43" data-edited="true" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:15" href="#episode-8-before:15" data-time="02:28:43" data-edited="true" data-beat="true" data-ctx-before="1689" data-ctx-mine="233">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -3434,7 +3448,7 @@ app/client/src/components/event-stream/event-stream.test.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:15" title="Copy event id to clipboard"><code>episode-8-before:15</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-user" id="episode-8-before:20" href="#episode-8-before:20" data-time="02:28:55" data-edited="true" data-beat="true">
+      <a class="card k-user" id="episode-8-before:20" href="#episode-8-before:20" data-time="02:28:55" data-edited="true" data-beat="true" data-ctx-before="1922" data-ctx-mine="57">
         <div class="gutter">
           <span class="kind deco">User</span>
           <span class="who">Jess</span>
@@ -3453,7 +3467,7 @@ app/client/src/components/event-stream/event-stream.test.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:20" title="Copy event id to clipboard"><code>episode-8-before:20</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:22" href="#episode-8-before:22" data-time="02:28:58">
+      <a class="card k-assistant" id="episode-8-before:22" href="#episode-8-before:22" data-time="02:28:58" data-ctx-before="1979" data-ctx-mine="117">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -3473,7 +3487,7 @@ app/client/src/components/event-stream/event-stream.test.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:22" title="Copy event id to clipboard"><code>episode-8-before:22</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:23" href="#episode-8-before:23" data-time="02:28:59" data-link="tool:toolu_01JVW6gvLLrvEr62KhAj7nSm">
+      <a class="card k-tool_call" id="episode-8-before:23" href="#episode-8-before:23" data-time="02:28:59" data-link="tool:toolu_01JVW6gvLLrvEr62KhAj7nSm" data-ctx-before="2096" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -3496,7 +3510,7 @@ app/client/src/components/event-stream/event-stream.test.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:23" title="Copy event id to clipboard"><code>episode-8-before:23</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:25" href="#episode-8-before:25" data-time="02:28:59" data-link="tool:toolu_01JVW6gvLLrvEr62KhAj7nSm">
+      <a class="card k-tool_result" id="episode-8-before:25" href="#episode-8-before:25" data-time="02:28:59" data-link="tool:toolu_01JVW6gvLLrvEr62KhAj7nSm" data-ctx-before="2096" data-ctx-mine="86">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -3521,7 +3535,7 @@ app/client/src/components/main-panel/scope-bar.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:25" title="Copy event id to clipboard"><code>episode-8-before:25</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:27" href="#episode-8-before:27" data-time="02:29:02" data-link="tool:toolu_01Ni4WAAA2XLniayBDYxAQJz">
+      <a class="card k-tool_call" id="episode-8-before:27" href="#episode-8-before:27" data-time="02:29:02" data-link="tool:toolu_01Ni4WAAA2XLniayBDYxAQJz" data-ctx-before="2182" data-ctx-mine="110">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -3544,7 +3558,7 @@ app/client/src/components/main-panel/scope-bar.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:27" title="Copy event id to clipboard"><code>episode-8-before:27</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:29" href="#episode-8-before:29" data-time="02:29:03" data-link="tool:toolu_01Ni4WAAA2XLniayBDYxAQJz">
+      <a class="card k-tool_result" id="episode-8-before:29" href="#episode-8-before:29" data-time="02:29:03" data-link="tool:toolu_01Ni4WAAA2XLniayBDYxAQJz" data-ctx-before="2292" data-ctx-mine="7">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -3563,7 +3577,7 @@ app/client/src/components/main-panel/scope-bar.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:29" title="Copy event id to clipboard"><code>episode-8-before:29</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:31" href="#episode-8-before:31" data-time="02:29:05" data-link="tool:toolu_01DaXvH8561a44AkTNET8gjD">
+      <a class="card k-tool_call" id="episode-8-before:31" href="#episode-8-before:31" data-time="02:29:05" data-link="tool:toolu_01DaXvH8561a44AkTNET8gjD" data-ctx-before="2299" data-ctx-mine="115">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -3586,7 +3600,7 @@ app/client/src/components/main-panel/scope-bar.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:31" title="Copy event id to clipboard"><code>episode-8-before:31</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:33" href="#episode-8-before:33" data-time="02:29:06" data-link="tool:toolu_01DaXvH8561a44AkTNET8gjD">
+      <a class="card k-tool_result" id="episode-8-before:33" href="#episode-8-before:33" data-time="02:29:06" data-link="tool:toolu_01DaXvH8561a44AkTNET8gjD" data-ctx-before="2414" data-ctx-mine="378">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -3634,7 +3648,7 @@ app/client/src/components/main-panel/scope-bar.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:33" title="Copy event id to clipboard"><code>episode-8-before:33</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:35" href="#episode-8-before:35" data-time="02:29:09" data-edited="true">
+      <a class="card k-assistant" id="episode-8-before:35" href="#episode-8-before:35" data-time="02:29:09" data-edited="true" data-ctx-before="2792" data-ctx-mine="228">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -3654,7 +3668,7 @@ app/client/src/components/main-panel/scope-bar.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:35" title="Copy event id to clipboard"><code>episode-8-before:35</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:36" href="#episode-8-before:36" data-time="02:29:10" data-link="tool:toolu_018XmvHRPiaSSz5adrkSeszH">
+      <a class="card k-tool_call" id="episode-8-before:36" href="#episode-8-before:36" data-time="02:29:10" data-link="tool:toolu_018XmvHRPiaSSz5adrkSeszH" data-ctx-before="3020" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -3676,7 +3690,7 @@ app/client/src/components/main-panel/scope-bar.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:36" title="Copy event id to clipboard"><code>episode-8-before:36</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:37" href="#episode-8-before:37" data-time="02:29:11" data-link="tool:toolu_01UtGzotUmHB9MSsf75qo6PU">
+      <a class="card k-tool_call" id="episode-8-before:37" href="#episode-8-before:37" data-time="02:29:11" data-link="tool:toolu_01UtGzotUmHB9MSsf75qo6PU" data-ctx-before="3020" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -3698,7 +3712,7 @@ app/client/src/components/main-panel/scope-bar.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:37" title="Copy event id to clipboard"><code>episode-8-before:37</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:39" href="#episode-8-before:39" data-time="02:29:11" data-link="tool:toolu_018XmvHRPiaSSz5adrkSeszH">
+      <a class="card k-tool_result" id="episode-8-before:39" href="#episode-8-before:39" data-time="02:29:11" data-link="tool:toolu_018XmvHRPiaSSz5adrkSeszH" data-ctx-before="3020" data-ctx-mine="13">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -3718,7 +3732,7 @@ app/server/package.json</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:39" title="Copy event id to clipboard"><code>episode-8-before:39</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:42" href="#episode-8-before:42" data-time="02:29:11" data-link="tool:toolu_01UtGzotUmHB9MSsf75qo6PU">
+      <a class="card k-tool_result" id="episode-8-before:42" href="#episode-8-before:42" data-time="02:29:11" data-link="tool:toolu_01UtGzotUmHB9MSsf75qo6PU" data-ctx-before="3033" data-ctx-mine="11">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -3739,7 +3753,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:42" title="Copy event id to clipboard"><code>episode-8-before:42</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:45" href="#episode-8-before:45" data-time="02:29:14" data-link="tool:toolu_01CbWCbAUBxh9DGgt8JarWxk">
+      <a class="card k-tool_call" id="episode-8-before:45" href="#episode-8-before:45" data-time="02:29:14" data-link="tool:toolu_01CbWCbAUBxh9DGgt8JarWxk" data-ctx-before="3044" data-ctx-mine="145">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -3761,7 +3775,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:45" title="Copy event id to clipboard"><code>episode-8-before:45</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:46" href="#episode-8-before:46" data-time="02:29:14" data-link="tool:toolu_011CmRBJyE8sSxMyH4YVUx3F">
+      <a class="card k-tool_call" id="episode-8-before:46" href="#episode-8-before:46" data-time="02:29:14" data-link="tool:toolu_011CmRBJyE8sSxMyH4YVUx3F" data-ctx-before="3189" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -3782,7 +3796,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:46" title="Copy event id to clipboard"><code>episode-8-before:46</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:48" href="#episode-8-before:48" data-time="02:29:14" data-link="tool:toolu_01CbWCbAUBxh9DGgt8JarWxk">
+      <a class="card k-tool_result" id="episode-8-before:48" href="#episode-8-before:48" data-time="02:29:14" data-link="tool:toolu_01CbWCbAUBxh9DGgt8JarWxk" data-ctx-before="3189" data-ctx-mine="179">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -3826,7 +3840,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:48" title="Copy event id to clipboard"><code>episode-8-before:48</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:51" href="#episode-8-before:51" data-time="02:29:14" data-link="tool:toolu_011CmRBJyE8sSxMyH4YVUx3F">
+      <a class="card k-tool_result" id="episode-8-before:51" href="#episode-8-before:51" data-time="02:29:14" data-link="tool:toolu_011CmRBJyE8sSxMyH4YVUx3F" data-ctx-before="3368" data-ctx-mine="1375">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -3996,7 +4010,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:51" title="Copy event id to clipboard"><code>episode-8-before:51</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:53" href="#episode-8-before:53" data-time="02:29:18" data-edited="true" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:53" href="#episode-8-before:53" data-time="02:29:18" data-edited="true" data-beat="true" data-ctx-before="4743" data-ctx-mine="213">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -4015,7 +4029,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:53" title="Copy event id to clipboard"><code>episode-8-before:53</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:54" href="#episode-8-before:54" data-time="02:29:19" data-link="tool:toolu_01FUkRJFakAtnNtN5VwzdgMT">
+      <a class="card k-tool_call" id="episode-8-before:54" href="#episode-8-before:54" data-time="02:29:19" data-link="tool:toolu_01FUkRJFakAtnNtN5VwzdgMT" data-ctx-before="4956" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -4034,7 +4048,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:54" title="Copy event id to clipboard"><code>episode-8-before:54</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:56" href="#episode-8-before:56" data-time="02:29:22" data-link="tool:toolu_01FUkRJFakAtnNtN5VwzdgMT">
+      <a class="card k-tool_result" id="episode-8-before:56" href="#episode-8-before:56" data-time="02:29:22" data-link="tool:toolu_01FUkRJFakAtnNtN5VwzdgMT" data-ctx-before="4956" data-ctx-mine="59">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -4053,7 +4067,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:56" title="Copy event id to clipboard"><code>episode-8-before:56</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-system" id="episode-8-before:58" href="#episode-8-before:58" data-time="02:29:24" data-link="queue:b18a2ol71 tool:toolu_01FUkRJFakAtnNtN5VwzdgMT">
+      <a class="card k-system" id="episode-8-before:58" href="#episode-8-before:58" data-time="02:29:24" data-link="queue:b18a2ol71 tool:toolu_01FUkRJFakAtnNtN5VwzdgMT" data-ctx-before="5015" data-ctx-mine="120">
         <div class="gutter">
           <span class="kind deco">Queue</span>
           <span class="who">system</span>
@@ -4078,7 +4092,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:58" title="Copy event id to clipboard"><code>episode-8-before:58</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:59" href="#episode-8-before:59" data-time="02:29:27" data-edited="true" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:59" href="#episode-8-before:59" data-time="02:29:27" data-edited="true" data-beat="true" data-ctx-before="5135" data-ctx-mine="96">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -4098,7 +4112,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:59" title="Copy event id to clipboard"><code>episode-8-before:59</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-system" id="episode-8-before:63" href="#episode-8-before:63" data-time="02:29:28" data-link="queue:b18a2ol71 tool:toolu_01FUkRJFakAtnNtN5VwzdgMT">
+      <a class="card k-system" id="episode-8-before:63" href="#episode-8-before:63" data-time="02:29:28" data-link="queue:b18a2ol71 tool:toolu_01FUkRJFakAtnNtN5VwzdgMT" data-ctx-before="5231" data-ctx-mine="120">
         <div class="gutter">
           <span class="kind deco">Notification</span>
           <span class="who">system</span>
@@ -4123,7 +4137,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:63" title="Copy event id to clipboard"><code>episode-8-before:63</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:65" href="#episode-8-before:65" data-time="02:29:31" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:65" href="#episode-8-before:65" data-time="02:29:31" data-beat="true" data-ctx-before="5351" data-ctx-mine="140">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -4143,7 +4157,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:65" title="Copy event id to clipboard"><code>episode-8-before:65</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:66" href="#episode-8-before:66" data-time="02:29:32" data-link="tool:toolu_01Pv2M75EqZhsEbsAqiRcYk9">
+      <a class="card k-tool_call" id="episode-8-before:66" href="#episode-8-before:66" data-time="02:29:32" data-link="tool:toolu_01Pv2M75EqZhsEbsAqiRcYk9" data-ctx-before="5491" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -4164,7 +4178,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:66" title="Copy event id to clipboard"><code>episode-8-before:66</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:68" href="#episode-8-before:68" data-time="02:29:32" data-link="tool:toolu_01Pv2M75EqZhsEbsAqiRcYk9">
+      <a class="card k-tool_result" id="episode-8-before:68" href="#episode-8-before:68" data-time="02:29:32" data-link="tool:toolu_01Pv2M75EqZhsEbsAqiRcYk9" data-ctx-before="5491" data-ctx-mine="79">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -4197,7 +4211,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:68" title="Copy event id to clipboard"><code>episode-8-before:68</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:70" href="#episode-8-before:70" data-time="02:29:36" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:70" href="#episode-8-before:70" data-time="02:29:36" data-beat="true" data-ctx-before="5570" data-ctx-mine="351">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -4216,7 +4230,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:70" title="Copy event id to clipboard"><code>episode-8-before:70</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:71" href="#episode-8-before:71" data-time="02:29:37" data-link="tool:toolu_01KRKfvAVoA3FhUkkroTVwcA">
+      <a class="card k-tool_call" id="episode-8-before:71" href="#episode-8-before:71" data-time="02:29:37" data-link="tool:toolu_01KRKfvAVoA3FhUkkroTVwcA" data-ctx-before="5921" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -4235,7 +4249,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:71" title="Copy event id to clipboard"><code>episode-8-before:71</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:72" href="#episode-8-before:72" data-time="02:29:38" data-link="tool:toolu_01VRS8G5GarLAUSoUb7iyMm2">
+      <a class="card k-tool_call" id="episode-8-before:72" href="#episode-8-before:72" data-time="02:29:38" data-link="tool:toolu_01VRS8G5GarLAUSoUb7iyMm2" data-ctx-before="5921" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -4254,7 +4268,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:72" title="Copy event id to clipboard"><code>episode-8-before:72</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:74" href="#episode-8-before:74" data-time="02:29:46" data-link="tool:toolu_01KRKfvAVoA3FhUkkroTVwcA">
+      <a class="card k-tool_result" id="episode-8-before:74" href="#episode-8-before:74" data-time="02:29:46" data-link="tool:toolu_01KRKfvAVoA3FhUkkroTVwcA" data-ctx-before="5921" data-ctx-mine="59">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -4273,7 +4287,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:74" title="Copy event id to clipboard"><code>episode-8-before:74</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:77" href="#episode-8-before:77" data-time="02:29:48" data-link="tool:toolu_01VRS8G5GarLAUSoUb7iyMm2">
+      <a class="card k-tool_result" id="episode-8-before:77" href="#episode-8-before:77" data-time="02:29:48" data-link="tool:toolu_01VRS8G5GarLAUSoUb7iyMm2" data-ctx-before="5980" data-ctx-mine="59">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -4292,7 +4306,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:77" title="Copy event id to clipboard"><code>episode-8-before:77</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:80" href="#episode-8-before:80" data-time="02:29:52" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:80" href="#episode-8-before:80" data-time="02:29:52" data-beat="true" data-ctx-before="6039" data-ctx-mine="161">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -4311,7 +4325,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:80" title="Copy event id to clipboard"><code>episode-8-before:80</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:81" href="#episode-8-before:81" data-time="02:29:52" data-link="tool:toolu_01Pz4J3jgfZKs8vJ8aWVQ2Ds">
+      <a class="card k-tool_call" id="episode-8-before:81" href="#episode-8-before:81" data-time="02:29:52" data-link="tool:toolu_01Pz4J3jgfZKs8vJ8aWVQ2Ds" data-ctx-before="6200" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -4335,7 +4349,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:81" title="Copy event id to clipboard"><code>episode-8-before:81</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-system" id="episode-8-before:82" href="#episode-8-before:82" data-time="02:29:53" data-link="queue:b5kvlgp7j tool:toolu_01VRS8G5GarLAUSoUb7iyMm2">
+      <a class="card k-system" id="episode-8-before:82" href="#episode-8-before:82" data-time="02:29:53" data-link="queue:b5kvlgp7j tool:toolu_01VRS8G5GarLAUSoUb7iyMm2" data-ctx-before="6200" data-ctx-mine="116">
         <div class="gutter">
           <span class="kind deco">Queue</span>
           <span class="who">system</span>
@@ -4360,7 +4374,7 @@ justfile</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:82" title="Copy event id to clipboard"><code>episode-8-before:82</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:84" href="#episode-8-before:84" data-time="02:29:53" data-link="tool:toolu_01Pz4J3jgfZKs8vJ8aWVQ2Ds">
+      <a class="card k-tool_result" id="episode-8-before:84" href="#episode-8-before:84" data-time="02:29:53" data-link="tool:toolu_01Pz4J3jgfZKs8vJ8aWVQ2Ds" data-ctx-before="6316" data-ctx-mine="39">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -4380,7 +4394,7 @@ app/client/vite.config.ts:29:    proxy: {</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:84" title="Copy event id to clipboard"><code>episode-8-before:84</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-system" id="episode-8-before:87" href="#episode-8-before:87" data-time="02:29:53" data-link="queue:b5kvlgp7j">
+      <a class="card k-system" id="episode-8-before:87" href="#episode-8-before:87" data-time="02:29:53" data-link="queue:b5kvlgp7j" data-ctx-before="6355" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Attachment</span>
           <span class="who">system</span>
@@ -4405,7 +4419,7 @@ app/client/vite.config.ts:29:    proxy: {</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:87" title="Copy event id to clipboard"><code>episode-8-before:87</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:88" href="#episode-8-before:88" data-time="02:29:56" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:88" href="#episode-8-before:88" data-time="02:29:56" data-beat="true" data-ctx-before="6355" data-ctx-mine="158">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -4424,7 +4438,7 @@ app/client/vite.config.ts:29:    proxy: {</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:88" title="Copy event id to clipboard"><code>episode-8-before:88</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:89" href="#episode-8-before:89" data-time="02:29:56" data-link="tool:toolu_01N13Xd5H3JmFidECytQCPKD">
+      <a class="card k-tool_call" id="episode-8-before:89" href="#episode-8-before:89" data-time="02:29:56" data-link="tool:toolu_01N13Xd5H3JmFidECytQCPKD" data-ctx-before="6513" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -4445,7 +4459,7 @@ app/client/vite.config.ts:29:    proxy: {</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:89" title="Copy event id to clipboard"><code>episode-8-before:89</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:91" href="#episode-8-before:91" data-time="02:29:57" data-link="tool:toolu_01N13Xd5H3JmFidECytQCPKD">
+      <a class="card k-tool_result" id="episode-8-before:91" href="#episode-8-before:91" data-time="02:29:57" data-link="tool:toolu_01N13Xd5H3JmFidECytQCPKD" data-ctx-before="6513" data-ctx-mine="2817">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -4502,7 +4516,7 @@ app/client/vite.config.ts:29:    proxy: {</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:91" title="Copy event id to clipboard"><code>episode-8-before:91</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:93" href="#episode-8-before:93" data-time="02:30:01" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:93" href="#episode-8-before:93" data-time="02:30:01" data-beat="true" data-ctx-before="9330" data-ctx-mine="213">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -4521,7 +4535,7 @@ app/client/vite.config.ts:29:    proxy: {</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:93" title="Copy event id to clipboard"><code>episode-8-before:93</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:94" href="#episode-8-before:94" data-time="02:30:02" data-link="tool:toolu_01676bB5UaB8qK7z7XXhHg3j">
+      <a class="card k-tool_call" id="episode-8-before:94" href="#episode-8-before:94" data-time="02:30:02" data-link="tool:toolu_01676bB5UaB8qK7z7XXhHg3j" data-ctx-before="9543" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -4540,7 +4554,7 @@ app/client/vite.config.ts:29:    proxy: {</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:94" title="Copy event id to clipboard"><code>episode-8-before:94</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:96" href="#episode-8-before:96" data-time="02:30:04" data-link="tool:toolu_01676bB5UaB8qK7z7XXhHg3j">
+      <a class="card k-tool_result" id="episode-8-before:96" href="#episode-8-before:96" data-time="02:30:04" data-link="tool:toolu_01676bB5UaB8qK7z7XXhHg3j" data-ctx-before="9543" data-ctx-mine="59">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -4559,7 +4573,7 @@ app/client/vite.config.ts:29:    proxy: {</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:96" title="Copy event id to clipboard"><code>episode-8-before:96</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-system" id="episode-8-before:98" href="#episode-8-before:98" data-time="02:30:04" data-link="queue:bg9aeupg8 tool:toolu_01676bB5UaB8qK7z7XXhHg3j">
+      <a class="card k-system" id="episode-8-before:98" href="#episode-8-before:98" data-time="02:30:04" data-link="queue:bg9aeupg8 tool:toolu_01676bB5UaB8qK7z7XXhHg3j" data-ctx-before="9602" data-ctx-mine="121">
         <div class="gutter">
           <span class="kind deco">Queue</span>
           <span class="who">system</span>
@@ -4584,7 +4598,7 @@ app/client/vite.config.ts:29:    proxy: {</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:98" title="Copy event id to clipboard"><code>episode-8-before:98</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:99" href="#episode-8-before:99" data-time="02:30:06" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:99" href="#episode-8-before:99" data-time="02:30:06" data-beat="true" data-ctx-before="9723" data-ctx-mine="125">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -4603,7 +4617,7 @@ app/client/vite.config.ts:29:    proxy: {</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:99" title="Copy event id to clipboard"><code>episode-8-before:99</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:100" href="#episode-8-before:100" data-time="02:30:08" data-link="tool:toolu_01Y99oMenYYbc6sEkXXCTuAV">
+      <a class="card k-tool_call" id="episode-8-before:100" href="#episode-8-before:100" data-time="02:30:08" data-link="tool:toolu_01Y99oMenYYbc6sEkXXCTuAV" data-ctx-before="9848" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -4624,7 +4638,7 @@ app/client/vite.config.ts:29:    proxy: {</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:100" title="Copy event id to clipboard"><code>episode-8-before:100</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:102" href="#episode-8-before:102" data-time="02:30:08" data-link="tool:toolu_01Y99oMenYYbc6sEkXXCTuAV">
+      <a class="card k-tool_result" id="episode-8-before:102" href="#episode-8-before:102" data-time="02:30:08" data-link="tool:toolu_01Y99oMenYYbc6sEkXXCTuAV" data-ctx-before="9848" data-ctx-mine="381">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -4663,7 +4677,7 @@ app/client/vite.config.ts:29:    proxy: {</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:102" title="Copy event id to clipboard"><code>episode-8-before:102</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-system" id="episode-8-before:105" href="#episode-8-before:105" data-time="02:30:08" data-link="queue:bg9aeupg8">
+      <a class="card k-system" id="episode-8-before:105" href="#episode-8-before:105" data-time="02:30:08" data-link="queue:bg9aeupg8" data-ctx-before="10229" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Attachment</span>
           <span class="who">system</span>
@@ -4688,7 +4702,7 @@ app/client/vite.config.ts:29:    proxy: {</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:105" title="Copy event id to clipboard"><code>episode-8-before:105</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:106" href="#episode-8-before:106" data-time="02:30:12" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:106" href="#episode-8-before:106" data-time="02:30:12" data-beat="true" data-ctx-before="10229" data-ctx-mine="269">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -4707,7 +4721,7 @@ app/client/vite.config.ts:29:    proxy: {</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:106" title="Copy event id to clipboard"><code>episode-8-before:106</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:107" href="#episode-8-before:107" data-time="02:30:14" data-link="tool:toolu_013GAeADv2RY83rPgUXHQ86o">
+      <a class="card k-tool_call" id="episode-8-before:107" href="#episode-8-before:107" data-time="02:30:14" data-link="tool:toolu_013GAeADv2RY83rPgUXHQ86o" data-ctx-before="10498" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -4726,7 +4740,7 @@ app/client/vite.config.ts:29:    proxy: {</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:107" title="Copy event id to clipboard"><code>episode-8-before:107</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:108" href="#episode-8-before:108" data-time="02:30:14" data-link="tool:toolu_01DgiW2cxzzUwxgzewfPkki8">
+      <a class="card k-tool_call" id="episode-8-before:108" href="#episode-8-before:108" data-time="02:30:14" data-link="tool:toolu_01DgiW2cxzzUwxgzewfPkki8" data-ctx-before="10498" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -4747,7 +4761,7 @@ app/client/vite.config.ts:29:    proxy: {</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:108" title="Copy event id to clipboard"><code>episode-8-before:108</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:110" href="#episode-8-before:110" data-time="02:30:14" data-link="tool:toolu_01DgiW2cxzzUwxgzewfPkki8">
+      <a class="card k-tool_result" id="episode-8-before:110" href="#episode-8-before:110" data-time="02:30:14" data-link="tool:toolu_01DgiW2cxzzUwxgzewfPkki8" data-ctx-before="10498" data-ctx-mine="185">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -4783,7 +4797,7 @@ app/client/vite.config.ts:29:    proxy: {</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:110" title="Copy event id to clipboard"><code>episode-8-before:110</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:113" href="#episode-8-before:113" data-time="02:30:14" data-link="tool:toolu_013GAeADv2RY83rPgUXHQ86o">
+      <a class="card k-tool_result" id="episode-8-before:113" href="#episode-8-before:113" data-time="02:30:14" data-link="tool:toolu_013GAeADv2RY83rPgUXHQ86o" data-ctx-before="10683" data-ctx-mine="11">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -4803,7 +4817,7 @@ client deps missing</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:113" title="Copy event id to clipboard"><code>episode-8-before:113</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:116" href="#episode-8-before:116" data-time="02:30:17" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:116" href="#episode-8-before:116" data-time="02:30:17" data-beat="true" data-ctx-before="10694" data-ctx-mine="131">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -4822,7 +4836,7 @@ client deps missing</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:116" title="Copy event id to clipboard"><code>episode-8-before:116</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:117" href="#episode-8-before:117" data-time="02:30:18" data-link="tool:toolu_01QdyQ4xiuYaiEe3ms1GwQVp">
+      <a class="card k-tool_call" id="episode-8-before:117" href="#episode-8-before:117" data-time="02:30:18" data-link="tool:toolu_01QdyQ4xiuYaiEe3ms1GwQVp" data-ctx-before="10825" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -4841,7 +4855,7 @@ client deps missing</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:117" title="Copy event id to clipboard"><code>episode-8-before:117</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:119" href="#episode-8-before:119" data-time="02:30:36" data-link="tool:toolu_01QdyQ4xiuYaiEe3ms1GwQVp">
+      <a class="card k-tool_result" id="episode-8-before:119" href="#episode-8-before:119" data-time="02:30:36" data-link="tool:toolu_01QdyQ4xiuYaiEe3ms1GwQVp" data-ctx-before="10825" data-ctx-mine="208">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -4885,7 +4899,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:119" title="Copy event id to clipboard"><code>episode-8-before:119</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:121" href="#episode-8-before:121" data-time="02:30:39" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:121" href="#episode-8-before:121" data-time="02:30:39" data-beat="true" data-ctx-before="11033" data-ctx-mine="328">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -4904,7 +4918,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:121" title="Copy event id to clipboard"><code>episode-8-before:121</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:122" href="#episode-8-before:122" data-time="02:30:41" data-link="tool:toolu_013ph8J3kEqF1ph4jivcX7nz">
+      <a class="card k-tool_call" id="episode-8-before:122" href="#episode-8-before:122" data-time="02:30:41" data-link="tool:toolu_013ph8J3kEqF1ph4jivcX7nz" data-ctx-before="11361" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -4923,7 +4937,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:122" title="Copy event id to clipboard"><code>episode-8-before:122</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:124" href="#episode-8-before:124" data-time="02:30:41" data-link="tool:toolu_013ph8J3kEqF1ph4jivcX7nz">
+      <a class="card k-tool_result" id="episode-8-before:124" href="#episode-8-before:124" data-time="02:30:41" data-link="tool:toolu_013ph8J3kEqF1ph4jivcX7nz" data-ctx-before="11361" data-ctx-mine="59">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -4942,7 +4956,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:124" title="Copy event id to clipboard"><code>episode-8-before:124</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:126" href="#episode-8-before:126" data-time="02:30:42" data-link="tool:toolu_018i4wm7dgSFotpHXJ5eH4AA">
+      <a class="card k-tool_call" id="episode-8-before:126" href="#episode-8-before:126" data-time="02:30:42" data-link="tool:toolu_018i4wm7dgSFotpHXJ5eH4AA" data-ctx-before="11420" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -4961,7 +4975,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:126" title="Copy event id to clipboard"><code>episode-8-before:126</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:128" href="#episode-8-before:128" data-time="02:30:42" data-link="tool:toolu_018i4wm7dgSFotpHXJ5eH4AA">
+      <a class="card k-tool_result" id="episode-8-before:128" href="#episode-8-before:128" data-time="02:30:42" data-link="tool:toolu_018i4wm7dgSFotpHXJ5eH4AA" data-ctx-before="11420" data-ctx-mine="59">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -4980,7 +4994,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:128" title="Copy event id to clipboard"><code>episode-8-before:128</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:130" href="#episode-8-before:130" data-time="02:30:45" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:130" href="#episode-8-before:130" data-time="02:30:45" data-beat="true" data-ctx-before="11479" data-ctx-mine="219">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -4999,7 +5013,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:130" title="Copy event id to clipboard"><code>episode-8-before:130</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:131" href="#episode-8-before:131" data-time="02:30:46" data-link="tool:toolu_01ChMZYiMBGCCGWdwRaJMbAA">
+      <a class="card k-tool_call" id="episode-8-before:131" href="#episode-8-before:131" data-time="02:30:46" data-link="tool:toolu_01ChMZYiMBGCCGWdwRaJMbAA" data-ctx-before="11698" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -5018,7 +5032,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:131" title="Copy event id to clipboard"><code>episode-8-before:131</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:132" href="#episode-8-before:132" data-time="02:30:47" data-link="tool:toolu_017Ynme4n4LG2QnRS4wK5KqW">
+      <a class="card k-tool_call" id="episode-8-before:132" href="#episode-8-before:132" data-time="02:30:47" data-link="tool:toolu_017Ynme4n4LG2QnRS4wK5KqW" data-ctx-before="11698" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -5037,7 +5051,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:132" title="Copy event id to clipboard"><code>episode-8-before:132</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:134" href="#episode-8-before:134" data-time="02:30:47" data-link="tool:toolu_01ChMZYiMBGCCGWdwRaJMbAA">
+      <a class="card k-tool_result" id="episode-8-before:134" href="#episode-8-before:134" data-time="02:30:47" data-link="tool:toolu_01ChMZYiMBGCCGWdwRaJMbAA" data-ctx-before="11698" data-ctx-mine="5">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -5056,7 +5070,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:134" title="Copy event id to clipboard"><code>episode-8-before:134</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:137" href="#episode-8-before:137" data-time="02:30:48" data-link="tool:toolu_017Ynme4n4LG2QnRS4wK5KqW">
+      <a class="card k-tool_result" id="episode-8-before:137" href="#episode-8-before:137" data-time="02:30:48" data-link="tool:toolu_017Ynme4n4LG2QnRS4wK5KqW" data-ctx-before="11703" data-ctx-mine="3">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -5075,7 +5089,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:137" title="Copy event id to clipboard"><code>episode-8-before:137</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:139" href="#episode-8-before:139" data-time="02:30:51" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:139" href="#episode-8-before:139" data-time="02:30:51" data-beat="true" data-ctx-before="11706" data-ctx-mine="125">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -5094,7 +5108,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:139" title="Copy event id to clipboard"><code>episode-8-before:139</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:140" href="#episode-8-before:140" data-time="02:30:51" data-link="tool:toolu_01R34BQcb6D2814LkanSeXr8">
+      <a class="card k-tool_call" id="episode-8-before:140" href="#episode-8-before:140" data-time="02:30:51" data-link="tool:toolu_01R34BQcb6D2814LkanSeXr8" data-ctx-before="11831" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -5115,7 +5129,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:140" title="Copy event id to clipboard"><code>episode-8-before:140</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:142" href="#episode-8-before:142" data-time="02:30:52" data-link="tool:toolu_01R34BQcb6D2814LkanSeXr8">
+      <a class="card k-tool_result" id="episode-8-before:142" href="#episode-8-before:142" data-time="02:30:52" data-link="tool:toolu_01R34BQcb6D2814LkanSeXr8" data-ctx-before="11831" data-ctx-mine="306">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -5149,7 +5163,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:142" title="Copy event id to clipboard"><code>episode-8-before:142</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:145" href="#episode-8-before:145" data-time="02:30:55" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:145" href="#episode-8-before:145" data-time="02:30:55" data-beat="true" data-ctx-before="12137" data-ctx-mine="204">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -5168,7 +5182,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:145" title="Copy event id to clipboard"><code>episode-8-before:145</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:146" href="#episode-8-before:146" data-time="02:30:56" data-link="tool:toolu_01QLRyY6tavp1pb9Sy71fyUh">
+      <a class="card k-tool_call" id="episode-8-before:146" href="#episode-8-before:146" data-time="02:30:56" data-link="tool:toolu_01QLRyY6tavp1pb9Sy71fyUh" data-ctx-before="12341" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -5187,7 +5201,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:146" title="Copy event id to clipboard"><code>episode-8-before:146</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:148" href="#episode-8-before:148" data-time="02:31:05" data-link="tool:toolu_01QLRyY6tavp1pb9Sy71fyUh">
+      <a class="card k-tool_result" id="episode-8-before:148" href="#episode-8-before:148" data-time="02:31:05" data-link="tool:toolu_01QLRyY6tavp1pb9Sy71fyUh" data-ctx-before="12341" data-ctx-mine="59">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -5206,7 +5220,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:148" title="Copy event id to clipboard"><code>episode-8-before:148</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:150" href="#episode-8-before:150" data-time="02:31:08" data-link="tool:toolu_01UDTELRqnTff3arVXxoVhPn">
+      <a class="card k-tool_call" id="episode-8-before:150" href="#episode-8-before:150" data-time="02:31:08" data-link="tool:toolu_01UDTELRqnTff3arVXxoVhPn" data-ctx-before="12400" data-ctx-mine="99">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -5225,7 +5239,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:150" title="Copy event id to clipboard"><code>episode-8-before:150</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:152" href="#episode-8-before:152" data-time="02:31:11" data-link="tool:toolu_01UDTELRqnTff3arVXxoVhPn">
+      <a class="card k-tool_result" id="episode-8-before:152" href="#episode-8-before:152" data-time="02:31:11" data-link="tool:toolu_01UDTELRqnTff3arVXxoVhPn" data-ctx-before="12499" data-ctx-mine="57">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -5244,7 +5258,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:152" title="Copy event id to clipboard"><code>episode-8-before:152</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:154" href="#episode-8-before:154" data-time="02:31:14" data-edited="true" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:154" href="#episode-8-before:154" data-time="02:31:14" data-edited="true" data-beat="true" data-ctx-before="12556" data-ctx-mine="81">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -5265,7 +5279,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:154" title="Copy event id to clipboard"><code>episode-8-before:154</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-user" id="episode-8-before:159" href="#episode-8-before:159" data-time="02:31:58" data-beat="true">
+      <a class="card k-user" id="episode-8-before:159" href="#episode-8-before:159" data-time="02:31:58" data-beat="true" data-ctx-before="12637" data-ctx-mine="37">
         <div class="gutter">
           <span class="kind deco">User</span>
           <span class="who">Jess</span>
@@ -5284,7 +5298,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:159" title="Copy event id to clipboard"><code>episode-8-before:159</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:161" href="#episode-8-before:161" data-time="02:32:08" data-edited="true" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:161" href="#episode-8-before:161" data-time="02:32:08" data-edited="true" data-beat="true" data-ctx-before="12674" data-ctx-mine="515">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -5307,7 +5321,7 @@ Run `npm audit` for details.</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:161" title="Copy event id to clipboard"><code>episode-8-before:161</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:162" href="#episode-8-before:162" data-time="02:32:14" data-link="tool:toolu_01ED53VYkJfJLhdrmjWsvATn">
+      <a class="card k-tool_call" id="episode-8-before:162" href="#episode-8-before:162" data-time="02:32:14" data-link="tool:toolu_01ED53VYkJfJLhdrmjWsvATn" data-ctx-before="13189" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -5339,7 +5353,7 @@ Before running the dev server locally, always:
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:162" title="Copy event id to clipboard"><code>episode-8-before:162</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:165" href="#episode-8-before:165" data-time="02:32:15" data-link="tool:toolu_01ED53VYkJfJLhdrmjWsvATn">
+      <a class="card k-tool_result" id="episode-8-before:165" href="#episode-8-before:165" data-time="02:32:15" data-link="tool:toolu_01ED53VYkJfJLhdrmjWsvATn" data-ctx-before="13189" data-ctx-mine="39">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -5358,7 +5372,7 @@ Before running the dev server locally, always:
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:165" title="Copy event id to clipboard"><code>episode-8-before:165</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:167" href="#episode-8-before:167" data-time="02:32:18" data-link="tool:toolu_01E7EAyna9DdcixYknpQRt11">
+      <a class="card k-tool_call" id="episode-8-before:167" href="#episode-8-before:167" data-time="02:32:18" data-link="tool:toolu_01E7EAyna9DdcixYknpQRt11" data-ctx-before="13228" data-ctx-mine="84">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -5379,7 +5393,7 @@ Before running the dev server locally, always:
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:167" title="Copy event id to clipboard"><code>episode-8-before:167</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:168" href="#episode-8-before:168" data-time="02:32:18" data-link="tool:toolu_01E7EAyna9DdcixYknpQRt11">
+      <a class="card k-tool_result" id="episode-8-before:168" href="#episode-8-before:168" data-time="02:32:18" data-link="tool:toolu_01E7EAyna9DdcixYknpQRt11" data-ctx-before="13312" data-ctx-mine="31">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -5398,7 +5412,7 @@ Before running the dev server locally, always:
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:168" title="Copy event id to clipboard"><code>episode-8-before:168</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:169" href="#episode-8-before:169" data-time="02:32:21" data-link="tool:toolu_01BSH95Ee8iggwzM6mHoifFd">
+      <a class="card k-tool_call" id="episode-8-before:169" href="#episode-8-before:169" data-time="02:32:21" data-link="tool:toolu_01BSH95Ee8iggwzM6mHoifFd" data-ctx-before="13343" data-ctx-mine="132">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -5418,7 +5432,7 @@ Before running the dev server locally, always:
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:169" title="Copy event id to clipboard"><code>episode-8-before:169</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:172" href="#episode-8-before:172" data-time="02:32:22" data-link="tool:toolu_01BSH95Ee8iggwzM6mHoifFd">
+      <a class="card k-tool_result" id="episode-8-before:172" href="#episode-8-before:172" data-time="02:32:22" data-link="tool:toolu_01BSH95Ee8iggwzM6mHoifFd" data-ctx-before="13475" data-ctx-mine="36">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -5437,7 +5451,7 @@ Before running the dev server locally, always:
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:172" title="Copy event id to clipboard"><code>episode-8-before:172</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-system" id="episode-8-before:174" href="#episode-8-before:174" data-time="02:32:22" data-link="queue:line-174">
+      <a class="card k-system" id="episode-8-before:174" href="#episode-8-before:174" data-time="02:32:22" data-link="queue:line-174" data-ctx-before="13511" data-ctx-mine="30">
         <div class="gutter">
           <span class="kind deco">Queue</span>
           <span class="who">system</span>
@@ -5456,7 +5470,7 @@ Before running the dev server locally, always:
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:174" title="Copy event id to clipboard"><code>episode-8-before:174</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:175" href="#episode-8-before:175" data-time="02:32:24" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:175" href="#episode-8-before:175" data-time="02:32:24" data-beat="true" data-ctx-before="13541" data-ctx-mine="22">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -5475,7 +5489,7 @@ Before running the dev server locally, always:
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:175" title="Copy event id to clipboard"><code>episode-8-before:175</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-user" id="episode-8-before:179" href="#episode-8-before:179" data-time="02:32:25" data-link="queue:line-174" data-beat="true">
+      <a class="card k-user" id="episode-8-before:179" href="#episode-8-before:179" data-time="02:32:25" data-link="queue:line-174" data-beat="true" data-ctx-before="13563" data-ctx-mine="30">
         <div class="gutter">
           <span class="kind deco">User</span>
           <span class="who">Jess</span>
@@ -5494,7 +5508,7 @@ Before running the dev server locally, always:
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:179" title="Copy event id to clipboard"><code>episode-8-before:179</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:182" href="#episode-8-before:182" data-time="02:32:32" data-edited="true" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:182" href="#episode-8-before:182" data-time="02:32:32" data-edited="true" data-beat="true" data-ctx-before="13593" data-ctx-mine="195">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -5526,7 +5540,7 @@ Or use `just start` which handles both via Docker.
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:182" title="Copy event id to clipboard"><code>episode-8-before:182</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-user" id="episode-8-before:186" href="#episode-8-before:186" data-time="02:32:42" data-beat="true">
+      <a class="card k-user" id="episode-8-before:186" href="#episode-8-before:186" data-time="02:32:42" data-beat="true" data-ctx-before="13788" data-ctx-mine="7">
         <div class="gutter">
           <span class="kind deco">User</span>
           <span class="who">Jess</span>
@@ -5545,7 +5559,7 @@ Or use `just start` which handles both via Docker.
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:186" title="Copy event id to clipboard"><code>episode-8-before:186</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:189" href="#episode-8-before:189" data-time="02:32:44" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:189" href="#episode-8-before:189" data-time="02:32:44" data-beat="true" data-ctx-before="13795" data-ctx-mine="175">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -5565,7 +5579,7 @@ Or use `just start` which handles both via Docker.
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:189" title="Copy event id to clipboard"><code>episode-8-before:189</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:190" href="#episode-8-before:190" data-time="02:32:45" data-link="tool:toolu_019LoHbxNyZLHdvfQ2t8NNnm">
+      <a class="card k-tool_call" id="episode-8-before:190" href="#episode-8-before:190" data-time="02:32:45" data-link="tool:toolu_019LoHbxNyZLHdvfQ2t8NNnm" data-ctx-before="13970" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -5587,7 +5601,7 @@ Or use `just start` which handles both via Docker.
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:190" title="Copy event id to clipboard"><code>episode-8-before:190</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:191" href="#episode-8-before:191" data-time="02:32:46" data-link="tool:toolu_01DhP4o5sMH912A5WnNsPAK8">
+      <a class="card k-tool_call" id="episode-8-before:191" href="#episode-8-before:191" data-time="02:32:46" data-link="tool:toolu_01DhP4o5sMH912A5WnNsPAK8" data-ctx-before="13970" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -5609,7 +5623,7 @@ Or use `just start` which handles both via Docker.
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:191" title="Copy event id to clipboard"><code>episode-8-before:191</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:193" href="#episode-8-before:193" data-time="02:32:46" data-link="tool:toolu_019LoHbxNyZLHdvfQ2t8NNnm">
+      <a class="card k-tool_result" id="episode-8-before:193" href="#episode-8-before:193" data-time="02:32:46" data-link="tool:toolu_019LoHbxNyZLHdvfQ2t8NNnm" data-ctx-before="13970" data-ctx-mine="4">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -5628,7 +5642,7 @@ Or use `just start` which handles both via Docker.
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:193" title="Copy event id to clipboard"><code>episode-8-before:193</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:196" href="#episode-8-before:196" data-time="02:32:46" data-link="tool:toolu_01DhP4o5sMH912A5WnNsPAK8">
+      <a class="card k-tool_result" id="episode-8-before:196" href="#episode-8-before:196" data-time="02:32:46" data-link="tool:toolu_01DhP4o5sMH912A5WnNsPAK8" data-ctx-before="13974" data-ctx-mine="668">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -5706,7 +5720,7 @@ Or use `just start` which handles both via Docker.
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:196" title="Copy event id to clipboard"><code>episode-8-before:196</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:198" href="#episode-8-before:198" data-time="02:32:55" data-link="tool:toolu_019AC5DaRBVYDd4xBjSf8JkU">
+      <a class="card k-tool_call" id="episode-8-before:198" href="#episode-8-before:198" data-time="02:32:55" data-link="tool:toolu_019AC5DaRBVYDd4xBjSf8JkU" data-ctx-before="14642" data-ctx-mine="385">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -5754,7 +5768,7 @@ To run on non-default ports: `AGENTS_OBSERVE_SERVER_PORT=4982 AGENTS_OBSERVE_CLI
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:198" title="Copy event id to clipboard"><code>episode-8-before:198</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:201" href="#episode-8-before:201" data-time="02:32:55" data-link="tool:toolu_019AC5DaRBVYDd4xBjSf8JkU">
+      <a class="card k-tool_result" id="episode-8-before:201" href="#episode-8-before:201" data-time="02:32:55" data-link="tool:toolu_019AC5DaRBVYDd4xBjSf8JkU" data-ctx-before="15027" data-ctx-mine="24">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -5773,7 +5787,7 @@ To run on non-default ports: `AGENTS_OBSERVE_SERVER_PORT=4982 AGENTS_OBSERVE_CLI
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:201" title="Copy event id to clipboard"><code>episode-8-before:201</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:203" href="#episode-8-before:203" data-time="02:32:59" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:203" href="#episode-8-before:203" data-time="02:32:59" data-beat="true" data-ctx-before="15051" data-ctx-mine="43">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -5792,7 +5806,7 @@ To run on non-default ports: `AGENTS_OBSERVE_SERVER_PORT=4982 AGENTS_OBSERVE_CLI
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:203" title="Copy event id to clipboard"><code>episode-8-before:203</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-user" id="episode-8-before:206" href="#episode-8-before:206" data-time="02:33:24" data-beat="true">
+      <a class="card k-user" id="episode-8-before:206" href="#episode-8-before:206" data-time="02:33:24" data-beat="true" data-ctx-before="15094" data-ctx-mine="24">
         <div class="gutter">
           <span class="kind deco">User</span>
           <span class="who">Jess</span>
@@ -5811,7 +5825,7 @@ To run on non-default ports: `AGENTS_OBSERVE_SERVER_PORT=4982 AGENTS_OBSERVE_CLI
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:206" title="Copy event id to clipboard"><code>episode-8-before:206</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-thinking" id="episode-8-before:209" href="#episode-8-before:209" data-time="02:33:28">
+      <a class="card k-thinking" id="episode-8-before:209" href="#episode-8-before:209" data-time="02:33:28" data-ctx-before="15118" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Thinking</span>
           <span class="who">Claude</span>
@@ -5830,7 +5844,7 @@ To run on non-default ports: `AGENTS_OBSERVE_SERVER_PORT=4982 AGENTS_OBSERVE_CLI
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:209" title="Copy event id to clipboard"><code>episode-8-before:209</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:210" href="#episode-8-before:210" data-time="02:33:28" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:210" href="#episode-8-before:210" data-time="02:33:28" data-beat="true" data-ctx-before="15118" data-ctx-mine="344">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>
@@ -5849,7 +5863,7 @@ To run on non-default ports: `AGENTS_OBSERVE_SERVER_PORT=4982 AGENTS_OBSERVE_CLI
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:210" title="Copy event id to clipboard"><code>episode-8-before:210</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:211" href="#episode-8-before:211" data-time="02:33:30" data-link="tool:toolu_01UtqZWKBoGmgs9vXKQS96Zs">
+      <a class="card k-tool_call" id="episode-8-before:211" href="#episode-8-before:211" data-time="02:33:30" data-link="tool:toolu_01UtqZWKBoGmgs9vXKQS96Zs" data-ctx-before="15462" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -5876,7 +5890,7 @@ EOF
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:211" title="Copy event id to clipboard"><code>episode-8-before:211</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:214" href="#episode-8-before:214" data-time="02:33:30" data-link="tool:toolu_01UtqZWKBoGmgs9vXKQS96Zs">
+      <a class="card k-tool_result" id="episode-8-before:214" href="#episode-8-before:214" data-time="02:33:30" data-link="tool:toolu_01UtqZWKBoGmgs9vXKQS96Zs" data-ctx-before="15462" data-ctx-mine="39">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -5897,7 +5911,7 @@ EOF
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:214" title="Copy event id to clipboard"><code>episode-8-before:214</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="episode-8-before:216" href="#episode-8-before:216" data-time="02:33:31" data-link="tool:toolu_01Y3awapAKyCNmSa7BRRw2Yb">
+      <a class="card k-tool_call" id="episode-8-before:216" href="#episode-8-before:216" data-time="02:33:31" data-link="tool:toolu_01Y3awapAKyCNmSa7BRRw2Yb" data-ctx-before="15501" data-ctx-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Claude</span>
@@ -5916,7 +5930,7 @@ EOF
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:216" title="Copy event id to clipboard"><code>episode-8-before:216</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="episode-8-before:218" href="#episode-8-before:218" data-time="02:33:31" data-link="tool:toolu_01Y3awapAKyCNmSa7BRRw2Yb">
+      <a class="card k-tool_result" id="episode-8-before:218" href="#episode-8-before:218" data-time="02:33:31" data-link="tool:toolu_01Y3awapAKyCNmSa7BRRw2Yb" data-ctx-before="15501" data-ctx-mine="9">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -5935,7 +5949,7 @@ EOF
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-before:218" title="Copy event id to clipboard"><code>episode-8-before:218</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="episode-8-before:220" href="#episode-8-before:220" data-time="02:33:34" data-beat="true">
+      <a class="card k-assistant" id="episode-8-before:220" href="#episode-8-before:220" data-time="02:33:34" data-beat="true" data-ctx-before="15510" data-ctx-mine="19">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Claude</span>

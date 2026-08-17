@@ -33,6 +33,20 @@
 </header>
 
 <div class="shell">
+  <!-- Where-are-we map: a non-scrolling vertical bar on the context-length
+       axis (TODO.md: context-map-sidebar). Three segments sized by
+       assets/story.js from the selected card's data-ctx-before/-mine and this
+       total — prior context, this card's own contribution, and everything
+       still ahead. v1: main conversation only, no subagent bars yet. -->
+  <aside class="context-map" id="context-map" data-ctx-total="<%= ctx_total %>" aria-hidden="true">
+    <div class="cm-value" id="cm-value"></div>
+    <div class="cm-bar">
+      <div class="cm-seg cm-prior" id="cm-prior"></div>
+      <div class="cm-seg cm-current" id="cm-current"></div>
+      <div class="cm-seg cm-future" id="cm-future"></div>
+    </div>
+  </aside>
+
   <main class="timeline">
     <p class="rail-label deco">claude code</p>
 

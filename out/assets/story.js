@@ -25,6 +25,58 @@ const dBody   = document.getElementById('d-body');
 const cards   = document.querySelectorAll('.card');
 const DEFAULT_CARD = document.querySelector('.card.k-assistant');  // so the page is never empty
 
+/* ---- context map ("where are we", TODO.md: context-map-sidebar) ----
+   A non-scrolling vertical bar sized from the data-ctx-before/-mine the
+   renderer stamped on every main-thread card (see ctx_attr in renderer.rb).
+   v1: main conversation only. */
+const contextMap = document.getElementById('context-map');
+const cmValue    = document.getElementById('cm-value');
+const cmPrior    = document.getElementById('cm-prior');
+const cmCurrent  = document.getElementById('cm-current');
+const cmFuture   = document.getElementById('cm-future');
+const CTX_TOTAL  = parseInt(contextMap.dataset.ctxTotal || '0', 10);
+
+/* A card inside a subagent's .subactions block carries no ctx-* of its own
+   (that conversation is a separate token economy — see renderer.rb's
+   ctx_attr) — walk up to the `subagent` card that owns the block it's in,
+   which does. Nested subagents-in-subagents resolve the same way, one level
+   of .subactions at a time. */
+function contextOwnerFor(card) {
+  let c = card;
+  while (c && c.dataset.ctxBefore === undefined) {
+    const wrap = c.closest('.subactions');
+    c = wrap ? wrap.previousElementSibling : null;
+  }
+  return c;
+}
+
+/* 24456 -> "24.5k", matching Renderer#token_label. */
+function fmtTokens(n) {
+  if (n < 1000) return String(n);
+  if (n < 1_000_000) return (n / 1000).toFixed(1) + 'k';
+  return (n / 1_000_000).toFixed(2) + 'M';
+}
+
+function updateContextMap(card) {
+  const owner = contextOwnerFor(card);
+  const before = owner ? parseInt(owner.dataset.ctxBefore, 10) : 0;
+  const mine   = owner ? parseInt(owner.dataset.ctxMine, 10) : 0;
+  const future = Math.max(0, CTX_TOTAL - before - mine);
+  cmPrior.style.flexGrow = before;
+  cmCurrent.style.flexGrow = mine;
+  cmFuture.style.flexGrow = future;
+  contextMap.style.setProperty('--kind', getComputedStyle(card).getPropertyValue('--kind'));
+  cmValue.textContent = fmtTokens(before + mine) + ' / ' + fmtTokens(CTX_TOTAL);
+}
+
+function clearContextMap() {
+  cmPrior.style.flexGrow = 0;
+  cmCurrent.style.flexGrow = 0;
+  cmFuture.style.flexGrow = CTX_TOTAL;
+  contextMap.style.setProperty('--kind', 'var(--line-strong)');
+  cmValue.textContent = '';
+}
+
 /* the empty-state markup that ships in the sidebar; restored on clear */
 const EMPTY_HTML = dBody.innerHTML;
 
@@ -65,6 +117,7 @@ function selectCard(card) {
   dBody.replaceChildren(card.querySelector('template.detail').content.cloneNode(true));
   dBody.scrollTop = 0;
   updateRelated(card);
+  updateContextMap(card);
   showSummary(card);
   showBeatEditor(card);      // prepended after showSummary, so it sits above it
 }
@@ -117,6 +170,7 @@ function clearSelection() {
   dTime.textContent = '';
   sidebar.style.setProperty('--kind', 'var(--line-strong)');
   dBody.innerHTML = EMPTY_HTML;
+  clearContextMap();
 }
 
 /* Expand every collapsed subagent block this card is buried in (see the

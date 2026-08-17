@@ -9,6 +9,8 @@
 <%# call + its result, a queue enqueue + its dequeue…); edited_attr (optional)  -%>
 <%# marks a summary Jess rewrote by hand, which only the editing UI reacts to;   -%>
 <%# beat_attr (optional) marks a card narration stops on — story.js's isBeat.    -%>
+<%# ctx_attr (optional, main-thread cards only) carries this card's context-map -%>
+<%# numbers — story.js sizes the sidebar's three bar segments from it.          -%>
 <%#                                                                            -%>
 <%# Every comment line here ends with a DASH before the closing delimiter, on   -%>
 <%# purpose: otherwise ERB emits the line's newline, and this file renders once -%>
@@ -17,7 +19,7 @@
 <%# either (not even in backticks): it ends the tag early and the rest of the   -%>
 <%# line lands on the page. That shipped once; test/renderer_test.rb now fails  -%>
 <%# if any ERB delimiter reaches the output.                                    -%>
-      <a class="card k-<%= css_kind %>" id="<%= anchor %>" href="#<%= anchor %>" data-time="<%= data_time %>"<%= link_attr %><%= edited_attr %><%= beat_attr %>>
+      <a class="card k-<%= css_kind %>" id="<%= anchor %>" href="#<%= anchor %>" data-time="<%= data_time %>"<%= link_attr %><%= edited_attr %><%= beat_attr %><%= ctx_attr %>>
         <div class="gutter">
           <span class="kind deco"><%= kind_html %></span>
           <span class="who"><%= who %></span>

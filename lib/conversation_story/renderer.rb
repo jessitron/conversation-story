@@ -110,6 +110,7 @@ module ConversationStory
              tokens_stat:   h(token_label(@meta["total_tokens"])),
              model_stat:    h(model_label(@meta["model"])),
              branch_stat:   h(@meta["git_branch"] || "—"),
+             ctx_total:     h(ctx_total),
              cards_html:    cards_html)
     end
 
@@ -195,6 +196,12 @@ module ConversationStory
              link_attr:    link_attr(event),
              edited_attr:  event["summary_edited"] ? %( data-edited="true") : "",
              beat_attr:    event["beat"] ? %( data-beat="true") : "",
+             # agent_label is nil only for main-thread cards (see cards_for) —
+             # the context map tracks the PARENT conversation's own context
+             # growth, so a subagent's nested cards (their own, separate token
+             # economy) carry no ctx-* attributes at all, rather than a
+             # misleading 0.
+             ctx_attr:     agent_label ? "" : ctx_attr(event),
              summary_html: summary_html(event),
              badges_html:  badges_html(event),
              detail_html:  detail_html(event))
@@ -258,6 +265,57 @@ module ConversationStory
       found = {}
       ids.each { |tok| link_index[tok].each { |i, e| found[i] ||= e unless e["ref"] == event["ref"] } }
       found.sort.map(&:last)
+    end
+
+    # ---- context map (TODO.md: context-map-sidebar, v1: main bar only) ------
+    #
+    # A card's OWN contribution to the conversation's context is already fully
+    # named on it by the parser/dark-matter passes (session 22 note in
+    # CLAUDE.md): a turn_leader's `output` becomes history the moment the next
+    # turn resends it, and every ESTIMATE_KINDS/dark-matter event's own
+    # estimate is exactly its share. Summing those in event order is the same
+    # identity that note describes (previous turn's output + intervening
+    # estimates + dark matter == the next turn's new_content) — so "context so
+    # far, at this card" falls out of a running total over fields the schema
+    # already has, with no new estimation invented here.
+    def context_contribution(event)
+      tokens = event["tokens"] || {}
+      return tokens["output"].to_i if event["turn_leader"]
+
+      tokens["estimated_input"].to_i + tokens["dark_matter_estimate"].to_i
+    end
+
+    # ref -> [context before this card, this card's own contribution], plus the
+    # grand total (the conversation's peak context) — built once, over
+    # top-level events only (a subagent's context is its own separate economy).
+    def build_context_axis!
+      return if @ctx_before
+
+      @ctx_before = {}
+      @ctx_mine   = {}
+      running = 0
+      visible_events.each do |event|
+        contribution = context_contribution(event)
+        @ctx_before[event["ref"]] = running
+        @ctx_mine[event["ref"]]   = contribution
+        running += contribution
+      end
+      @ctx_total = running
+    end
+
+    def ctx_total
+      build_context_axis!
+      @ctx_total
+    end
+
+    # data-ctx-before/-mine, read by assets/story.js to size the three segments
+    # of the context-map bar for whichever card is selected.
+    def ctx_attr(event)
+      build_context_axis!
+      ref = event["ref"]
+      return "" unless @ctx_before.key?(ref)
+
+      %( data-ctx-before="#{@ctx_before[ref]}" data-ctx-mine="#{@ctx_mine[ref]}")
     end
 
     # ---- summary (card face) --------------------------------------------------

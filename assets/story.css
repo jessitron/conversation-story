@@ -503,6 +503,47 @@ body.mode-edit .card.k-coordinator[data-beat]::before {
 .card.k-subagent.collapsed + .subactions { display: none; }
 
 /* ============================================================
+   Context map — "where are we" bar (TODO.md: context-map-sidebar)
+   ------------------------------------------------------------
+   A non-scrolling vertical bar, full viewport height, on a context-length
+   axis: prior context (above the selected card), that card's own
+   contribution, and everything still ahead. assets/story.js sizes the three
+   segments via flex-grow, set from the card's data-ctx-before/-mine — letting
+   flexbox (not manual percentage math) resolve them against cm-current's
+   min-height, so a zero-contribution card (a tool_call, mid-turn) still
+   shows a sliver marking its place rather than vanishing. v1: main
+   conversation only — a card inside a collapsed/expanded subagent borrows
+   its owning `subagent` card's numbers (see contextDataFor in story.js);
+   subagents don't get their own bar yet.
+   ============================================================ */
+aside.context-map {
+  position: sticky; top: 0; align-self: flex-start;
+  height: 100vh;
+  width: 30px; flex: 0 0 30px;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 14px 0;
+  gap: 8px;
+}
+.context-map .cm-value {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: var(--ls-tight);
+  color: var(--ink-faint);
+  writing-mode: vertical-rl; text-orientation: mixed;
+  transform: rotate(180deg);
+  flex: 0 0 auto;
+}
+.context-map .cm-bar {
+  flex: 1 1 auto; width: 10px;
+  display: flex; flex-direction: column;
+  border: 1px solid var(--line-strong); border-radius: 2px;
+  overflow: hidden;
+  background: var(--paper-2);
+}
+.context-map .cm-seg { width: 100%; flex-grow: 0; flex-shrink: 0; flex-basis: 0; }
+.context-map .cm-prior   { background: var(--line-strong); }
+.context-map .cm-current { background: var(--kind, var(--gold)); min-height: 6px; }
+.context-map .cm-future  { background: transparent; }
+
+/* ============================================================
    Sidebar (detail) — collapsible + drag-resizable
    ============================================================ */
 aside.detail {
