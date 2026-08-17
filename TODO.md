@@ -8,18 +8,18 @@ whole system for now.
 
 ## Next
 
-- `context-map-sidebar` A "where are we" map on the left: a vertical bar,
-  full page height, non-scrolling, representing the conversation as a whole
-  on a context-length axis. Three sections: prior context, context added by
-  the currently highlighted card, and context added by all future cards. A
-  tool call that adds nothing to context shows only a minimum-height bar
-  between prior and future, marking the location; a tool result shows its
-  approximate token contribution; a user input shows its contribution (likely
-  smaller than the minimum bar height).
+- `context-map-sidebar` **v1 shipped** (session 23): a "where are we" map on
+  the left, a non-scrolling full-height bar with three segments — prior
+  context, the selected card's own contribution, and everything still ahead —
+  sized via flex-grow from each card's `data-ctx-before`/`data-ctx-mine`
+  (`Renderer#context_contribution`/`#build_context_axis!`, a running total
+  over fields session 22 already computed — no new estimation). Jumps
+  instantly on selection; main conversation only. Remaining from the original
+  spec, still open:
 
-  Usually the map jumps instantly on selection (no transition). In narrate
-  mode, pressing n/arrow animates it smoothly, showing context growing as the
-  conversation lengthens.
+  - Usually the map jumps instantly on selection (no transition) — done. In
+    narrate mode, pressing n/arrow should animate it smoothly, showing context
+    growing as the conversation lengthens — not done yet.
 
   Subagents get their own bar to the right of the main one. Selecting a
   subagent card (or any event inside it) makes the main bar show context as

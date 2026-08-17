@@ -26,10 +26,12 @@ map, and a narrate mode that reveals the conversation a beat at a time.)*
 Mount Struggle is the current priority. Session 22 laid the token-accounting
 groundwork for its context-bloat signal — per-card context attribution and
 "dark matter" (`notes/2026-08-11-session-22-dark-matter-and-underspecified-events.md`).
-The next step is display: `context-map-sidebar` (TODO.md, Next) is the
-detector this feeds — a context-length axis showing where the conversation
-bloated — and `underspecified-events-display` (TODO.md, Backlog) needs an
-unobtrusive way to show the numbers session 22 computed but didn't style.
+Session 23 shipped `context-map-sidebar` v1 (TODO.md, Next): a "where are we"
+bar on the left, sized from that per-card accounting — main conversation
+only, jumps on selection. Still open on that item: subagent bars, narrate-mode
+animation, and a header toggle to show all subagent bars at once.
+`underspecified-events-display` (TODO.md, Backlog) still needs an unobtrusive
+way to show the dark-matter numbers session 22 computed but didn't style.
 
 ## Safe Harbor
 
