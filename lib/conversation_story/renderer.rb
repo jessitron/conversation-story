@@ -496,7 +496,26 @@ module ConversationStory
         ["Output",      comma(tokens["output"])],
         ["Total input", comma(tokens["cumulative_context"])],
       ]
+      rows += context_contribution_rows(event, skip: %w[output])
       section("Tokens", kv_dl(rows))
+    end
+
+    # The three raw fields `context_contribution` (the context-map bar's
+    # per-card math, see build_context_axis! above) actually reads, named
+    # exactly as it reads them, so the bar's number for any card is always
+    # traceable to a field printed on that card — "n/a" for whichever branch
+    # doesn't apply, rather than the field just not appearing. `skip` drops
+    # fields a caller already prints under a friendlier label, so they don't
+    # print twice.
+    def context_contribution_rows(event, skip: [])
+      tokens = event["tokens"] || {}
+      output = event["turn_leader"] ? tokens["output"] : nil
+      rows = [
+        ["output",               output ? comma(output) : "n/a"],
+        ["estimated_input",      tokens.key?("estimated_input") ? comma(tokens["estimated_input"]) : "n/a"],
+        ["dark_matter_estimate", tokens.key?("dark_matter_estimate") ? comma(tokens["dark_matter_estimate"]) : "n/a"],
+      ]
+      rows.reject { |k, _| skip.include?(k) }
     end
 
     # Turn 1's real `added` pays for this message AND the system prompt AND the
@@ -509,6 +528,7 @@ module ConversationStory
         ["Message size (est.)",       "≈#{comma tokens["estimated_input"]}"],
         ["System prompt + tools (est.)", "≈#{comma tokens["system_prompt_estimate"]}"],
       ]
+      rows += context_contribution_rows(event, skip: %w[estimated_input])
       section("Turn 1 breakdown",
               kv_dl(rows) + %(<p class="d-note">Estimated from the message's length. ) +
               %(The API bills the system prompt, tool schemas, and this message ) +
@@ -527,12 +547,16 @@ module ConversationStory
     def result_tokens_section(event)
       est = event.dig("tokens", "estimated_input")
       dark = event.dig("tokens", "dark_matter_estimate")
-      return "" unless est || dark
 
       rows = []
       rows += [["Result size", byte_label(event.dig("tokens", "result_chars"))],
                ["Est. tokens", "≈#{comma est}"]] if est
       rows << ["Dark matter share", "≈#{comma dark}"] if dark
+      # Always print the three raw context_contribution fields — "n/a" for
+      # whichever this event has none of, so a card with nothing to add to
+      # context still says so rather than showing no Tokens section at all.
+      already_shown = (est ? ["estimated_input"] : []) + (dark ? ["dark_matter_estimate"] : [])
+      rows += context_contribution_rows(event, skip: already_shown)
       note = est ? "Estimated from the result's length. " : ""
       note += "Dark matter: this turn's cache write is bigger than everything visible " \
               "can explain; this is this event's share of what's left over. " if dark
