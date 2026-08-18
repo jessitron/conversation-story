@@ -163,10 +163,12 @@ module ConversationStory
     # A `subagent` card is followed by its own story: the events that subagent
     # produced, as FULL cards (same size, same detail template, same
     # click-to-select) inside a `.subactions` wrapper that supplies the indent
-    # and the rail. Recursive, because a subagent can spawn one too.
-    def cards_for(events, agent_label = nil)
+    # and the rail. Recursive, because a subagent can spawn one too — `owner`
+    # threads down which economy (main, or a specific subagent's own) each
+    # nested event's ctx numbers belong to (see sub_ctx_attr below).
+    def cards_for(events, agent_label = nil, owner: nil)
       events.map do |event|
-        card = render_card(event, agent_label)
+        card = render_card(event, agent_label, owner: owner)
         event["kind"] == "subagent" ? card + subactions_html(event) : card
       end.join("\n")
     end
@@ -177,15 +179,23 @@ module ConversationStory
     # reveals the flurry a card at a time and the agent's busyness is the thing
     # Jess is narrating. The caret is there to quiet a subagent down, not to
     # keep it hidden until asked.
+    #
+    # The wrapper carries `data-owner` (this subagent card's ref) and
+    # `data-sub-ctx-total` (the peak context THIS subagent's own run reached) —
+    # assets/story.js reads both to build the subagent context-map bar
+    # (TODO.md: context-map-sidebar, "Subagent bars").
     def subactions_html(event)
       sub = event["subagent"] || {}
       nested = (sub["events"] || []).reject { |e| e["hidden"] }
       return "" if nested.empty?
 
-      %(\n<div class="subactions">\n#{cards_for(nested, sub["agent_type"])}\n</div>)
+      owner = { ref: event["ref"], nested: nested }
+      build_subagent_axis!(owner)
+      total = @sub_ctx_total[owner[:ref]]
+      %(\n<div class="subactions" data-owner="#{h event["ref"]}" data-sub-ctx-total="#{total}">\n#{cards_for(nested, sub["agent_type"], owner: owner)}\n</div>)
     end
 
-    def render_card(event, agent_label = nil)
+    def render_card(event, agent_label = nil, owner: nil)
       kind = event["kind"]
       render(card_template,
              anchor:       h(anchor_for(event)),
@@ -196,12 +206,13 @@ module ConversationStory
              link_attr:    link_attr(event),
              edited_attr:  event["summary_edited"] ? %( data-edited="true") : "",
              beat_attr:    event["beat"] ? %( data-beat="true") : "",
-             # agent_label is nil only for main-thread cards (see cards_for) —
-             # the context map tracks the PARENT conversation's own context
-             # growth, so a subagent's nested cards (their own, separate token
-             # economy) carry no ctx-* attributes at all, rather than a
-             # misleading 0.
+             # agent_label/owner are nil only for main-thread cards (see
+             # cards_for) — the main context map tracks the PARENT
+             # conversation's own context growth, so a subagent's nested cards
+             # carry no ctx-* attributes (a separate economy, sub_ctx_attr
+             # below instead), rather than a misleading 0.
              ctx_attr:     agent_label ? "" : ctx_attr(event),
+             sub_ctx_attr: owner ? sub_ctx_attr(event, owner) : "",
              summary_html: summary_html(event),
              badges_html:  badges_html(event),
              detail_html:  detail_html(event))
@@ -316,6 +327,40 @@ module ConversationStory
       return "" unless @ctx_before.key?(ref)
 
       %( data-ctx-before="#{@ctx_before[ref]}" data-ctx-mine="#{@ctx_mine[ref]}")
+    end
+
+    # A subagent's nested events are their OWN token economy (see
+    # context_contribution's comment) — this is the same running-total shape
+    # as build_context_axis!, just scoped to one subagent's own event list and
+    # keyed by that subagent card's ref, since a page can hold many subagents,
+    # each needing its own axis. `owner` is `{ref:, nested:}` — memoized per
+    # ref so a subagent's axis is built once no matter how many of its nested
+    # cards ask for it.
+    def build_subagent_axis!(owner)
+      @sub_ctx_before ||= {}
+      @sub_ctx_mine   ||= {}
+      @sub_ctx_total  ||= {}
+      return if @sub_ctx_total.key?(owner[:ref])
+
+      running = 0
+      owner[:nested].each do |event|
+        contribution = context_contribution(event)
+        @sub_ctx_before[event["ref"]] = running
+        @sub_ctx_mine[event["ref"]]   = contribution
+        running += contribution
+      end
+      @sub_ctx_total[owner[:ref]] = running
+    end
+
+    # data-sub-before/-mine — a nested event's position within ITS OWN
+    # immediate subagent's economy. Deliberately different attribute names
+    # from data-ctx-before/-mine (reserved for "position in the main
+    # conversation", never stamped on nested events) so assets/story.js can
+    # tell which bar a number belongs to just by which attribute it finds.
+    def sub_ctx_attr(event, owner)
+      build_subagent_axis!(owner)
+      ref = event["ref"]
+      %( data-sub-before="#{@sub_ctx_before[ref]}" data-sub-mine="#{@sub_ctx_mine[ref]}")
     end
 
     # ---- summary (card face) --------------------------------------------------

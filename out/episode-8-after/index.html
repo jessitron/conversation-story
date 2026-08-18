@@ -40,10 +40,27 @@
        still ahead. v1: main conversation only, no subagent bars yet. -->
   <aside class="context-map" id="context-map" data-ctx-total="12315" aria-hidden="true">
     <div class="cm-value" id="cm-value"></div>
-    <div class="cm-bar">
+    <div class="cm-bar" id="cm-bar">
       <div class="cm-seg cm-prior" id="cm-prior"></div>
       <div class="cm-seg cm-current" id="cm-current"></div>
       <div class="cm-seg cm-future" id="cm-future"></div>
+    </div>
+  </aside>
+
+  <!-- Subagent bar: appears only while the selection is a subagent card or
+       something inside one (TODO.md: context-map-sidebar, "Subagent bars").
+       Same scale as the main bar (both read against data-ctx-total above),
+       positioned via a top spacer at the height the subagent started at,
+       unless its own context is bigger than the whole conversation's, in
+       which case it fills the full height on its own scale instead. See
+       assets/story.js's updateSubagentMap. -->
+  <aside class="context-map sub" id="context-map-sub" aria-hidden="true">
+    <div class="cm-value" id="cm-value-sub"></div>
+    <div class="cm-bar" id="cm-bar-sub">
+      <div class="cm-seg cm-spacer" id="cm-spacer-sub"></div>
+      <div class="cm-seg cm-prior" id="cm-prior-sub"></div>
+      <div class="cm-seg cm-current" id="cm-current-sub"></div>
+      <div class="cm-seg cm-future" id="cm-future-sub"></div>
     </div>
   </aside>
 
@@ -205,8 +222,8 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="episode-8-after:11" title="Copy event id to clipboard"><code>episode-8-after:11</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-<div class="subactions">
-      <a class="card k-assistant" id="agent-ad79cef00e3496606:2" href="#agent-ad79cef00e3496606:2" data-time="02:37:12">
+<div class="subactions" data-owner="episode-8-after:11" data-sub-ctx-total="22791">
+      <a class="card k-assistant" id="agent-ad79cef00e3496606:2" href="#agent-ad79cef00e3496606:2" data-time="02:37:12" data-sub-before="0" data-sub-mine="5">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Explore</span>
@@ -225,7 +242,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:2" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:2</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:3" href="#agent-ad79cef00e3496606:3" data-time="02:37:12" data-link="tool:toolu_01H1f4Z1XMsJn8vx9EQvJPWt">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:3" href="#agent-ad79cef00e3496606:3" data-time="02:37:12" data-link="tool:toolu_01H1f4Z1XMsJn8vx9EQvJPWt" data-sub-before="5" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -246,7 +263,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:3" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:3</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:4" href="#agent-ad79cef00e3496606:4" data-time="02:37:12" data-link="tool:toolu_01AT56hPYWPPxvxoqCmGqqwV">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:4" href="#agent-ad79cef00e3496606:4" data-time="02:37:12" data-link="tool:toolu_01AT56hPYWPPxvxoqCmGqqwV" data-sub-before="5" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -267,7 +284,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:4" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:4</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:5" href="#agent-ad79cef00e3496606:5" data-time="02:37:12" data-link="tool:toolu_01PYRraX1msg5TiaMEBNXU5C">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:5" href="#agent-ad79cef00e3496606:5" data-time="02:37:12" data-link="tool:toolu_01PYRraX1msg5TiaMEBNXU5C" data-sub-before="5" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -288,7 +305,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:5" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:5</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:6" href="#agent-ad79cef00e3496606:6" data-time="02:37:13" data-link="tool:toolu_01SyVqfkujAKMGGneu6QMM7H">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:6" href="#agent-ad79cef00e3496606:6" data-time="02:37:13" data-link="tool:toolu_01SyVqfkujAKMGGneu6QMM7H" data-sub-before="5" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -309,7 +326,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:6" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:6</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:7" href="#agent-ad79cef00e3496606:7" data-time="02:37:13" data-link="tool:toolu_01H1f4Z1XMsJn8vx9EQvJPWt">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:7" href="#agent-ad79cef00e3496606:7" data-time="02:37:13" data-link="tool:toolu_01H1f4Z1XMsJn8vx9EQvJPWt" data-sub-before="5" data-sub-mine="16">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -328,7 +345,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:7" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:7</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:8" href="#agent-ad79cef00e3496606:8" data-time="02:37:13" data-link="tool:toolu_01AT56hPYWPPxvxoqCmGqqwV">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:8" href="#agent-ad79cef00e3496606:8" data-time="02:37:13" data-link="tool:toolu_01AT56hPYWPPxvxoqCmGqqwV" data-sub-before="21" data-sub-mine="4">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -347,7 +364,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:8" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:8</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:9" href="#agent-ad79cef00e3496606:9" data-time="02:37:13" data-link="tool:toolu_013hvnc14q5UT7xUCNShx23y">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:9" href="#agent-ad79cef00e3496606:9" data-time="02:37:13" data-link="tool:toolu_013hvnc14q5UT7xUCNShx23y" data-sub-before="25" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -368,7 +385,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:9" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:9</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:10" href="#agent-ad79cef00e3496606:10" data-time="02:37:13" data-link="tool:toolu_01PYRraX1msg5TiaMEBNXU5C">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:10" href="#agent-ad79cef00e3496606:10" data-time="02:37:13" data-link="tool:toolu_01PYRraX1msg5TiaMEBNXU5C" data-sub-before="25" data-sub-mine="4">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -387,7 +404,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:10" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:10</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:11" href="#agent-ad79cef00e3496606:11" data-time="02:37:13" data-link="tool:toolu_01KLGtpVw1Rejz4axTa7vQq7">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:11" href="#agent-ad79cef00e3496606:11" data-time="02:37:13" data-link="tool:toolu_01KLGtpVw1Rejz4axTa7vQq7" data-sub-before="29" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -406,7 +423,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:11" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:11</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:12" href="#agent-ad79cef00e3496606:12" data-time="02:37:13" data-link="tool:toolu_01SyVqfkujAKMGGneu6QMM7H">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:12" href="#agent-ad79cef00e3496606:12" data-time="02:37:13" data-link="tool:toolu_01SyVqfkujAKMGGneu6QMM7H" data-sub-before="29" data-sub-mine="4">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -425,7 +442,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:12" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:12</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:13" href="#agent-ad79cef00e3496606:13" data-time="02:37:13" data-link="tool:toolu_013hvnc14q5UT7xUCNShx23y">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:13" href="#agent-ad79cef00e3496606:13" data-time="02:37:13" data-link="tool:toolu_013hvnc14q5UT7xUCNShx23y" data-sub-before="33" data-sub-mine="4">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -444,7 +461,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:13" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:13</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:14" href="#agent-ad79cef00e3496606:14" data-time="02:37:13" data-link="tool:toolu_01KLGtpVw1Rejz4axTa7vQq7">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:14" href="#agent-ad79cef00e3496606:14" data-time="02:37:13" data-link="tool:toolu_01KLGtpVw1Rejz4axTa7vQq7" data-sub-before="37" data-sub-mine="479">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -482,7 +499,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:14" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:14</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="agent-ad79cef00e3496606:15" href="#agent-ad79cef00e3496606:15" data-time="02:37:15">
+      <a class="card k-assistant" id="agent-ad79cef00e3496606:15" href="#agent-ad79cef00e3496606:15" data-time="02:37:15" data-sub-before="516" data-sub-mine="1">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Explore</span>
@@ -501,7 +518,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:15" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:15</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:16" href="#agent-ad79cef00e3496606:16" data-time="02:37:16" data-link="tool:toolu_01PTz8ByrpR4QDFz5cQQx7Sh">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:16" href="#agent-ad79cef00e3496606:16" data-time="02:37:16" data-link="tool:toolu_01PTz8ByrpR4QDFz5cQQx7Sh" data-sub-before="517" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -520,7 +537,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:16" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:16</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:17" href="#agent-ad79cef00e3496606:17" data-time="02:37:16" data-link="tool:toolu_01YKxcH2dZSYqe8NGBcwtN27">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:17" href="#agent-ad79cef00e3496606:17" data-time="02:37:16" data-link="tool:toolu_01YKxcH2dZSYqe8NGBcwtN27" data-sub-before="517" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -541,7 +558,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:17" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:17</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:18" href="#agent-ad79cef00e3496606:18" data-time="02:37:16" data-link="tool:toolu_01PTz8ByrpR4QDFz5cQQx7Sh">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:18" href="#agent-ad79cef00e3496606:18" data-time="02:37:16" data-link="tool:toolu_01PTz8ByrpR4QDFz5cQQx7Sh" data-sub-before="517" data-sub-mine="207">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -567,7 +584,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:18" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:18</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:19" href="#agent-ad79cef00e3496606:19" data-time="02:37:16" data-link="tool:toolu_015qcj8XuUmH1oadLxqttfPN">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:19" href="#agent-ad79cef00e3496606:19" data-time="02:37:16" data-link="tool:toolu_015qcj8XuUmH1oadLxqttfPN" data-sub-before="724" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -586,7 +603,7 @@ Search for files related to: timeline, replay, rewind, scrub, time, playback. Re
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:19" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:19</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:20" href="#agent-ad79cef00e3496606:20" data-time="02:37:16" data-link="tool:toolu_01YKxcH2dZSYqe8NGBcwtN27">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:20" href="#agent-ad79cef00e3496606:20" data-time="02:37:16" data-link="tool:toolu_01YKxcH2dZSYqe8NGBcwtN27" data-sub-before="724" data-sub-mine="30">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -606,7 +623,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:20" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:20</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:21" href="#agent-ad79cef00e3496606:21" data-time="02:37:17" data-link="tool:toolu_015qcj8XuUmH1oadLxqttfPN">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:21" href="#agent-ad79cef00e3496606:21" data-time="02:37:17" data-link="tool:toolu_015qcj8XuUmH1oadLxqttfPN" data-sub-before="754" data-sub-mine="56">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -626,7 +643,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:21" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:21</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="agent-ad79cef00e3496606:22" href="#agent-ad79cef00e3496606:22" data-time="02:37:18">
+      <a class="card k-assistant" id="agent-ad79cef00e3496606:22" href="#agent-ad79cef00e3496606:22" data-time="02:37:18" data-sub-before="810" data-sub-mine="1">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Explore</span>
@@ -645,7 +662,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:22" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:22</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:23" href="#agent-ad79cef00e3496606:23" data-time="02:37:19" data-link="tool:toolu_01FfcRD54kPcMKg6ogUky53J">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:23" href="#agent-ad79cef00e3496606:23" data-time="02:37:19" data-link="tool:toolu_01FfcRD54kPcMKg6ogUky53J" data-sub-before="811" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -666,7 +683,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:23" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:23</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:24" href="#agent-ad79cef00e3496606:24" data-time="02:37:19" data-link="tool:toolu_015MnuA6DBgQd5fx6xfvBiLK">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:24" href="#agent-ad79cef00e3496606:24" data-time="02:37:19" data-link="tool:toolu_015MnuA6DBgQd5fx6xfvBiLK" data-sub-before="811" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -687,7 +704,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:24" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:24</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:25" href="#agent-ad79cef00e3496606:25" data-time="02:37:19" data-link="tool:toolu_019WFw4z26oeHrsm2MwWtiXi">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:25" href="#agent-ad79cef00e3496606:25" data-time="02:37:19" data-link="tool:toolu_019WFw4z26oeHrsm2MwWtiXi" data-sub-before="811" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -708,7 +725,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:25" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:25</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:26" href="#agent-ad79cef00e3496606:26" data-time="02:37:19" data-link="tool:toolu_01FfcRD54kPcMKg6ogUky53J">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:26" href="#agent-ad79cef00e3496606:26" data-time="02:37:19" data-link="tool:toolu_01FfcRD54kPcMKg6ogUky53J" data-sub-before="811" data-sub-mine="1791">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -885,7 +902,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:26" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:26</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:27" href="#agent-ad79cef00e3496606:27" data-time="02:37:19" data-link="tool:toolu_015MnuA6DBgQd5fx6xfvBiLK">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:27" href="#agent-ad79cef00e3496606:27" data-time="02:37:19" data-link="tool:toolu_015MnuA6DBgQd5fx6xfvBiLK" data-sub-before="2602" data-sub-mine="2098">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -1088,7 +1105,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:27" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:27</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:28" href="#agent-ad79cef00e3496606:28" data-time="02:37:19" data-link="tool:toolu_019WFw4z26oeHrsm2MwWtiXi">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:28" href="#agent-ad79cef00e3496606:28" data-time="02:37:19" data-link="tool:toolu_019WFw4z26oeHrsm2MwWtiXi" data-sub-before="4700" data-sub-mine="239">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -1135,7 +1152,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:28" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:28</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="agent-ad79cef00e3496606:29" href="#agent-ad79cef00e3496606:29" data-time="02:37:21">
+      <a class="card k-assistant" id="agent-ad79cef00e3496606:29" href="#agent-ad79cef00e3496606:29" data-time="02:37:21" data-sub-before="4939" data-sub-mine="1">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Explore</span>
@@ -1154,7 +1171,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:29" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:29</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:30" href="#agent-ad79cef00e3496606:30" data-time="02:37:22" data-link="tool:toolu_014MA4pD9DZjWV7vf4gh3JUf">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:30" href="#agent-ad79cef00e3496606:30" data-time="02:37:22" data-link="tool:toolu_014MA4pD9DZjWV7vf4gh3JUf" data-sub-before="4940" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -1173,7 +1190,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:30" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:30</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:31" href="#agent-ad79cef00e3496606:31" data-time="02:37:22" data-link="tool:toolu_01Xoa7KMANijWaYfJXLEMaiT">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:31" href="#agent-ad79cef00e3496606:31" data-time="02:37:22" data-link="tool:toolu_01Xoa7KMANijWaYfJXLEMaiT" data-sub-before="4940" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -1192,7 +1209,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:31" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:31</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:32" href="#agent-ad79cef00e3496606:32" data-time="02:37:22" data-link="tool:toolu_014MA4pD9DZjWV7vf4gh3JUf">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:32" href="#agent-ad79cef00e3496606:32" data-time="02:37:22" data-link="tool:toolu_014MA4pD9DZjWV7vf4gh3JUf" data-sub-before="4940" data-sub-mine="59">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -1212,7 +1229,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:32" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:32</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:33" href="#agent-ad79cef00e3496606:33" data-time="02:37:22" data-link="tool:toolu_01Xoa7KMANijWaYfJXLEMaiT">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:33" href="#agent-ad79cef00e3496606:33" data-time="02:37:22" data-link="tool:toolu_01Xoa7KMANijWaYfJXLEMaiT" data-sub-before="4999" data-sub-mine="181">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -1238,7 +1255,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:33" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:33</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:34" href="#agent-ad79cef00e3496606:34" data-time="02:37:24" data-link="tool:toolu_01L4JNSEdV7Vsd4t2QJscC92">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:34" href="#agent-ad79cef00e3496606:34" data-time="02:37:24" data-link="tool:toolu_01L4JNSEdV7Vsd4t2QJscC92" data-sub-before="5180" data-sub-mine="53">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -1259,7 +1276,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:34" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:34</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:35" href="#agent-ad79cef00e3496606:35" data-time="02:37:24" data-link="tool:toolu_01Pu8xJAdJYY52LKTF2FncTx">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:35" href="#agent-ad79cef00e3496606:35" data-time="02:37:24" data-link="tool:toolu_01Pu8xJAdJYY52LKTF2FncTx" data-sub-before="5233" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -1280,7 +1297,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:35" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:35</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:36" href="#agent-ad79cef00e3496606:36" data-time="02:37:24" data-link="tool:toolu_01L4JNSEdV7Vsd4t2QJscC92">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:36" href="#agent-ad79cef00e3496606:36" data-time="02:37:24" data-link="tool:toolu_01L4JNSEdV7Vsd4t2QJscC92" data-sub-before="5233" data-sub-mine="2884">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -1542,7 +1559,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:36" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:36</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:37" href="#agent-ad79cef00e3496606:37" data-time="02:37:24" data-link="tool:toolu_01Pu8xJAdJYY52LKTF2FncTx">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:37" href="#agent-ad79cef00e3496606:37" data-time="02:37:24" data-link="tool:toolu_01Pu8xJAdJYY52LKTF2FncTx" data-sub-before="8117" data-sub-mine="2595">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -1798,7 +1815,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:37" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:37</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="agent-ad79cef00e3496606:38" href="#agent-ad79cef00e3496606:38" data-time="02:37:26">
+      <a class="card k-assistant" id="agent-ad79cef00e3496606:38" href="#agent-ad79cef00e3496606:38" data-time="02:37:26" data-sub-before="10712" data-sub-mine="1">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Explore</span>
@@ -1817,7 +1834,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:38" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:38</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:39" href="#agent-ad79cef00e3496606:39" data-time="02:37:27" data-link="tool:toolu_017wk3eTZPJVsXMFDf5XzUGR">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:39" href="#agent-ad79cef00e3496606:39" data-time="02:37:27" data-link="tool:toolu_017wk3eTZPJVsXMFDf5XzUGR" data-sub-before="10713" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -1836,7 +1853,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:39" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:39</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:40" href="#agent-ad79cef00e3496606:40" data-time="02:37:27" data-link="tool:toolu_01H72MWvQHYdgEzMrKfUqDrz">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:40" href="#agent-ad79cef00e3496606:40" data-time="02:37:27" data-link="tool:toolu_01H72MWvQHYdgEzMrKfUqDrz" data-sub-before="10713" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -1855,7 +1872,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:40" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:40</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:41" href="#agent-ad79cef00e3496606:41" data-time="02:37:27" data-link="tool:toolu_017wk3eTZPJVsXMFDf5XzUGR">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:41" href="#agent-ad79cef00e3496606:41" data-time="02:37:27" data-link="tool:toolu_017wk3eTZPJVsXMFDf5XzUGR" data-sub-before="10713" data-sub-mine="828">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -1893,7 +1910,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:41" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:41</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:42" href="#agent-ad79cef00e3496606:42" data-time="02:37:27" data-link="tool:toolu_01H72MWvQHYdgEzMrKfUqDrz">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:42" href="#agent-ad79cef00e3496606:42" data-time="02:37:27" data-link="tool:toolu_01H72MWvQHYdgEzMrKfUqDrz" data-sub-before="11541" data-sub-mine="137">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -1916,7 +1933,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:42" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:42</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="agent-ad79cef00e3496606:43" href="#agent-ad79cef00e3496606:43" data-time="02:37:29">
+      <a class="card k-assistant" id="agent-ad79cef00e3496606:43" href="#agent-ad79cef00e3496606:43" data-time="02:37:29" data-sub-before="11678" data-sub-mine="1">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Explore</span>
@@ -1935,7 +1952,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:43" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:43</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:44" href="#agent-ad79cef00e3496606:44" data-time="02:37:29" data-link="tool:toolu_01WVWtuaEVJHwWBDGBbtC7nF">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:44" href="#agent-ad79cef00e3496606:44" data-time="02:37:29" data-link="tool:toolu_01WVWtuaEVJHwWBDGBbtC7nF" data-sub-before="11679" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -1956,7 +1973,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:44" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:44</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:45" href="#agent-ad79cef00e3496606:45" data-time="02:37:29" data-link="tool:toolu_01FErdXJmCzX4myBE4qtL4Xy">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:45" href="#agent-ad79cef00e3496606:45" data-time="02:37:29" data-link="tool:toolu_01FErdXJmCzX4myBE4qtL4Xy" data-sub-before="11679" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -1975,7 +1992,7 @@ app/client/src/components/timeline/agent-lane.tsx</pre></div>
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:45" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:45</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:46" href="#agent-ad79cef00e3496606:46" data-time="02:37:30" data-link="tool:toolu_01FErdXJmCzX4myBE4qtL4Xy">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:46" href="#agent-ad79cef00e3496606:46" data-time="02:37:30" data-link="tool:toolu_01FErdXJmCzX4myBE4qtL4Xy" data-sub-before="11679" data-sub-mine="113">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -2000,7 +2017,7 @@ drwxr-xr-x@ 10 jessitron  staff    320 Apr  1 16:57 ..
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:46" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:46</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:47" href="#agent-ad79cef00e3496606:47" data-time="02:37:30" data-link="tool:toolu_01WVWtuaEVJHwWBDGBbtC7nF">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:47" href="#agent-ad79cef00e3496606:47" data-time="02:37:30" data-link="tool:toolu_01WVWtuaEVJHwWBDGBbtC7nF" data-sub-before="11792" data-sub-mine="6737">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -2625,7 +2642,7 @@ drwxr-xr-x@ 10 jessitron  staff    320 Apr  1 16:57 ..
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:47" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:47</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="agent-ad79cef00e3496606:48" href="#agent-ad79cef00e3496606:48" data-time="02:37:31">
+      <a class="card k-assistant" id="agent-ad79cef00e3496606:48" href="#agent-ad79cef00e3496606:48" data-time="02:37:31" data-sub-before="18529" data-sub-mine="1">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Explore</span>
@@ -2644,7 +2661,7 @@ drwxr-xr-x@ 10 jessitron  staff    320 Apr  1 16:57 ..
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:48" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:48</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:49" href="#agent-ad79cef00e3496606:49" data-time="02:37:32" data-link="tool:toolu_01BPV2u18sKMGDxqsucf4kEv">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:49" href="#agent-ad79cef00e3496606:49" data-time="02:37:32" data-link="tool:toolu_01BPV2u18sKMGDxqsucf4kEv" data-sub-before="18530" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -2665,7 +2682,7 @@ drwxr-xr-x@ 10 jessitron  staff    320 Apr  1 16:57 ..
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:49" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:49</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:50" href="#agent-ad79cef00e3496606:50" data-time="02:37:32" data-link="tool:toolu_01BPV2u18sKMGDxqsucf4kEv">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:50" href="#agent-ad79cef00e3496606:50" data-time="02:37:32" data-link="tool:toolu_01BPV2u18sKMGDxqsucf4kEv" data-sub-before="18530" data-sub-mine="2297">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -2878,7 +2895,7 @@ drwxr-xr-x@ 10 jessitron  staff    320 Apr  1 16:57 ..
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:50" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:50</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="agent-ad79cef00e3496606:51" href="#agent-ad79cef00e3496606:51" data-time="02:37:34">
+      <a class="card k-assistant" id="agent-ad79cef00e3496606:51" href="#agent-ad79cef00e3496606:51" data-time="02:37:34" data-sub-before="20827" data-sub-mine="4">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Explore</span>
@@ -2897,7 +2914,7 @@ drwxr-xr-x@ 10 jessitron  staff    320 Apr  1 16:57 ..
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:51" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:51</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:52" href="#agent-ad79cef00e3496606:52" data-time="02:37:34" data-link="tool:toolu_011Cao6FW2RcsiRqPcTsTmeq">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:52" href="#agent-ad79cef00e3496606:52" data-time="02:37:34" data-link="tool:toolu_011Cao6FW2RcsiRqPcTsTmeq" data-sub-before="20831" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -2916,7 +2933,7 @@ drwxr-xr-x@ 10 jessitron  staff    320 Apr  1 16:57 ..
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:52" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:52</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_call" id="agent-ad79cef00e3496606:53" href="#agent-ad79cef00e3496606:53" data-time="02:37:35" data-link="tool:toolu_01KamSL7VniiNRGGeFsQxGFw">
+      <a class="card k-tool_call" id="agent-ad79cef00e3496606:53" href="#agent-ad79cef00e3496606:53" data-time="02:37:35" data-link="tool:toolu_01KamSL7VniiNRGGeFsQxGFw" data-sub-before="20831" data-sub-mine="0">
         <div class="gutter">
           <span class="kind deco">Tool Call</span>
           <span class="who">Explore</span>
@@ -2935,7 +2952,7 @@ drwxr-xr-x@ 10 jessitron  staff    320 Apr  1 16:57 ..
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:53" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:53</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:54" href="#agent-ad79cef00e3496606:54" data-time="02:37:35" data-link="tool:toolu_011Cao6FW2RcsiRqPcTsTmeq">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:54" href="#agent-ad79cef00e3496606:54" data-time="02:37:35" data-link="tool:toolu_011Cao6FW2RcsiRqPcTsTmeq" data-sub-before="20831" data-sub-mine="197">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -2957,7 +2974,7 @@ drwxr-xr-x@ 10 jessitron  staff    320 Apr  1 16:57 ..
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:54" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:54</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-tool_result" id="agent-ad79cef00e3496606:55" href="#agent-ad79cef00e3496606:55" data-time="02:37:35" data-link="tool:toolu_01KamSL7VniiNRGGeFsQxGFw">
+      <a class="card k-tool_result" id="agent-ad79cef00e3496606:55" href="#agent-ad79cef00e3496606:55" data-time="02:37:35" data-link="tool:toolu_01KamSL7VniiNRGGeFsQxGFw" data-sub-before="21028" data-sub-mine="322">
         <div class="gutter">
           <span class="kind deco">Tool Result</span>
           <span class="who">system</span>
@@ -2982,7 +2999,7 @@ drwxr-xr-x@ 10 jessitron  staff    320 Apr  1 16:57 ..
 <div class="d-footer"><button type="button" class="copy-ref" data-copy="agent-ad79cef00e3496606:55" title="Copy event id to clipboard"><code>agent-ad79cef00e3496606:55</code><span class="copy-hint">copy</span></button></div></template>
       </a>
 
-      <a class="card k-assistant" id="agent-ad79cef00e3496606:56" href="#agent-ad79cef00e3496606:56" data-time="02:37:50">
+      <a class="card k-assistant" id="agent-ad79cef00e3496606:56" href="#agent-ad79cef00e3496606:56" data-time="02:37:50" data-sub-before="21350" data-sub-mine="1441">
         <div class="gutter">
           <span class="kind deco">Assistant</span>
           <span class="who">Explore</span>

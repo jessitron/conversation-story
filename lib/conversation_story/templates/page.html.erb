@@ -40,10 +40,27 @@
        still ahead. v1: main conversation only, no subagent bars yet. -->
   <aside class="context-map" id="context-map" data-ctx-total="<%= ctx_total %>" aria-hidden="true">
     <div class="cm-value" id="cm-value"></div>
-    <div class="cm-bar">
+    <div class="cm-bar" id="cm-bar">
       <div class="cm-seg cm-prior" id="cm-prior"></div>
       <div class="cm-seg cm-current" id="cm-current"></div>
       <div class="cm-seg cm-future" id="cm-future"></div>
+    </div>
+  </aside>
+
+  <!-- Subagent bar: appears only while the selection is a subagent card or
+       something inside one (TODO.md: context-map-sidebar, "Subagent bars").
+       Same scale as the main bar (both read against data-ctx-total above),
+       positioned via a top spacer at the height the subagent started at,
+       unless its own context is bigger than the whole conversation's, in
+       which case it fills the full height on its own scale instead. See
+       assets/story.js's updateSubagentMap. -->
+  <aside class="context-map sub" id="context-map-sub" aria-hidden="true">
+    <div class="cm-value" id="cm-value-sub"></div>
+    <div class="cm-bar" id="cm-bar-sub">
+      <div class="cm-seg cm-spacer" id="cm-spacer-sub"></div>
+      <div class="cm-seg cm-prior" id="cm-prior-sub"></div>
+      <div class="cm-seg cm-current" id="cm-current-sub"></div>
+      <div class="cm-seg cm-future" id="cm-future-sub"></div>
     </div>
   </aside>
 

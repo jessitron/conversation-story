@@ -31,21 +31,44 @@ const DEFAULT_CARD = document.querySelector('.card.k-assistant');  // so the pag
    v1: main conversation only. */
 const contextMap = document.getElementById('context-map');
 const cmValue    = document.getElementById('cm-value');
+const cmBar      = document.getElementById('cm-bar');
 const cmPrior    = document.getElementById('cm-prior');
 const cmCurrent  = document.getElementById('cm-current');
 const cmFuture   = document.getElementById('cm-future');
 const CTX_TOTAL  = parseInt(contextMap.dataset.ctxTotal || '0', 10);
 
+/* The .subactions block a card's OWN subagent-economy numbers (data-sub-*)
+   are scoped to: that block itself if `card` IS a subagent call (its
+   subactions is the very next sibling — see renderer.rb's cards_for), else
+   the nearest enclosing one (closest() finds the INNERMOST wrapper even for
+   a subagent-in-a-subagent, since an inner .subactions is a DOM descendant
+   of its outer one). */
+function subactionsFor(card) {
+  if (card.classList.contains('k-subagent')) {
+    const wrap = card.nextElementSibling;
+    return (wrap && wrap.classList.contains('subactions')) ? wrap : null;
+  }
+  return card.closest('.subactions');
+}
+
 /* A card inside a subagent's .subactions block carries no ctx-* of its own
    (that conversation is a separate token economy — see renderer.rb's
-   ctx_attr) — walk up to the `subagent` card that owns the block it's in,
-   which does. Nested subagents-in-subagents resolve the same way, one level
-   of .subactions at a time. */
+   ctx_attr) — walk up to the (possibly deeply nested) `subagent` call card
+   that owns the block it's in, which does. From there, prefer that
+   subagent's RESULT card over the call card itself: while the subagent is
+   working the main conversation hasn't resumed, so "where are we" on the
+   main bar means as of the point control comes back, not the moment it was
+   handed off (also covers selecting the call card directly). */
 function contextOwnerFor(card) {
   let c = card;
   while (c && c.dataset.ctxBefore === undefined) {
     const wrap = c.closest('.subactions');
     c = wrap ? wrap.previousElementSibling : null;
+  }
+  if (c && c.classList.contains('k-subagent')) {
+    const wrap = c.nextElementSibling;
+    const result = (wrap && wrap.classList.contains('subactions')) ? wrap.nextElementSibling : null;
+    if (result && result.dataset.ctxBefore !== undefined) return result;
   }
   return c;
 }
@@ -75,6 +98,65 @@ function clearContextMap() {
   cmFuture.style.flexGrow = CTX_TOTAL;
   contextMap.style.setProperty('--kind', 'var(--line-strong)');
   cmValue.textContent = '';
+}
+
+/* ---- subagent bar ("Subagent bars", TODO.md: context-map-sidebar) ----
+   A second bar next to the main one, shown only while the selection is a
+   subagent card or something inside one — v1 shows the DIRECTLY enclosing
+   subagent only (a header toggle to line up every subagent's bar at once is
+   still open). Same scale as the main bar: rather than flex-grow (relative
+   within one container, not comparable across two independent ones), its
+   segments get explicit pixel heights computed from the main bar's actual
+   rendered height, so a token is the same number of pixels in both. */
+const contextMapSub = document.getElementById('context-map-sub');
+const cmValueSub    = document.getElementById('cm-value-sub');
+const cmSpacerSub   = document.getElementById('cm-spacer-sub');
+const cmPriorSub    = document.getElementById('cm-prior-sub');
+const cmCurrentSub  = document.getElementById('cm-current-sub');
+const cmFutureSub   = document.getElementById('cm-future-sub');
+
+function updateSubagentMap(card) {
+  const wrap = subactionsFor(card);
+  if (!wrap) { hideSubagentMap(); return; }
+
+  const total = parseInt(wrap.dataset.subCtxTotal || '0', 10);
+  const callCard   = wrap.previousElementSibling;
+  const isCallCard = card === callCard;
+  const before = isCallCard ? 0 : parseInt(card.dataset.subBefore || '0', 10);
+  const mine   = isCallCard ? 0 : parseInt(card.dataset.subMine || '0', 10);
+  const future = Math.max(0, total - before - mine);
+
+  const H = cmBar.getBoundingClientRect().height || 0;
+  // Same scale as the main bar, UNLESS this subagent's own peak context is
+  // bigger than the whole conversation's — then that scale would run off
+  // the page, so fall back to the subagent's own full-height scale instead.
+  const sameScale = CTX_TOTAL > 0 && total <= CTX_TOTAL;
+  const pxPer = H / (sameScale ? CTX_TOTAL : (total || 1));
+
+  let offsetPx = 0;
+  if (sameScale) {
+    const mainBefore = callCard ? parseInt(callCard.dataset.ctxBefore || '0', 10) : 0;
+    const contentPx = (before + mine + future) * pxPer;
+    const labelPx = cmValueSub.getBoundingClientRect().height || 0;
+    // "starts at the height of the subagent invocation on the main bar,
+    // unless that would push its summary off the bottom of the page, in
+    // which case it moves up to fit"
+    offsetPx = Math.max(0, Math.min(mainBefore * pxPer, H - contentPx - labelPx));
+  }
+
+  cmSpacerSub.style.height  = offsetPx + 'px';
+  cmPriorSub.style.height   = (before * pxPer) + 'px';
+  cmCurrentSub.style.height = Math.max(mine * pxPer, mine > 0 ? 4 : 0) + 'px';
+  cmFutureSub.style.height  = (future * pxPer) + 'px';
+
+  contextMapSub.style.setProperty('--kind', getComputedStyle(card).getPropertyValue('--kind'));
+  cmValueSub.textContent = fmtTokens(before + mine) + ' / ' + fmtTokens(total);
+  contextMapSub.classList.add('visible');
+}
+
+function hideSubagentMap() {
+  contextMapSub.classList.remove('visible');
+  cmValueSub.textContent = '';
 }
 
 /* the empty-state markup that ships in the sidebar; restored on clear */
@@ -118,6 +200,7 @@ function selectCard(card) {
   dBody.scrollTop = 0;
   updateRelated(card);
   updateContextMap(card);
+  updateSubagentMap(card);
   showSummary(card);
   showBeatEditor(card);      // prepended after showSummary, so it sits above it
 }
@@ -171,6 +254,7 @@ function clearSelection() {
   sidebar.style.setProperty('--kind', 'var(--line-strong)');
   dBody.innerHTML = EMPTY_HTML;
   clearContextMap();
+  hideSubagentMap();
 }
 
 /* Expand every collapsed subagent block this card is buried in (see the

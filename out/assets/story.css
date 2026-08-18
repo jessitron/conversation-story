@@ -543,6 +543,23 @@ aside.context-map {
 .context-map .cm-current { background: var(--kind, var(--gold)); min-height: 6px; }
 .context-map .cm-future  { background: transparent; }
 
+/* The subagent bar (TODO.md: context-map-sidebar, "Subagent bars"). Hidden
+   until assets/story.js finds a subagent-scoped selection; unlike the main
+   bar's segments (sized by flex-grow, relative to each other) this one's
+   segments get explicit pixel heights from JS, because "same scale as the
+   main bar" means literally the same px-per-token — a relationship flex-grow
+   can't express across two independent flex containers. The stack is plain
+   block flow, not flex: children with heights that sum to less than the
+   container just leave the remainder showing the bar's own background,
+   which is exactly the "unused extra space" the spec calls for, for free.
+   cm-spacer is the top offset standing in for "before the subagent started" —
+   how far down the main bar the subagent's invocation sits. */
+aside.context-map.sub { display: none; }
+aside.context-map.sub.visible { display: flex; }
+.context-map .cm-bar#cm-bar-sub { display: block; }
+.context-map .cm-bar#cm-bar-sub .cm-seg { flex: none; }
+.context-map .cm-spacer  { background: transparent; }
+
 /* ============================================================
    Sidebar (detail) — collapsible + drag-resizable
    ============================================================ */
