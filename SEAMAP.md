@@ -28,8 +28,10 @@ groundwork for its context-bloat signal — per-card context attribution and
 "dark matter" (`notes/2026-08-11-session-22-dark-matter-and-underspecified-events.md`).
 Session 23 shipped `context-map-sidebar` v1 (TODO.md, Next): a "where are we"
 bar on the left, sized from that per-card accounting — main conversation
-only, jumps on selection. Still open on that item: subagent bars, narrate-mode
-animation, and a header toggle to show all subagent bars at once.
+only, jumps on selection. Session 24 added subagent bars: a second bar next
+to the main one, same scale, for the directly-enclosing subagent. Still open
+on that item: a header toggle to show every subagent's bar at once, and
+narrate-mode animation.
 `underspecified-events-display` (TODO.md, Backlog) still needs an unobtrusive
 way to show the dark-matter numbers session 22 computed but didn't style.
 

@@ -21,19 +21,30 @@ whole system for now.
     narrate mode, pressing n/arrow should animate it smoothly, showing context
     growing as the conversation lengthens — not done yet.
 
-  Subagents get their own bar to the right of the main one. Selecting a
-  subagent card (or any event inside it) makes the main bar show context as
-  of the subagent's result card, and a second bar appears next to it for the
-  subagent's own context: before the subagent started, context added before
-  the current card, the current card's contribution, future context, and
-  unused extra space. The subagent's bar uses the *same scale* as the main
-  conversation, unless the subagent's context is larger, in which case it
-  scales to screen height. Its "context added before" segment starts at the
-  height of the subagent invocation on the main bar, unless that would push
-  its summary off the bottom of the page, in which case it moves up to fit.
+  **Subagent bars: done for the directly-enclosing subagent** (session 24).
+  Selecting a subagent card (or any event inside it) makes the main bar show
+  context as of the subagent's result card (not the call — the main
+  conversation hasn't resumed until then), and a second bar appears next to
+  it for the subagent's own context: before the subagent started, context
+  added before the current card, the current card's contribution, future
+  context, and unused extra space. Same scale as the main conversation
+  unless the subagent's own peak context is larger, in which case it scales
+  to its own full height instead. Its "context added before" segment starts
+  at the height of the subagent invocation on the main bar, clamped so it
+  never pushes its own value label off the bottom of the page.
+  `Renderer#build_subagent_axis!`/`#sub_ctx_attr` do the per-subagent running
+  total (keyed by the subagent card's ref); `story.js`'s `updateSubagentMap`
+  does the positioning math in pixels, not flex-grow, because "same scale"
+  means literally the same px-per-token across two independent flex
+  containers, which flex-grow (relative within one container) can't express.
+  Still open:
 
-  Also want a header option to show all subagent context bars at once, lined
-  up in parallel after the main one — to see where the tokens are going.
+  - A header option to show all subagent context bars at once, lined up in
+    parallel after the main one — to see where the tokens are going. Right
+    now only the ONE subagent directly enclosing the current selection gets
+    a bar.
+  - In narrate mode, pressing n/arrow should animate the bar(s) smoothly,
+    showing context growing as the conversation lengthens — not done yet.
 
   Later: an agent at import-time could classify parts of the conversation —
   overhead of dealing with worktrees, dealing with errors, consulting
