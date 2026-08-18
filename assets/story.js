@@ -88,7 +88,11 @@ function updateContextMap(card) {
   cmPrior.style.flexGrow = before;
   cmCurrent.style.flexGrow = mine;
   cmFuture.style.flexGrow = future;
-  contextMap.style.setProperty('--kind', getComputedStyle(card).getPropertyValue('--kind'));
+  // Color by the OWNER's kind, not the selected card's — while browsing
+  // inside a subagent, `card` can be any kind (tool_result, thinking...) but
+  // the main bar's current segment is always the subagent-as-a-whole's
+  // contribution, so its color shouldn't flicker with every nested card.
+  contextMap.style.setProperty('--kind', owner ? getComputedStyle(owner).getPropertyValue('--kind') : '');
   cmValue.textContent = fmtTokens(before + mine) + ' / ' + fmtTokens(CTX_TOTAL);
 }
 
