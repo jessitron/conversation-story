@@ -1,0 +1,108 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# importer — the FOURTH program (session 25, decision 1), next to bin/parse,
+# bin/render and bin/site-index. A local-only authoring tool: it lists Jess's
+# recent Claude sessions as a browser page so choosing a golden fixture stops
+# being a JSONL grep.
+#
+#   bin/importer [-p PORT]        # default 8081, bound to localhost only
+#   PORT=9001 rake importer
+#
+# DELIBERATELY NOT A ROUTE ON bin/serve. What bin/serve serves is the published
+# GitHub Pages artifact; the importer must never ship. Different program,
+# different port (8081, so both run at once), and it does NOT serve out/ —
+# that's the leak that would drag it back into being a second bin/serve
+# (decision 14).
+#
+# TICKET 03 IS READ-ONLY. The page lists and describes sessions; it does not
+# import one. The name field, the Import/Re-snapshot button, the shell-out to
+# bin/parse + bin/render and the live flag are tickets 04 and 05.
+#
+# Everything the page needs is on disk under .importer/ (gitignored): ticket
+# 02's per-session scan cache and this program's generated index.html. Nothing
+# derived from Jess's private conversation logs is ever written anywhere else in
+# this repo — it is public.
+
+# Same one non-stdlib dependency bin/serve has, and the same reason: Ruby 4.0
+# unbundled webrick. bin/parse, bin/render, bin/site-index and the tests stay
+# stdlib-only; an authoring server is allowed a gem.
+begin
+  require "webrick"
+rescue LoadError
+  abort <<~MSG
+    bin/importer needs the webrick gem (Ruby 4.0 unbundled it):
+
+        bundle install
+
+    Only the servers need it — parse, render and test are stdlib-only.
+  MSG
+end
+
+require_relative "../lib/conversation_story/importer_page"
+
+REPO_ROOT = File.expand_path("..", __dir__)
+Page = ConversationStory::ImporterPage
+
+port = Integer(ENV.fetch("PORT", 8081))
+args = ARGV.dup
+until args.empty?
+  arg = args.shift
+  case arg
+  when "-p", "--port" then port = Integer(args.shift)
+  when "-h", "--help" then warn "usage: importer [-p PORT]"; exit 0
+  else warn "importer: unknown argument #{arg.inspect}"; exit 1
+  end
+end
+
+# BindAddress "localhost", not "127.0.0.1" — the trap bin/serve documents and
+# session 11 paid for: with the v4 address alone a stray server bound to the
+# wildcard answers ::1 first (localhost resolves to ::1 ahead of 127.0.0.1) and
+# the browser silently talks to that one instead. Binding both means a port
+# clash raises EADDRINUSE here, loudly.
+begin
+  server = WEBrick::HTTPServer.new(
+    Port: port,
+    BindAddress: "localhost",
+    AccessLog: [],
+    Logger: WEBrick::Log.new($stderr, WEBrick::Log::WARN),
+  )
+rescue Errno::EADDRINUSE
+  abort "port #{port} is already in use — another server is running.\n" \
+        "  find it:  lsof -nP -iTCP:#{port} -sTCP:LISTEN\n" \
+        "  or pick another port:  PORT=9001 rake importer"
+end
+
+# The page's own CSS and logo. Only these two directories are exposed — not the
+# repo root, and not out/ (that's bin/serve's job).
+%w[assets images].each do |dir|
+  server.mount("/#{dir}", WEBrick::HTTPServlet::FileHandler,
+               File.join(REPO_ROOT, dir), FancyIndexing: false)
+end
+
+# Rebuilt on every load rather than once at boot, so a reload picks up sessions
+# that have happened since — cheap, because an unchanged log comes back from the
+# scan cache without being reopened.
+server.mount_proc("/") do |req, res|
+  if req.path != "/"
+    res.status = 404
+    res["Content-Type"] = "text/plain"
+    next res.body = "importer: nothing at #{req.path} — the listing is at /"
+  end
+
+  started = Time.now
+  page = Page.for_recent_sessions
+  path = page.write
+  res["Content-Type"] = "text/html; charset=utf-8"
+  res.body = File.read(path)
+  puts format("  listed %d sessions in %d projects  (%d cached, %d scanned, %.2fs)",
+              page.scans.size, page.groups.size,
+              page.cache_hits, page.cache_misses, Time.now - started)
+end
+
+%w[INT TERM].each { |sig| trap(sig) { server.shutdown } }
+
+$stdout.sync = true
+puts "Importer at http://localhost:#{port}  (local only — Ctrl-C to stop)"
+puts "  page + scan cache -> #{Page::OUT_DIR}"
+server.start

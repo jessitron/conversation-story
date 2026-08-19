@@ -86,11 +86,25 @@ this change are dead links; nothing aliases them.) Two things follow:
   log. Only the `unknown` fallback kind keeps `raw`, so
   unrecognized record types aren't silently lost (a README constraint).
 - **`examples/` are golden fixtures.** Test the parser against every conversation log in there.
-  **`bin/grab-example <session-id> <name>`** brings a new one in (`--list` shows
-  this repo's sessions with each one's first prompt, so you can recognize them);
-  it copies the main log plus any `subagents/` sidecars. Grabbing the session
-  you're in copies a *live* file, so the fixture stops mid-session — re-run to
-  re-snapshot. Every example is ~1–7 MB and its built page is committed too, so
+  **There are two doors in.** `bin/importer` (`rake importer`, port 8081,
+  `PORT=`-overridable) is the BROWSER one and the place to *choose* a fixture: a
+  fourth program, local-only, that lists the ~50 most recent sessions from both
+  config dirs and all projects — taken globally by mtime, then grouped by
+  project, projects ordered by their newest session — as cards carrying the AI
+  title, the first plain-string prompt, the recap **in full**, turns, subagents,
+  max context, size and date. It serves neither `out/` nor anything published;
+  its page and `SessionScan`'s per-session cache live in the gitignored
+  `.importer/`, because everything derived from Jess's conversation logs is
+  private and this repo is public. As of session 25's ticket 03 it is READ-ONLY —
+  the name field and Import/Re-snapshot button are tickets 04/05 — so importing
+  is still `bin/grab-example`'s job. Deliberately no publishing warning on the
+  page (Jess's call, session 25 decision 10); don't add one.
+  **`bin/grab-example <session-id> <name>`** is the CLI door and the one that
+  copies (`--list` shows the newest 50 sessions across both config dirs with each
+  one's first prompt); it copies the main log plus any `subagents/` sidecars.
+  Both doors go through `ConversationStory::Import` so they can't drift. Grabbing
+  the session you're in copies a *live* file, so the fixture stops mid-session —
+  re-run to re-snapshot. Every example is ~1–7 MB and its built page is committed too, so
   they're not free. Tests glob `examples/*.jsonl`, so a new log runs the whole
   golden suite immediately — expect newer logs to carry record types the older
   fixtures never had.
