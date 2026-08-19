@@ -144,6 +144,15 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   the deliberately-kept-visible set (`queued_command`, `task_reminder`, and
   `queue_operation` **enqueue**s) live in `parser.rb`'s `HIDDEN_*` constants and
   are explained in `notes/2026-07-20-session-6-hidden-events.md`.
+  Two newer record types joined the hidden set: **`agent-name`** maps to the
+  existing `ai_title` kind (in the one example that has them, all 5 records
+  carry the identical string that session's `aiTitle` does; across 2290 in
+  `~/.claude-work/projects` they hold only `type`/`agentName`/`sessionId`, no
+  timestamp — it is the sidebar label being rewritten, not a subagent name),
+  and **`agent-setting`** gets its own always-hidden `agent_setting` kind (6 in
+  that example, 3028 in the corpus, and the value is the literal `"claude"` in
+  every one — zero variance, so it records no change at all). Hiding them took
+  4b0be952… from 75 visible to 64; `event_count` stays 109.
 - **The queue detour shows on the message, not on a marker card.** Only the
   `enqueue` gets a card (it carries the queued payload). The bare
   `dequeue`/`remove` markers are hidden — they have no content of their own — and
