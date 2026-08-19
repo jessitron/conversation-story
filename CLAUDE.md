@@ -427,7 +427,9 @@ which remain this repo's own tracking system. See `docs/agents/issue-tracker.md`
 ### Triage labels
 
 Default five: needs-triage, needs-info, ready-for-agent, ready-for-human,
-wontfix. See `docs/agents/triage-labels.md`.
+wontfix — plus `done`, which we added because the five canonical roles are all
+*open* states and a markdown tracker has no close of its own.
+See `docs/agents/triage-labels.md`.
 
 ### Domain docs
 
