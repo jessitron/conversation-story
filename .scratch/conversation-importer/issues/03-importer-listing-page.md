@@ -40,7 +40,7 @@ The generated HTML lands in the same **gitignored directory** as the scan cache.
       both loopback families answer
 - [x] The page shows the ~50 most recent sessions, taken globally by mtime, then
       grouped by project, projects ordered by their newest session — measured:
-      50 sessions in 7 projects, 20 from `.claude-work` + 30 from
+      50 sessions in 5 projects (7 before label reconciliation), 20 from `.claude-work` + 30 from
       `.claude-personal`, of 426 total
 - [x] Each card shows title, first prompt, full recap, turns, subagents, max
       context, size and date
@@ -55,7 +55,7 @@ The generated HTML lands in the same **gitignored directory** as the scan cache.
 - [~] The `Rakefile`'s `*_SRC` lists name any new `lib/` files — **deviation**,
       the same one tickets 01 and 02 made: the new files are named in
       `IMPORT_SRC`, not in `PARSE_SRC`/`RENDER_SRC`/`SITE_SRC`; see Comments
-- [x] `rake test` passes — 252 runs, 31251 assertions, 0 failures (235 before)
+- [x] `rake test` passes — 256 runs, 31259 assertions, 0 failures (235 before)
 
 ## Comments
 
@@ -77,10 +77,17 @@ Three findings, all from building the page against real data:
    newest logs are stub sessions of 2–5 bookkeeping lines with no `user` and no
    `assistant` record, so no branch of the scan ever saw a `cwd` — even though
    `system` / `mode` / `last-prompt` records carry one. `cwd` got its own cheap
-   branch. 3 of the 4 (pure `ai-title` + `agent-name` stubs) have no `cwd`
-   anywhere, so the scan now also reports `project_source` and the page labels
-   such a group *"guessed from directory name"* instead of letting it read as a
-   second project.
+   branch, and the scan now reports `project_source`.
+   Three of the four have no `cwd` anywhere, and **labelling those groups
+   "guessed" was not enough** — the page still showed one project twice. The fix
+   is `ImporterPage#reconcile`: the *decode* is lossy but the **encode is exact**,
+   so a guessed label that satisfies `cwd_label.tr("/", "-")` for a label this
+   page already scanned adopts that spelling and joins its group (dots fold too,
+   so a worktree's `/.claude/` doubled dash round-trips). Unmatched and
+   *ambiguous* labels (`a/b-c` and `a-b/c` encode alike) keep their own group and
+   the note. Real corpus: **7 project headings became 5**, both duplicate pairs
+   gone, zero "guessed" notes, still 50 cards. It lives on the page rather than in
+   the scan because the scan sees one log at a time and caches per log.
 3. **The scan cache had no way to notice the SCANNER changed.** Its key is
    path + mtime + size, so adding a field left every cached entry without it and
    the page kept drawing the old shape until the cache dir was deleted by hand.
