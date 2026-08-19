@@ -46,21 +46,53 @@ directory** — private derived data must never land in a public repo.
 
 **Blocked by:** None — can start immediately (independent of 01).
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `ConversationStory::SessionScan` scans one log in a single streaming pass
+- [x] `ConversationStory::SessionScan` scans one log in a single streaming pass
       and returns every field listed above
-- [ ] A log with no `away_summary` record scans successfully with an absent recap
-- [ ] The recap's `"(disable recaps in /config)"` tail is stripped
-- [ ] `turns` counts distinct `message.id`, not assistant records — asserted on a
+- [x] A log with no `away_summary` record scans successfully with an absent recap
+- [x] The recap's `"(disable recaps in /config)"` tail is stripped
+- [x] `turns` counts distinct `message.id`, not assistant records — asserted on a
       fixture where the two numbers differ
-- [ ] Lines are pre-filtered with a cheap string check before `JSON.parse`, and
+- [x] Lines are pre-filtered with a cheap string check before `JSON.parse`, and
       memory stays flat across a multi-hundred-MB log
-- [ ] Each session's result is written to the cache as it completes, not batched
-- [ ] The cache hits on an unchanged log (no reopen) and misses when mtime or
+- [x] Each session's result is written to the cache as it completes, not batched
+- [x] The cache hits on an unchanged log (no reopen) and misses when mtime or
       size changed
-- [ ] The cache directory is in `.gitignore`
-- [ ] Minitest covers `SessionScan` against **every** `examples/*.jsonl` golden
+- [x] The cache directory is in `.gitignore`
+- [x] Minitest covers `SessionScan` against **every** `examples/*.jsonl` golden
       fixture, the same treatment `Parser` gets
-- [ ] The `Rakefile`'s `*_SRC` lists name the new `lib/` file
-- [ ] `rake test` passes
+- [~] The `Rakefile`'s `*_SRC` lists name the new `lib/` file — **deviation**: a comment at the `*_SRC` definitions names it and says why it is deliberately not a member (it produces nothing in `out/`); see Comments
+- [x] `rake test` passes
+
+## Comments
+
+Shipped, with cache in gitignored `.importer/`. Measured on the real corpus:
+**426 logs / 381 MB cold in 1.26 s at 49 MB peak RSS** (flat — it does not grow
+with file size), warm pass **0.01 s / 426 hits**. The no-reopen guarantee is
+proved by `chmod 000` on the biggest log followed by a fetch that still answers.
+53 new tests, golden coverage over every fixture. (The 621 MB figure in the spec
+includes sidecars, which the scan never opens.)
+
+Four corrections to the spec, all from measurement — **ticket 03 needs these**:
+
+1. **The recap is not singular.** Fixtures carry **2–9** `away_summary` records,
+   one per time Jess came back. The scan takes the **last**, same reasoning as the
+   title. A card therefore shows the most recent recap.
+2. **`subagents` counts `*.jsonl`, not files.** Each subagent leaves a `.jsonl`
+   *and* a `.meta.json`, so "number of files in `subagents/`" doubles it. The
+   fixtures are also inconsistent: `mtg-tabletop-plan` has 10 `.jsonl` and no meta
+   files at all. Counting logs is right for both.
+3. **`project` comes from `cwd`**, which every conversation record carries, shown
+   relative to `$HOME` (`code/jessitron/mtg-deck-shuffler`); dir-name decoding is
+   only a fallback. Side effect: golden fixtures report their *original* projects,
+   not `examples/`. This supersedes ticket 01's display-only `Session#project` —
+   ticket 03 should settle on one.
+4. **The `*_SRC` checkbox was not followed** — `session_scan.rb` produces nothing
+   in `out/`, so listing it there would dirty the committed `out/` on every
+   scanner change for zero output difference. A comment at the `*_SRC` definitions
+   names the file and says why it's absent. Same conclusion as ticket 01.
+
+Backing the memory rule: every line over 100 KB in the whole fixture corpus (11
+lines, up to 782 KB) is a `type: "user"` tool-result record and none carries
+`usage`, so the assistant pre-filter can never match a fat line.
