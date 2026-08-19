@@ -6,3 +6,9 @@ settings.local.json
 # to be tracked. A repo .gitignore outranks core.excludesFile, so this wins.
 !.tool-versions
 .claude/worktrees/
+
+# The importer's workspace: per-session scan results (SessionScan::Cache) and
+# the listing page it generates. Both are derived from Jess's own conversation
+# logs — private data that must never land in this public repo — and both are
+# rebuildable from the logs, so there's nothing here worth tracking.
+.importer/

@@ -29,6 +29,14 @@ RENDER_SRC = FileList["bin/render", "lib/conversation_story/renderer.rb",
                       "assets/**/*", "images/**/*"]
 SITE_SRC   = FileList["bin/site-index", "lib/conversation_story/renderer.rb"]
 
+# DELIBERATELY NOT LISTED: lib/conversation_story/session_scan.rb. These lists
+# exist so a page is rebuilt when the code that PRODUCED it changes, and the
+# session scanner produces nothing in out/ — it reads Jess's ~/.claude*/projects
+# logs for the importer's listing page. Adding it here would re-parse and
+# re-render every example (and dirty the committed out/) every time the scanner
+# is touched, for no change in output. The importer's own files belong to
+# whatever task runs the importer, not to build.
+
 SITE_INDEX = "out/index.html"
 
 def name_for(log)  = File.basename(log, ".jsonl")
