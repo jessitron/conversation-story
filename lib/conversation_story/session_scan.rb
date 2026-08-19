@@ -4,6 +4,8 @@ require "digest"
 require "fileutils"
 require "json"
 
+require_relative "import"
+
 module ConversationStory
   # Answers "what IS this session?" about one Claude session log — the handful of
   # facts needed to judge whether a conversation is worth turning into a story
@@ -206,26 +208,12 @@ module ConversationStory
       Dir.glob(File.join(dir, "*.jsonl")).size
     end
 
-    # Which project this session came from, for grouping the listing.
-    #
-    # Preferred source is the log's own `cwd` — every conversation record
-    # carries it, so it costs nothing and is exact. The directory name is the
-    # fallback, and it can only ever be a best-effort label: the harness encodes
-    # a path by replacing separators with `-`, which is lossy, and
-    # `-Users-jess-code-mtg-deck-shuffler` gives no way to tell a separator from
-    # a hyphen in `mtg-deck-shuffler`.
-    #
-    # Shown relative to home when it's under home, since every one of Jess's is.
-    def project_label(cwd)
-      raw = cwd || decode_project_dir(File.basename(File.dirname(@path)))
-      home = Dir.home
-      raw.start_with?("#{home}/") ? raw.delete_prefix("#{home}/") : raw
-    end
-
-    def decode_project_dir(dir)
-      encoded_home = Dir.home.tr("/", "-")
-      dir.delete_prefix(encoded_home).delete_prefix("-")
-    end
+    # Which project this session came from, for grouping the listing. The rule
+    # (prefer the log's own `cwd`, fall back to decoding the directory name)
+    # lives in Import.project_label — ONE implementation, shared with
+    # Import::Session#project, which has no `cwd` to offer it. Ticket 01 and this
+    # scan each had their own version until session 25's ticket 03 settled it.
+    def project_label(cwd) = Import.project_label(cwd: cwd, log_path: @path)
 
     # Per-session scan results on disk, keyed by path + mtime + size.
     #
