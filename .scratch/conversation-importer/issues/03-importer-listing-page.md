@@ -33,18 +33,62 @@ The generated HTML lands in the same **gitignored directory** as the scan cache.
 
 **Blocked by:** 02 — `SessionScan`.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `bin/importer` starts a server on 8081 and serves a listing page; `PORT=`
-      overrides the port
-- [ ] The page shows the ~50 most recent sessions, taken globally by mtime, then
-      grouped by project, projects ordered by their newest session
-- [ ] Each card shows title, first prompt, full recap, turns, subagents, max
+- [x] `bin/importer` starts a server on 8081 and serves a listing page; `PORT=`
+      overrides the port (and `-p`, like `bin/serve`), bound to `localhost` so
+      both loopback families answer
+- [x] The page shows the ~50 most recent sessions, taken globally by mtime, then
+      grouped by project, projects ordered by their newest session — measured:
+      50 sessions in 7 projects, 20 from `.claude-work` + 30 from
+      `.claude-personal`, of 426 total
+- [x] Each card shows title, first prompt, full recap, turns, subagents, max
       context, size and date
-- [ ] A session with no recap renders a sensible card rather than a broken one
-- [ ] `assets/importer.css` is loaded after `story.css` and reuses its tokens
-- [ ] Generated HTML is written into the gitignored directory alongside the cache
-- [ ] A second page load is fast — unchanged logs come from the cache
-- [ ] No publishing warning appears on the page
-- [ ] The `Rakefile`'s `*_SRC` lists name any new `lib/` files
-- [ ] `rake test` passes
+- [x] A session with no recap renders a sensible card rather than a broken one
+      (and so do a session with no title and one with no plain-text prompt)
+- [x] `assets/importer.css` is loaded after `story.css` and reuses its tokens
+- [x] Generated HTML is written into the gitignored directory alongside the cache
+      (`.importer/index.html`, next to `.importer/scans/`)
+- [x] A second page load is fast — unchanged logs come from the cache: cold
+      0.13 s (0 cached / 50 scanned), warm 0.007 s (50 cached / 0 scanned)
+- [x] No publishing warning appears on the page (a test asserts it stays out)
+- [~] The `Rakefile`'s `*_SRC` lists name any new `lib/` files — **deviation**,
+      the same one tickets 01 and 02 made: the new files are named in
+      `IMPORT_SRC`, not in `PARSE_SRC`/`RENDER_SRC`/`SITE_SRC`; see Comments
+- [x] `rake test` passes — 252 runs, 31251 assertions, 0 failures (235 before)
+
+## Comments
+
+Shipped: `bin/importer` + `ConversationStory::ImporterPage` +
+`assets/importer.css`, read-only as scoped. Looked at the page in headless
+Chrome: navy header with the logo, gold-accented paper cards, the recap in the
+`.d-markdown` prose box, and the same three-column stat readout the story header
+and the landing page's cards use.
+
+Three findings, all from building the page against real data:
+
+1. **The `project` duplication is settled in `Import.project_label(cwd:,
+   log_path:)`** — one implementation, called by `SessionScan#project_label`
+   (which has the `cwd`) and by `Import::Session#project` (which doesn't, and is
+   now documented as the fallback-only path for callers that never open the log,
+   i.e. `grab-example --list`).
+2. **One project appeared TWICE** on the first real page: `code/jessitron/x` from
+   a `cwd` and `code-jessitron-x` from the directory-name fallback. 4 of the 50
+   newest logs are stub sessions of 2–5 bookkeeping lines with no `user` and no
+   `assistant` record, so no branch of the scan ever saw a `cwd` — even though
+   `system` / `mode` / `last-prompt` records carry one. `cwd` got its own cheap
+   branch. 3 of the 4 (pure `ai-title` + `agent-name` stubs) have no `cwd`
+   anywhere, so the scan now also reports `project_source` and the page labels
+   such a group *"guessed from directory name"* instead of letting it read as a
+   second project.
+3. **The scan cache had no way to notice the SCANNER changed.** Its key is
+   path + mtime + size, so adding a field left every cached entry without it and
+   the page kept drawing the old shape until the cache dir was deleted by hand.
+   `SessionScan::SCAN_VERSION` is now stored in each entry and checked on read; a
+   stale version is a miss. Tickets 04/05 must bump it if they change the scan
+   hash.
+
+Small extras the ticket didn't ask for, easy to undo: `rake importer`, a
+`412 B` size format (stub sessions rendered as "0 KB", which read as broken
+rather than tiny), and the session id shown in `.session-actions` — the shelf
+tickets 04/05 fill with the name field and the Import button.
