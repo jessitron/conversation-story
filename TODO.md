@@ -16,7 +16,6 @@ whole system for now.
   over fields session 22 already computed — no new estimation). Jumps
   instantly on selection; main conversation only. Remaining from the original
   spec, still open:
-
   - Usually the map jumps instantly on selection (no transition) — done. In
     narrate mode, pressing n/arrow should animate it smoothly, showing context
     growing as the conversation lengthens — not done yet.
@@ -38,7 +37,6 @@ whole system for now.
   means literally the same px-per-token across two independent flex
   containers, which flex-grow (relative within one container) can't express.
   Still open:
-
   - A header option to show all subagent context bars at once, lined up in
     parallel after the main one — to see where the tokens are going. Right
     now only the ONE subagent directly enclosing the current selection gets
@@ -53,15 +51,23 @@ whole system for now.
 
 ## Backlog
 
-- `design-feature-owner` A feature owner for the CSS — a designer invoked any
-  time the UI is updated  ← mountain: metawork
+- `conversation-importer` I want a local-only app that shows me the recent conversations in my claude logs. (both .claude-work and .claude-personal) It shows me a little summary - like the original user request maybe, and definitely the recap. It can tell me how many turns, how many subagents, and a max content length, something like that. Then it gives me a button to import the conversation, and that brings it into the examples directory, and gives it a name. There's probably a title in there somewhere.
+  **Design settled (session 25), not built** — fourteen decisions in
+  `notes/2026-08-18-session-25-conversation-importer-design.md`: standalone
+  `bin/importer` on 8081, ~50 recent sessions grouped by project across both
+  config dirs, streaming `SessionScan` behind a gitignored cache, copy logic
+  shared with `bin/grab-example` — which is **broken today**, reading the
+  empty `~/.claude/projects` instead of `~/.claude-work` / `~/.claude-personal`.
 
-- `model-name` Put the model name in every LLM-call-representing card  ← mountain: mount-complete
+- `design-feature-owner` A feature owner for the CSS — a designer invoked any
+  time the UI is updated ← mountain: metawork
+
+- `model-name` Put the model name in every LLM-call-representing card ← mountain: mount-complete
 - `notice-title-generation` Show `ai_title` events, and change the page title
-  as we scroll past them  ← mountain: mount-complete
+  as we scroll past them ← mountain: mount-complete
 - `attachment-content-types` Attachment subtypes carry real content
   (session 19) — `hook_additional_context`'s `content` array already renders,
-  and it's the *only* place the log reveals instructions the agent was
+  and it's the _only_ place the log reveals instructions the agent was
   operating under (system prompt and CLAUDE.md are never logged). See
   `notes/2026-07-28-session-19-what-the-log-cannot-tell-you.md`. Sibling
   subtypes are broken: `attachment_detail_text` only reads `prompt` and
@@ -78,10 +84,10 @@ whole system for now.
   - The hidden list is inverted on one pair: `skill_listing` is hidden despite
     8,185 chars of content, while `agent_listing_delta` is visible with
     nothing to show. Decide those two together.
-  ← mountain: mount-complete
+    ← mountain: mount-complete
 - `mode-changes-stream` Notice permission-mode changes and mark them in the
   conversation stream (each prompt already carries the mode it was sent in, a
-  `Mode` row in its detail pane)  ← mountain: mount-complete
+  `Mode` row in its detail pane) ← mountain: mount-complete
 
 - `subagent-collapse-memory` Remember which subagents are closed — they ship
   expanded and the caret is session-only state; a reload reopens everything
@@ -90,7 +96,7 @@ whole system for now.
   reveals a subagent's whole story, 70 cards at `BEAT_MS` (80ms) ≈ 6 seconds.
   Deliberate (the "look how much work" moment), but if it drags mid-talk, cap
   the beat's total duration or ease the interval down as the run gets longer
-  — not hiding cards  ← mountain: mount-complete
+  — not hiding cards ← mountain: mount-complete
 - `subagent-tokens-header` A subagent's own tokens have nowhere to live in the
   header — the page's Tokens stat is the parent's; a subagent's 2.05M shows
   only in its card's Fields. The header stat SHOULD include subagent tokens
@@ -98,6 +104,7 @@ whole system for now.
 
 - `token-count-rearrange` Rearrange the token count sections:
   - In an assistant card:
+
     ```
     Tokens
     ------
@@ -109,6 +116,7 @@ whole system for now.
 
       Output tokens:   233
     ```
+
   - In a tool result card, one line at the top instead of a whole section:
     ```
     Tool Result -- [tool]
@@ -116,6 +124,7 @@ whole system for now.
     Result size:  4.5 KB ~= 1,308 tokens
     ```
   - In a subagent card (or subagent results, whenever available):
+
     ```
     Tokens
     ------
@@ -126,7 +135,8 @@ whole system for now.
 
     Output tokens:    4,233
     ```
-  ← mountain: mount-complete
+
+    ← mountain: mount-complete
 
 - `underspecified-events-display` Session 22 added per-card context
   attribution (`context_so_far`/`new_content`/`rewrite_overhead` on every
@@ -134,7 +144,7 @@ whole system for now.
   attributes unexplained context to Underspecified attachment events —
   `deferred_tools_delta`/`mcp_instructions_delta`/`skill_listing`, newly
   un-hidden). Right now those three render as bare `ATTACHMENT /
-  deferred_tools_delta`-labelled cards with no styling and, only when dark
+deferred_tools_delta`-labelled cards with no styling and, only when dark
   matter landed on one, a plain "Dark matter share" line. Design an
   unobtrusive treatment that reads as "mysterious, not measured" — distinct
   from a real `estimated_input` ≈ number — and figure out how it should
@@ -148,7 +158,7 @@ whole system for now.
   ← mountain: mount-beautiful
 - `self-host-fonts` Self-host the fonts (Tenor Sans / Sen / Cascadia Code)
   into `assets/fonts/` with `@font-face` in `story.css`, replacing the CDN
-  `<link>`  ← mountain: mount-beautiful
+  `<link>` ← mountain: mount-beautiful
 - `tool-call-summary-redundancy` Don't repeat the tool name in a tool call's
   summary (e.g. a Bash card saying "Bash") — the kind tag already says it
   ← mountain: mount-beautiful
@@ -161,7 +171,7 @@ whole system for now.
   detail view — more like the other details, less imitation of the card
   ← mountain: mount-beautiful
 
-- `malleable-title-editable` Make the page title editable  ← mountain: mount-malleable
+- `malleable-title-editable` Make the page title editable ← mountain: mount-malleable
 - `check-edit-api-sidecar-bug` `bin/check-edit-api` fights a real sidecar. It
   starts `bin/serve` against an EMPTY temp edits dir, so every rebuild it
   triggers strips that story's real hand-written summaries out of
@@ -174,19 +184,19 @@ whole system for now.
   `edits/<name>.yaml` — but then "the emptied sidecar file is gone" has to
   become "my ref is gone from it", since the file legitimately still holds
   Jess's other entries. Until fixed, `rake build` after running the checker
-  restores `out/`.  ← mountain: mount-malleable
+  restores `out/`. ← mountain: mount-malleable
 
 - `narrate-shortcut-change` Make `n`/`p` work for "move to the next/prev
   assistant/user message" in any mode, and pick a different key for entering
-  narrate mode — maybe `s` for story  ← mountain: mount-interactive
+  narrate mode — maybe `s` for story ← mountain: mount-interactive
 - `mode-url-mismatch` A degraded or bogus `?mode=` value stays in the URL
   while the body is `mode-explore`, and pressing `x` won't clear it —
   `setMode` early-returns on a same-mode call. Cosmetic, but the one place
-  the URL and body class disagree  ← mountain: mount-interactive
+  the URL and body class disagree ← mountain: mount-interactive
 - `narrate-hashchange-spoiler` Clicking a related-event link in the detail
   pane during narrate fires `hashchange`, and `syncFromHash` selects a card
   that's still hidden and outside the revealed prefix. No error, self-heals
-  on the next beat, but mid-talk it's a spoiler  ← mountain: mount-interactive
+  on the next beat, but mid-talk it's a spoiler ← mountain: mount-interactive
 - `collapsing-sections` Collapse by beat as well as by subagent, with
   hotkeys — including collapse/expand all and collapse/expand selected
   ← mountain: mount-interactive
@@ -196,6 +206,6 @@ whole system for now.
   ← mountain: mount-interactive
 - `summarize-a-section` It would be helpful to be able to select a
   [note: capture cuts off here in the original file — pick this back up with
-  Jess before acting on it]  ← mountain: mount-interactive
+  Jess before acting on it] ← mountain: mount-interactive
 
 ## Done
