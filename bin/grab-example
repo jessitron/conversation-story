@@ -1,11 +1,19 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 #
-# grab-example — copy a Claude session log out of ~/.claude/projects and into
-# examples/ as a golden fixture, under a name that says what the session did.
+# grab-example — copy a Claude session log into examples/ as a golden fixture,
+# under a name that says what the session did. The CLI door into examples/;
+# bin/importer is the browser one, and both go through the same
+# ConversationStory::Import so they can't drift.
 #
 #   bin/grab-example <session-id> <name>
-#   bin/grab-example --list                 # what sessions are available
+#   bin/grab-example --list [N]             # the N (default 50) newest sessions
+#
+# Discovery spans BOTH config dirs (~/.claude-work, ~/.claude-personal) and ALL
+# projects — see Import::CONFIG_DIRS for why that isn't ~/.claude/projects and
+# isn't scoped to this repo. So a session id is resolved globally: `--list` shows
+# which project each one came from, and an id that somehow matches two logs is
+# reported rather than guessed at.
 #
 # A fixture is a main log plus, if the session delegated, its subagent sidecars:
 #
@@ -21,33 +29,37 @@
 # happened to be, and everything after (including the copy itself) is missing.
 # Re-run to re-snapshot; the script warns when it notices.
 
-require "fileutils"
 require "json"
+require_relative "../lib/conversation_story/import"
 
-REPO     = File.expand_path("..", __dir__)
-EXAMPLES = File.join(REPO, "examples")
+Import = ConversationStory::Import
 
-# ~/.claude/projects encodes a project's path by replacing every "/" with "-",
-# so /Users/jess/code/foo lives in -Users-jess-code-foo.
-def project_dir(repo)
-  File.join(Dir.home, ".claude", "projects", repo.tr("/", "-"))
-end
+DEFAULT_LIST = 50
 
 def die(msg)
   warn "grab-example: #{msg}"
   exit 1
 end
 
-# One line per session log: id, size, last write, and the first thing the human
-# typed — enough to recognize a session without opening it.
-def list(dir)
-  Dir.glob(File.join(dir, "*.jsonl")).sort_by { |f| -File.mtime(f).to_i }.each do |f|
-    puts format("%-38s %7s  %s  %s",
-                File.basename(f, ".jsonl"),
-                "#{(File.size(f) / 1024.0 / 1024).round(1)}M",
-                File.mtime(f).strftime("%Y-%m-%d %H:%M"),
-                first_prompt(f))
+# One line per session log: id, size, last write, project, and the first thing
+# the human typed — enough to recognize a session without opening it. There are
+# hundreds of logs on this machine, so the newest N are shown and the rest are
+# counted; `bin/importer` is the place to browse them properly.
+def list(limit)
+  sessions = Import.sessions
+  die "no session logs under #{Import::CONFIG_DIRS.join(" or ")}" if sessions.empty?
+
+  sessions.first(limit).each do |session|
+    puts format("%-38s %6s  %s  %-28s %s",
+                session.id,
+                "#{(session.size / 1024.0 / 1024).round(1)}M",
+                session.mtime.strftime("%Y-%m-%d %H:%M"),
+                session.project,
+                first_prompt(session.path))
   end
+
+  rest = sessions.size - limit
+  puts "(#{rest} older session#{"s" if rest != 1} not shown — bin/grab-example --list #{sessions.size})" if rest.positive?
 end
 
 def first_prompt(log)
@@ -64,43 +76,38 @@ def first_prompt(log)
   "(no prompt found)"
 end
 
-dir = project_dir(REPO)
-die "no session logs for this repo at #{dir}" unless Dir.exist?(dir)
-
 if ARGV.first == "--list"
-  list(dir)
+  list(Integer(ARGV[1] || DEFAULT_LIST))
   exit
 end
 
-session, name = ARGV
-unless session && name
-  warn "usage: bin/grab-example <session-id> <name>   (or --list)"
+session_id, name = ARGV
+unless session_id && name
+  warn "usage: bin/grab-example <session-id> <name>   (or --list [N])"
   exit 1
 end
-die "name should be a slug like `mode-switches`, got #{name.inspect}" unless name.match?(/\A[a-z0-9]+(-[a-z0-9]+)*\z/)
 
-log = File.join(dir, "#{session}.jsonl")
-die "no such session log: #{log}" unless File.exist?(log)
+# Checked here as well as in Import.copy: discovery now walks hundreds of logs
+# across both config dirs, and a typo'd name shouldn't wait on that to be told.
+die "name should be a slug like `mode-switches`, got #{name.inspect}" unless name.match?(Import::SLUG)
 
-dest = File.join(EXAMPLES, "#{name}.jsonl")
-if File.exist?(dest) && File.size(dest) == File.size(log)
-  puts "examples/#{name}.jsonl is already this snapshot — nothing to do"
-  exit
+begin
+  session = Import.find(session_id)
+
+  if Import.same_snapshot?(session.path, name)
+    puts "examples/#{name}.jsonl is already this snapshot — nothing to do"
+    exit
+  end
+
+  copied = Import.copy(session.path, name)
+rescue ConversationStory::Import::Error => e
+  die e.message
 end
 
-FileUtils.cp(log, dest)
-lines = File.foreach(dest).count
-puts "examples/#{name}.jsonl  #{lines} lines, #{(File.size(dest) / 1024.0 / 1024).round(1)}M"
+puts "examples/#{name}.jsonl  #{copied[:lines]} lines, #{(copied[:size] / 1024.0 / 1024).round(1)}M"
+puts "examples/#{name}/subagents/  #{copied[:subagents]} subagent log(s)" if copied[:subagents].positive?
 
-sidecars = File.join(dir, session, "subagents")
-if Dir.exist?(sidecars)
-  target = File.join(EXAMPLES, name, "subagents")
-  FileUtils.mkdir_p(target)
-  FileUtils.cp_r(Dir.glob(File.join(sidecars, "*")), target)
-  puts "examples/#{name}/subagents/  #{Dir.glob(File.join(target, '*.jsonl')).size} subagent log(s)"
-end
-
-if ENV["CLAUDE_SESSION_ID"] == session || File.mtime(log) > Time.now - 120
+if ENV["CLAUDE_SESSION_ID"] == session_id || session.live?
   puts "NOTE: that log was written to seconds ago — this is a mid-session snapshot."
 end
 
