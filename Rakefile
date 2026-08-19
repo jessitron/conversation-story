@@ -28,6 +28,13 @@ RENDER_SRC = FileList["bin/render", "lib/conversation_story/renderer.rb",
                       "lib/conversation_story/templates/*.erb",
                       "assets/**/*", "images/**/*"]
 SITE_SRC   = FileList["bin/site-index", "lib/conversation_story/renderer.rb"]
+# The import door — bin/grab-example, and (ticket 04) bin/importer — over the
+# shared ConversationStory::Import. Deliberately NOT a prerequisite of parse or
+# render: neither program requires import.rb, so making it one would re-parse
+# every example whenever the copy logic changed. It's a *_SRC list so the file is
+# named here (session 25's follow-through) and so the importer's own task, when
+# it arrives, has the list already written.
+IMPORT_SRC = FileList["bin/grab-example", "lib/conversation_story/import.rb"]
 
 SITE_INDEX = "out/index.html"
 
