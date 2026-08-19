@@ -67,7 +67,12 @@ module ConversationStory
       @generated_at = generated_at
     end
 
-    attr_reader :scans, :total_sessions
+    attr_reader :total_sessions
+
+    # The scans as the page uses them: with every project label RECONCILED (see
+    # `reconcile`), so one project appears once no matter how its sessions
+    # recorded which project they were in.
+    def scans = @reconciled ||= reconcile(@scans)
 
     # How much of this page came off the cache — the numbers that make "a second
     # load is fast" observable instead of a feeling. Zero when no cache was used.
@@ -77,7 +82,7 @@ module ConversationStory
     # [[project, [scan, ...]], ...] — projects in newest-session order, and each
     # project's sessions newest first, both inherited from the input order.
     def groups
-      @scans.group_by { |scan| scan["project"].to_s }.to_a
+      scans.group_by { |scan| scan["project"].to_s }.to_a
     end
 
     def write(path = PAGE_PATH)
@@ -117,6 +122,53 @@ module ConversationStory
 
     private
 
+    # ONE PROJECT, ONE GROUP. A session that never got a reply out of the model
+    # carries no `cwd` anywhere in its log, so its project label is DECODED from
+    # the harness's dash-encoded directory name — and the real corpus promptly
+    # showed the same project twice, as `code/jessitron/mtg-deck-shuffler` and as
+    # `code-jessitron-mtg-deck-shuffler`.
+    #
+    # The decode is lossy; the ENCODE is not. For any session whose label came
+    # from a `cwd`, `label.tr("/", "-")` reproduces the directory-name form
+    # character for character. So don't decode — MATCH, in the lossless
+    # direction, against the labels this page already scanned. An exact hit
+    # proves the two sessions sat in the same directory, and the guessed one
+    # adopts the `cwd` spelling.
+    #
+    # A PAGE-level fix on purpose: SessionScan sees one log at a time and caches
+    # per log, so no single scan can know what the other 49 said.
+    #
+    # A guessed label matching nothing keeps its own group and its "guessed from
+    # directory name" note. So does an ambiguous one — two different `cwd` labels
+    # can encode to the same string (`a/b-c` and `a-b/c`), and picking either
+    # would be a coin flip.
+    def reconcile(scans)
+      known = {}
+      scans.each do |scan|
+        next unless scan["project_source"] == "cwd"
+
+        key = encoded(scan["project"])
+        known[key] = known.key?(key) && known[key] != scan["project"] ? :ambiguous : scan["project"]
+      end
+
+      scans.map do |scan|
+        next scan unless scan["project_source"] == "directory"
+
+        match = known[encoded(scan["project"])]
+        next scan unless match.is_a?(String)
+
+        # A third `project_source` value, so the group note can tell "this label
+        # IS a cwd label" from "this label is still a guess".
+        scan.merge("project" => match, "project_source" => "cwd_match")
+      end
+    end
+
+    # The comparison form. Slashes become dashes because that is exactly what the
+    # harness does to a path to name a project directory. Dots go the same way
+    # because a git worktree's `/.claude/` segment lands in the directory name as
+    # a DOUBLED dash, so an encoded `cwd` (`…-.claude-…`) has to meet it there.
+    def encoded(label) = label.to_s.tr("/.", "--")
+
     def header_html
       <<~HTML.rstrip
         <header class="site">
@@ -126,9 +178,9 @@ module ConversationStory
             <span class="subtitle">recent sessions on this machine</span>
           </div>
           <div class="meta">
-            #{stat("Sessions", @scans.size)}
+            #{stat("Sessions", scans.size)}
             #{stat("Projects", groups.size)}
-            #{stat("Scanned", @generated_at.strftime("%H:%M"))}
+            #{stat("Updated", @generated_at.strftime("%H:%M"))}
           </div>
         </header>
       HTML
@@ -139,7 +191,7 @@ module ConversationStory
     end
 
     def groups_html
-      return %(<p class="empty">No session logs found under #{h Import::CONFIG_DIRS.join(" or ")}.</p>) if @scans.empty?
+      return %(<p class="empty">No session logs found under #{h Import::CONFIG_DIRS.join(" or ")}.</p>) if scans.empty?
 
       groups.map { |project, scans| group_html(project, scans) }.join("\n")
     end
@@ -219,9 +271,9 @@ module ConversationStory
 
     def footer_html
       lines = []
-      rest = @total_sessions - @scans.size
+      rest = @total_sessions - scans.size
       if rest.positive?
-        lines << "#{@scans.size} most recent of #{@total_sessions} sessions " \
+        lines << "#{scans.size} most recent of #{@total_sessions} sessions " \
                  "(#{rest} older not shown)"
       end
       lines << "#{@cache.hits} cached, #{@cache.misses} scanned" if @cache

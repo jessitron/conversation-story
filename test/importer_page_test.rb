@@ -24,7 +24,10 @@ class ImporterPageTest < Minitest::Test
     { "session_id" => "id-#{mtime}", "title" => "A session", "first_prompt" => "do the thing",
       "recap" => "Did **the thing**.", "turns" => 4, "subagents" => 0,
       "max_context" => 45_000, "size" => 1024 * 1024, "mtime" => mtime.to_f,
-      "path" => "/logs/id-#{mtime}.jsonl", "project" => project }.merge(overrides)
+      "path" => "/logs/id-#{mtime}.jsonl", "project" => project,
+      # The usual case: the label came off the log's own `cwd`. Override with
+      # "directory" for a stub session whose label had to be guessed.
+      "project_source" => "cwd" }.merge(overrides)
   end
 
   # Newest first, as Import.sessions hands them over.
@@ -44,6 +47,52 @@ class ImporterPageTest < Minitest::Test
                     scan(project: "a", mtime: 70), scan(project: "a", mtime: 60))
 
     assert_equal %w[b a], page.groups.map(&:first)
+  end
+
+  # THE CASE THE REAL CORPUS HANDED US. A stub session (no conversation, so no
+  # `cwd` anywhere in its log) gets its project label decoded from the harness's
+  # dash-encoded directory name, and the page showed the same project twice:
+  # `code/jessitron/mtg-deck-shuffler` and `code-jessitron-mtg-deck-shuffler`.
+  # The decode is lossy, but the encode isn't — `label.tr("/", "-")` — so a
+  # guessed label that matches a scanned `cwd` label joins it.
+  def test_a_guessed_label_joins_the_cwd_group_it_encodes_to
+    page = page_for(scan(project: "code/jessitron/mtg-deck-shuffler", mtime: 20),
+                    scan(project: "code-jessitron-mtg-deck-shuffler", mtime: 10,
+                         "project_source" => "directory"))
+
+    assert_equal [["code/jessitron/mtg-deck-shuffler", 2]],
+                 page.groups.map { |name, s| [name, s.size] }
+    refute_includes page.html, "guessed from directory name"
+  end
+
+  # A worktree's `/.claude/` segment lands in the directory name as a doubled
+  # dash, so the match has to survive the dot too.
+  def test_a_guessed_label_matches_through_a_dotted_path_segment
+    page = page_for(scan(project: "code/jessitron/story/.claude/worktrees/w", mtime: 20),
+                    scan(project: "code-jessitron-story--claude-worktrees-w", mtime: 10,
+                         "project_source" => "directory"))
+
+    assert_equal ["code/jessitron/story/.claude/worktrees/w"], page.groups.map(&:first)
+  end
+
+  # Nothing to match against: it keeps its own group and says the label is a guess.
+  def test_an_unmatched_guessed_label_keeps_its_own_group_and_says_so
+    page = page_for(scan(project: "code/jessitron/one", mtime: 20),
+                    scan(project: "code-jessitron-other", mtime: 10,
+                         "project_source" => "directory"))
+
+    assert_equal ["code/jessitron/one", "code-jessitron-other"], page.groups.map(&:first)
+    assert_includes page.html, "guessed from directory name"
+  end
+
+  # Two different real projects CAN encode to the same string (`a/b-c` and
+  # `a-b/c`), so adopting either would be a coin flip. Leave the guess alone.
+  def test_an_ambiguous_encoding_is_not_adopted
+    page = page_for(scan(project: "a/b-c", mtime: 30),
+                    scan(project: "a-b/c", mtime: 20),
+                    scan(project: "a-b-c", mtime: 10, "project_source" => "directory"))
+
+    assert_equal ["a/b-c", "a-b/c", "a-b-c"], page.groups.map(&:first)
   end
 
   def test_sessions_within_a_project_stay_newest_first
