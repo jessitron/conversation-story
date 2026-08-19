@@ -48,22 +48,16 @@ module ConversationStory
 
     # One discovered session log. Path-first: everything a caller needs to copy
     # it, plus the project it came from so a listing can group by that.
-    #
-    # `project` is a *display* name and `path` is the truth. The project
-    # directory encodes the project's path by replacing every "/" with "-", which
-    # is lossy — `-Users-jessitron-code-jessitron-conversation-story` could
-    # decode back to a dozen paths (every dash is either a real dash or a
-    # slash), and the ".claude" in a worktree's path shows up as a doubled dash.
-    # So we don't decode: we only trim the boilerplate head (the home directory,
-    # then a leading "code"), which leaves
-    # "jessitron-conversation-story" — recognisable without pretending to be a
-    # path.
     HOME_PREFIX = Dir.home.tr("/", "-")
 
     Session = Struct.new(:path, :id, :project_dir, :config_dir, keyword_init: true) do
-      def project
-        File.basename(project_dir).delete_prefix(HOME_PREFIX).delete_prefix("-code").delete_prefix("-")
-      end
+      # THE FALLBACK-ONLY project label. The real source is the log's own `cwd`
+      # (see Import.project_label), and only something that has read the log —
+      # i.e. SessionScan — knows it. A bare Session hasn't opened the file, so
+      # all it can do is decode the directory name, which is lossy. Callers that
+      # scan (bin/importer) group by the scan's `project`; callers that don't
+      # (bin/grab-example --list) get this.
+      def project = Import.project_label(cwd: nil, log_path: path)
 
       # "work" / "personal" — which config the session lived under.
       def config = File.basename(config_dir).delete_prefix(".claude").delete_prefix("-")
@@ -82,6 +76,34 @@ module ConversationStory
     class Error < StandardError; end
 
     class << self
+      # The project a session belongs to, as a human-readable label — ONE
+      # implementation, called both by SessionScan (which has the `cwd`) and by
+      # Session#project (which doesn't). Ticket 01 and ticket 02 each grew their
+      # own version of this; session 25's ticket 03 settled it here.
+      #
+      # PREFERRED SOURCE: the log's own `cwd`, which every conversation record
+      # carries — exact, and free once something is reading the log anyway.
+      # Shown relative to $HOME when it's under home, since every one of Jess's
+      # is: "code/jessitron/mtg-deck-shuffler".
+      #
+      # FALLBACK: the project directory's name. The harness encodes a path there
+      # by replacing every "/" with "-", which is lossy —
+      # `-Users-jessitron-code-jessitron-conversation-story` could decode back to
+      # a dozen paths (every dash is either a real dash or a separator), and the
+      # ".claude" in a worktree's path shows up as a doubled dash. So we don't
+      # decode: we only trim the encoded home prefix and leave the rest as the
+      # best-effort label it is.
+      #
+      # Side effect worth knowing: a golden fixture in examples/ has no
+      # project directory of its own and its `cwd` is wherever the conversation
+      # actually happened, so fixtures report their ORIGINAL projects.
+      def project_label(cwd:, log_path:)
+        return relative_to_home(cwd) if cwd && !cwd.empty?
+
+        File.basename(File.dirname(log_path))
+            .delete_prefix(HOME_PREFIX).delete_prefix("-")
+      end
+
       # Every session log on this machine, across both config dirs and ALL
       # projects, newest first. Sorting here rather than in the callers means
       # `--list` and the importer's "50 most recent" agree on what recent means.
@@ -138,6 +160,11 @@ module ConversationStory
       end
 
       private
+
+      def relative_to_home(path)
+        home = "#{Dir.home}/"
+        path.start_with?(home) ? path.delete_prefix(home) : path
+      end
 
       # A config dir holds one directory per project; each holds the project's
       # session logs, plus a same-named directory of sidecars per session.

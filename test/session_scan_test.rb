@@ -239,6 +239,59 @@ class SessionScanTest < Minitest::Test
     end
   end
 
+  # A session that never got a reply out of the model has no `user` and no
+  # `assistant` record — only bookkeeping — and 4 of the 50 most recent logs on
+  # this machine are exactly that. `cwd` still rides on several of those record
+  # types, so the project group is still the real one and not the lossy
+  # directory-name fallback. (Found while building the importer's listing page:
+  # one project showed up TWICE, once as `code/jessitron/x` and once as
+  # `code-jessitron-x`.)
+  def test_cwd_is_read_from_bookkeeping_records_too
+    Dir.mktmpdir("session-scan-cwd") do |dir|
+      log = File.join(dir, "stub.jsonl")
+      File.write(log, [
+        JSON.generate("type" => "mode", "sessionId" => "s-2"),
+        JSON.generate("type" => "system", "subtype" => "hook", "cwd" => "#{Dir.home}/code/thing"),
+      ].join("\n") + "\n")
+
+      assert_equal "code/thing", ConversationStory::SessionScan.scan(log)["project"]
+    end
+  end
+
+  # With nothing carrying a `cwd` anywhere, the label falls back to decoding the
+  # project directory's name — best-effort, and visibly dashed.
+  def test_project_falls_back_to_the_directory_name
+    Dir.mktmpdir("session-scan-nocwd") do |dir|
+      project_dir = File.join(dir, "#{Dir.home.tr("/", "-")}-code-thing")
+      FileUtils.mkdir_p(project_dir)
+      log = File.join(project_dir, "stub.jsonl")
+      File.write(log, JSON.generate("type" => "ai-title", "aiTitle" => "Stub") + "\n")
+
+      assert_equal "code-thing", ConversationStory::SessionScan.scan(log)["project"]
+    end
+  end
+
+  # The cache key is path + mtime + size — none of which change when the SCANNER
+  # changes. So the stored SHAPE is versioned too, and a bumped version reads as
+  # a miss. (Ticket 03 hit this: a new field on the scan left every cached entry
+  # without it and the listing page kept drawing the old shape.)
+  def test_a_stale_scan_version_is_a_miss
+    in_temp_cache do |cache, log|
+      ConversationStory::SessionScan.fetch(log, cache: cache)
+      assert_equal 1, cache.misses
+
+      Dir.glob(File.join(cache.dir, "*.json")).each do |file|
+        entry = JSON.parse(File.read(file))
+        entry["version"] = ConversationStory::SessionScan::SCAN_VERSION - 1
+        File.write(file, JSON.generate(entry))
+      end
+
+      ConversationStory::SessionScan.fetch(log, cache: cache)
+      assert_equal 2, cache.misses
+      assert_equal 0, cache.hits
+    end
+  end
+
   private
 
   def example(name) = File.expand_path("../examples/#{name}.jsonl", __dir__)

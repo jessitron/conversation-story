@@ -28,21 +28,20 @@ RENDER_SRC = FileList["bin/render", "lib/conversation_story/renderer.rb",
                       "lib/conversation_story/templates/*.erb",
                       "assets/**/*", "images/**/*"]
 SITE_SRC   = FileList["bin/site-index", "lib/conversation_story/renderer.rb"]
-# The import door — bin/grab-example, and (ticket 04) bin/importer — over the
-# shared ConversationStory::Import. Deliberately NOT a prerequisite of parse or
-# render: neither program requires import.rb, so making it one would re-parse
-# every example whenever the copy logic changed. It's a *_SRC list so the file is
-# named here (session 25's follow-through) and so the importer's own task, when
-# it arrives, has the list already written.
-IMPORT_SRC = FileList["bin/grab-example", "lib/conversation_story/import.rb"]
-
-# DELIBERATELY NOT LISTED: lib/conversation_story/session_scan.rb. These lists
-# exist so a page is rebuilt when the code that PRODUCED it changes, and the
-# session scanner produces nothing in out/ — it reads Jess's ~/.claude*/projects
-# logs for the importer's listing page. Adding it here would re-parse and
-# re-render every example (and dirty the committed out/) every time the scanner
-# is touched, for no change in output. The importer's own files belong to
-# whatever task runs the importer, not to build.
+# The import door — bin/grab-example (the CLI one) and bin/importer (the browser
+# one) over the shared ConversationStory::Import, its SessionScan and the listing
+# page they draw. Deliberately NOT a prerequisite of parse, render or site: none
+# of those three programs requires any of these files, and nothing here produces
+# anything in out/. Adding them to PARSE_SRC/RENDER_SRC/SITE_SRC would re-parse
+# and re-render every example — dirtying the committed out/ — every time the
+# importer changed, for zero difference in output. The list exists so the files
+# are NAMED somewhere (session 25's follow-through) and so the importer's task
+# below has its sources written down.
+IMPORT_SRC = FileList["bin/grab-example", "bin/importer",
+                      "lib/conversation_story/import.rb",
+                      "lib/conversation_story/session_scan.rb",
+                      "lib/conversation_story/importer_page.rb",
+                      "assets/importer.css"]
 
 SITE_INDEX = "out/index.html"
 
@@ -112,6 +111,15 @@ task :serve do
   # re-running bin/parse + bin/render. Localhost only; the published site has
   # no write path.
   sh "ruby", "bin/serve", "-p", ENV.fetch("PORT", "8080")
+end
+
+desc "Browse recent sessions and pick a fixture (PORT=8081 by default)"
+task :importer do
+  # bin/importer, the fourth program: a LOCAL-only listing of Jess's recent
+  # Claude sessions, on its own port so `rake serve` can keep 8080. It serves
+  # neither out/ nor anything else of the published site; its page and scan
+  # cache live in the gitignored .importer/. Sources: IMPORT_SRC above.
+  sh "ruby", "bin/importer", "-p", ENV.fetch("PORT", "8081")
 end
 
 desc "Run the golden-fixture tests"

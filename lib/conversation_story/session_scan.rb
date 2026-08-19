@@ -4,6 +4,8 @@ require "digest"
 require "fileutils"
 require "json"
 
+require_relative "import"
+
 module ConversationStory
   # Answers "what IS this session?" about one Claude session log — the handful of
   # facts needed to judge whether a conversation is worth turning into a story
@@ -39,6 +41,15 @@ module ConversationStory
     # recap has it (mtg-tabletop-plan's first one doesn't), so it's optional.
     RECAP_TAIL = "(disable recaps in /config)"
 
+    # What SHAPE of result the cache holds. Bump it whenever this class starts
+    # producing a different hash — a new field, a changed formula — because the
+    # cache key is path + mtime + size, and none of those change when the
+    # SCANNER changes. Found the hard way in ticket 03: adding `project_source`
+    # left every cached entry without it, and the page silently kept drawing the
+    # old shape until the cache dir was deleted by hand. An old entry now reads
+    # as a miss and is rescanned.
+    SCAN_VERSION = 2
+
     # A prompt Jess typed is never this big. The cap exists so the first-prompt
     # hunt can't be tricked into parsing a multi-megabyte tool_result line,
     # which is the same `type: "user"` shape.
@@ -54,6 +65,12 @@ module ConversationStory
     USAGE_HINT    = '"cache_read_input_tokens"'
     USER_HINT     = '"user"'
     SESSION_HINT  = '"sessionId"'
+    # The project's real source (see project_label). Conversation records carry
+    # it, but so do several bookkeeping ones — `system`, `mode`, `last-prompt` —
+    # and a session that never got a reply out of the model has ONLY those. Its
+    # own branch, so those sessions still land in the right project group instead
+    # of falling back to the lossy directory-name label.
+    CWD_HINT      = '"cwd"'
 
     # Scan one log. Always reads the file; use Cache#fetch (or .fetch below) to
     # get the cached-when-unchanged behaviour.
@@ -89,6 +106,11 @@ module ConversationStory
         "mtime"       => stat.mtime.to_f,
         "path"        => @path,
         "project"     => project_label(facts[:cwd]),
+        # Where that label came from, so a listing can SAY that a group is a
+        # guess. Without it, one project can appear twice — the real
+        # `code/jessitron/x` and the decoded `code-jessitron-x` of a stub session
+        # that has no `cwd` anywhere — and look like two projects.
+        "project_source" => facts[:cwd].to_s.empty? ? "directory" : "cwd",
       }
     end
 
@@ -111,6 +133,15 @@ module ConversationStory
            line.bytesize <= MAX_PROMPT_BYTES
           rec = parse(line)
           facts[:session_id] = rec["sessionId"] if rec
+        end
+
+        # Settled from the first record that carries a `cwd` and then never
+        # checked again — one `include?` per line until then, and the branches
+        # below fill it in too when they parse a record anyway.
+        if facts[:cwd].nil? && line.include?(CWD_HINT) &&
+           line.bytesize <= MAX_PROMPT_BYTES
+          rec ||= parse(line)
+          facts[:cwd] = rec["cwd"] if rec
         end
 
         # Order matters only for cost: the cheapest, most selective checks
@@ -206,26 +237,12 @@ module ConversationStory
       Dir.glob(File.join(dir, "*.jsonl")).size
     end
 
-    # Which project this session came from, for grouping the listing.
-    #
-    # Preferred source is the log's own `cwd` — every conversation record
-    # carries it, so it costs nothing and is exact. The directory name is the
-    # fallback, and it can only ever be a best-effort label: the harness encodes
-    # a path by replacing separators with `-`, which is lossy, and
-    # `-Users-jess-code-mtg-deck-shuffler` gives no way to tell a separator from
-    # a hyphen in `mtg-deck-shuffler`.
-    #
-    # Shown relative to home when it's under home, since every one of Jess's is.
-    def project_label(cwd)
-      raw = cwd || decode_project_dir(File.basename(File.dirname(@path)))
-      home = Dir.home
-      raw.start_with?("#{home}/") ? raw.delete_prefix("#{home}/") : raw
-    end
-
-    def decode_project_dir(dir)
-      encoded_home = Dir.home.tr("/", "-")
-      dir.delete_prefix(encoded_home).delete_prefix("-")
-    end
+    # Which project this session came from, for grouping the listing. The rule
+    # (prefer the log's own `cwd`, fall back to decoding the directory name)
+    # lives in Import.project_label — ONE implementation, shared with
+    # Import::Session#project, which has no `cwd` to offer it. Ticket 01 and this
+    # scan each had their own version until session 25's ticket 03 settled it.
+    def project_label(cwd) = Import.project_label(cwd: cwd, log_path: @path)
 
     # Per-session scan results on disk, keyed by path + mtime + size.
     #
@@ -272,8 +289,8 @@ module ConversationStory
 
       def write(path, scan)
         FileUtils.mkdir_p(@dir)
-        entry = { "path" => path, "mtime" => scan["mtime"],
-                  "size" => scan["size"], "scan" => scan }
+        entry = { "path" => path, "mtime" => scan["mtime"], "size" => scan["size"],
+                  "version" => SCAN_VERSION, "scan" => scan }
         # Write-then-rename so a crash mid-write can't leave a half-file that a
         # later run would have to distrust.
         tmp = "#{file_for(path)}.#{Process.pid}.tmp"
@@ -285,8 +302,8 @@ module ConversationStory
 
       def fresh?(entry, path)
         stat = File.stat(path)
-        entry["path"] == path && entry["size"] == stat.size &&
-          entry["mtime"] == stat.mtime.to_f
+        entry["version"] == SCAN_VERSION && entry["path"] == path &&
+          entry["size"] == stat.size && entry["mtime"] == stat.mtime.to_f
       rescue Errno::ENOENT
         false
       end
