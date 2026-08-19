@@ -320,7 +320,8 @@ prose-tuned 4 — 3.5 splits the difference.
   lost and `event_count` == line count), but marks them `hidden: true`; the
   renderer skips hidden events and its header "events" stat counts only visible
   ones. Hidden set: kinds `system`, `file_snapshot`, `permission_mode`,
-  `ai_title`; the `last-prompt` record; and the `hook_success` attachment
+  `ai_title` (both the `ai-title` and `agent-name` record types),
+  `agent_setting`; the `last-prompt` record; and the `hook_success` attachment
   subtype. **Kept visible** (deliberately): all `queue_operation`s — including
   the bare `dequeue`/`remove` markers, so the enqueue→deliver lifecycle is
   legible — plus attachments `queued_command` (delivered queued input AND
@@ -398,7 +399,8 @@ prose-tuned 4 — 3.5 splits the difference.
 - `tool_call` (from `tool_use`) and `tool_result` — paired via `use_id`
 - `subagent` (an `Agent` tool_call that owns a nested story) and
   `subagent_result` (that story's answer arriving back in the parent)
-- `system`, `permission_mode`, `file_snapshot`, `ai_title`, `attachment`, `queue_operation`
+- `system`, `permission_mode`, `file_snapshot`, `ai_title`, `agent_setting`,
+  `attachment`, `queue_operation`
 - `unknown` — **the fallback**; keeps `detail.raw` verbatim so Mountain 1 can
   still render a card and we never lose data (satisfies the "good fallbacks"
   constraint).

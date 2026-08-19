@@ -41,6 +41,21 @@ module ConversationStory
       "mode"                  => "permission_mode",
       "queue-operation"       => "queue_operation",
       "ai-title"              => "ai_title",
+      # `agent-name` is `ai-title` under a second name: in the one example log
+      # that has them (4b0be952…, 5 records) every `agentName` is the literal
+      # same string as that session's `aiTitle` ("documentation locating schema
+      # updates"), and across the 2290 `agent-name` records in
+      # ~/.claude-work/projects the record carries exactly three fields —
+      # `type`, `agentName`, `sessionId` — with no timestamp and no uuid. It is
+      # the sidebar label being rewritten, not a subagent's name, so it folds
+      # into the already-hidden `ai_title` kind rather than earning its own.
+      "agent-name"            => "ai_title",
+      # `agent-setting` is which agent the UI has selected. 6 records in that
+      # same example, 3028 across ~/.claude-work/projects — and the value is
+      # the literal string "claude" in every single one of them (zero variance),
+      # with the same three fields and no timestamp. It records no change and
+      # tells a reader nothing, so: its own kind, always hidden.
+      "agent-setting"         => "agent_setting",
     }.freeze
 
     # Harness bookkeeping — records that are not part of the conversation "from
@@ -50,7 +65,7 @@ module ConversationStory
     # rationale (which types, and why the ones we KEEP are worth keeping).
     #
     # Whole kinds that are always hidden:
-    HIDDEN_KINDS = %w[system file_snapshot permission_mode ai_title].freeze
+    HIDDEN_KINDS = %w[system file_snapshot permission_mode ai_title agent_setting].freeze
     # Attachment subtypes that are pure context-loading / hook plumbing. The two
     # conversation-relevant attachments stay visible: `queued_command` (delivered
     # queued input AND background <task-notification>s — "the agent being nudged")
@@ -303,7 +318,10 @@ module ConversationStory
       # two record types land here: `permission-mode` names the field
       # permissionMode, the per-prompt `mode` record just calls it mode.
       when "permission_mode"   then "Mode: #{rec["permissionMode"] || rec["mode"]}"
-      when "ai_title"          then "Title: #{rec["aiTitle"]}"
+      # two record types land here too: `ai-title` names the field aiTitle,
+      # `agent-name` calls the same string agentName.
+      when "ai_title"          then "Title: #{ai_title_text(rec)}"
+      when "agent_setting"     then "Agent: #{rec["agentSetting"]}"
       when "queue_operation"   then queue_summary(rec)
       else                          "#{rec["type"]} record"
       end
@@ -429,11 +447,20 @@ module ConversationStory
       when "ai_title"
         # hidden, but the generated title is the record's whole content — keeping
         # it named means the kind loses nothing by not being `unknown`.
-        event["detail"] = { "text" => rec["aiTitle"].to_s }
+        event["detail"] = { "text" => ai_title_text(rec) }
+      when "agent_setting"
+        # same deal: hidden, and the selected agent is the whole content.
+        event["detail"] = { "text" => rec["agentSetting"].to_s }
       when "unknown"
         event["detail"] = { "raw" => rec }
       end
       add_result_token_estimate(event) if ESTIMATE_KINDS.include?(kind)
+    end
+
+    # `ai-title` and `agent-name` are the same generated session label under two
+    # field names (see TYPE_TO_KIND's `agent-name` entry for the measurement).
+    def ai_title_text(rec)
+      (rec["aiTitle"] || rec["agentName"]).to_s
     end
 
     def thinking_text(rec)

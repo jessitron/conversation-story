@@ -19,18 +19,16 @@ events:
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:1
   agent: main
   parent:
-  kind: unknown
+  kind: agent_setting
   role:
   at:
-  summary: agent-setting record
+  summary: 'Agent: claude'
   source:
     file: 4b0be952-d0bd-49ed-b97a-357b9149bf31.jsonl
     line: 1
   detail:
-    raw:
-      type: agent-setting
-      agentSetting: claude
-      sessionId: 4b0be952-d0bd-49ed-b97a-357b9149bf31
+    text: claude
+  hidden: true
 - id: line-2
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:2
   agent: main
@@ -325,18 +323,16 @@ events:
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:15
   agent: main
   parent:
-  kind: unknown
+  kind: agent_setting
   role:
   at:
-  summary: agent-setting record
+  summary: 'Agent: claude'
   source:
     file: 4b0be952-d0bd-49ed-b97a-357b9149bf31.jsonl
     line: 15
   detail:
-    raw:
-      type: agent-setting
-      agentSetting: claude
-      sessionId: 4b0be952-d0bd-49ed-b97a-357b9149bf31
+    text: claude
+  hidden: true
 - id: line-16
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:16
   agent: main
@@ -462,18 +458,16 @@ events:
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:23
   agent: main
   parent:
-  kind: unknown
+  kind: ai_title
   role:
   at:
-  summary: agent-name record
+  summary: 'Title: documentation locating schema updates'
   source:
     file: 4b0be952-d0bd-49ed-b97a-357b9149bf31.jsonl
     line: 23
   detail:
-    raw:
-      type: agent-name
-      agentName: documentation locating schema updates
-      sessionId: 4b0be952-d0bd-49ed-b97a-357b9149bf31
+    text: documentation locating schema updates
+  hidden: true
 - id: 78681cf5-96cf-4b27-9d2f-3c13458cfb6d
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:24
   agent: main
@@ -1015,34 +1009,30 @@ events:
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:35
   agent: main
   parent:
-  kind: unknown
+  kind: ai_title
   role:
   at:
-  summary: agent-name record
+  summary: 'Title: documentation locating schema updates'
   source:
     file: 4b0be952-d0bd-49ed-b97a-357b9149bf31.jsonl
     line: 35
   detail:
-    raw:
-      type: agent-name
-      agentName: documentation locating schema updates
-      sessionId: 4b0be952-d0bd-49ed-b97a-357b9149bf31
+    text: documentation locating schema updates
+  hidden: true
 - id: line-36
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:36
   agent: main
   parent:
-  kind: unknown
+  kind: agent_setting
   role:
   at:
-  summary: agent-setting record
+  summary: 'Agent: claude'
   source:
     file: 4b0be952-d0bd-49ed-b97a-357b9149bf31.jsonl
     line: 36
   detail:
-    raw:
-      type: agent-setting
-      agentSetting: claude
-      sessionId: 4b0be952-d0bd-49ed-b97a-357b9149bf31
+    text: claude
+  hidden: true
 - id: line-37
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:37
   agent: main
@@ -1778,34 +1768,30 @@ events:
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:66
   agent: main
   parent:
-  kind: unknown
+  kind: ai_title
   role:
   at:
-  summary: agent-name record
+  summary: 'Title: documentation locating schema updates'
   source:
     file: 4b0be952-d0bd-49ed-b97a-357b9149bf31.jsonl
     line: 66
   detail:
-    raw:
-      type: agent-name
-      agentName: documentation locating schema updates
-      sessionId: 4b0be952-d0bd-49ed-b97a-357b9149bf31
+    text: documentation locating schema updates
+  hidden: true
 - id: line-67
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:67
   agent: main
   parent:
-  kind: unknown
+  kind: agent_setting
   role:
   at:
-  summary: agent-setting record
+  summary: 'Agent: claude'
   source:
     file: 4b0be952-d0bd-49ed-b97a-357b9149bf31.jsonl
     line: 67
   detail:
-    raw:
-      type: agent-setting
-      agentSetting: claude
-      sessionId: 4b0be952-d0bd-49ed-b97a-357b9149bf31
+    text: claude
+  hidden: true
 - id: line-68
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:68
   agent: main
@@ -2485,34 +2471,30 @@ events:
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:91
   agent: main
   parent:
-  kind: unknown
+  kind: ai_title
   role:
   at:
-  summary: agent-name record
+  summary: 'Title: documentation locating schema updates'
   source:
     file: 4b0be952-d0bd-49ed-b97a-357b9149bf31.jsonl
     line: 91
   detail:
-    raw:
-      type: agent-name
-      agentName: documentation locating schema updates
-      sessionId: 4b0be952-d0bd-49ed-b97a-357b9149bf31
+    text: documentation locating schema updates
+  hidden: true
 - id: line-92
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:92
   agent: main
   parent:
-  kind: unknown
+  kind: agent_setting
   role:
   at:
-  summary: agent-setting record
+  summary: 'Agent: claude'
   source:
     file: 4b0be952-d0bd-49ed-b97a-357b9149bf31.jsonl
     line: 92
   detail:
-    raw:
-      type: agent-setting
-      agentSetting: claude
-      sessionId: 4b0be952-d0bd-49ed-b97a-357b9149bf31
+    text: claude
+  hidden: true
 - id: line-93
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:93
   agent: main
@@ -3093,34 +3075,30 @@ events:
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:104
   agent: main
   parent:
-  kind: unknown
+  kind: ai_title
   role:
   at:
-  summary: agent-name record
+  summary: 'Title: documentation locating schema updates'
   source:
     file: 4b0be952-d0bd-49ed-b97a-357b9149bf31.jsonl
     line: 104
   detail:
-    raw:
-      type: agent-name
-      agentName: documentation locating schema updates
-      sessionId: 4b0be952-d0bd-49ed-b97a-357b9149bf31
+    text: documentation locating schema updates
+  hidden: true
 - id: line-105
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:105
   agent: main
   parent:
-  kind: unknown
+  kind: agent_setting
   role:
   at:
-  summary: agent-setting record
+  summary: 'Agent: claude'
   source:
     file: 4b0be952-d0bd-49ed-b97a-357b9149bf31.jsonl
     line: 105
   detail:
-    raw:
-      type: agent-setting
-      agentSetting: claude
-      sessionId: 4b0be952-d0bd-49ed-b97a-357b9149bf31
+    text: claude
+  hidden: true
 - id: line-106
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:106
   agent: main
