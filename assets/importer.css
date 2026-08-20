@@ -49,7 +49,7 @@ main.importer {
 .importer .project-name::before {
   content: "▾";
   flex: 0 0 auto;
-  font-size: var(--fs-small);
+  font-size: inherit;
   color: var(--ink-faint);
 }
 
