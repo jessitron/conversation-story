@@ -207,14 +207,19 @@ module ConversationStory
     # one project can appear twice — its real `cwd` label plus the dashed decode
     # of a stub session that never got far enough to record a `cwd` — and read as
     # two unrelated projects.
+    #
+    # `<details>`/`<summary>` gives collapsing for free — no JS, no state to
+    # track beyond what the browser already remembers per-element. Open by
+    # default: collapsing is for tidying away a project Jess is done with, not
+    # the first-load experience.
     def group_html(project, scans)
       guessed = scans.all? { |scan| scan["project_source"] == "directory" }
       note = guessed ? %(<span class="project-note">guessed from directory name</span>) : ""
       <<~HTML.rstrip
-        <section class="project">
-          <h2 class="project-name deco">#{h project}#{note}<span class="project-count">#{h scans.size}</span></h2>
+        <details class="project" open>
+          <summary class="project-name deco">#{h project}#{note}<span class="project-count">#{h scans.size}</span></summary>
         #{indent(scans.map { |scan| card_html(scan) }.join("\n"), 2)}
-        </section>
+        </details>
       HTML
     end
 
