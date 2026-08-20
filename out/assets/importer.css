@@ -24,7 +24,11 @@ main.importer {
 
 /* The rail label of the timeline, doing the same job here: a quiet
    uppercase heading that separates without shouting. The gold rule under it
-   is the only structure a group needs. */
+   is the only structure a group needs.
+
+   It's a <summary> now (collapsible groups): `display: flex` lays out the
+   note and count, but that also suppresses the browser's own disclosure
+   triangle, so ::before draws a replacement that flips with `[open]`. */
 .importer .project-name {
   display: flex;
   align-items: baseline;
@@ -32,11 +36,24 @@ main.importer {
   margin: 0 0 14px;
   padding-bottom: 6px;
   border-bottom: 1px solid var(--line-strong);
-  font-size: var(--fs-small);
+  font-size: calc(var(--fs-small) * 2);
   font-weight: 400;
   letter-spacing: var(--ls-widest);
   color: var(--ink-soft);
+  cursor: pointer;
+  list-style: none;
 }
+
+.importer .project-name::-webkit-details-marker { display: none; }
+
+.importer .project-name::before {
+  content: "▾";
+  flex: 0 0 auto;
+  font-size: var(--fs-small);
+  color: var(--ink-faint);
+}
+
+.importer .project:not([open]) .project-name::before { content: "▸"; }
 
 .importer .project-count {
   margin-left: auto;
