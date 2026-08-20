@@ -249,11 +249,15 @@ class ParserTest < Minitest::Test
 
     # The result of an Agent call is not an ordinary tool result: it's the
     # subagent's answer arriving back in the parent conversation, and it carries
-    # the subagent's own totals — EXCEPT when the agent was launched to run in
-    # the background (`tool.status == "async_launched"`): that result is just
-    # the launch acknowledgment, not the answer, so it has no totals yet. The
-    # real completion arrives later as a `task_notification`, same as any other
-    # background task.
+    # the subagent's own totals — EXCEPT when the subagent was launched to run
+    # in the background and hasn't finished yet. That's `tool.status ==
+    # "async_launched"` for an `Agent` call, or `"forked"` for a `Skill`
+    # invocation that forked into background execution (library-portal-
+    # implementation's Skill-based subagents always carry `forked`, never
+    # `totalTokens` — confirmed across every instance in that example). Either
+    # way that result is just an acknowledgment, not the final answer, so it
+    # has no totals yet. The real completion arrives later as a
+    # `task_notification`, same as any other background task.
     define_method("test_#{name}_agent_results_become_subagent_result_events") do
       doc = ConversationStory::Parser.new(log).to_document
       results = doc["events"].select { |e| e["kind"] == "subagent_result" }
@@ -262,9 +266,9 @@ class ParserTest < Minitest::Test
       assert_equal subagents.size, results.size, "one result per subagent call"
       results.each do |e|
         assert e.dig("tool", "agent_id"), "#{e["ref"]}: missing tool.agent_id"
-        if e.dig("tool", "status") == "async_launched"
+        if %w[async_launched forked].include?(e.dig("tool", "status"))
           assert_nil e.dig("tool", "subagent_tokens"),
-                     "#{e["ref"]}: an async launch shouldn't report totals yet"
+                     "#{e["ref"]}: a backgrounded launch shouldn't report totals yet"
         else
           assert e.dig("tool", "subagent_tokens", "total_tokens")
         end

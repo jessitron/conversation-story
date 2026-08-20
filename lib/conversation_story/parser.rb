@@ -56,6 +56,20 @@ module ConversationStory
       # with the same three fields and no timestamp. It records no change and
       # tells a reader nothing, so: its own kind, always hidden.
       "agent-setting"         => "agent_setting",
+      # `atis-latch` is a harness latch record: 41 instances in
+      # library-portal-implementation (plus a spot-check of Jess's own
+      # ~/.claude-personal logs), every one carrying an empty `atis` field. Zero
+      # variance, same rationale as `agent-setting` — its own always-hidden kind
+      # rather than the `unknown` fallback, so it isn't lumped in with
+      # `last-prompt`'s "unrecognized type" signal.
+      "atis-latch"            => "atis_latch",
+      # `relocated` fires when the harness moves a session's cwd into a git
+      # worktree (Jess's worktree-per-task workflow) — bookkeeping about WHERE
+      # the agent is running, not something said in the conversation.
+      "relocated"             => "relocated",
+      # `worktree-state` records the same worktree's identity (paths, branch
+      # name) each time it's relevant. Paired with `relocated` in this example.
+      "worktree-state"        => "worktree_state",
     }.freeze
 
     # Harness bookkeeping — records that are not part of the conversation "from
@@ -65,7 +79,10 @@ module ConversationStory
     # rationale (which types, and why the ones we KEEP are worth keeping).
     #
     # Whole kinds that are always hidden:
-    HIDDEN_KINDS = %w[system file_snapshot permission_mode ai_title agent_setting].freeze
+    HIDDEN_KINDS = %w[
+      system file_snapshot permission_mode ai_title agent_setting
+      atis_latch relocated worktree_state
+    ].freeze
     # Attachment subtypes that are pure context-loading / hook plumbing. The two
     # conversation-relevant attachments stay visible: `queued_command` (delivered
     # queued input AND background <task-notification>s — "the agent being nudged")
@@ -93,14 +110,9 @@ module ConversationStory
     UNDERSPECIFIED_ATTACHMENT_TYPES = %w[
       deferred_tools_delta mcp_instructions_delta skill_listing
     ].freeze
-    # The unsent-prompt buffer (a `last-prompt` record → `unknown` fallback).
-    # `atis-latch` joins it for the same reason `agent-setting` earned a
-    # hidden kind: zero variance. Every instance found (this project's
-    # library-portal-implementation example, plus a spot-check of Jess's own
-    # ~/.claude-personal logs) has an empty `atis` field — it's an internal
-    # harness latch that hasn't fired any content yet, and no real conclusion
-    # can be drawn from a card with nothing in it.
-    HIDDEN_RECORD_TYPES = %w[last-prompt atis-latch].freeze
+    # The unsent-prompt buffer (a `last-prompt` record → `unknown` fallback,
+    # intentionally: it's the one type left to prove that fallback path works).
+    HIDDEN_RECORD_TYPES = %w[last-prompt].freeze
     # queue-operation and task_notification stay visible — EXCEPT the bare
     # `dequeue`/`remove` markers, which are hidden: they carry no content of
     # their own, and the event each one delivers gets `dequeued: true` or
@@ -328,6 +340,9 @@ module ConversationStory
       # `agent-name` calls the same string agentName.
       when "ai_title"          then "Title: #{ai_title_text(rec)}"
       when "agent_setting"     then "Agent: #{rec["agentSetting"]}"
+      when "atis_latch"        then "Prompt buffer latch (empty)"
+      when "relocated"         then "Relocated to #{rec["relocatedCwd"]}"
+      when "worktree_state"    then "Worktree: #{rec.dig("worktreeSession", "worktreeName")}"
       when "queue_operation"   then queue_summary(rec)
       else                          "#{rec["type"]} record"
       end
@@ -457,6 +472,17 @@ module ConversationStory
       when "agent_setting"
         # same deal: hidden, and the selected agent is the whole content.
         event["detail"] = { "text" => rec["agentSetting"].to_s }
+      when "atis_latch"
+        # hidden, and every instance found is an empty string — nothing to name.
+        event["detail"] = { "text" => rec["atis"].to_s }
+      when "relocated"
+        event["detail"] = { "text" => rec["relocatedCwd"].to_s }
+      when "worktree_state"
+        ws = rec["worktreeSession"] || {}
+        event["detail"] = {
+          "text" => [ws["worktreeName"], ws["worktreeBranch"], ws["worktreePath"]]
+                     .compact.join(" / "),
+        }
       when "unknown"
         event["detail"] = { "raw" => rec }
       end
@@ -819,10 +845,27 @@ module ConversationStory
     # the subagent card. Rendering it again as the subagent's own first "user
     # message" says nothing new, so hide it (the event stays in the document, as
     # with every other hidden record).
+    #
+    # A `Skill` tool call spawns a subagent the same way (forked execution, same
+    # `toolUseResult.agentId` hinge) but its `tool.input` carries `skill`/`args`,
+    # not `prompt` — the harness composes the actual prompt (skill instructions
+    # + args) itself, and the ONLY place that composed text appears is the
+    # subagent's own first record. So when the call has no `prompt` to compare
+    # against, trust that first record IS the echo (every subagent log opens
+    # with one) and backfill `call.tool.input.prompt` from it — that keeps
+    # `tool.input.prompt` meaning the same thing for every subagent regardless
+    # of which tool spawned it, so callers (this method, the call's own
+    # summary in resummarize_subagent_pair!) don't need to special-case Skill.
     def hide_prompt_echo!(events, call)
       first = events.first
       return unless first && first["kind"] == "user_message"
-      return unless first.dig("detail", "text") == call.dig("tool", "input", "prompt")
+
+      prompt = call.dig("tool", "input", "prompt")
+      if prompt
+        return unless first.dig("detail", "text") == prompt
+      else
+        call["tool"]["input"]["prompt"] = first.dig("detail", "text")
+      end
 
       first["hidden"] = true
     end
