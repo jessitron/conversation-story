@@ -95,12 +95,30 @@ this change are dead links; nothing aliases them.) Two things follow:
   max context, size and date. It serves neither `out/` nor anything published;
   its page and `SessionScan`'s per-session cache live in the gitignored
   `.importer/`, because everything derived from Jess's conversation logs is
-  private and this repo is public. As of session 25's ticket 03 it is READ-ONLY —
-  the name field and Import/Re-snapshot button are tickets 04/05 — so importing
-  is still `bin/grab-example`'s job. Deliberately no publishing warning on the
+  private and this repo is public. Deliberately no publishing warning on the
   page (Jess's call, session 25 decision 10); don't add one.
-  **`bin/grab-example <session-id> <name>`** is the CLI door and the one that
-  copies (`--list` shows the newest 50 sessions across both config dirs with each
+  **As of tickets 04/05 it is the PRIMARY door**: each card has a name field
+  (pre-filled with a slug of the title, `Import.slugify`), a live
+  `examples/<name>.jsonl` preview, and pressing **Import** copies the log (plus
+  any `subagents/` sidecars) via `ConversationStory::Import.copy` and shells out
+  to `bin/parse` + `bin/render` for that ONE name — never a full `rake build`,
+  the same restraint `bin/serve`'s hand-edit path uses. A bad slug or an attempt
+  to overwrite an *unrelated* existing example under the same name is refused
+  (`400`, plain HTML response — the whole thing is one `<form method="post">`,
+  so `bin/check-importer` drives it with `net/http` alone, no browser needed).
+  A session already in `examples/` is recognized by reading each fixture's own
+  first-line `sessionId` (`Import.existing_examples` — no manifest to go stale)
+  and its button reads **Re-snapshot**: same name, sidecars MERGED in rather
+  than the directory replaced, because a subagent that finished after the first
+  snapshot is a new file a size check can't see. A log written to in the last
+  couple of minutes (`Import::LIVE_SECONDS`) wears a **live** badge — the
+  harness is still appending, so that fixture is guaranteed incomplete.
+  `--examples`/`--out`/`--config-dir`/`--serve-port` on `bin/importer` point the
+  whole pipeline at temp directories, which is how `bin/check-importer` exercises
+  a real import without ever touching Jess's actual fixtures.
+  **`bin/grab-example <session-id> <name>`** is the CLI door — scriptable, needs
+  no browser, still there for when a terminal is faster than a page
+  (`--list` shows the newest 50 sessions across both config dirs with each
   one's first prompt); it copies the main log plus any `subagents/` sidecars.
   Both doors go through `ConversationStory::Import` so they can't drift. Grabbing
   the session you're in copies a *live* file, so the fixture stops mid-session —

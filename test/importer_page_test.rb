@@ -161,7 +161,7 @@ class ImporterPageTest < Minitest::Test
     html = page_for(scan(project: nasty, mtime: 1, "title" => nasty,
                          "first_prompt" => nasty, "recap" => nasty)).html
 
-    refute_includes html, "<script>"
+    refute_includes html, nasty
     assert_includes html, "&lt;script&gt;"
   end
 
@@ -204,6 +204,33 @@ class ImporterPageTest < Minitest::Test
       assert_equal path, page_for(scan(project: "a", mtime: 1)).write(path)
       assert_includes File.read(path), "session-card"
     end
+  end
+
+  # ---- tickets 04/05: the name field, Import/Re-snapshot, live -----------
+
+  def test_name_field_defaults_to_a_slug_of_the_title
+    html = page_for(scan(project: "a", mtime: 1, "title" => "Mode Switches")).html
+
+    assert_includes html, %(value="mode-switches")
+    assert_includes html, "examples/mode-switches.jsonl"
+    assert_includes html, ">Import<"
+  end
+
+  def test_a_session_already_in_examples_shows_its_existing_name_and_re_snapshot
+    page = Page.new([scan(project: "a", mtime: 1, "session_id" => "abc-123", "title" => "Anything")],
+                    existing: { "mode-switches" => "abc-123" })
+
+    assert_includes page.html, %(value="mode-switches")
+    assert_includes page.html, ">Re-snapshot<"
+    refute_includes page.html, ">Import<"
+  end
+
+  def test_a_recently_written_session_is_flagged_live
+    live = page_for(scan(project: "a", mtime: Time.now.to_i)).html
+    stale = page_for(scan(project: "a", mtime: Time.now.to_i - 1000)).html
+
+    assert_includes live, "live-badge"
+    refute_includes stale, "live-badge"
   end
 
   # The generated page belongs in the gitignored importer workspace, next to the

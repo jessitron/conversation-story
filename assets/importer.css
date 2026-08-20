@@ -124,19 +124,93 @@ main.importer {
   font-style: italic;
 }
 
-/* The shelf the name field and Import button land on in tickets 04/05. Read-only
-   for now: just the session id, so `bin/grab-example <id>` is copy-pasteable. */
+/* The shelf the name field and Import/Re-snapshot button live on. A real
+   <form> (tickets 04/05): the session id stays for `bin/grab-example <id>`,
+   and the name field + live path preview + button fill the rest. */
 .importer .session-actions {
   margin-top: 12px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 8px 12px;
 }
 
 .importer .session-id {
   font-family: var(--font-mono);
   font-size: var(--fs-small);
   color: var(--ink-faint);
+}
+
+.importer .name-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-small);
+  color: var(--ink-soft);
+}
+
+.importer .name-field input {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  padding: 3px 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--paper);
+  color: var(--ink);
+  width: 20ch;
+}
+
+.importer .example-path {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--ink-faint);
+}
+
+.importer .session-actions button {
+  margin-left: auto;
+  font-family: var(--font-head);
+  font-size: var(--fs-small);
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  background: var(--gold);
+  color: var(--navy);
+  cursor: pointer;
+}
+
+.importer .session-actions button:hover { filter: brightness(1.05); }
+
+/* A session whose log was written to within the last couple of minutes — the
+   harness is still appending, so a fixture taken from it now is guaranteed
+   incomplete. Loud on purpose: it sits right next to the title. */
+.importer .live-badge {
+  font-family: var(--font-head);
+  font-size: var(--fs-small);
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
+  color: var(--navy);
+  background: var(--gold);
+  border-radius: 3px;
+  padding: 1px 6px;
+  vertical-align: middle;
+}
+
+/* The result page a form submit lands on — success or refusal. */
+.importer .import-result {
+  max-width: 700px;
+  margin: 60px auto;
+  padding: 0 clamp(20px, 4vw, 60px);
+}
+
+.importer .import-result .ok { color: var(--ink); }
+.importer .import-result .error { color: #b5432e; }
+
+.importer .import-result a.back {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: var(--fs-small);
 }
 
 .importer .importer-footer,
