@@ -13,9 +13,10 @@
 # assets/story.js).
 #
 # A save does NOT patch story.yaml in place. It writes the sidecar
-# edits/<story>.yaml and then re-runs the real pipeline — bin/parse, bin/render —
-# in subprocesses, so the page you reload came from the same two programs a
-# `rake build` would run. Nothing here knows how to parse a log or draw a card.
+# edits/<story>.yaml and then re-runs the real pipeline — bin/parse, bin/render,
+# bin/site-index — in subprocesses, so the page you reload came from the same
+# programs a `rake build` would run. Nothing here knows how to parse a log or
+# draw a card.
 #
 #   bin/serve [-p PORT] [--edits DIR]   # default 8080, bound to localhost only
 #
@@ -124,6 +125,7 @@ def save_edit(name:, ref:)
   run!(RUBY, File.join(REPO_ROOT, "bin", "parse"), paths[:log], "-o", paths[:story],
        "--edits", EDITS_DIR[0])
   run!(RUBY, File.join(REPO_ROOT, "bin", "render"), paths[:story], "-o", paths[:page])
+  run!(RUBY, File.join(REPO_ROOT, "bin", "site-index"), OUT_DIR)
 
   event_for(paths[:story], ref)
 end

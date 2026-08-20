@@ -19,8 +19,10 @@
 # examples/) posts to POST /import, which copies the session via
 # ConversationStory::Import — the same module bin/grab-example uses, so the two
 # doors can't drift — then shells out to bin/parse + bin/render for that ONE
-# name, the same way bin/serve re-runs the pipeline after a hand edit. Never a
-# full `rake build`: adding one example must not re-render every other one.
+# name plus bin/site-index (cheap: it only reads existing story.yaml files,
+# never reparses a log), so the landing page never goes stale on a new import.
+# bin/serve re-runs the same three after a hand edit. Never a full `rake
+# build`: adding one example must not re-render every other one.
 #
 # Everything the page needs is on disk under .importer/ (gitignored): ticket
 # 02's per-session scan cache and this program's generated index.html. Nothing
@@ -133,6 +135,7 @@ def do_import(session_id:, name:, examples_dir:, out_dir:, config_dirs:)
   FileUtils.mkdir_p(File.dirname(story))
   run!(RUBY, File.join(REPO_ROOT, "bin", "parse"), copied[:path], "-o", story)
   run!(RUBY, File.join(REPO_ROOT, "bin", "render"), story, "-o", page)
+  run!(RUBY, File.join(REPO_ROOT, "bin", "site-index"), out_dir)
 
   copied.merge(name: name, re_snapshot: !owner.nil?)
 rescue Import::Error => e
