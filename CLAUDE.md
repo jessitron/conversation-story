@@ -331,6 +331,8 @@ Run things with `rake parse` / `render` / `site` / `build` / `serve` / `test`
 Note: the Rakefile's `RENDER_SRC`/`PARSE_SRC`/`SITE_SRC` lists source files
 explicitly (not a glob) — a new `lib/` file needs adding there or `rake build`
 won't notice it changed.
+To run a single test file (`rake test` always runs the whole
+`test/**/*_test.rb` glob): `ruby -Ilib -Itest test/parser_test.rb`.
 
 - **Hand edits are a sidecar, not an edit to `out/`** (session 11, Mount
   Malleable; session 20 added the second section). `edits/<name>.yaml` holds
