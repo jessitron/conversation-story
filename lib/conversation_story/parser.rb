@@ -94,7 +94,13 @@ module ConversationStory
       deferred_tools_delta mcp_instructions_delta skill_listing
     ].freeze
     # The unsent-prompt buffer (a `last-prompt` record → `unknown` fallback).
-    HIDDEN_RECORD_TYPES = %w[last-prompt].freeze
+    # `atis-latch` joins it for the same reason `agent-setting` earned a
+    # hidden kind: zero variance. Every instance found (this project's
+    # library-portal-implementation example, plus a spot-check of Jess's own
+    # ~/.claude-personal logs) has an empty `atis` field — it's an internal
+    # harness latch that hasn't fired any content yet, and no real conclusion
+    # can be drawn from a card with nothing in it.
+    HIDDEN_RECORD_TYPES = %w[last-prompt atis-latch].freeze
     # queue-operation and task_notification stay visible — EXCEPT the bare
     # `dequeue`/`remove` markers, which are hidden: they carry no content of
     # their own, and the event each one delivers gets `dequeued: true` or
