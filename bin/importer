@@ -15,14 +15,25 @@
 # that's the leak that would drag it back into being a second bin/serve
 # (decision 14).
 #
-# TICKET 03 IS READ-ONLY. The page lists and describes sessions; it does not
-# import one. The name field, the Import/Re-snapshot button, the shell-out to
-# bin/parse + bin/render and the live flag are tickets 04 and 05.
+# TICKETS 04/05: pressing Import (or Re-snapshot, for a session already in
+# examples/) posts to POST /import, which copies the session via
+# ConversationStory::Import — the same module bin/grab-example uses, so the two
+# doors can't drift — then shells out to bin/parse + bin/render for that ONE
+# name, the same way bin/serve re-runs the pipeline after a hand edit. Never a
+# full `rake build`: adding one example must not re-render every other one.
 #
 # Everything the page needs is on disk under .importer/ (gitignored): ticket
 # 02's per-session scan cache and this program's generated index.html. Nothing
 # derived from Jess's private conversation logs is ever written anywhere else in
 # this repo — it is public.
+#
+#   --examples DIR      copy into DIR instead of examples/ (bin/check-importer)
+#   --out DIR           parse/render into DIR instead of out/ (ditto)
+#   --config-dir DIR    scan DIR instead of Import::CONFIG_DIRS (repeatable;
+#                       ditto — a temp "session log" to import without ever
+#                       touching Jess's real ~/.claude-work / ~/.claude-personal)
+#   --serve-port PORT   where bin/serve is expected to be, for the result link
+#                       and the /api/health probe (default 8080)
 
 # Same one non-stdlib dependency bin/serve has, and the same reason: Ruby 4.0
 # unbundled webrick. bin/parse, bin/render, bin/site-index and the tests stay
@@ -39,20 +50,133 @@ rescue LoadError
   MSG
 end
 
+require "cgi"
+require "fileutils"
+require "net/http"
+require "rbconfig"
+
 require_relative "../lib/conversation_story/importer_page"
+require_relative "../lib/conversation_story/import"
 
 REPO_ROOT = File.expand_path("..", __dir__)
-Page = ConversationStory::ImporterPage
+Page   = ConversationStory::ImporterPage
+Import = ConversationStory::Import
+RUBY   = RbConfig.ruby
 
 port = Integer(ENV.fetch("PORT", 8081))
+examples_dir = Import::EXAMPLES_DIR
+out_dir = File.join(REPO_ROOT, "out")
+serve_port = 8080
+config_dirs = nil
 args = ARGV.dup
 until args.empty?
   arg = args.shift
   case arg
-  when "-p", "--port" then port = Integer(args.shift)
-  when "-h", "--help" then warn "usage: importer [-p PORT]"; exit 0
+  when "-p", "--port"   then port = Integer(args.shift)
+  when "--examples"     then examples_dir = File.expand_path(args.shift)
+  when "--out"          then out_dir = File.expand_path(args.shift)
+  when "--serve-port"   then serve_port = Integer(args.shift)
+  when "--config-dir"   then (config_dirs ||= []) << File.expand_path(args.shift)
+  when "-h", "--help"
+    warn "usage: importer [-p PORT] [--examples DIR] [--out DIR] " \
+         "[--config-dir DIR ...] [--serve-port PORT]"
+    exit 0
   else warn "importer: unknown argument #{arg.inspect}"; exit 1
   end
+end
+config_dirs ||= Import::CONFIG_DIRS
+
+class ImportError < StandardError
+  attr_reader :status
+
+  def initialize(message, status: 400)
+    super(message)
+    @status = status
+  end
+end
+
+def run!(*command)
+  ok = system(*command, out: File::NULL)
+  raise ImportError.new("pipeline failed: #{command.join(" ")}", status: 500) unless ok
+end
+
+# True when a server answers /api/health — the same probe story.js uses to
+# decide whether to show the editor. A short timeout: a dead bin/serve should
+# not make the import response hang.
+def serve_running?(serve_port)
+  uri = URI("http://localhost:#{serve_port}/api/health")
+  res = Net::HTTP.start(uri.hostname, uri.port, open_timeout: 1, read_timeout: 1) { |http| http.get(uri.path) }
+  res.is_a?(Net::HTTPSuccess)
+rescue StandardError
+  false
+end
+
+# Copy the session, then parse + render THIS ONE example — never a full
+# `rake build` (ticket 04). Returns what landed, for the result page.
+def do_import(session_id:, name:, examples_dir:, out_dir:, config_dirs:)
+  raise ImportError, "missing session_id" if session_id.to_s.empty?
+  unless name.to_s.match?(Import::SLUG)
+    raise ImportError, "name should be a slug like `mode-switches`, got #{name.inspect}"
+  end
+
+  session = Import.find(session_id, config_dirs: config_dirs)
+
+  owner = Import.existing_examples(examples_dir: examples_dir)[name]
+  if owner && owner != session_id
+    raise ImportError, "examples/#{name}.jsonl is already a different session (#{owner}) — pick another name"
+  end
+
+  copied = Import.copy(session.path, name, examples_dir: examples_dir)
+
+  story = File.join(out_dir, name, "story.yaml")
+  page  = File.join(out_dir, name, "index.html")
+  FileUtils.mkdir_p(File.dirname(story))
+  run!(RUBY, File.join(REPO_ROOT, "bin", "parse"), copied[:path], "-o", story)
+  run!(RUBY, File.join(REPO_ROOT, "bin", "render"), story, "-o", page)
+
+  copied.merge(name: name, re_snapshot: !owner.nil?)
+rescue Import::Error => e
+  raise ImportError, e.message
+end
+
+def h(value) = CGI.escapeHTML(value.to_s)
+
+def result_page(body)
+  <<~HTML
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <title>Import a Conversation</title>
+    <link rel="stylesheet" href="assets/story.css">
+    <link rel="stylesheet" href="assets/importer.css">
+    </head>
+    <body>
+    <main class="importer"><div class="import-result">
+    #{body}
+    <p><a class="back" href="/">&larr; back to sessions</a></p>
+    </div></main>
+    </body>
+    </html>
+  HTML
+end
+
+def success_page(copied, serve_port)
+  story_url = "http://localhost:#{serve_port}/#{copied[:name]}/"
+  verb = copied[:re_snapshot] ? "Re-snapshotted" : "Imported"
+  lines = ["<p class=\"ok\">#{h verb} as <code>examples/#{h copied[:name]}.jsonl</code> " \
+           "— #{copied[:lines]} lines, #{(copied[:size] / 1024.0 / 1024).round(1)}M" \
+           "#{copied[:subagents].positive? ? ", #{copied[:subagents]} subagent log(s)" : ""}.</p>"]
+  if serve_running?(serve_port)
+    lines << "<p class=\"ok\"><a href=\"#{h story_url}\">Open the story &rarr;</a></p>"
+  else
+    lines << "<p class=\"ok\">Start <code>rake serve</code> to see it at #{h story_url}</p>"
+  end
+  result_page(lines.join("\n"))
+end
+
+def error_page(message)
+  result_page(%(<p class="error">#{h message}</p>))
 end
 
 # BindAddress "localhost", not "127.0.0.1" — the trap bin/serve documents and
@@ -91,13 +215,40 @@ server.mount_proc("/") do |req, res|
   end
 
   started = Time.now
-  page = Page.for_recent_sessions
+  page = Page.for_recent_sessions(examples_dir: examples_dir,
+                                  sessions: Import.sessions(config_dirs: config_dirs))
   path = page.write
   res["Content-Type"] = "text/html; charset=utf-8"
   res.body = File.read(path)
   puts format("  listed %d sessions in %d projects  (%d cached, %d scanned, %.2fs)",
               page.scans.size, page.groups.size,
               page.cache_hits, page.cache_misses, Time.now - started)
+end
+
+# The whole point of the page: copy a session into examples/, build its story,
+# and hand back a link. A plain form POST — no fetch, no JSON — so
+# bin/check-importer can exercise it with net/http alone, the same way
+# bin/check-edit-api exercises bin/serve's write path.
+server.mount_proc("/import") do |req, res|
+  res["Content-Type"] = "text/html; charset=utf-8"
+  unless req.request_method == "POST"
+    res.status = 405
+    next res.body = "importer: use POST"
+  end
+
+  begin
+    copied = do_import(session_id: req.query["session_id"], name: req.query["name"],
+                       examples_dir: examples_dir, out_dir: out_dir, config_dirs: config_dirs)
+    puts "  imported #{copied[:name]}  #{copied[:lines]} lines#{copied[:re_snapshot] ? " (re-snapshot)" : ""}"
+    res.body = success_page(copied, serve_port)
+  rescue ImportError => e
+    res.status = e.status
+    res.body = error_page(e.message)
+  rescue StandardError => e
+    warn "#{e.class}: #{e.message}"
+    res.status = 500
+    res.body = error_page("#{e.class}: #{e.message}")
+  end
 end
 
 %w[INT TERM].each { |sig| trap(sig) { server.shutdown } }

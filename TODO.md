@@ -51,13 +51,6 @@ whole system for now.
 
 ## Backlog
 
-- `conversation-importer` I want a local-only app that shows me the recent conversations in my claude logs. (both .claude-work and .claude-personal) It shows me a little summary - like the original user request maybe, and definitely the recap. It can tell me how many turns, how many subagents, and a max content length, something like that. Then it gives me a button to import the conversation, and that brings it into the examples directory, and gives it a name. There's probably a title in there somewhere.
-  **Design settled (session 25), not built** — fourteen decisions in
-  `notes/2026-08-18-session-25-conversation-importer-design.md`: standalone
-  `bin/importer` on 8081, ~50 recent sessions grouped by project across both
-  config dirs, streaming `SessionScan` behind a gitignored cache, copy logic
-  shared with `bin/grab-example` — which is **broken today**, reading the
-  empty `~/.claude/projects` instead of `~/.claude-work` / `~/.claude-personal`.
 
 - `design-feature-owner` A feature owner for the CSS — a designer invoked any
   time the UI is updated ← mountain: metawork
@@ -209,3 +202,13 @@ deferred_tools_delta`-labelled cards with no styling and, only when dark
   Jess before acting on it] ← mountain: mount-interactive
 
 ## Done
+
+- `conversation-importer` A local-only app (`bin/importer`, port 8081) lists
+  recent conversations across both config dirs, grouped by project, each card
+  carrying the title, first prompt, recap in full, and stats. Pressing Import
+  (or Re-snapshot, for a session already in `examples/`) copies the log via
+  `ConversationStory::Import` and builds that one example's story. Design in
+  `notes/2026-08-18-session-25-conversation-importer-design.md`; tickets in
+  `.scratch/conversation-importer/issues/`; `bin/check-importer` guards the
+  write path. See CLAUDE.md's "two doors in" paragraph and README.md's
+  "Bringing in a new example" section.

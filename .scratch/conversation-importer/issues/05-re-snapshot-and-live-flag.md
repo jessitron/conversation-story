@@ -25,15 +25,15 @@ missing.
 
 **Blocked by:** 04 — the import action.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] A session whose `sessionId` matches the first line of an existing
+- [x] A session whose `sessionId` matches the first line of an existing
       `examples/*.jsonl` is shown as already imported, with that example's name
-- [ ] Its button reads Re-snapshot and overwrites in place under the existing
+- [x] Its button reads Re-snapshot and overwrites in place under the existing
       name, then rebuilds that one story
-- [ ] Re-snapshot copies sidecars that appeared since the first snapshot, even
+- [x] Re-snapshot copies sidecars that appeared since the first snapshot, even
       when the main log's size is unchanged
-- [ ] Re-snapshot does not create a second fixture under a different name
-- [ ] A log written to within the last couple of minutes is flagged live
-- [ ] Recognition reads the fixtures themselves — no manifest file is introduced
-- [ ] `rake test` passes
+- [x] Re-snapshot does not create a second fixture under a different name
+- [x] A log written to within the last couple of minutes is flagged live
+- [x] Recognition reads the fixtures themselves — no manifest file is introduced
+- [x] `rake test` passes

@@ -35,17 +35,17 @@ back into being a second `bin/serve`.
 
 **Blocked by:** 01 (shared `Import`), 03 (the listing page).
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Each card has a name field pre-filled with a slug of the session's AI title
-- [ ] The `examples/<slug>.jsonl` path updates live under the field as Jess types
-- [ ] A name that isn't a clean `[a-z0-9-]` slug is refused with a clear message
-- [ ] An import that would overwrite an unrelated existing example is refused
-- [ ] Import copies the main log and every `subagents/` sidecar
-- [ ] Import shells out to `bin/parse` and `bin/render` for that one name only —
+- [x] Each card has a name field pre-filled with a slug of the session's AI title
+- [x] The `examples/<slug>.jsonl` path updates live under the field as Jess types
+- [x] A name that isn't a clean `[a-z0-9-]` slug is refused with a clear message
+- [x] An import that would overwrite an unrelated existing example is refused
+- [x] Import copies the main log and every `subagents/` sidecar
+- [x] Import shells out to `bin/parse` and `bin/render` for that one name only —
       other examples in `out/` are untouched
-- [ ] On success the response links to `http://localhost:8080/<name>/`
-- [ ] With `bin/serve` down, the `GET /api/health` probe fails and the response
+- [x] On success the response links to `http://localhost:8080/<name>/`
+- [x] With `bin/serve` down, the `GET /api/health` probe fails and the response
       says to start `rake serve` rather than showing a dead link
-- [ ] `bin/importer` serves no files out of `out/`
-- [ ] `rake test` passes
+- [x] `bin/importer` serves no files out of `out/`
+- [x] `rake test` passes

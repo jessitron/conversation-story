@@ -52,18 +52,24 @@ module ConversationStory
     # it completes — so a cold pass that dies halfway keeps what it did, and the
     # next load pays only for logs that changed.
     def self.for_recent_sessions(limit: LIMIT, cache: SessionScan::Cache.new,
-                                 sessions: Import.sessions)
+                                 sessions: Import.sessions, examples_dir: Import::EXAMPLES_DIR)
       recent = sessions.first(limit)
       scans  = recent.map { |session| SessionScan.fetch(session.path, cache: cache) }
-      new(scans, total_sessions: sessions.size, cache: cache)
+      new(scans, total_sessions: sessions.size, cache: cache,
+          existing: Import.existing_examples(examples_dir: examples_dir))
     end
 
     # @param scans [Array<Hash>] SessionScan results, newest first
     # @param total_sessions [Integer, nil] how many exist in all, for the footer
-    def initialize(scans, total_sessions: nil, cache: nil, generated_at: Time.now)
+    # @param existing [Hash] { example name => sessionId }, ticket 05's "already
+    #   imported" recognition — the fixtures answer the question, so this is
+    #   computed once (Import.existing_examples) and handed in rather than
+    #   re-globbed per card.
+    def initialize(scans, total_sessions: nil, cache: nil, existing: {}, generated_at: Time.now)
       @scans = scans
       @total_sessions = total_sessions || scans.size
       @cache = cache
+      @existing = existing
       @generated_at = generated_at
     end
 
@@ -115,6 +121,7 @@ module ConversationStory
         #{indent(footer_html, 2)}
         </main>
 
+        #{indent(script_html, 0)}
         </body>
         </html>
       HTML
@@ -213,23 +220,35 @@ module ConversationStory
 
     # One session. The recap is the body; everything else frames it.
     #
-    # Ticket 03 is READ-ONLY: no name field, no Import button, nothing wired.
-    # `.session-actions` is the empty shelf those belong on (tickets 04/05), so
-    # adding them is a fill-in rather than a re-layout.
+    # `.session-actions` is a real form now (tickets 04/05): a name field
+    # pre-filled with a slug of the title (or the existing example's name, for
+    # a session already imported), a live `examples/<name>.jsonl` preview kept
+    # in sync by script_html's listener, and Import or Re-snapshot depending on
+    # whether `imported_name_for` finds this session already in examples/.
     def card_html(scan)
+      imported = imported_name_for(scan)
+      name = imported || default_name_for(scan)
       <<~HTML.rstrip
         <article class="session-card">
           <div class="session-head">
-            <h3 class="session-title">#{h title_of(scan)}</h3>
+            <h3 class="session-title">#{h title_of(scan)}#{live_badge(scan)}</h3>
             <div class="session-stats">
         #{indent(stats_html(scan), 6)}
             </div>
           </div>
           <p class="session-prompt">#{prompt_html(scan)}</p>
           #{recap_html(scan)}
-          <div class="session-actions">
+          <form class="session-actions" method="post" action="/import">
             <code class="session-id">#{h scan["session_id"]}</code>
-          </div>
+            <input type="hidden" name="session_id" value="#{h scan["session_id"]}">
+            <label class="name-field">
+              <span>Name</span>
+              <input type="text" name="name" value="#{h name}"
+                     pattern="[a-z0-9]+(-[a-z0-9]+)*" required>
+            </label>
+            <code class="example-path">examples/#{h name}.jsonl</code>
+            <button type="submit">#{imported ? "Re-snapshot" : "Import"}</button>
+          </form>
         </article>
       HTML
     end
@@ -239,6 +258,28 @@ module ConversationStory
     def title_of(scan)
       title = scan["title"].to_s.strip
       title.empty? ? "(untitled session)" : title
+    end
+
+    # The good default a keystroke away from Import (ticket 04): the title,
+    # slugified. A session with no title falls back to Import.slugify's own
+    # "session" default.
+    def default_name_for(scan) = Import.slugify(scan["title"])
+
+    # The example this session already went in as, or nil — ticket 05's
+    # already-imported recognition, off the map `for_recent_sessions` built
+    # once from examples/*.jsonl rather than re-globbed per card.
+    def imported_name_for(scan) = @existing.key(scan["session_id"])
+
+    # A log written to within the last couple of minutes: the harness is still
+    # appending, so a fixture taken from it now is guaranteed incomplete
+    # (ticket 05). Same threshold as Import::LIVE_SECONDS / grab-example's own
+    # warning.
+    def live?(scan) = Time.now - Time.at(scan["mtime"].to_f) < Import::LIVE_SECONDS
+
+    def live_badge(scan)
+      return "" unless live?(scan)
+
+      %( <span class="live-badge" title="written to in the last couple of minutes — this fixture would be incomplete">live</span>)
     end
 
     def stats_html(scan)
@@ -267,6 +308,27 @@ module ConversationStory
       return %(<p class="session-recap none">no recap — this session was never left and resumed</p>) if recap.empty?
 
       %(<div class="session-recap d-markdown">#{Markdown.to_html(recap)}</div>)
+    end
+
+    # The path preview under the name field is cosmetic (the server slugifies
+    # and validates again on submit), so it's a small vanilla listener rather
+    # than a build step — this page has no other JS and stays framework-free.
+    # `slugify` here MUST match Import.slugify's rule or the preview would lie.
+    def script_html
+      <<~HTML.rstrip
+        <script>
+        function slugify(text) {
+          return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "session";
+        }
+        document.querySelectorAll(".session-actions").forEach(function (form) {
+          var input = form.querySelector('input[name="name"]');
+          var path = form.querySelector(".example-path");
+          input.addEventListener("input", function () {
+            path.textContent = "examples/" + slugify(input.value) + ".jsonl";
+          });
+        });
+        </script>
+      HTML
     end
 
     def footer_html

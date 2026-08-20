@@ -22,16 +22,16 @@ documented. Without this, the next session's agent reaches for the wrong tool.
 
 **Blocked by:** 05 — the last of the import behaviour.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `bin/check-importer` starts the importer, performs a real import over plain
+- [x] `bin/check-importer` starts the importer, performs a real import over plain
       HTTP, and asserts the fixture and the built page both appeared
-- [ ] It asserts the bad-slug and unrelated-overwrite refusals
-- [ ] It uses a temp examples dir and temp cache, and leaves the real `examples/`,
+- [x] It asserts the bad-slug and unrelated-overwrite refusals
+- [x] It uses a temp examples dir and temp cache, and leaves the real `examples/`,
       `out/` and cache untouched
-- [ ] It uses no Chrome / ferrum
-- [ ] CLAUDE.md names `bin/importer` as the primary door and `bin/grab-example` as
+- [x] It uses no Chrome / ferrum
+- [x] CLAUDE.md names `bin/importer` as the primary door and `bin/grab-example` as
       the CLI one
-- [ ] `README.md`'s program list mentions the importer alongside parse / render /
+- [x] `README.md`'s program list mentions the importer alongside parse / render /
       site-index / serve
-- [ ] `rake test` passes and every `bin/check-*` script still passes
+- [x] `rake test` passes and every `bin/check-*` script still passes

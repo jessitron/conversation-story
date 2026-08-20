@@ -51,6 +51,7 @@ rake render    # bin/render: out/*/story.yaml -> out/<name>/index.html
 rake site      # bin/site-index: out/*/story.yaml -> out/index.html (landing page)
 rake build     # parse, render, then site (dependency-ordered)
 rake serve     # bin/serve: out/ at http://localhost:8080, with summary editing on
+rake importer  # bin/importer: browse recent sessions at http://localhost:8081
 rake test      # golden-fixture tests
 ```
 
@@ -145,6 +146,41 @@ bin/screenshot 'http://localhost:8080/episode-8-after/?mode=edit' '#episode-8-af
 Because refs are line numbers, editing a log orphans its edits — `bin/parse`
 warns on stderr about overrides that match no event rather than dropping them
 silently.
+
+## Bringing in a new example (the importer)
+
+`examples/` is where golden fixtures live, and there are two doors into it —
+both going through the same `ConversationStory::Import`, so they can't drift.
+
+**`bin/importer`** (`rake importer`, port 8081) is the browser door and the
+place to *choose* a fixture: it lists Jess's ~50 most recent Claude sessions
+across both config dirs (`~/.claude-work`, `~/.claude-personal`) and every
+project, newest first, grouped by project. Each card shows the AI title, the
+first plain-string prompt, the recap in full, and stats (turns, subagents, max
+context, size, written). A session whose log was written to in the last couple
+of minutes is flagged **live** — the harness is still appending, so a fixture
+taken from it now would be incomplete.
+
+Each card has a **name field**, pre-filled with a slug of the session's title,
+and the `examples/<name>.jsonl` path it will land at updates live as you type.
+Pressing **Import** copies the log (and any subagent sidecars) into
+`examples/`, then shells out to `bin/parse` and `bin/render` for *that one*
+example — not a full `rake build` — and links to the built story on
+`rake serve`. A session already in `examples/` is recognized (by reading the
+fixture's own first line, no manifest to go stale) and its button reads
+**Re-snapshot** instead: same name, sidecars merged in rather than replaced,
+for a subagent that finished after the first snapshot.
+
+It is local-only and never serves `out/` or anything published — a different
+program, and a different port, from `bin/serve` on purpose.
+
+**`bin/grab-example <session-id> <name>`** (`--list` to browse without a
+browser) is the CLI door, for scripting or when a terminal is faster than a
+page.
+
+```sh
+bin/check-importer     # smoke-test the whole import write path (temp dirs)
+```
 
 ## Modes and keyboard (Mount Interactive)
 

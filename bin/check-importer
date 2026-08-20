@@ -1,0 +1,148 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# Exercise the importer's write path end to end (tickets 04/05): start
+# bin/importer, POST /import over plain HTTP, and check that a fixture and its
+# built page both appeared. Also checks the two refusals (a bad slug, an
+# unrelated overwrite) and that Re-snapshot merges a new sidecar into an
+# existing fixture rather than creating a second one.
+#
+# No Chrome — bin/check-modes earns ferrum because keyboard and mode behaviour
+# is unobservable from Ruby, and a <form> POST is not: this drives the same
+# HTTP a browser submit would send.
+#
+#   bin/check-importer
+#
+# Runs against a TEMP config dir (a synthetic session log, never Jess's real
+# ~/.claude-work / ~/.claude-personal), a TEMP examples dir and a TEMP out dir
+# — so it never touches a real fixture, and the small temp examples dir keeps
+# the shelled-out parse/render fast enough to loop on (the trap
+# bin/check-edit-api's own comment names: a temp dir that doesn't mirror the
+# real one can make a rebuild misbehave, so this one is self-contained instead
+# of pointed at the repo's real examples/).
+
+require "json"
+require "net/http"
+require "socket"
+require "tmpdir"
+
+REPO = File.expand_path("..", __dir__)
+PORT = 8124
+
+failures = []
+
+def check(label, ok, detail = nil)
+  puts(ok ? "OK    #{label}" : "FAIL  #{label}#{detail ? " — #{detail}" : ""}")
+  ok
+end
+
+def post_import(session_id:, name:)
+  uri = URI("http://localhost:#{PORT}/import")
+  res = Net::HTTP.post_form(uri, "session_id" => session_id, "name" => name)
+  [res.code.to_i, res.body]
+end
+
+# A minimal but real Claude session log: a few lines shaped like the real
+# thing, just enough for SessionScan and Import to work with. Two lines is
+# enough to prove Re-snapshot's byte-for-byte overwrite; growing the log
+# between the two imports is what makes the second one a genuine re-snapshot
+# rather than a no-op.
+def write_session(dir, session_id, cwd, extra_line: nil)
+  path = File.join(dir, "#{session_id}.jsonl")
+  lines = [
+    { type: "user", sessionId: session_id, cwd: cwd,
+      message: { role: "user", content: "check-importer's synthetic prompt" } }.to_json,
+    { type: "ai-title", sessionId: session_id, aiTitle: "Check Importer Fixture" }.to_json,
+  ]
+  lines << extra_line if extra_line
+  File.write(path, lines.join("\n") + "\n")
+  path
+end
+
+Dir.chdir(REPO)
+
+Dir.mktmpdir("conversation-story-config") do |config_dir|
+  Dir.mktmpdir("conversation-story-examples") do |examples_dir|
+    Dir.mktmpdir("conversation-story-out") do |out_dir|
+      project_dir = File.join(config_dir, "projects", "-tmp-check-importer")
+      require "fileutils"
+      FileUtils.mkdir_p(project_dir)
+
+      session_id = "11111111-1111-4111-8111-111111111111"
+      write_session(project_dir, session_id, "/tmp/check-importer")
+
+      other_id = "22222222-2222-4222-8222-222222222222"
+      write_session(project_dir, other_id, "/tmp/check-importer")
+
+      pid = spawn(RbConfig.ruby, "bin/importer", "-p", PORT.to_s,
+                  "--examples", examples_dir, "--out", out_dir,
+                  "--config-dir", config_dir,
+                  out: File::NULL, err: File::NULL)
+      begin
+        30.times do
+          break if (TCPSocket.new("localhost", PORT).close rescue nil)
+
+          sleep 0.1
+        end
+
+        # ---- the listing page mentions our synthetic session -------------
+        listing = Net::HTTP.get_response(URI("http://localhost:#{PORT}/"))
+        failures << "listing" unless check("GET / lists the synthetic session",
+                                           listing.code == "200" && listing.body.include?(session_id),
+                                           listing.code)
+
+        # ---- a bad slug is refused -----------------------------------------
+        code, body = post_import(session_id: session_id, name: "Not A Slug")
+        failures << "bad slug" unless check("a non-slug name is refused", code == 400, "#{code} #{body[0, 80]}")
+        failures << "bad slug: no fixture" unless check("...and nothing landed in examples/",
+                                                        Dir.glob(File.join(examples_dir, "*.jsonl")).empty?)
+
+        # ---- a real import ---------------------------------------------------
+        name = "check-importer-fixture"
+        code, body = post_import(session_id: session_id, name: name)
+        fixture = File.join(examples_dir, "#{name}.jsonl")
+        page = File.join(out_dir, name, "index.html")
+        story = File.join(out_dir, name, "story.yaml")
+        failures << "import" unless check("POST /import succeeds", code == 200, "#{code} #{body[0, 200]}")
+        failures << "fixture" unless check("the fixture appeared in examples/", File.exist?(fixture))
+        failures << "story" unless check("story.yaml was built", File.exist?(story))
+        failures << "page" unless check("the page was built", File.exist?(page))
+        failures << "link" unless check("the response links to the built story",
+                                        body.include?("http://localhost:8080/#{name}/") ||
+                                          body.include?("rake serve"))
+
+        # ---- overwriting an UNRELATED example under the same name is refused --
+        code, body = post_import(session_id: other_id, name: name)
+        failures << "unrelated overwrite" unless check("importing a different session under an existing name is refused",
+                                                       code == 400, "#{code} #{body[0, 120]}")
+
+        # ---- re-snapshot: same session, same name, MERGES rather than dup'ing -
+        # Grow the source log first — same trick as bin/grab-example's "re-run
+        # to re-snapshot" — so this genuinely re-copies rather than matching by
+        # accident.
+        write_session(project_dir, session_id, "/tmp/check-importer",
+                      extra_line: { type: "user", sessionId: session_id,
+                                    message: { role: "user", content: "a second prompt" } }.to_json)
+        code, body = post_import(session_id: session_id, name: name)
+        failures << "re-snapshot" unless check("re-importing the SAME session under its own name succeeds",
+                                              code == 200, "#{code} #{body[0, 120]}")
+        failures << "re-snapshot label" unless check("the response calls it a re-snapshot",
+                                                     body.include?("Re-snapshotted"))
+        failures << "still one fixture" unless check("still exactly one fixture under that name",
+                                                     Dir.glob(File.join(examples_dir, "#{name}*.jsonl")).size == 1)
+        grown = File.foreach(fixture).count
+        failures << "grew" unless check("the re-snapshot picked up the new line", grown == 3, grown.to_s)
+      ensure
+        Process.kill("TERM", pid)
+        Process.wait(pid)
+      end
+    end
+  end
+end
+
+if failures.empty?
+  puts "\nAll good: the import write path works end to end."
+else
+  warn "\n#{failures.size} failure(s): #{failures.join(", ")}"
+  exit 1
+end

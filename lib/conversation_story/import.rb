@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "fileutils"
+require "json"
 
 module ConversationStory
   # The one door into `examples/`. Two jobs, both of them about files on disk:
@@ -157,6 +158,49 @@ module ConversationStory
       def same_snapshot?(log, name, examples_dir: EXAMPLES_DIR)
         dest = File.join(examples_dir, "#{name}.jsonl")
         File.exist?(dest) && File.size(dest) == File.size(log)
+      end
+
+      # A slug-shaped default name, derived from a session's AI title —
+      # ticket 04's "a good default is one keystroke away". Never returns an
+      # empty string: a title with no ASCII letters or digits in it (or no
+      # title at all) falls back to "session" rather than a `.jsonl` file with
+      # no name in it.
+      def slugify(text)
+        slug = text.to_s.downcase.gsub(/[^a-z0-9]+/, "-").gsub(/\A-+|-+\z/, "")
+        slug.empty? ? "session" : slug
+      end
+
+      # `examples/<name>.jsonl` -> the sessionId its first line carries, or nil
+      # for a file that doesn't exist or doesn't parse. The fixture answers the
+      # question itself — no manifest to go stale (ticket 05).
+      def first_session_id(jsonl_path)
+        return nil unless File.exist?(jsonl_path)
+
+        line = File.foreach(jsonl_path).first
+        return nil unless line
+
+        JSON.parse(line)["sessionId"]
+      rescue JSON::ParserError
+        nil
+      end
+
+      # Every example already in examples/, as { name => sessionId } — only for
+      # the ones whose first line actually parses and carries an id. Built
+      # fresh each call: examples/ is small (this repo's own fixtures), so
+      # there's no cache to keep warm the way SessionScan keeps one for the
+      # much larger session corpus.
+      def existing_examples(examples_dir: EXAMPLES_DIR)
+        Dir.glob(File.join(examples_dir, "*.jsonl")).each_with_object({}) do |path, map|
+          id = first_session_id(path)
+          map[File.basename(path, ".jsonl")] = id if id
+        end
+      end
+
+      # The example name a session was already imported under, or nil if it
+      # never was. Reverse lookup over existing_examples — two sessions never
+      # share an id, so the first match is the only one.
+      def existing_name_for(session_id, examples_dir: EXAMPLES_DIR)
+        existing_examples(examples_dir: examples_dir).key(session_id)
       end
 
       private
