@@ -73,5 +73,4 @@ plugin's `TRACKING-ADAPTER.md`.)
 
 - inbox: `TODO.md` — raw captures, pre-decision. Format: the plugin's
   `INBOX.md`.
-- tracker: none configured. `TODO.md` is the whole system for now; run
-  `/setup-matt-pocock-skills` if this ever outgrows the inbox.
+- tracker: see `docs/agents/issue-tracker.md` (stock `scratch`, under `.scratch/`).
