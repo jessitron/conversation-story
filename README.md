@@ -237,9 +237,9 @@ or `/docs`, so there's no `gh-pages` branch and no `docs/` rename.
 workflow rebuilds anyway: if the committed pages and a fresh build ever
 disagree, what gets published follows `lib/` and `examples/`.
 
-## North Star and Mountains
+## Quest and Mountains
 
-See `SEAMAP.md` for the canonical North Star, Mountains, and where work is
+See `SEAMAP.md` for the canonical Quest, Mountains, and where work is
 recorded (`TODO.md`) — don't duplicate them here, they'll drift.
 
 ## Along the journey

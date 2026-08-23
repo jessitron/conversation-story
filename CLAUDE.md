@@ -5,7 +5,7 @@ so Jess can narrate "how a conversation went" while the page shows it accurately
 
 ## Seamap
 
-This repo's seamap — the North Star, Mountains, and where work is recorded —
+This repo's seamap — the Quest, Mountains, and where work is recorded —
 lives in `SEAMAP.md`. Orient, capture, and log proactively; use `drop-buoy` to
 capture work without derailing.
 
@@ -37,7 +37,7 @@ event is pure string concatenation — no lookup, no counting:
 
     http://localhost:8080/<example-name>/#<example-name>:<line>
 
-(Session 10 change. Cards used to be numbered `#event-N` over the *visible*
+(Session 10 change. Cards used to be numbered `#event-N` over the _visible_
 events, which drifted from log line numbers — `episode-8-before:174` was
 `#event-89` — and made "link me to that" a scripting job. Anchors built before
 this change are dead links; nothing aliases them.) Two things follow:
@@ -62,7 +62,7 @@ this change are dead links; nothing aliases them.) Two things follow:
   are real default gems; `bin/parse`, `bin/render` and `bin/site-index` need
   nothing else. But Ruby 4.0 **unbundled webrick**, which `rake serve` requires,
   so it's declared — along with `rake` and `minitest`, which ship with Ruby only
-  as *bundled* gems (the category webrick just fell out of). `Gemfile.lock` is
+  as _bundled_ gems (the category webrick just fell out of). `Gemfile.lock` is
   committed and CI runs `bundle exec` with `bundler-cache: true`, so CI and
   Jess's machines resolve identically. No Rails.
   **"Stdlib-first" is about which programs stay dependency-free, not a ban on
@@ -87,7 +87,7 @@ this change are dead links; nothing aliases them.) Two things follow:
   unrecognized record types aren't silently lost (a README constraint).
 - **`examples/` are golden fixtures.** Test the parser against every conversation log in there.
   **There are two doors in.** `bin/importer` (`rake importer`, port 8081,
-  `PORT=`-overridable) is the BROWSER one and the place to *choose* a fixture: a
+  `PORT=`-overridable) is the BROWSER one and the place to _choose_ a fixture: a
   fourth program, local-only, that lists the ~50 most recent sessions from both
   config dirs and all projects — taken globally by mtime, then grouped by
   project, projects ordered by their newest session — as cards carrying the AI
@@ -103,7 +103,7 @@ this change are dead links; nothing aliases them.) Two things follow:
   any `subagents/` sidecars) via `ConversationStory::Import.copy` and shells out
   to `bin/parse` + `bin/render` for that ONE name — never a full `rake build`,
   the same restraint `bin/serve`'s hand-edit path uses. A bad slug or an attempt
-  to overwrite an *unrelated* existing example under the same name is refused
+  to overwrite an _unrelated_ existing example under the same name is refused
   (`400`, plain HTML response — the whole thing is one `<form method="post">`,
   so `bin/check-importer` drives it with `net/http` alone, no browser needed).
   A session already in `examples/` is recognized by reading each fixture's own
@@ -121,7 +121,7 @@ this change are dead links; nothing aliases them.) Two things follow:
   (`--list` shows the newest 50 sessions across both config dirs with each
   one's first prompt); it copies the main log plus any `subagents/` sidecars.
   Both doors go through `ConversationStory::Import` so they can't drift. Grabbing
-  the session you're in copies a *live* file, so the fixture stops mid-session —
+  the session you're in copies a _live_ file, so the fixture stops mid-session —
   re-run to re-snapshot. Every example is ~1–7 MB and its built page is committed too, so
   they're not free. Tests glob `examples/*.jsonl`, so a new log runs the whole
   golden suite immediately — expect newer logs to carry record types the older
@@ -189,7 +189,7 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   `enqueue` gets a card (it carries the queued payload). The bare
   `dequeue`/`remove` markers are hidden — they have no content of their own — and
   the event each one delivers is stamped `dequeued: true` / `removed_from_queue:
-  true` instead, which the renderer draws as a badge. So a queued message is two
+true` instead, which the renderer draws as a badge. So a queued message is two
   cards, the enqueue and the delivered message, sharing a `queue:` link token.
   An enqueue's **summary is the payload alone** — the operation is a badge
   (`enqueue`) and the gutter already says Queue, so a "Queue enqueue:" prefix
@@ -207,7 +207,7 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   else `assistant_message`. Every assistant record in the example logs carries
   exactly one block — this is still one-event-per-line, not real
   block-splitting. `tool_result` events carry named `tool.{use_id,is_error,
-  duration_ms,result}` pulled from the record's content block + `toolUseResult`.
+duration_ms,result}` pulled from the record's content block + `toolUseResult`.
 - **Tokens belong to a TURN, not a record** (session 13). One API response is
   split across several records — thinking, text, one per `tool_use` — sharing
   `message.id`, and **each repeats the whole turn's `usage`**. The parser emits
@@ -224,7 +224,7 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   records and 0 of 32 inter-turn gaps hold a result by itself. It is not named
   `input` on purpose, and the renderer always prints the `≈` and the caveat.
   `meta.total_tokens` — every turn's context + output, each turn counted once —
-  is the header **Tokens** stat (1.21M for episode-8-before). It's token *use*,
+  is the header **Tokens** stat (1.21M for episode-8-before). It's token _use_,
   not a context size, which is why the stat isn't labelled Context: most of it
   is the same context re-sent and cache-read each turn, and the biggest context
   the conversation ever held was 45k. Details in
@@ -233,8 +233,8 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   `cache_creation` isn't all new content — some of it can be OLD content
   getting re-paid because it fell out of cache (TTL lapse, or the breakpoint
   walked past the 20-block lookback, session 21). `rewrite_overhead = max(0,
-  previous_turn.context - cache_read)` isolates that; `context_so_far =
-  cache_read + rewrite_overhead` should equal the **previous** turn's
+previous_turn.context - cache_read)` isolates that; `context_so_far =
+cache_read + rewrite_overhead` should equal the **previous** turn's
   `context` exactly — a real identity, checked against episode-8-before, not
   just an estimate — and `new_content = cache_creation - rewrite_overhead` is
   what's genuinely new. The chars-based `≈` estimate (`Parser::ESTIMATE_KINDS`)
@@ -242,7 +242,7 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   `task_notification`/`queue_operation` gets one too. Turn 1's `added` bills
   the system prompt + tool schemas + first message as one cache write with no
   line-item for the system/tools portion (caching hashes the whole `tools ->
-  system -> messages` prefix); `system_prompt_estimate` on the first
+system -> messages` prefix); `system_prompt_estimate` on the first
   `user_message` names that remainder rather than measuring it. Subtracting
   the previous turn's real `output` plus every intervening event's estimate
   from `new_content` should leave nothing — when it doesn't, that's "dark
@@ -311,7 +311,7 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   the detail pane is selection-only). See
   `notes/2026-07-20-session-7-tool-calls-and-linking.md`.
 - **Two voices in the detail pane** (session 9): PROSE (`.d-text` / `.d-markdown`
-  — body font on paper) vs MACHINE (`pre.code` — mono on navy, and it *wraps*).
+  — body font on paper) vs MACHINE (`pre.code` — mono on navy, and it _wraps_).
   Tool INPUT, tool RESULT, notification blobs and raw records all go through
   `Renderer#machine_html` so they look the same. Don't reintroduce a third look.
 - **Card alignment, vertically**: the card grid is **`align-items: start`**, and
@@ -319,7 +319,7 @@ by mountain. Mountains are **named, not numbered** — don't reintroduce numbers
   they're the only ones whose summary size differs from the gutter label's, and
   their one-word labels can't wrap. Don't make baseline the general rule again: a
   wrapping label moves the row's baseline (an `inline-block` `.kind` reports its
-  *last* line's), which is how "Subagent Result" pushed one card's summary 18px
+  _last_ line's), which is how "Subagent Result" pushed one card's summary 18px
   down in session 15.
 - **Card alignment**: `--card-inset` (`:root`) is the distance from a card's outer
   edge to its content, accent border included; `.card` derives `--card-pad` from
@@ -377,7 +377,7 @@ To run a single test file (`rake test` always runs the whole
   mysteriously off — this cost real time in session 11).
 - **The editor is progressive enhancement.** `assets/story.js` probes
   `GET /api/health` and only builds the Summary box when the local server
-  answers *and* the page is in edit mode — `showSummaryEditor` checks both.
+  answers _and_ the page is in edit mode — `showSummaryEditor` checks both.
   The ✎ edited marker isn't gated on either: it paints in every mode, on the
   published site too, by design ("this line is Jess's, not the parser's" is
   part of the story, not an authoring affordance). The published Pages site
@@ -403,7 +403,7 @@ To run a single test file (`rake test` always runs the whole
   a temp edits dir, saves + reverts both summaries and beats, asserts
   sidecar/story/page all agree, and checks the path-traversal and unknown-ref
   refusals). `bin/screenshot` takes a
-  full `http://…` URL with `?mode=edit` now — the only way to *see* the editor,
+  full `http://…` URL with `?mode=edit` now — the only way to _see_ the editor,
   since `file://` can't reach the API and explore mode never builds the box.
 
 - **The site root has a landing page**, `out/index.html`, written by a third
@@ -417,12 +417,12 @@ To run a single test file (`rake test` always runs the whole
   `bin/site-index` also drops a `.nojekyll` in the site root.
 - **Deploy: `.github/workflows/pages.yml`** publishes to GitHub Pages on every
   push to `main` — `rake test`, `rake build`, then upload `out/`. The Pages
-  source is "GitHub Actions", *not* a branch, because branch-based Pages can
+  source is "GitHub Actions", _not_ a branch, because branch-based Pages can
   only serve a repo root or `/docs` and the site root here is `out/` on `main`.
   There is no `gh-pages` branch. Live at
   <https://jessitron.github.io/conversation-story/>.
 
-To *see* a CSS change: `bin/screenshot [example] ['#<ref>'] [out.png]` shoots a
+To _see_ a CSS change: `bin/screenshot [example] ['#<ref>'] [out.png]` shoots a
 built page with headless Chrome. Passing a fragment selects that card, so its
 detail pane and its highlighted causal chain are in the shot.
 `bin/screenshot .` shoots the landing page (`out/./index.html` resolves).
@@ -444,7 +444,7 @@ clip must overlap the current viewport**: clip deep while scrolled to the top
 and it's blank again, and that same rule is why the static header vanished from
 a shot taken 150px down. Hence: position the page (top of page if the card fits
 on the first screen, so the header and its stats stay in frame; otherwise
-`scrollIntoView({block:'center'})`), then clip *exactly* the viewport. Don't
+`scrollIntoView({block:'center'})`), then clip _exactly_ the viewport. Don't
 "simplify" this back to a plain screenshot call.
 A fragment that resolves to no card now **warns on stderr** instead of quietly
 shooting the default selection — hidden events have no card by design, and a
@@ -471,7 +471,7 @@ which remain this repo's own tracking system. See `docs/agents/issue-tracker.md`
 
 Default five: needs-triage, needs-info, ready-for-agent, ready-for-human,
 wontfix — plus `done`, which we added because the five canonical roles are all
-*open* states and a markdown tracker has no close of its own.
+_open_ states and a markdown tracker has no close of its own.
 See `docs/agents/triage-labels.md`.
 
 ### Domain docs

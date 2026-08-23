@@ -1,6 +1,6 @@
 # TODO
 
-The inbox: raw captures, pre-decision. The chart (North Star, Mountains) is in
+The inbox: raw captures, pre-decision. The chart (Quest, Mountains) is in
 `SEAMAP.md`. Nothing here has a tracker to promote to yet — this file is the
 whole system for now.
 
@@ -51,6 +51,7 @@ whole system for now.
 
 ## Backlog
 
+- recognize commands from the user and parse them nicely
 
 - `design-feature-owner` A feature owner for the CSS — a designer invoked any
   time the UI is updated ← mountain: metawork

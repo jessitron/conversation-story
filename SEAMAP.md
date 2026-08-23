@@ -1,6 +1,6 @@
 # SEAMAP — Conversation Story
 
-## North Star
+## Quest
 
 A conversation with an agent is intelligible: I can see and explain to another
 person what was hard for the agent. This is easier when I enjoy looking at it.
@@ -15,13 +15,13 @@ person what was hard for the agent. This is easier when I enjoy looking at it.
 - **Mount Beautiful** — I enjoy looking at it. The drill-into-detail feels like
   exploration.
 
-*(Deprioritized: **Mount Malleable** — a local web app for shaping the story;
+_(Deprioritized: **Mount Malleable** — a local web app for shaping the story;
 summaries are already editable on the page, but this isn't where the energy
-is right now.)*
+is right now.)_
 
-*(Climbed: **Mount Minimal** — every event in the main conversation shows as a
+_(Climbed: **Mount Minimal** — every event in the main conversation shows as a
 card, all looking the same. **Mount Interactive** — three modes, a keyboard
-map, and a narrate mode that reveals the conversation a beat at a time.)*
+map, and a narrate mode that reveals the conversation a beat at a time.)_
 
 Mount Struggle is the current priority. Session 22 laid the token-accounting
 groundwork for its context-bloat signal — per-card context attribution and

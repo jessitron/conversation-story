@@ -3,9 +3,9 @@
 _Written 2026-07-27, before implementation. Supersedes the Mount Interactive
 bullets in `TODO.md`._
 
-The North Star says "I can step through it." Today the only way forward is
+The Quest says "I can step through it." Today the only way forward is
 clicking the next card and scrolling. This design makes the page a thing you
-*drive*: three modes, a keyboard map, and a narrate mode that reveals the
+_drive_: three modes, a keyboard map, and a narrate mode that reveals the
 conversation a beat at a time while Jess talks over it.
 
 No Ruby logic changes. No schema change. This is `story.js`, `story.css`, and
@@ -24,13 +24,13 @@ makes redundant; if filtering comes back it comes back as its own thing.
 Mode lives in the URL as `?mode=narrate`, written with `replaceState` alongside
 the existing `#ref` fragment. `explore` is the default and is omitted, so
 ordinary links look exactly like they do today. This is what makes "the talk
-tab" bookmarkable — a URL can say both *which mode* and *which card*.
+tab" bookmarkable — a URL can say both _which mode_ and _which card_.
 
 **Edit mode still depends on the server.** The Edit button renders `hidden` and
 un-hides only when the `GET /api/health` probe answers. `?mode=edit` on the
 published site falls back to explore without complaint. This is the same
 progressive enhancement `body.editable` does today, re-expressed as a mode: the
-summary editor is built when `mode === 'edit'` *and* the probe succeeded.
+summary editor is built when `mode === 'edit'` _and_ the probe succeeded.
 
 **The ✎ edited marker stops being edit-only.** Today it's gated behind
 `body.editable`, so it never paints on GitHub Pages. It should show in all three
@@ -53,7 +53,7 @@ resets underneath her.
   and clicking any card brings the sidebar back.
 
 `selectCard` currently does `body.classList.remove('sidebar-collapsed')`. That
-line moves out to the click handler, which is the only place an *open* is
+line moves out to the click handler, which is the only place an _open_ is
 actually intended.
 
 ## 3. Keyboard map
@@ -63,16 +63,16 @@ an `input`, `textarea`, or `contenteditable`** — otherwise typing "e" in the
 summary box would throw you into another mode. This guard is the first line of
 the handler, not an afterthought.
 
-| key | explore / edit | narrate |
-|---|---|---|
-| `→` | select next visible card | reveal **one** card |
-| `←` | select previous visible card | un-reveal **one** card |
-| `shift+→` | next **user/assistant** card, scrolled into view | reveal one **beat** |
-| `shift+←` | previous **user/assistant** card, scrolled into view | un-reveal one **beat** |
-| `n` | enter narrate | reveal one beat (same as `shift+→`) |
-| `p` | — | un-reveal one beat (same as `shift+←`) |
-| `x` / `e` / `N` | switch to explore / edit / narrate | same |
-| `Esc` | collapse sidebar → else clear selection | collapse sidebar → else exit to explore |
+| key             | explore / edit                                       | narrate                                 |
+| --------------- | ---------------------------------------------------- | --------------------------------------- |
+| `→`             | select next visible card                             | reveal **one** card                     |
+| `←`             | select previous visible card                         | un-reveal **one** card                  |
+| `shift+→`       | next **user/assistant** card, scrolled into view     | reveal one **beat**                     |
+| `shift+←`       | previous **user/assistant** card, scrolled into view | un-reveal one **beat**                  |
+| `n`             | enter narrate                                        | reveal one beat (same as `shift+→`)     |
+| `p`             | —                                                    | un-reveal one beat (same as `shift+←`)  |
+| `x` / `e` / `N` | switch to explore / edit / narrate                   | same                                    |
+| `Esc`           | collapse sidebar → else clear selection              | collapse sidebar → else exit to explore |
 
 The shape is the same in both modes: **unshifted moves one card, shifted moves a
 message**. `n`/`p` are shift-arrow's easier-to-press aliases, which is what a
@@ -119,7 +119,7 @@ narrating.
 ### Edge cases
 
 - `→` at the end of the timeline, or `←` with nothing revealed: no-op, no error.
-- `shift+←` mid-beat (reached by `→`) backs up to the *previous* message
+- `shift+←` mid-beat (reached by `→`) backs up to the _previous_ message
   boundary, and always un-reveals at least one card.
 - Hidden events have no card at all (parser-level), so they never participate.
 
