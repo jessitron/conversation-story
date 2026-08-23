@@ -95,7 +95,7 @@ events:
   tokens:
     result_chars: 63
     estimated_input: 18
-    system_prompt_estimate: 21520
+    system_prompt_estimate: 0
   beat: true
 - id: '0259b061-09f2-4215-9eaa-106c2a2037eb'
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:7
@@ -109,6 +109,8 @@ events:
     file: 4b0be952-d0bd-49ed-b97a-357b9149bf31.jsonl
     line: 7
   attachment_type: deferred_tools_delta
+  tokens:
+    dark_matter_estimate: 10760
 - id: a2776da3-1dcc-4deb-8745-3ff84a87f3a5
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:8
   agent: main
@@ -188,6 +190,8 @@ events:
       - run: Launch and drive this project's app to see a change working. Use when asked to run, start, or screenshot the app, or to confirm a change works in the real app (not just tests). First looks for a project skill that already covers launching the app; otherwise falls back to built-in patterns per project type (CLI, server, TUI, Electron, browser-driven, library).
       - init: Initialize a new CLAUDE.md file with codebase documentation
       - security-review: Complete a security review of the pending changes on the current branch
+  tokens:
+    dark_matter_estimate: 10760
 - id: f73d457b-e036-4a97-a5f2-662a38147d20
   ref: 4b0be952-d0bd-49ed-b97a-357b9149bf31:10
   agent: main

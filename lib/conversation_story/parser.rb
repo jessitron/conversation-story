@@ -684,7 +684,12 @@ module ConversationStory
     # notes/2026-08-11-session-21-token-accounting-research.md). The first
     # user message already has its own `estimated_input` (ESTIMATE_KINDS, set
     # during build_event); whatever's left of turn 1's `added` gets named as
-    # the system prompt's estimated size rather than left unexplained.
+    # the system prompt's estimated size — EXCEPT any of it that lands on an
+    # Underspecified attachment already in the turn-1 window (a `skill_listing`
+    # loaded before the first prompt is answered, say). Those get a
+    # `dark_matter_estimate` share first, the same way `attribute_dark_matter!`
+    # gives later turns' Underspecified attachments a share — leaving the
+    # system prompt with the remainder instead of silently absorbing it all.
     def mark_first_turn_breakdown!(events)
       first_leader = events.find { |e| e["turn_leader"] }
       tokens = first_leader && first_leader["tokens"]
@@ -693,8 +698,19 @@ module ConversationStory
       first_message = events.find { |e| e["kind"] == "user_message" }
       return unless first_message
 
-      estimate = first_message.dig("tokens", "estimated_input").to_i
-      (first_message["tokens"] ||= {})["system_prompt_estimate"] = [tokens["added"] - estimate, 0].max
+      window = events.take_while { |e| !e.equal?(first_leader) }.reject { |e| e.equal?(first_message) }
+
+      estimate  = first_message.dig("tokens", "estimated_input").to_i
+      remaining = [tokens["added"] - estimate, 0].max
+
+      candidates = window.select { |e| underspecified_attachment?(e) }
+      if candidates.any?
+        share = remaining / candidates.size
+        candidates.each { |e| (e["tokens"] ||= {})["dark_matter_estimate"] = share }
+        remaining -= share * candidates.size
+      end
+
+      (first_message["tokens"] ||= {})["system_prompt_estimate"] = remaining
     end
 
     # After the first turn, a turn's `new_content` (see mark_turns!) should be

@@ -80,7 +80,7 @@ events:
   tokens:
     result_chars: 216
     estimated_input: 62
-    system_prompt_estimate: 10560
+    system_prompt_estimate: 0
   beat: true
   summary_edited: true
 - id: 0b4057eb-e19a-4bd0-9663-dea446f3ce49
@@ -95,6 +95,8 @@ events:
     file: episode-8-before.jsonl
     line: 5
   attachment_type: deferred_tools_delta
+  tokens:
+    dark_matter_estimate: 3520
 - id: 574e4255-89df-4e0e-9968-885ab901b313
   ref: episode-8-before:6
   agent: main
@@ -107,6 +109,8 @@ events:
     file: episode-8-before.jsonl
     line: 6
   attachment_type: mcp_instructions_delta
+  tokens:
+    dark_matter_estimate: 3520
 - id: 503e4fee-a710-4e8e-91c9-b1f6b50a0d25
   ref: episode-8-before:7
   agent: main
@@ -137,6 +141,8 @@ events:
       - honeycomb:beeline-migration: Use when the user asks to "migrate from Beelines", "upgrade from Beeline to OpenTelemetry", "migrate to OTel", "replace Beelines", "Beeline end of life", "Beeline EOL", "switch from Beeline to OTel", "migrate Go Beeline", "migrate Python Beeline", "migrate Node Beeline", "migrate Java Beeline", "migrate Ruby Beeline", "W3C trace headers", "W3C propagation", "incremental migration to OpenTelemetry", or needs guidance on migrating from Honeycomb Beelines to OpenTelemetry SDKs.
       - honeycomb:slos-and-triggers: Use when interpreting Honeycomb SLO compliance, budget burn rates, or trigger status — provides decision heuristics for what the numbers mean and what action to take, including detecting misconfigured SLIs, deciding when to freeze deploys vs page on-call, and designing burn alert thresholds. The get_slos and get_triggers tools return raw numbers; this skill tells you how to act on them. Load this skill before calling get_slos or get_triggers. Trigger phrases: "check our SLOs", "are we meeting our SLOs", "which SLOs are healthy", "is the error budget OK", "are any alerts firing", "what's the burn rate", "set up an SLO", "create a trigger", "configure alerts", "set up burn alerts", "check trigger status", "starting on-call", "reliability picture", "should we freeze deploys", "is this SLO misconfigured", "are we within budget", "SLO is broken", "budget is negative", or any request about service level objectives, error budgets, burn rates, or alerting in Honeycomb.
       - honeycomb:query-patterns: Use when constructing or interpreting Honeycomb queries — provides opinionated guidance on which operations to use (percentiles not AVG for latency, HEATMAP for distributions), how to combine calculations, relational field patterns, and how to interpret results (P99/P50 ratios, heatmap bands, TOTAL/OTHER rows, raw JSON via query_result_json). Load this skill before calling run_query. Trigger phrases: "show me latency", "what's the error rate", "find slow requests", "show me the distribution", "query Honeycomb", "find outliers", "search traces", "why is latency high", "why are some requests slow", "what does this result mean", "explain the heatmap", "interpret these numbers", "is it getting worse", "compare before and after", "find fields", "discover columns", "look at past queries", "query across services", "use relational fields", "download raw results", or any request to query, visualize, or interpret Honeycomb data.
+  tokens:
+    dark_matter_estimate: 3520
 - id: cbe55f8a-ca37-4509-88d6-4a62c7b2db8b
   ref: episode-8-before:8
   agent: main

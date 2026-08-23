@@ -80,7 +80,7 @@ events:
   tokens:
     result_chars: 216
     estimated_input: 62
-    system_prompt_estimate: 10885
+    system_prompt_estimate: 1
   beat: true
   summary_edited: true
 - id: e534103e-d5be-45a2-a83f-2e11f03c1b6e
@@ -95,6 +95,8 @@ events:
     file: episode-8-after.jsonl
     line: 5
   attachment_type: deferred_tools_delta
+  tokens:
+    dark_matter_estimate: 3628
 - id: 3033a83c-ed25-4187-ad77-7616757d1be7
   ref: episode-8-after:6
   agent: main
@@ -107,6 +109,8 @@ events:
     file: episode-8-after.jsonl
     line: 6
   attachment_type: mcp_instructions_delta
+  tokens:
+    dark_matter_estimate: 3628
 - id: 48909f62-637b-4611-ba04-7dc10e3e4a08
   ref: episode-8-after:7
   agent: main
@@ -137,6 +141,8 @@ events:
       - honeycomb:otel-instrumentation: Use when the user asks to "instrument my app", "add tracing", "set up OpenTelemetry", "configure OTel", "add custom spans", "add attributes to spans", "send traces to Honeycomb", "set up OTLP", "configure the OTel SDK", "add span events", "add span links", "instrument with OpenTelemetry", "set up tracing for Go", "set up tracing for Python", "set up tracing for Node.js", "set up tracing for Java", "set up tracing for Ruby", "set up tracing for .NET", "add observability", "improve instrumentation", "configure sampling", "set up head sampling", "set up tail sampling", "configure the OTel Collector", or needs guidance on OpenTelemetry SDK setup, custom instrumentation, or sending data to Honeycomb.
       - honeycomb:production-investigation: Use when investigating production issues in Honeycomb — provides the structured sequence of tool calls (context priming, broad query, BubbleUp, filtered drill-down, trace analysis) and how to chain results between steps using query_run_pk, trace IDs, and BubbleUp differentiators. Without it, queries work but miss the systematic narrowing that identifies root causes. Trigger phrases: "investigate a production issue", "debug a latency spike", "find root cause", "use BubbleUp", "analyze traces", "find what changed", "debug an outage", "why is my API slow", "why are requests failing", "what's causing errors", "something is wrong with", "users are complaining", "latency is spiking", "errors are increasing", "check service dependencies", "view service map", "health check", "SLO burning", or any request to investigate or debug production problems.
       - honeycomb:observability-fundamentals: Use when answering conceptual "why" questions about observability — explains the foundations of why Honeycomb works the way it does: wide structured events, high cardinality, the core analysis loop, events vs metrics vs logs, and how instrumentation decisions connect to debugging outcomes. Grounds recommendations in first principles rather than tool-specific how-to. Trigger phrases: "what is observability", "why observability", "why Honeycomb", "events vs metrics", "events vs logs", "what should I instrument", "why wide events", "what is high cardinality", "how does BubbleUp work", "core analysis loop", "what makes good instrumentation", "observability vs monitoring", "why not just use metrics", "why not just use logs", "what is an event", "what is a span", "why structured events", "what is dimensionality", "explain observability", or any conceptual or philosophical question about observability, events, instrumentation strategy, or why Honeycomb's approach differs from traditional monitoring.
+  tokens:
+    dark_matter_estimate: 3628
 - id: 5599dcfc-aaf2-48fe-b139-80b4f5e7ca1c
   ref: episode-8-after:8
   agent: main
