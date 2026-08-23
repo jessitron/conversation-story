@@ -59,7 +59,7 @@ events:
   tokens:
     result_chars: 245
     estimated_input: 70
-    system_prompt_estimate: 21489
+    system_prompt_estimate: 0
   beat: true
 - id: b264d18e-d436-43c5-9b4d-7616ab28b005
   ref: mtg-tabletop-plan:4
@@ -136,6 +136,8 @@ events:
     file: mtg-tabletop-plan.jsonl
     line: 8
   attachment_type: deferred_tools_delta
+  tokens:
+    dark_matter_estimate: 7163
 - id: e6cd6763-69fb-4a07-ae17-d3bd60e5de9b
   ref: mtg-tabletop-plan:9
   agent: main
@@ -160,6 +162,8 @@ events:
     file: mtg-tabletop-plan.jsonl
     line: 10
   attachment_type: mcp_instructions_delta
+  tokens:
+    dark_matter_estimate: 7163
 - id: a80b91f7-1320-46aa-a357-24b2b89ef2b5
   ref: mtg-tabletop-plan:11
   agent: main
@@ -205,6 +209,8 @@ events:
       - init: Initialize a new CLAUDE.md file with codebase documentation
       - review: Review a GitHub pull request; for your working diff use /code-review
       - security-review: Complete a security review of the pending changes on the current branch
+  tokens:
+    dark_matter_estimate: 7163
 - id: line-12
   ref: mtg-tabletop-plan:12
   agent: main
@@ -713,7 +719,7 @@ events:
       tokens:
         result_chars: 345
         estimated_input: 99
-        system_prompt_estimate: 26557
+        system_prompt_estimate: 1
       hidden: true
     - id: e939b939-b976-44f2-aaba-fb2751b19e00
       ref: agent-ad2eddaec01f22fdc:2
@@ -727,6 +733,8 @@ events:
         file: agent-ad2eddaec01f22fdc.jsonl
         line: 2
       attachment_type: deferred_tools_delta
+      tokens:
+        dark_matter_estimate: 13278
     - id: 3e87a03d-109b-49c2-b7f8-58902f2a3379
       ref: agent-ad2eddaec01f22fdc:3
       agent: agent-ad2eddaec01f22fdc
@@ -772,6 +780,8 @@ events:
           - init: Initialize a new CLAUDE.md file with codebase documentation
           - review: Review a GitHub pull request; for your working diff use /code-review
           - security-review: Complete a security review of the pending changes on the current branch
+      tokens:
+        dark_matter_estimate: 13278
     - id: 7906685d-0934-4cde-a2cd-05c343badff0
       ref: agent-ad2eddaec01f22fdc:4
       agent: agent-ad2eddaec01f22fdc
@@ -6604,7 +6614,7 @@ events:
       tokens:
         result_chars: 3246
         estimated_input: 927
-        system_prompt_estimate: 15213
+        system_prompt_estimate: 1
       hidden: true
     - id: d6d89f68-3dea-459e-8597-e1d40d41bfb3
       ref: agent-a56368861b5046b93:2
@@ -6618,6 +6628,8 @@ events:
         file: agent-a56368861b5046b93.jsonl
         line: 2
       attachment_type: deferred_tools_delta
+      tokens:
+        dark_matter_estimate: 7606
     - id: 31a04c0b-1d9c-48b2-94a3-16ee4febc5d8
       ref: agent-a56368861b5046b93:3
       agent: agent-a56368861b5046b93
@@ -6663,6 +6675,8 @@ events:
           - init: Initialize a new CLAUDE.md file with codebase documentation
           - review: Review a GitHub pull request; for your working diff use /code-review
           - security-review: Complete a security review of the pending changes on the current branch
+      tokens:
+        dark_matter_estimate: 7606
     - id: b8414382-9f56-4b36-946d-753f93f30e32
       ref: agent-a56368861b5046b93:4
       agent: agent-a56368861b5046b93
@@ -10939,7 +10953,7 @@ events:
       tokens:
         result_chars: 3396
         estimated_input: 970
-        system_prompt_estimate: 10440
+        system_prompt_estimate: 0
       hidden: true
     - id: 748be18e-d80b-4892-bc03-0453f5bd6081
       ref: agent-a574aba0082b4260c:2
@@ -10953,6 +10967,8 @@ events:
         file: agent-a574aba0082b4260c.jsonl
         line: 2
       attachment_type: deferred_tools_delta
+      tokens:
+        dark_matter_estimate: 5220
     - id: cf5cda2d-132b-49e4-b406-cf724001d013
       ref: agent-a574aba0082b4260c:3
       agent: agent-a574aba0082b4260c
@@ -10998,6 +11014,8 @@ events:
           - init: Initialize a new CLAUDE.md file with codebase documentation
           - review: Review a GitHub pull request; for your working diff use /code-review
           - security-review: Complete a security review of the pending changes on the current branch
+      tokens:
+        dark_matter_estimate: 5220
     - id: dd08d32a-c1f6-44d2-9846-b5cd54d00360
       ref: agent-a574aba0082b4260c:4
       agent: agent-a574aba0082b4260c
@@ -26074,7 +26092,7 @@ events:
       tokens:
         result_chars: 4021
         estimated_input: 1149
-        system_prompt_estimate: 25508
+        system_prompt_estimate: 0
       hidden: true
     - id: 2515195f-1867-492d-9f5f-81ba4de4883b
       ref: agent-afbfa2ada82f0c6bb:2
@@ -26088,6 +26106,8 @@ events:
         file: agent-afbfa2ada82f0c6bb.jsonl
         line: 2
       attachment_type: deferred_tools_delta
+      tokens:
+        dark_matter_estimate: 12754
     - id: f6be210a-dbc5-4fc1-8701-5c4190cc4701
       ref: agent-afbfa2ada82f0c6bb:3
       agent: agent-afbfa2ada82f0c6bb
@@ -26133,6 +26153,8 @@ events:
           - init: Initialize a new CLAUDE.md file with codebase documentation
           - review: Review a GitHub pull request; for your working diff use /code-review
           - security-review: Complete a security review of the pending changes on the current branch
+      tokens:
+        dark_matter_estimate: 12754
     - id: 7b330f39-3b18-40c3-a1df-31339ef45fcf
       ref: agent-afbfa2ada82f0c6bb:4
       agent: agent-afbfa2ada82f0c6bb
@@ -46354,7 +46376,7 @@ events:
       tokens:
         result_chars: 4567
         estimated_input: 1305
-        system_prompt_estimate: 15681
+        system_prompt_estimate: 1
       hidden: true
     - id: e600e3ad-4712-49be-8040-d934f9111d1c
       ref: agent-aad1d0eebfc921561:2
@@ -46368,6 +46390,8 @@ events:
         file: agent-aad1d0eebfc921561.jsonl
         line: 2
       attachment_type: deferred_tools_delta
+      tokens:
+        dark_matter_estimate: 7840
     - id: 33becb5e-4bef-4d5a-80fc-a6c9a66dfd67
       ref: agent-aad1d0eebfc921561:3
       agent: agent-aad1d0eebfc921561
@@ -46413,6 +46437,8 @@ events:
           - init: Initialize a new CLAUDE.md file with codebase documentation
           - review: Review a GitHub pull request; for your working diff use /code-review
           - security-review: Complete a security review of the pending changes on the current branch
+      tokens:
+        dark_matter_estimate: 7840
     - id: 047a1155-1b36-4b0c-9670-6c499da825e8
       ref: agent-aad1d0eebfc921561:4
       agent: agent-aad1d0eebfc921561
@@ -63578,7 +63604,7 @@ events:
       tokens:
         result_chars: 3981
         estimated_input: 1137
-        system_prompt_estimate: 15752
+        system_prompt_estimate: 0
       hidden: true
     - id: b554789b-4679-4a2f-ae86-d50a48838b4b
       ref: agent-add276e5d3a4839a2:2
@@ -63592,6 +63618,8 @@ events:
         file: agent-add276e5d3a4839a2.jsonl
         line: 2
       attachment_type: deferred_tools_delta
+      tokens:
+        dark_matter_estimate: 7876
     - id: 0c4360b6-30a1-4023-9463-7a0f87228ebd
       ref: agent-add276e5d3a4839a2:3
       agent: agent-add276e5d3a4839a2
@@ -63637,6 +63665,8 @@ events:
           - init: Initialize a new CLAUDE.md file with codebase documentation
           - review: Review a GitHub pull request; for your working diff use /code-review
           - security-review: Complete a security review of the pending changes on the current branch
+      tokens:
+        dark_matter_estimate: 7876
     - id: '0408276e-3fe8-4f02-9ff8-ed4ebf816075'
       ref: agent-add276e5d3a4839a2:4
       agent: agent-add276e5d3a4839a2
@@ -77636,7 +77666,7 @@ events:
       tokens:
         result_chars: 828
         estimated_input: 237
-        system_prompt_estimate: 17751
+        system_prompt_estimate: 1
       hidden: true
     - id: d696f372-b4e4-4dd0-805d-f8bf2fbfc091
       ref: agent-a89dd1f7c23bc5819:2
@@ -77650,6 +77680,8 @@ events:
         file: agent-a89dd1f7c23bc5819.jsonl
         line: 2
       attachment_type: deferred_tools_delta
+      tokens:
+        dark_matter_estimate: 8875
     - id: d9fad59c-0a07-4b20-8d3b-f4f377538582
       ref: agent-a89dd1f7c23bc5819:3
       agent: agent-a89dd1f7c23bc5819
@@ -77695,6 +77727,8 @@ events:
           - init: Initialize a new CLAUDE.md file with codebase documentation
           - review: Review a GitHub pull request; for your working diff use /code-review
           - security-review: Complete a security review of the pending changes on the current branch
+      tokens:
+        dark_matter_estimate: 8875
     - id: 3cb9fa05-e422-4bc4-af4b-b41e47dc19e1
       ref: agent-a89dd1f7c23bc5819:4
       agent: agent-a89dd1f7c23bc5819
@@ -79432,7 +79466,7 @@ events:
       tokens:
         result_chars: 4848
         estimated_input: 1385
-        system_prompt_estimate: 16590
+        system_prompt_estimate: 0
       hidden: true
     - id: 8b071bdc-aa36-4ceb-ae60-c37c9d8764a0
       ref: agent-ada9fc7259561d8af:2
@@ -79446,6 +79480,8 @@ events:
         file: agent-ada9fc7259561d8af.jsonl
         line: 2
       attachment_type: deferred_tools_delta
+      tokens:
+        dark_matter_estimate: 8295
     - id: f42b8510-2cff-4a33-a344-8a7466247983
       ref: agent-ada9fc7259561d8af:3
       agent: agent-ada9fc7259561d8af
@@ -79491,6 +79527,8 @@ events:
           - init: Initialize a new CLAUDE.md file with codebase documentation
           - review: Review a GitHub pull request; for your working diff use /code-review
           - security-review: Complete a security review of the pending changes on the current branch
+      tokens:
+        dark_matter_estimate: 8295
     - id: 5fc23d48-7c1e-45be-ab5b-beec37538c53
       ref: agent-ada9fc7259561d8af:4
       agent: agent-ada9fc7259561d8af

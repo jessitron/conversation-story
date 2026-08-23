@@ -183,7 +183,7 @@ events:
   tokens:
     result_chars: 125
     estimated_input: 36
-    system_prompt_estimate: 24645
+    system_prompt_estimate: 0
   beat: true
 - id: 18d18f03-d421-4471-ad5f-09436291f267
   ref: mode-switches:8
@@ -197,6 +197,8 @@ events:
     file: mode-switches.jsonl
     line: 8
   attachment_type: deferred_tools_delta
+  tokens:
+    dark_matter_estimate: 8215
 - id: 06f725c3-bc8f-4054-b172-0859264dc517
   ref: mode-switches:9
   agent: main
@@ -221,6 +223,8 @@ events:
     file: mode-switches.jsonl
     line: 10
   attachment_type: mcp_instructions_delta
+  tokens:
+    dark_matter_estimate: 8215
 - id: 993a1ba7-e9b5-4d7f-8608-2e58f331a3eb
   ref: mode-switches:11
   agent: main
@@ -266,6 +270,8 @@ events:
       - init: Initialize a new CLAUDE.md file with codebase documentation
       - review: Review a GitHub pull request; for your working diff use /code-review
       - security-review: Complete a security review of the pending changes on the current branch
+  tokens:
+    dark_matter_estimate: 8215
 - id: line-12
   ref: mode-switches:12
   agent: main
